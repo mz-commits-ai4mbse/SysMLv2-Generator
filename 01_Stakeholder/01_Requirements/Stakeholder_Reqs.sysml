@@ -20,4 +20,12 @@ package StakeholderRequirements {
     requirement <'SR_5'> 'Model Consistency' {
         doc /* The synthesis process shall ensure that integrated sub-models maintain overall system consistency. */
     }
+
+    requirement <'SR_6'> 'Data Prioritization' {
+        doc /* The system shall resolve data conflicts by prioritizing source information based on its reliability and relevance to the physical product.. */
+    }
+
+    requirement <'SR_7'> 'Semantic Standard' {
+        doc /* The system shall align all extracted information with a standardized technical vocabulary to ensure inter-tool compatibility. */
+    }
 }
