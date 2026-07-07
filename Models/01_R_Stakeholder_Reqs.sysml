@@ -7,13 +7,10 @@ package StakeholderRequirements {
 
     requirement <'SR_2'> 'Modular Architecture' {
         doc /* The generated models shall be structured as independent modules to allow non-destructive integration of new components.*/
-        rational /* TBD */
-        source /* TBD */
     }
 
     requirement <'SR_3'> 'Interface Anticipation' {
         doc /* The system shall use architectural patterns to anticipate required interfaces (ports) not explicitly present in the source data.*/
-        
     }
 
     requirement <'SR_4'> 'Expert Validation' {
