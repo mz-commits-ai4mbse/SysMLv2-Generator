@@ -1,0 +1,278 @@
+{
+  "context_id": "CTX_PROJECT_TURING_GENERATOR_SCOPE",
+  "name": "Turing Generator Project Scope",
+  "version": "0.1.0",
+  "purpose": "Defines the project scope, MVP scope and target product boundaries of the Turing Generator.",
+  "project": {
+    "project_name": "Turing Generator",
+    "working_title": "AI-assisted migration of heterogeneous engineering information into valid SysML v2 model structures",
+    "thesis_context": "Master thesis in Systems Engineering",
+    "system_type": "Recipe-based, artifact-driven and human-reviewed model synthesis system",
+    "primary_goal": "Support the transformation of heterogeneous legacy engineering information into valid, reviewable and traceable SysML v2 model artifacts."
+  },
+  "target_product_definition": {
+    "description": "The target product is an extensible engineering workflow system that uses persistent context artifacts, task-specific recipes, agent personalities, human review gates and SysML v2 artifact generation to support Architecture as Code.",
+    "core_capabilities": [
+      "Ingest heterogeneous machine-readable legacy engineering data",
+      "Generate human-readable ingestion artifacts",
+      "Require human review before extracted content becomes approved input",
+      "Normalize approved input into a canonical internal representation",
+      "Create bounded and source-traceable information units",
+      "Select task-specific recipes, context and agent personalities",
+      "Generate candidate model data through one or more agent personalities",
+      "Compare candidate artifacts and present differences, agreement and uncertainty",
+      "Require human approval before candidate output becomes approved model data",
+      "Generate SysML v2 textual artifacts from approved model data",
+      "Preserve traceability across input, recipes, context, agent personalities, decisions and output",
+      "Prepare generated SysML v2 artifacts for validation"
+    ],
+    "target_extensions": [
+      "Controlled data completion for incomplete legacy data",
+      "Terminology alignment with a defined technical vocabulary",
+      "Semantic conflict detection",
+      "Ontology-based interpretation support",
+      "Full architecture constraint evaluation",
+      "Interaction and interface consistency management",
+      "More advanced validation feedback loops",
+      "Support for multiple LLM backends or specialized agent implementations",
+      "Extended SysML v2 target notation coverage"
+    ]
+  },
+  "mvp_definition": {
+    "description": "The MVP is a selected executable subset of the intended target architecture. It is not a throwaway prototype. It shall demonstrate the core artifact-based and human-reviewed workflow with limited scope.",
+    "mvp_goal": "Demonstrate that recipe-based orchestration, persistent context, persona-based candidate generation, human review gates and SysML v2 artifact generation can be combined into a traceable engineering workflow.",
+    "included_capabilities": [
+      "Repository-based workspace structure",
+      "Context files for project principles, SysML v2 target notation and project scope",
+      "Source manifest distinguishing normative references from example references",
+      "Agent personality files",
+      "Recipe files with prompt and procedure definitions",
+      "Task specification files",
+      "Raw legacy input registration",
+      "Human-readable ingestion artifact generation",
+      "Ingestion review gate",
+      "Approved input promotion",
+      "Basic canonical representation",
+      "Basic normalized information unit creation",
+      "Basic quality assessment",
+      "Recipe and context selection",
+      "Persona-based candidate generation",
+      "Candidate comparison report generation",
+      "Candidate review gate",
+      "Approved model data promotion",
+      "SysML v2 text artifact generation into data/output/",
+      "Basic traceability records"
+    ],
+    "limited_capabilities": [
+      {
+        "capability": "Input format support",
+        "mvp_limitation": "The MVP supports only selected machine-readable input formats."
+      },
+      {
+        "capability": "SysML v2 target notation",
+        "mvp_limitation": "The MVP generates only a deliberately limited SysML v2 language subset."
+      },
+      {
+        "capability": "Agent personalities",
+        "mvp_limitation": "The MVP may use one LLM backend with multiple personality files."
+      },
+      {
+        "capability": "Validation",
+        "mvp_limitation": "The MVP prepares files for validation but may not implement a full automated validation feedback loop."
+      },
+      {
+        "capability": "User interface",
+        "mvp_limitation": "The MVP UI may remain simple and focused on task execution, report display and review decisions."
+      }
+    ],
+    "excluded_from_mvp": [
+      "Full ontology-based semantic reasoning",
+      "Full technical vocabulary management",
+      "Full semantic conflict resolution",
+      "Full controlled data completion workflow",
+      "Full interaction and interface consistency management",
+      "Full SysML v2 language coverage",
+      "Production-grade deployment",
+      "Enterprise user management",
+      "Automated modification of protected architecture model files",
+      "Direct use of unreviewed raw legacy data for model generation"
+    ]
+  },
+  "workflow_scope": {
+    "main_workflow": [
+      {
+        "step": 1,
+        "name": "Ingest raw legacy data",
+        "description": "The system receives or registers a raw machine-readable legacy engineering artifact."
+      },
+      {
+        "step": 2,
+        "name": "Generate ingestion artifact",
+        "description": "The system creates a human-readable Markdown artifact from extracted legacy information."
+      },
+      {
+        "step": 3,
+        "name": "Review ingestion artifact",
+        "description": "The human reviews the ingestion artifact and decides whether the content can be used downstream."
+      },
+      {
+        "step": 4,
+        "name": "Promote approved input",
+        "description": "Only approved or modified content is promoted into data/approved_input/."
+      },
+      {
+        "step": 5,
+        "name": "Normalize approved input",
+        "description": "Approved input is normalized into a canonical internal representation."
+      },
+      {
+        "step": 6,
+        "name": "Create information units",
+        "description": "The system creates bounded and source-traceable normalized information units."
+      },
+      {
+        "step": 7,
+        "name": "Select recipe, context and agent personalities",
+        "description": "The orchestrator selects the task-specific recipe, required context and selected agent personalities."
+      },
+      {
+        "step": 8,
+        "name": "Generate candidate artifacts",
+        "description": "The task is executed using one or more selected agent personalities."
+      },
+      {
+        "step": 9,
+        "name": "Generate comparison report",
+        "description": "Candidate artifacts are compared and presented in a human-readable review report."
+      },
+      {
+        "step": 10,
+        "name": "Review candidate output",
+        "description": "The human accepts, rejects or modifies candidate output."
+      },
+      {
+        "step": 11,
+        "name": "Promote approved model data",
+        "description": "Only approved or modified candidate output is promoted into approved model data."
+      },
+      {
+        "step": 12,
+        "name": "Generate SysML v2 output",
+        "description": "The system generates SysML v2 text artifacts into data/output/."
+      },
+      {
+        "step": 13,
+        "name": "Prepare validation",
+        "description": "Generated SysML v2 artifacts are prepared for validation in the selected validation environment."
+      }
+    ],
+    "review_gates": [
+      {
+        "gate_id": "RG_001",
+        "name": "Ingestion Review Gate",
+        "input_state": "human-readable ingestion artifact",
+        "output_state": "approved input",
+        "required_decision": "approve, approve_with_modifications or reject",
+        "rule": "Raw extracted content must not become approved input without human review."
+      },
+      {
+        "gate_id": "RG_002",
+        "name": "Candidate Review Gate",
+        "input_state": "candidate comparison report",
+        "output_state": "approved model data",
+        "required_decision": "approve, approve_with_modifications or reject",
+        "rule": "Candidate output must not become approved model data without human review."
+      }
+    ]
+  },
+  "artifact_scope": {
+    "raw_legacy_data": {
+      "folder": "legacy/raw/",
+      "purpose": "Stores unmodified raw input artifacts.",
+      "review_status": "unreviewed",
+      "downstream_rule": "May only be used to generate ingestion artifacts."
+    },
+    "ingestion_reports": {
+      "folder": "data/ingestion_reports/",
+      "purpose": "Stores human-readable Markdown reports generated from raw legacy data.",
+      "review_status": "ready_for_review"
+    },
+    "approved_input": {
+      "folder": "data/approved_input/",
+      "purpose": "Stores reviewed and approved input for downstream processing.",
+      "review_status": "approved"
+    },
+    "intermediate": {
+      "folder": "data/intermediate/",
+      "purpose": "Stores canonical representations, information units, candidate artifacts and approved model data."
+    },
+    "reports": {
+      "folder": "data/reports/",
+      "purpose": "Stores human-readable candidate, comparison and review reports."
+    },
+    "feedback": {
+      "folder": "data/feedback/",
+      "purpose": "Stores structured human feedback."
+    },
+    "decisions": {
+      "folder": "data/decisions/",
+      "purpose": "Stores structured human decisions."
+    },
+    "output": {
+      "folder": "data/output/",
+      "purpose": "Stores generated SysML v2 output artifacts."
+    },
+    "traceability": {
+      "folder": "data/traceability/",
+      "purpose": "Stores traceability records linking sources, recipes, context, agents, decisions and outputs."
+    }
+  },
+  "modeling_scope": {
+    "architecture_model_folder": "model/architecture/",
+    "architecture_model_purpose": "Contains the manually curated architecture model of the Turing Generator itself.",
+    "generated_output_folder": "data/output/",
+    "generated_output_purpose": "Contains SysML v2 files generated by the Turing Generator.",
+    "protected_architecture_files": [
+      "model/architecture/02_System_01_Requirements.sysml",
+      "model/architecture/02_System_02_Functional.sysml",
+      "model/architecture/02_System_03_Logical.sysml",
+      "model/architecture/02_System_04_Physical.sysml"
+    ],
+    "protection_rule": "Architecture model files may be read for context but shall not be modified unless explicitly requested."
+  },
+  "reference_sources": {
+    "source_manifest": "context/sources/source_manifest.json",
+    "sysml_v2_spec_reference": "context/sysml/sysml_v2_spec_reference.json",
+    "sysml_v2_target_notation": "context/sysml/sysml_v2_target_notation.json",
+    "apollo11_structure_reference": "context/examples/apollo11_structure_reference.md",
+    "sysml_v2_release_repository": "external/sysml-v2-release/",
+    "apollo11_repository": "external/apollo11-sysml-v2/"
+  },
+  "implementation_scope": {
+    "language": "Python",
+    "principles": [
+      "Keep modules small and responsibility-specific.",
+      "Use the orchestrator as central coordinator.",
+      "Do not hardcode prompts into Python modules.",
+      "Read prompts and procedures from recipe artifacts.",
+      "Use JSON for structured state and decisions.",
+      "Use Markdown for human-readable review artifacts.",
+      "Write generated SysML v2 files to data/output/."
+    ],
+    "initial_mvp_execution_goal": "Create the first executable workflow from raw input registration to ingestion artifact generation and review preparation."
+  },
+  "success_criteria": [
+    "The workspace structure is explicit and purpose-driven.",
+    "A raw legacy artifact can be registered.",
+    "A human-readable ingestion artifact can be generated.",
+    "The ingestion artifact can be reviewed by a human.",
+    "Approved content can be promoted into approved input.",
+    "Candidate artifacts can be generated using recipes, context and agent personalities.",
+    "Candidate artifacts can be compared.",
+    "A human-readable comparison report can be generated.",
+    "Human decisions can be recorded.",
+    "Approved model data can be transformed into SysML v2 output.",
+    "Generated SysML v2 output is stored in data/output/.",
+    "Traceability is maintained across relevant artifacts."
+  ]
+}

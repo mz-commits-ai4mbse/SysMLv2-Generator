@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"name": "SysMLv2-Generator",
+			"path": ".."
+		},
+		{
+			"name": "core",
+			"path": "../../../../Downloads/turing_generator_skeleton/core"
+		},
+		{
+			"name": "tests",
+			"path": "../../../../Downloads/turing_generator_skeleton/tests"
+		},
+		{
+			"name": "scripts",
+			"path": "../../../../Downloads/turing_generator_skeleton/scripts"
+		},
+		{
+			"name": "app",
+			"path": "../../../../Downloads/turing_generator_skeleton/app"
+		},
+		{
+			"name": "modules",
+			"path": "../../../../Downloads/turing_generator_skeleton/modules"
+		}
+	],
+	"settings": {}
+}

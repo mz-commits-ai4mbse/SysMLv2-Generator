@@ -1,0 +1,47 @@
+{
+  "traceability_id": "TRACE_TASK_001_INGEST_EXAMPLE_MODEL",
+  "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
+  "recipe_id": "REC_INGESTION_001",
+  "run_id": "run_20260707_133708",
+  "generated_at": "2026-07-07T13:37:08Z",
+  "input_artifacts": [
+    {
+      "artifact_id": "RAW_EXAMPLE_MODEL_001",
+      "path": "legacy/raw/example_legacy_model_description.md",
+      "source_state": "raw_unreviewed"
+    }
+  ],
+  "context_files": [
+    "context/global/project_principles.md",
+    "context/sources/source_manifest.json",
+    "context/sysml/sysml_v2_spec_reference.json",
+    "context/sysml/sysml_v2_target_notation.json",
+    "context/mapping/sysml_model_derivation_rules.json"
+  ],
+  "optional_context_files_loaded": [
+    "context/examples/apollo11_structure_reference.md"
+  ],
+  "agent_personalities_loaded": [
+    "agents/systems_engineer.md",
+    "agents/completeness_checker.md"
+  ],
+  "generated_artifacts": [
+    {
+      "artifact_type": "ingestion_report",
+      "path": "data/ingestion_reports/task_001_ingestion_report.md",
+      "state": "ready_for_review"
+    },
+    {
+      "artifact_type": "feedback_placeholder",
+      "path": "data/feedback/task_001_ingestion_feedback.json",
+      "state": "pending_review"
+    }
+  ],
+  "workflow_state": "stopped_before_approved_input_promotion",
+  "forbidden_actions_confirmed": [
+    "No approved input created.",
+    "No approved model data created.",
+    "No SysML v2 output generated.",
+    "No protected architecture model files modified."
+  ]
+}

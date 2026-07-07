@@ -1,0 +1,686 @@
+{
+  "context_id": "CTX_SYSML_MODEL_DERIVATION_RULES",
+  "name": "SysML v2 Model Derivation Rules",
+  "version": "0.1.0",
+  "purpose": "Defines which SysML v2 model artifacts may be derived from which types of input evidence.",
+  "core_principle": "The system shall only generate model artifacts that are sufficiently supported by valid input evidence. If evidence is insufficient, the system shall identify the missing information instead of generating unsupported model content.",
+  "usage_rule": "Use this file during ingestion, candidate generation and SysML v2 synthesis to decide which downstream model artifacts are supported, partially supported or not supported by the available input data.",
+  "decision_levels": [
+    {
+      "level": "supported",
+      "meaning": "The input evidence is sufficient to generate candidate model content for this model artifact type.",
+      "allowed_action": "Generate candidate model content and mark it as requiring human review."
+    },
+    {
+      "level": "partially_supported",
+      "meaning": "The input evidence supports only a preliminary or partial candidate.",
+      "allowed_action": "Generate limited candidate content only if uncertainty, assumptions and missing information are clearly documented."
+    },
+    {
+      "level": "not_supported",
+      "meaning": "The input evidence is insufficient for this model artifact type.",
+      "allowed_action": "Do not generate candidate model content. Record missing information and review questions instead."
+    },
+    {
+      "level": "conflicting",
+      "meaning": "The input evidence contains contradictions or incompatible interpretations.",
+      "allowed_action": "Do not generate final candidate content. Generate a conflict finding and request human review."
+    }
+  ],
+  "evidence_types": [
+    {
+      "evidence_type_id": "EV_STAKEHOLDER_NEED",
+      "name": "Stakeholder need statement",
+      "description": "A statement describing what a stakeholder needs, expects or wants to achieve.",
+      "examples": [
+        "The remote expert needs to join a session without being physically present.",
+        "The microscope operator needs to remain in control of the session."
+      ]
+    },
+    {
+      "evidence_type_id": "EV_REQUIREMENT_STATEMENT",
+      "name": "Requirement statement",
+      "description": "A shall-statement or equivalent normative statement defining required system behavior, constraint or quality.",
+      "examples": [
+        "The system shall prevent two users from controlling the microscope at the same time.",
+        "The system shall show who currently has control."
+      ]
+    },
+    {
+      "evidence_type_id": "EV_USER_ROLE",
+      "name": "User role or actor",
+      "description": "A named user, actor, stakeholder or external interacting party.",
+      "examples": [
+        "microscope operator",
+        "remote expert"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_USE_CASE_OR_WORKFLOW",
+      "name": "Use case or workflow description",
+      "description": "A description of user interaction, system usage, operational sequence or process flow.",
+      "examples": [
+        "The operator starts a streaming session.",
+        "The remote expert requests control and the operator accepts or rejects the request."
+      ]
+    },
+    {
+      "evidence_type_id": "EV_FUNCTION_OR_CAPABILITY",
+      "name": "Function or capability",
+      "description": "A named capability, action or behavior the system performs.",
+      "examples": [
+        "start streaming session",
+        "request remote control",
+        "record session information"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_LOGICAL_ELEMENT",
+      "name": "Logical system element",
+      "description": "A technology-independent or implementation-independent system element, service or responsibility area.",
+      "examples": [
+        "session management",
+        "control ownership management",
+        "streaming service"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_PHYSICAL_ELEMENT",
+      "name": "Physical or implementation element",
+      "description": "A concrete device, software application, server, module, hardware component, BOM item or deployment element.",
+      "examples": [
+        "microscope workstation",
+        "client application",
+        "server",
+        "camera module"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_INTERFACE",
+      "name": "Interface or interaction point",
+      "description": "A connection, interaction, API, communication path or dependency between elements.",
+      "examples": [
+        "client application receives live image stream",
+        "remote expert sends control request to microscope workstation"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_DATA_OR_ARTIFACT",
+      "name": "Data object or artifact",
+      "description": "A named information object, data record, document, file, event or artifact used or produced by the system.",
+      "examples": [
+        "live image stream",
+        "control request",
+        "session information"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_CONSTRAINT",
+      "name": "Constraint",
+      "description": "A restriction on system behavior, structure, quality, operation or implementation.",
+      "examples": [
+        "Only one user may control the microscope at a time.",
+        "Control transfer requires acceptance by the microscope operator."
+      ]
+    },
+    {
+      "evidence_type_id": "EV_VALIDATION_CRITERION",
+      "name": "Validation or acceptance criterion",
+      "description": "A statement defining how correct behavior, performance or acceptance can be checked.",
+      "examples": [
+        "The session shall be considered successful if the remote expert can view the stream with less than defined latency."
+      ]
+    },
+    {
+      "evidence_type_id": "EV_REGULATORY_OR_STANDARD_REFERENCE",
+      "name": "Regulatory or standard reference",
+      "description": "A reference to applicable regulation, standard, compliance requirement or normative external rule.",
+      "examples": [
+        "IEC 62304",
+        "ISO 13485",
+        "IVDR"
+      ]
+    },
+    {
+      "evidence_type_id": "EV_SERVICE_BOM",
+      "name": "Service BOM or parts list",
+      "description": "A list of physical parts, service parts, replacement units or implementation items.",
+      "examples": [
+        "camera module",
+        "microscope stand",
+        "embedded controller",
+        "power supply"
+      ]
+    }
+  ],
+  "model_artifact_derivation_rules": [
+    {
+      "model_artifact_type": "stakeholder_needs",
+      "description": "Stakeholder needs, user needs or stakeholder intent statements.",
+      "supported_if": [
+        "Input contains explicit stakeholder need statements.",
+        "Input contains clear user goals, pain points or expected outcomes.",
+        "Input identifies the stakeholder or user role connected to the need."
+      ],
+      "partially_supported_if": [
+        "Input contains user roles and informal goals but no clear need statements.",
+        "Input contains workflow descriptions from which needs may be cautiously inferred."
+      ],
+      "not_supported_if": [
+        "Input only contains a service BOM, parts list or implementation inventory.",
+        "Input only contains low-level technical elements without stakeholder intent.",
+        "Input contains no identifiable stakeholder or user role."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_STAKEHOLDER_NEED",
+        "EV_USER_ROLE"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_USER_ROLE",
+        "EV_USE_CASE_OR_WORKFLOW"
+      ],
+      "allowed_output_when_supported": [
+        "stakeholder_need_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_stakeholder_need_candidates",
+        "review_questions",
+        "assumptions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "stakeholder_need_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "stakeholder_requirements",
+      "description": "Requirements derived from stakeholder intent and stakeholder needs.",
+      "supported_if": [
+        "Input contains stakeholder needs and requirement-like statements.",
+        "Input identifies relevant stakeholders or user roles.",
+        "Input provides enough context to distinguish stakeholder intent from system design."
+      ],
+      "partially_supported_if": [
+        "Input contains user roles, workflows and informal expectations but no formal stakeholder requirements.",
+        "Input contains shall-statements but their stakeholder origin is unclear."
+      ],
+      "not_supported_if": [
+        "Input only contains physical parts, service BOM items or implementation details.",
+        "Input does not identify stakeholder intent.",
+        "Input only describes system internals without user or stakeholder context."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_STAKEHOLDER_NEED",
+        "EV_REQUIREMENT_STATEMENT",
+        "EV_USER_ROLE"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_USER_ROLE",
+        "EV_USE_CASE_OR_WORKFLOW",
+        "EV_REQUIREMENT_STATEMENT"
+      ],
+      "allowed_output_when_supported": [
+        "stakeholder_requirement_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_stakeholder_requirement_candidates",
+        "assumptions",
+        "missing_information",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "stakeholder_requirement_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "system_requirements",
+      "description": "System-level requirements defining required system behavior, constraints or qualities.",
+      "supported_if": [
+        "Input contains explicit system shall-statements.",
+        "Input contains clear functional or behavioral obligations.",
+        "Input contains constraints that apply to the system."
+      ],
+      "partially_supported_if": [
+        "Input contains informal capability descriptions that can be converted into requirement candidates with review.",
+        "Input contains constraints but lacks full context or acceptance criteria."
+      ],
+      "not_supported_if": [
+        "Input only contains component names without behavior or constraints.",
+        "Input only contains a service BOM without system behavior.",
+        "Input contains no normative or requirement-like statements."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_REQUIREMENT_STATEMENT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_FUNCTION_OR_CAPABILITY",
+        "EV_CONSTRAINT"
+      ],
+      "allowed_output_when_supported": [
+        "system_requirement_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_system_requirement_candidates",
+        "assumptions",
+        "missing_information",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "system_requirement_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "functional_model",
+      "description": "Functional view using functions, capabilities, actions or workflow steps.",
+      "supported_if": [
+        "Input contains named functions, capabilities or workflow steps.",
+        "Input describes what the system does.",
+        "Input provides enough context to separate system behavior from physical implementation."
+      ],
+      "partially_supported_if": [
+        "Input contains informal behavior descriptions but incomplete sequence or responsibility information.",
+        "Input contains user workflows but not all system responses."
+      ],
+      "not_supported_if": [
+        "Input only contains physical parts with no behavior.",
+        "Input only contains organizational or administrative information.",
+        "Input contains no system capability or behavior."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_FUNCTION_OR_CAPABILITY"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_USE_CASE_OR_WORKFLOW"
+      ],
+      "allowed_output_when_supported": [
+        "function_candidates",
+        "workflow_step_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_function_candidates",
+        "assumptions",
+        "missing_information",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "function_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "logical_architecture",
+      "description": "Technology-independent or implementation-independent logical component structure.",
+      "supported_if": [
+        "Input contains functions and clear responsibility areas.",
+        "Input contains logical services, modules or conceptual system elements.",
+        "Input allows grouping behavior into coherent logical components."
+      ],
+      "partially_supported_if": [
+        "Input contains functions but no explicit logical components.",
+        "Input contains implementation elements from which logical responsibilities may be cautiously inferred."
+      ],
+      "not_supported_if": [
+        "Input only contains a physical parts list with no behavior.",
+        "Input contains no functions, responsibilities or logical grouping hints.",
+        "Input is too low-level to support logical abstraction."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_FUNCTION_OR_CAPABILITY",
+        "EV_LOGICAL_ELEMENT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_FUNCTION_OR_CAPABILITY",
+        "EV_PHYSICAL_ELEMENT"
+      ],
+      "allowed_output_when_supported": [
+        "logical_component_candidates",
+        "function_to_logical_allocation_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_logical_component_candidates",
+        "assumptions",
+        "missing_information",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "logical_component_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "physical_architecture",
+      "description": "Physical or implementation-oriented system structure.",
+      "supported_if": [
+        "Input contains physical elements, implementation components, deployment elements or BOM items.",
+        "Input identifies concrete software applications, hardware components, infrastructure or modules.",
+        "Input provides enough information to distinguish separate physical elements."
+      ],
+      "partially_supported_if": [
+        "Input mentions some concrete elements but lacks deployment, interfaces or ownership.",
+        "Input contains a service BOM without behavior or relationships."
+      ],
+      "not_supported_if": [
+        "Input only contains stakeholder needs or abstract requirements.",
+        "Input contains no concrete implementation or physical elements."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_PHYSICAL_ELEMENT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_SERVICE_BOM"
+      ],
+      "allowed_output_when_supported": [
+        "physical_component_candidates",
+        "logical_to_physical_allocation_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_physical_component_candidates",
+        "missing_relationships",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "physical_component_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "interface_model",
+      "description": "Interfaces, interaction points or communication relationships between system elements.",
+      "supported_if": [
+        "Input contains named interacting elements.",
+        "Input describes communication, data exchange, control requests, APIs or dependencies.",
+        "Input identifies direction or purpose of interaction."
+      ],
+      "partially_supported_if": [
+        "Input mentions related components but not the exchanged data or interaction direction.",
+        "Input implies an interaction through workflow descriptions."
+      ],
+      "not_supported_if": [
+        "Input contains isolated elements without relationships.",
+        "Input contains only stakeholder needs with no system interaction details."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_INTERFACE",
+        "EV_DATA_OR_ARTIFACT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_USE_CASE_OR_WORKFLOW",
+        "EV_PHYSICAL_ELEMENT"
+      ],
+      "allowed_output_when_supported": [
+        "interface_candidates",
+        "interaction_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_interface_candidates",
+        "assumptions",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "interface_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "data_or_artifact_model",
+      "description": "Data objects, information artifacts, records, files or exchanged items relevant to the system.",
+      "supported_if": [
+        "Input contains named data objects, documents, records, messages, files or information artifacts.",
+        "Input describes how data is used, created, exchanged or stored."
+      ],
+      "partially_supported_if": [
+        "Input mentions data-like terms but does not define structure, owner, lifecycle or usage.",
+        "Input implies data objects through workflow descriptions."
+      ],
+      "not_supported_if": [
+        "Input contains no identifiable data, message, record or artifact."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_DATA_OR_ARTIFACT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_USE_CASE_OR_WORKFLOW"
+      ],
+      "allowed_output_when_supported": [
+        "data_artifact_candidates",
+        "item_definition_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_data_artifact_candidates",
+        "missing_information",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "data_artifact_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "constraint_model",
+      "description": "Constraints affecting behavior, architecture, implementation, quality or operation.",
+      "supported_if": [
+        "Input contains explicit constraints.",
+        "Input contains rules, restrictions, limits or conditions that apply to the system."
+      ],
+      "partially_supported_if": [
+        "Input contains implied constraints but they are not formulated clearly.",
+        "Input contains informal restrictions that need human confirmation."
+      ],
+      "not_supported_if": [
+        "Input contains no identifiable restrictions, limits or rules."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_CONSTRAINT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_REQUIREMENT_STATEMENT"
+      ],
+      "allowed_output_when_supported": [
+        "constraint_candidates",
+        "design_constraint_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "preliminary_constraint_candidates",
+        "assumptions",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "constraint_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "validation_or_verification_model",
+      "description": "Validation criteria, verification activities or acceptance criteria.",
+      "supported_if": [
+        "Input contains explicit validation criteria, test criteria or acceptance criteria.",
+        "Input defines measurable expected outcomes."
+      ],
+      "partially_supported_if": [
+        "Input contains requirements but no clear validation method.",
+        "Input contains expected behavior but no acceptance threshold."
+      ],
+      "not_supported_if": [
+        "Input contains no validation, verification, test or acceptance information."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_VALIDATION_CRITERION"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_REQUIREMENT_STATEMENT"
+      ],
+      "allowed_output_when_supported": [
+        "validation_criterion_candidates",
+        "verification_activity_candidates"
+      ],
+      "allowed_output_when_partially_supported": [
+        "validation_gap_findings",
+        "review_questions"
+      ],
+      "forbidden_output_when_not_supported": [
+        "validation_criterion_candidates",
+        "verification_activity_candidates"
+      ]
+    },
+    {
+      "model_artifact_type": "traceability_model",
+      "description": "Traceability links between sources, requirements, functions, components, decisions and outputs.",
+      "supported_if": [
+        "Input artifacts have stable identifiers or source references.",
+        "Derived candidates preserve links to source information.",
+        "Recipes, context files and task IDs are available."
+      ],
+      "partially_supported_if": [
+        "Input content can be referenced by section or file path but lacks stable internal IDs.",
+        "Some candidate elements have source basis but others require review."
+      ],
+      "not_supported_if": [
+        "No source references, file paths, task IDs or derivation context are available."
+      ],
+      "minimum_evidence_types_for_supported": [
+        "EV_REQUIREMENT_STATEMENT"
+      ],
+      "minimum_evidence_types_for_partially_supported": [
+        "EV_USE_CASE_OR_WORKFLOW"
+      ],
+      "allowed_output_when_supported": [
+        "traceability_link_candidates",
+        "traceability_records"
+      ],
+      "allowed_output_when_partially_supported": [
+        "traceability_placeholders",
+        "traceability_gap_findings"
+      ],
+      "forbidden_output_when_not_supported": [
+        "unqualified_traceability_claims"
+      ]
+    }
+  ],
+  "input_profile_examples": [
+    {
+      "input_profile_id": "INPUT_PROFILE_SERVICE_BOM_ONLY",
+      "description": "Input contains only service BOM or parts list information.",
+      "likely_supported_model_artifacts": [
+        "physical_architecture"
+      ],
+      "likely_partially_supported_model_artifacts": [
+        "logical_architecture",
+        "interface_model"
+      ],
+      "likely_not_supported_model_artifacts": [
+        "stakeholder_needs",
+        "stakeholder_requirements",
+        "validation_or_verification_model"
+      ],
+      "rule": "Do not generate stakeholder requirements from a service BOM only. Generate physical component candidates and list missing behavioral and stakeholder information."
+    },
+    {
+      "input_profile_id": "INPUT_PROFILE_USER_WORKFLOW_DESCRIPTION",
+      "description": "Input contains user roles, operational workflow and informal capabilities.",
+      "likely_supported_model_artifacts": [
+        "functional_model",
+        "data_or_artifact_model"
+      ],
+      "likely_partially_supported_model_artifacts": [
+        "stakeholder_needs",
+        "stakeholder_requirements",
+        "logical_architecture",
+        "interface_model",
+        "constraint_model"
+      ],
+      "likely_not_supported_model_artifacts": [
+        "detailed_physical_architecture",
+        "validation_or_verification_model"
+      ],
+      "rule": "Use the workflow to derive candidate functions and review questions. Do not create detailed physical architecture unless concrete implementation elements are present."
+    },
+    {
+      "input_profile_id": "INPUT_PROFILE_FORMAL_REQUIREMENTS",
+      "description": "Input contains formal shall-statements and requirement IDs.",
+      "likely_supported_model_artifacts": [
+        "system_requirements",
+        "constraint_model",
+        "traceability_model"
+      ],
+      "likely_partially_supported_model_artifacts": [
+        "functional_model",
+        "validation_or_verification_model"
+      ],
+      "likely_not_supported_model_artifacts": [
+        "physical_architecture"
+      ],
+      "rule": "Use formal requirements to derive requirement candidates and preliminary functions. Do not derive physical components unless physical evidence is present."
+    },
+    {
+      "input_profile_id": "INPUT_PROFILE_ARCHITECTURE_DESCRIPTION",
+      "description": "Input contains functions, logical components, physical components and relationships.",
+      "likely_supported_model_artifacts": [
+        "functional_model",
+        "logical_architecture",
+        "physical_architecture",
+        "interface_model",
+        "data_or_artifact_model",
+        "traceability_model"
+      ],
+      "likely_partially_supported_model_artifacts": [
+        "stakeholder_requirements",
+        "validation_or_verification_model"
+      ],
+      "likely_not_supported_model_artifacts": [],
+      "rule": "Generate candidate architecture views only where the input provides sufficient evidence. Flag stakeholder and validation gaps if not explicitly provided."
+    }
+  ],
+  "reporting_requirements": {
+    "ingestion_report_must_include": [
+      "Detected evidence types",
+      "Supported downstream model artifact types",
+      "Partially supported downstream model artifact types",
+      "Not supported downstream model artifact types",
+      "Reason for each support decision",
+      "Missing information required for unsupported model artifacts",
+      "Review questions for human confirmation"
+    ],
+    "candidate_generation_must_include": [
+      "Model artifact type",
+      "Evidence basis",
+      "Confidence",
+      "Assumptions",
+      "Missing information",
+      "Human review decision required"
+    ]
+  },
+  "global_generation_rules": [
+    {
+      "rule_id": "DERIVATION_RULE_001",
+      "rule": "Do not generate a model artifact type if the evidence level is not_supported."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_002",
+      "rule": "If evidence is partially_supported, generate only preliminary candidates and mark assumptions and missing information explicitly."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_003",
+      "rule": "Never generate stakeholder requirements from a service BOM only."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_004",
+      "rule": "Never generate detailed physical architecture from stakeholder needs only."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_005",
+      "rule": "Never generate validation or verification models without explicit validation, verification, test or acceptance evidence."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_006",
+      "rule": "Generated model candidates shall remain candidates until human approval."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_007",
+      "rule": "Unsupported model artifact types shall be reported as gaps, not silently ignored."
+    },
+    {
+      "rule_id": "DERIVATION_RULE_008",
+      "rule": "When evidence conflicts, create a conflict finding and request human review instead of resolving it silently."
+    }
+  ],
+  "relationship_to_other_files": {
+    "project_principles": "context/global/project_principles.md",
+    "source_manifest": "context/sources/source_manifest.json",
+    "sysml_v2_spec_reference": "context/sysml/sysml_v2_spec_reference.json",
+    "sysml_v2_target_notation": "context/sysml/sysml_v2_target_notation.json",
+    "ingestion_recipe": "recipes/ingestion/create_ingestion_artifact.recipe.md"
+  }
+}

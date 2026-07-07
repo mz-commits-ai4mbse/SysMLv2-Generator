@@ -1,0 +1,11 @@
+{
+    "id": "SysMLv2-Generator",
+    "version": "1.0.0",
+    "name": "AI4MBSE Synthesizer Model",
+    "description": "Migrated Architecture-as-Code Model Context",
+    "sourceFolders": [
+        "01_Stakeholder",
+        "02_System",
+        "03_Subsystem"
+    ]
+}

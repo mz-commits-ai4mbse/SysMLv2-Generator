@@ -1,0 +1,182 @@
+{
+  "context_id": "CTX_SYSML_V2_SPEC_REFERENCE",
+  "name": "SysML v2 Specification Reference",
+  "version": "0.1.0",
+  "purpose": "Provides curated SysML v2 specification guidance for the Turing Generator MVP.",
+  "source_reference": {
+    "source_id": "SRC_SYSML_V2_RELEASE",
+    "source_manifest": "context/sources/source_manifest.json",
+    "local_repository_path": "external/sysml-v2-release/",
+    "authority": "primary_specification_reference",
+    "usage_rule": "Use the local SysML v2 release repository as the primary reference for SysML v2 syntax, language concepts, example models and model libraries. Do not load the complete repository into LLM prompts by default. Use this curated context file for routine prompting."
+  },
+  "reference_boundary": {
+    "this_file_is": [
+      "a curated working reference",
+      "a prompt-friendly context artifact",
+      "a project-specific summary of relevant SysML v2 concepts"
+    ],
+    "this_file_is_not": [
+      "the full SysML v2 specification",
+      "a replacement for validation",
+      "a complete grammar definition",
+      "a guarantee that generated syntax is valid in every tool"
+    ],
+    "when_uncertain": "Consult the local SysML v2 release repository and validate generated SysML v2 artifacts in the selected validation environment."
+  },
+  "language_scope": {
+    "mvp_focus": [
+      "package-based model organization",
+      "definitions and usages",
+      "part definitions and part usages",
+      "action definitions and action usages",
+      "requirement definitions and requirement usages",
+      "documentation blocks",
+      "simple specialization",
+      "simple nested structure",
+      "traceability documented in comments when formal references are not stable"
+    ],
+    "not_in_mvp_focus": [
+      "complete SysML v2 language coverage",
+      "complete formal semantics",
+      "advanced constraint modeling",
+      "advanced interface and port modeling",
+      "advanced item flow modeling",
+      "advanced verification modeling",
+      "full ontology integration",
+      "full graphical notation generation"
+    ]
+  },
+  "curated_rules": [
+    {
+      "rule_id": "SYSML_SPEC_REF_001",
+      "topic": "Package organization",
+      "guidance": "Generated SysML v2 artifacts should use package-based organization to group related model elements.",
+      "mvp_usage": "Use top-level packages for generated model areas and nested packages for logical grouping.",
+      "example_pattern": "package ExamplePackage { }",
+      "validation_note": "Package nesting shall be validated in the selected SysML v2 environment."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_002",
+      "topic": "Definitions and usages",
+      "guidance": "Generated models should distinguish between definitions and usages where applicable.",
+      "mvp_usage": "Use definitions for reusable element types and usages for concrete occurrences within an architecture or workflow.",
+      "example_pattern": "part def ComponentType { } and part componentUsage : ComponentType;",
+      "validation_note": "Definition and usage relationships shall be checked against the selected target notation."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_003",
+      "topic": "Part definitions",
+      "guidance": "Logical and physical components may be represented as part definitions.",
+      "mvp_usage": "Use part definitions for reusable logical or physical component types.",
+      "example_pattern": "part def LogicalComponent { }",
+      "validation_note": "Generated component structures shall remain within the MVP target notation subset."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_004",
+      "topic": "Part usages",
+      "guidance": "Concrete component occurrences may be represented as part usages typed by part definitions.",
+      "mvp_usage": "Use part usages when instantiating architecture configurations such as target or MVP architectures.",
+      "example_pattern": "part orchestrator : PipelineOrchestrationComponent;",
+      "validation_note": "Cross-package qualification shall be validated because tool support may differ."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_005",
+      "topic": "Action definitions",
+      "guidance": "System functions may be represented as action definitions.",
+      "mvp_usage": "Use action definitions for reusable system functions such as ingestion, extraction, review and synthesis.",
+      "example_pattern": "action def IngestLegacyData { }",
+      "validation_note": "The action subset used by the MVP shall remain intentionally simple."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_006",
+      "topic": "Action usages",
+      "guidance": "Concrete workflow steps may be represented as action usages typed by action definitions.",
+      "mvp_usage": "Use action usages in workflow or detailed function views to show which functions are included.",
+      "example_pattern": "action ingestLegacyData : IngestLegacyData;",
+      "validation_note": "Detailed control flow may be documented in doc blocks when executable action flow syntax is not required."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_007",
+      "topic": "Requirement modeling",
+      "guidance": "Requirements may be represented using requirement definitions and requirement usages.",
+      "mvp_usage": "Use requirement elements for system requirements and design constraints in the architecture model of the Turing Generator.",
+      "example_pattern": "requirement def SystemRequirement { }",
+      "validation_note": "Generated model output may use a smaller requirement subset than the manually curated architecture model."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_008",
+      "topic": "Documentation blocks",
+      "guidance": "Documentation blocks may be used to capture rationale, traceability, scope and review notes.",
+      "mvp_usage": "Use doc blocks for human-readable rationale and traceability when formal cross-file links are not stable.",
+      "example_pattern": "doc /* Rationale and traceability text. */",
+      "validation_note": "Documentation content shall not be treated as a substitute for formal validation when formal model relationships are required."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_009",
+      "topic": "Specialization",
+      "guidance": "Specialization may be used to define more specific element types from more general ones.",
+      "mvp_usage": "Use simple specialization for base types such as LogicalComponent, PhysicalComponent or SystemRequirement.",
+      "example_pattern": "part def UserInteractionComponent :> LogicalComponent { }",
+      "validation_note": "Avoid complex inheritance structures in generated MVP output unless explicitly required."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_010",
+      "topic": "Qualified references",
+      "guidance": "Qualified names may be used to refer to elements from nested packages.",
+      "mvp_usage": "Use qualified references when referencing definitions from a dedicated definitions package.",
+      "example_pattern": "part userInteraction : '00_LogicalDefinitions'::UserInteractionComponent;",
+      "validation_note": "Quoted package names and qualified references shall be validated in SysIDE before being used as generator output."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_011",
+      "topic": "Target notation limitation",
+      "guidance": "The MVP should reduce scope by limiting the generated SysML v2 subset rather than by accepting invalid syntax.",
+      "mvp_usage": "Generate only those model element patterns that are explicitly allowed in context/sysml/sysml_v2_target_notation.json.",
+      "example_pattern": "Use package, part def, part usage, action def, action usage and doc blocks before adding advanced constructs.",
+      "validation_note": "Any extension to the target notation shall be added intentionally and tested."
+    },
+    {
+      "rule_id": "SYSML_SPEC_REF_012",
+      "topic": "Example repositories",
+      "guidance": "Example repositories may be used as structural and style references but shall not override the specification reference.",
+      "mvp_usage": "Use Apollo 11 as a non-normative structure reference and the SysML v2 release repository as the primary syntax reference.",
+      "example_pattern": "Use example models to understand organization patterns, not as automatic syntax authority.",
+      "validation_note": "When example style and specification guidance appear to conflict, prefer the specification reference and validation result."
+    }
+  ],
+  "recommended_prompt_usage": {
+    "default_policy": "Load this curated file instead of loading the complete external/sysml-v2-release repository.",
+    "allowed_prompt_usage": [
+      "Provide SysML v2 modeling guidance to an LLM.",
+      "Constrain generated SysML v2 output to the MVP target subset.",
+      "Explain why advanced constructs are excluded from the MVP.",
+      "Support review of generated SysML v2 artifacts."
+    ],
+    "disallowed_prompt_usage": [
+      "Treat this file as the complete SysML v2 grammar.",
+      "Generate advanced SysML v2 constructs not covered by the target notation.",
+      "Ignore validation results because this file contains a similar pattern.",
+      "Use example repositories as normative syntax authority."
+    ]
+  },
+  "relationship_to_other_context_files": {
+    "source_manifest": {
+      "path": "context/sources/source_manifest.json",
+      "role": "Defines source authority, local paths and source usage rules."
+    },
+    "target_notation": {
+      "path": "context/sysml/sysml_v2_target_notation.json",
+      "role": "Defines the deliberately limited SysML v2 subset used by the MVP."
+    },
+    "apollo_reference": {
+      "path": "context/examples/apollo11_structure_reference.md",
+      "role": "Provides non-normative structure and style observations from the Apollo 11 example model."
+    }
+  },
+  "validation_expectation": {
+    "rule": "Generated SysML v2 artifacts shall be validated in the selected validation environment.",
+    "validation_output_policy": "Validation findings shall be stored as reviewable artifacts and shall not silently modify generated model output.",
+    "preferred_validation_artifact_folder": "data/validation/"
+  }
+}

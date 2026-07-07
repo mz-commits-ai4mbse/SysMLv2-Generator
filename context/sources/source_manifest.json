@@ -1,0 +1,162 @@
+{
+  "manifest_id": "SOURCE_MANIFEST_001",
+  "name": "Turing Generator Source Manifest",
+  "purpose": "Defines external and internal reference sources used by the Turing Generator MVP.",
+  "version": "0.1.0",
+  "source_usage_principle": "External repositories may be stored locally as complete reference sources, but only curated context extracts shall be loaded into LLM prompts by default.",
+  "sources": [
+    {
+      "source_id": "SRC_SYSML_V2_RELEASE",
+      "name": "SysML v2 Release Repository",
+      "type": "external_repository",
+      "authority": "primary_specification_reference",
+      "local_path": "external/sysml-v2-release/",
+      "intended_use": [
+        "sysml_v2_syntax_reference",
+        "sysml_v2_language_concept_reference",
+        "sysml_v2_model_library_reference",
+        "sysml_v2_example_reference",
+        "validation_context"
+      ],
+      "not_intended_use": [
+        "direct_full_prompt_context",
+        "unfiltered_model_generation_input",
+        "legacy_data_to_be_transformed"
+      ],
+      "usage_rule": "Use this source as the primary reference for SysML v2 syntax, language concepts and model libraries. Do not load the complete repository into prompts. Use curated extracts in context/sysml/ instead.",
+      "curated_context_files": [
+        "context/sysml/sysml_v2_spec_reference.json",
+        "context/sysml/sysml_v2_target_notation.json"
+      ],
+      "prompt_loading_policy": "curated_extracts_only_by_default",
+      "review_required": true
+    },
+    {
+      "source_id": "SRC_APOLLO11_SYSML_V2",
+      "name": "Apollo 11 SysML v2 Example Model",
+      "type": "external_repository",
+      "authority": "non_normative_example_reference",
+      "local_path": "external/apollo11-sysml-v2/",
+      "intended_use": [
+        "large_model_structure_reference",
+        "package_organization_reference",
+        "modeling_style_reference",
+        "decomposition_pattern_reference",
+        "example_model_navigation"
+      ],
+      "not_intended_use": [
+        "normative_sysml_syntax_authority",
+        "direct_full_prompt_context",
+        "unfiltered_model_generation_input",
+        "legacy_data_to_be_transformed"
+      ],
+      "usage_rule": "Use this source as a non-normative reference for structure, organization and modeling style in a larger SysML v2 model. Do not treat it as the final authority for SysML v2 syntax.",
+      "curated_context_files": [
+        "context/examples/apollo11_structure_reference.md"
+      ],
+      "prompt_loading_policy": "curated_extracts_only_by_default",
+      "review_required": true
+    },
+    {
+      "source_id": "SRC_TURING_ARCHITECTURE_MODEL",
+      "name": "Turing Generator Architecture Model",
+      "type": "internal_model_artifact",
+      "authority": "project_architecture_reference",
+      "local_path": "model/architecture/",
+      "intended_use": [
+        "system_requirements_reference",
+        "functional_architecture_reference",
+        "logical_architecture_reference",
+        "physical_mvp_architecture_reference",
+        "traceability_reference"
+      ],
+      "not_intended_use": [
+        "generated_output_location",
+        "legacy_data_to_be_transformed"
+      ],
+      "usage_rule": "Use the files in model/architecture/ as the architectural specification of the Turing Generator itself. These files may be read for context but shall not be modified unless explicitly requested.",
+      "curated_context_files": [
+        "model/architecture/02_System_01_Requirements.sysml",
+        "model/architecture/02_System_02_Functional.sysml",
+        "model/architecture/02_System_03_Logical.sysml",
+        "model/architecture/02_System_04_Physical.sysml"
+      ],
+      "prompt_loading_policy": "load_relevant_files_only",
+      "review_required": true
+    },
+    {
+      "source_id": "SRC_APPROVED_INPUT",
+      "name": "Approved Input Artifacts",
+      "type": "internal_approved_data",
+      "authority": "human_reviewed_input",
+      "local_path": "data/approved_input/",
+      "intended_use": [
+        "candidate_generation_input",
+        "model_data_derivation_input",
+        "traceable_downstream_processing"
+      ],
+      "not_intended_use": [
+        "raw_unreviewed_input",
+        "direct_sysml_generation_without_review"
+      ],
+      "usage_rule": "Only content that has passed the ingestion review gate may be stored here. Downstream candidate generation shall use approved input rather than raw legacy data.",
+      "curated_context_files": [],
+      "prompt_loading_policy": "task_specific",
+      "review_required": false
+    },
+    {
+      "source_id": "SRC_GENERATED_OUTPUT",
+      "name": "Generated SysML v2 Output",
+      "type": "internal_generated_artifact",
+      "authority": "generated_model_output",
+      "local_path": "data/output/",
+      "intended_use": [
+        "generated_sysml_v2_artifacts",
+        "validation_input",
+        "human_review_after_generation"
+      ],
+      "not_intended_use": [
+        "architecture_model_of_turing_generator",
+        "manual_architecture_specification"
+      ],
+      "usage_rule": "Generated SysML v2 model artifacts shall be written to data/output/. This folder contains output produced by the Turing Generator, not the architecture model of the generator itself.",
+      "curated_context_files": [],
+      "prompt_loading_policy": "output_only",
+      "review_required": true
+    }
+  ],
+  "global_rules": [
+    {
+      "rule_id": "SRC_RULE_001",
+      "rule": "Do not treat external example repositories as legacy input unless a task explicitly defines them as input."
+    },
+    {
+      "rule_id": "SRC_RULE_002",
+      "rule": "Do not load complete external repositories into LLM prompts by default."
+    },
+    {
+      "rule_id": "SRC_RULE_003",
+      "rule": "Use curated context files for routine prompting."
+    },
+    {
+      "rule_id": "SRC_RULE_004",
+      "rule": "Use the SysML v2 release repository as primary syntax and language reference."
+    },
+    {
+      "rule_id": "SRC_RULE_005",
+      "rule": "Use the Apollo 11 SysML v2 repository only as a non-normative structure and style reference."
+    },
+    {
+      "rule_id": "SRC_RULE_006",
+      "rule": "Generated SysML v2 output belongs in data/output/."
+    },
+    {
+      "rule_id": "SRC_RULE_007",
+      "rule": "The architecture model of the Turing Generator belongs in model/architecture/ and shall not be overwritten by generated output."
+    },
+    {
+      "rule_id": "SRC_RULE_008",
+      "rule": "Raw legacy data must pass an ingestion review gate before it can become approved input."
+    }
+  ]
+}

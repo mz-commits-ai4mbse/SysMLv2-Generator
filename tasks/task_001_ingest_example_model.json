@@ -1,0 +1,121 @@
+{
+  "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
+  "name": "Ingest Example Legacy Model Description",
+  "version": "0.1.0",
+  "status": "draft",
+  "task_type": "create_ingestion_artifact",
+  "workflow_stage": "ingestion",
+  "recipe": {
+    "recipe_id": "REC_INGESTION_001",
+    "recipe_path": "recipes/ingestion/create_ingestion_artifact.recipe.md"
+  },
+  "purpose": "Execute the first MVP ingestion workflow by transforming a raw example legacy model description into a human-readable ingestion report.",
+  "task_goal": "Register a raw input artifact, create a structured ingestion report, prepare placeholder feedback and traceability artifacts, and stop before approved input promotion.",
+  "input_artifacts": [
+    {
+      "artifact_id": "RAW_EXAMPLE_MODEL_001",
+      "path": "legacy/raw/example_legacy_model_description.md",
+      "artifact_type": "markdown",
+      "description": "Simple raw legacy engineering description used as the first MVP ingestion example.",
+      "expected_relevance": "Used to test extraction of source information, interpreted engineering information, candidate downstream elements, assumptions, gaps and review questions.",
+      "source_state": "raw_unreviewed",
+      "usage_rule": "This artifact may only be used to generate an ingestion report. It shall not be used directly for approved input, approved model data or SysML v2 generation."
+    }
+  ],
+  "required_context_files": [
+    "context/global/project_principles.md",
+    "context/sources/source_manifest.json",
+    "context/sysml/sysml_v2_spec_reference.json",
+    "context/sysml/sysml_v2_target_notation.json",
+    "context/mapping/sysml_model_derivation_rules.json"
+  ],
+  "optional_context_files": [
+    "context/examples/apollo11_structure_reference.md"
+  ],
+  "agent_personalities": [
+    {
+      "agent_id": "AGENT_SYSTEMS_ENGINEER",
+      "path": "agents/systems_engineer.md",
+      "role_in_task": "Create the initial ingestion report."
+    },
+    {
+      "agent_id": "AGENT_COMPLETENESS_CHECKER",
+      "path": "agents/completeness_checker.md",
+      "role_in_task": "Optional later review of completeness, traceability and review readiness."
+    }
+  ],
+  "expected_output_artifacts": [
+    {
+      "artifact_id": "INGESTION_REPORT_TASK_001",
+      "path": "data/ingestion_reports/task_001_ingestion_report.md",
+      "artifact_type": "markdown",
+      "description": "Human-readable ingestion report created from the raw example input.",
+      "expected_state": "ready_for_review"
+    },
+    {
+      "artifact_id": "FEEDBACK_PLACEHOLDER_TASK_001",
+      "path": "data/feedback/task_001_ingestion_feedback.json",
+      "artifact_type": "json",
+      "description": "Structured placeholder for future human feedback on the ingestion report.",
+      "expected_state": "empty_or_pending_review"
+    },
+    {
+      "artifact_id": "TRACEABILITY_PLACEHOLDER_TASK_001",
+      "path": "data/traceability/task_001_ingestion_traceability.json",
+      "artifact_type": "json",
+      "description": "Traceability placeholder linking the task, recipe, input artifact, context files and generated ingestion report.",
+      "expected_state": "draft"
+    }
+  ],
+  "execution_rules": [
+    "Read this task specification.",
+    "Load the selected recipe.",
+    "Load the required context files.",
+    "Load the selected systems engineer agent personality.",
+    "Read the raw input artifact.",
+    "Create a human-readable ingestion report.",
+    "Separate extracted source information from interpreted engineering information.",
+    "List assumptions separately.",
+    "List missing information separately.",
+    "List ambiguities and risks separately.",
+    "Create review questions for the human reviewer.",
+    "Create placeholder feedback and traceability artifacts if supported by the MVP implementation.",
+    "Stop before approved input promotion."
+  ],
+  "forbidden_actions": [
+    "Do not approve the raw input.",
+    "Do not promote content into data/approved_input/.",
+    "Do not create approved model data.",
+    "Do not generate SysML v2 output.",
+    "Do not write to data/output/.",
+    "Do not modify files in model/architecture/.",
+    "Do not treat Apollo 11 as raw legacy input.",
+    "Do not load complete external repositories into the prompt by default."
+  ],
+  "review_gate": {
+    "gate_id": "RG_001_INGESTION_REVIEW",
+    "name": "Ingestion Review Gate",
+    "required_before": "approved_input_promotion",
+    "allowed_human_decisions": [
+      "approve",
+      "approve_with_modifications",
+      "reject"
+    ],
+    "rule": "The generated ingestion report must be reviewed by a human before any content can be promoted into approved input."
+  },
+  "initial_mvp_success_criteria": [
+    "The raw input artifact is registered.",
+    "The ingestion report is generated in data/ingestion_reports/.",
+    "The ingestion report has status ready_for_review.",
+    "The report separates source information, interpretation, assumptions, gaps and review questions.",
+    "No approved input is created automatically.",
+    "No SysML v2 output is generated.",
+    "Traceability to task, recipe, input artifact and context files is prepared."
+  ],
+  "notes": [
+    "This is the first executable MVP task.",
+    "The input file may be replaced later with a real legacy engineering artifact.",
+    "For the first run, the system may create placeholder feedback and traceability files.",
+    "The task intentionally stops before human approval."
+  ]
+}

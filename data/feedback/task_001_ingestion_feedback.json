@@ -1,0 +1,16 @@
+{
+  "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
+  "review_artifact": "data/ingestion_reports/task_001_ingestion_report.md",
+  "review_gate": "RG_001_INGESTION_REVIEW",
+  "reviewer": "human_reviewer",
+  "status": "pending_review",
+  "decision": null,
+  "allowed_decisions": [
+    "approve",
+    "approve_with_modifications",
+    "reject"
+  ],
+  "feedback_items": [],
+  "approved_for_promotion": false,
+  "notes": "Placeholder created by MVP ingestion workflow. Human review still required."
+}

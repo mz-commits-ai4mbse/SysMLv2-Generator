@@ -1,0 +1,25 @@
+{
+  "decision_report_id": "TASK_001_INGEST_EXAMPLE_MODEL_INGESTION_DECISION",
+  "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
+  "task_file": "tasks/task_001_ingest_example_model.json",
+  "recipe_id": "REC_INGESTION_001",
+  "review_gate": {
+    "gate_id": "RG_001_INGESTION_REVIEW",
+    "name": "Ingestion Review Gate",
+    "status": "decision_recorded"
+  },
+  "decision": "approve_with_modifications",
+  "approved_for_promotion": true,
+  "promotion_executed": false,
+  "reviewer": "human_systems_engineer",
+  "review_comment": "Reviewed in browser. Decision recorded. Promotion to approved input is not executed in this MVP step.",
+  "report_changed_by_human": true,
+  "artifacts": {
+    "original_ingestion_report": "data/ingestion_reports/task_001_ingestion_report.md",
+    "reviewed_ingestion_report": "data/ingestion_reports/task_001_ingestion_report_reviewed.md",
+    "decision_report": "data/decisions/task_001_ingestion_decision_report.json"
+  },
+  "allowed_next_step": "approved_input_promotion",
+  "note": "This decision report records the human review decision. The MVP still stops before approved input promotion.",
+  "created_at_utc": "2026-07-07T13:16:31.273784+00:00"
+}
