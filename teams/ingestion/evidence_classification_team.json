@@ -1,0 +1,40 @@
+{
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "team_name": "Evidence Classification Team",
+  "task_name": "Classify engineering evidence",
+  "role_id": "ROLE_EVIDENCE_CLASSIFIER",
+  "role_file": "agents/roles/evidence_classifier.md",
+  "description": "This team classifies interpreted engineering information into evidence types.",
+  "default_execution_mode": "multi_persona",
+  "members": [
+    {
+      "member_id": "EVIDENCE_CLASSIFIER_001",
+      "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+      "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+      "persona_file": "agents/personas/evidence_classification/strict_classifier.md",
+      "perspective": "strict_conservative"
+    },
+    {
+      "member_id": "EVIDENCE_CLASSIFIER_002",
+      "agent_id": "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER",
+      "persona_id": "PERSONA_EVIDENCE_SEMANTIC_CLASSIFIER",
+      "persona_file": "agents/personas/evidence_classification/semantic_classifier.md",
+      "perspective": "semantic_engineering_aware"
+    },
+    {
+      "member_id": "EVIDENCE_CLASSIFIER_003",
+      "agent_id": "AGENT_EVIDENCE_AUDIT_CLASSIFIER",
+      "persona_id": "PERSONA_EVIDENCE_AUDIT_CLASSIFIER",
+      "persona_file": "agents/personas/evidence_classification/audit_classifier.md",
+      "perspective": "audit_false_positive_focused"
+    }
+  ],
+  "consensus_required": true,
+  "consensus_focus": [
+    "detected_evidence",
+    "rejected_evidence_candidates",
+    "evidence_gaps",
+    "confidence_variance",
+    "minority_evidence_interpretations"
+  ]
+}

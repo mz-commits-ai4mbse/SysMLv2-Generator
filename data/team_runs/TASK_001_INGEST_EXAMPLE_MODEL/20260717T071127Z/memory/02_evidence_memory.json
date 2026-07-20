@@ -1,0 +1,549 @@
+{
+  "memory_schema_version": "1.0",
+  "memory_type": "evidence_memory",
+  "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
+  "run_id": "20260717T071127Z",
+  "source_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/legacy/raw/example_legacy_model_description.md",
+  "producing_team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "created_at": "2026-07-17T07:51:50.303478+00:00",
+  "review_status": "unreviewed",
+  "approved_for_modeling": false,
+  "source_agent_artifacts": [
+    {
+      "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+      "task_name": "Classify engineering evidence",
+      "run_index": 1,
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_001_INGEST_EXAMPLE_MODEL/20260717T071127Z/agent_outputs/02_evidence_classification/team_evidence_classification/agent_evidence_strict_classifier/agent_evidence_strict_classifier_run_01.json",
+      "status": "completed"
+    }
+  ],
+  "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260717T071154Z",
+  "payload": {
+    "detected_evidence": [
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_001",
+        "evidence_type": "EV_STAKEHOLDER_NEED",
+        "source_info_ids": [
+          "SRC_INFO_005"
+        ],
+        "source_excerpts": [
+          "The system allows a remote user to view a live microscope image stream through a software application."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_001",
+            "interpretation": "This states a user-facing need for remote viewing of a live microscope stream.",
+            "confidence": "high",
+            "rationale_summary": "Explicit user need is stated directly."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_002",
+        "evidence_type": "EV_USER_ROLE",
+        "source_info_ids": [
+          "SRC_INFO_006"
+        ],
+        "source_excerpts": [
+          "A microscope operator starts a streaming session from the microscope workstation."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_002",
+            "interpretation": "This identifies a user role that performs an action in the system context.",
+            "confidence": "high",
+            "rationale_summary": "Microscope operator is explicitly named as a role."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_003",
+        "evidence_type": "EV_USER_ROLE",
+        "source_info_ids": [
+          "SRC_INFO_007"
+        ],
+        "source_excerpts": [
+          "A remote expert can join the session through a client application."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_003",
+            "interpretation": "This identifies a second user role interacting with the system.",
+            "confidence": "high",
+            "rationale_summary": "Remote expert is explicitly named as a role."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_004",
+        "evidence_type": "EV_FUNCTION_OR_CAPABILITY",
+        "source_info_ids": [
+          "SRC_INFO_006"
+        ],
+        "source_excerpts": [
+          "A microscope operator starts a streaming session from the microscope workstation."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_004",
+            "interpretation": "This states the system supports starting a streaming session.",
+            "confidence": "high",
+            "rationale_summary": "A concrete system capability is explicitly described."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_005",
+        "evidence_type": "EV_FUNCTION_OR_CAPABILITY",
+        "source_info_ids": [
+          "SRC_INFO_007"
+        ],
+        "source_excerpts": [
+          "A remote expert can join the session through a client application."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_005",
+            "interpretation": "This states the system supports joining a streaming session.",
+            "confidence": "high",
+            "rationale_summary": "Joining the session is explicitly supported."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_006",
+        "evidence_type": "EV_FUNCTION_OR_CAPABILITY",
+        "source_info_ids": [
+          "SRC_INFO_008"
+        ],
+        "source_excerpts": [
+          "The remote expert can view the live image stream and may request control of the microscope."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_006",
+            "interpretation": "This states the system supports viewing the live stream and requesting remote control.",
+            "confidence": "high",
+            "rationale_summary": "Two capabilities are directly stated: view stream and request control."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_007",
+        "evidence_type": "EV_FUNCTION_OR_CAPABILITY",
+        "source_info_ids": [
+          "SRC_INFO_009"
+        ],
+        "source_excerpts": [
+          "The microscope operator can accept or reject the control request."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_007",
+            "interpretation": "This states the system supports operator handling of control requests.",
+            "confidence": "high",
+            "rationale_summary": "Accept/reject handling is explicitly described."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_008",
+        "evidence_type": "EV_FUNCTION_OR_CAPABILITY",
+        "source_info_ids": [
+          "SRC_INFO_010"
+        ],
+        "source_excerpts": [
+          "If control is granted, the remote expert can adjust the microscope view remotely."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_008",
+            "interpretation": "This states the system supports remote adjustment of microscope view when control is granted.",
+            "confidence": "high",
+            "rationale_summary": "Remote adjustment capability is explicitly conditional and clear."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_009",
+        "evidence_type": "EV_CONSTRAINT",
+        "source_info_ids": [
+          "SRC_INFO_011"
+        ],
+        "source_excerpts": [
+          "The system shall prevent two users from controlling the microscope at the same time."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_009",
+            "interpretation": "This is an explicit concurrency constraint on control ownership.",
+            "confidence": "high",
+            "rationale_summary": "A clear prohibition on simultaneous control is stated."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_010",
+        "evidence_type": "EV_REQUIREMENT_STATEMENT",
+        "source_info_ids": [
+          "SRC_INFO_011"
+        ],
+        "source_excerpts": [
+          "The system shall prevent two users from controlling the microscope at the same time."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_010",
+            "interpretation": "This is stated in 'system shall' form and expresses a requirement.",
+            "confidence": "high",
+            "rationale_summary": "Requirement phrasing is explicit."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_011",
+        "evidence_type": "EV_CONSTRAINT",
+        "source_info_ids": [
+          "SRC_INFO_012"
+        ],
+        "source_excerpts": [
+          "The system shall show who currently has control."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_011",
+            "interpretation": "This constrains the system to make current control ownership visible.",
+            "confidence": "high",
+            "rationale_summary": "Visibility of current control owner is explicitly required."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_012",
+        "evidence_type": "EV_REQUIREMENT_STATEMENT",
+        "source_info_ids": [
+          "SRC_INFO_012"
+        ],
+        "source_excerpts": [
+          "The system shall show who currently has control."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_012",
+            "interpretation": "This is an explicit requirement statement.",
+            "confidence": "high",
+            "rationale_summary": "Requirement language is directly used."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_013",
+        "evidence_type": "EV_DATA_OR_ARTIFACT",
+        "source_info_ids": [
+          "SRC_INFO_013"
+        ],
+        "source_excerpts": [
+          "The system shall record basic session information for later traceability."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_013",
+            "interpretation": "This states that session information is recorded as a system artifact/data item.",
+            "confidence": "high",
+            "rationale_summary": "Recording of session information is explicitly stated."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_014",
+        "evidence_type": "EV_REQUIREMENT_STATEMENT",
+        "source_info_ids": [
+          "SRC_INFO_013"
+        ],
+        "source_excerpts": [
+          "The system shall record basic session information for later traceability."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_014",
+            "interpretation": "This is an explicit requirement statement about recording session information.",
+            "confidence": "high",
+            "rationale_summary": "Requirement wording is direct and unambiguous."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_015",
+        "evidence_type": "EV_USER_ROLE",
+        "source_info_ids": [
+          "SRC_INFO_014"
+        ],
+        "source_excerpts": [
+          "The description mentions user roles: microscope operator and remote expert."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_015",
+            "interpretation": "This explicitly lists the user roles in the system description.",
+            "confidence": "high",
+            "rationale_summary": "User roles are explicitly enumerated."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_016",
+        "evidence_type": "EV_FUNCTION_OR_CAPABILITY",
+        "source_info_ids": [
+          "SRC_INFO_015"
+        ],
+        "source_excerpts": [
+          "The description lists capabilities: start streaming session, join streaming session, view live microscope image, request remote control, accept or reject remote control request, adjust microscope view remotely, prevent simultaneous control, show current control owner, record basic session information."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_016",
+            "interpretation": "This explicitly enumerates system capabilities.",
+            "confidence": "high",
+            "rationale_summary": "Capability list is directly provided."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_017",
+        "evidence_type": "EV_LOGICAL_ELEMENT",
+        "source_info_ids": [
+          "SRC_INFO_016"
+        ],
+        "source_excerpts": [
+          "The description mentions system elements: microscope workstation, software application, client application, live image stream, control request, session information."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_017",
+            "interpretation": "This explicitly identifies named system-relevant elements mentioned in the description.",
+            "confidence": "high",
+            "rationale_summary": "System elements are explicitly listed."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_018",
+        "evidence_type": "EV_CONSTRAINT",
+        "source_info_ids": [
+          "SRC_INFO_017"
+        ],
+        "source_excerpts": [
+          "The description mentions constraints: only one user may control the microscope at a time, control transfer requires acceptance by the microscope operator, and the current control owner must be visible."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_018",
+            "interpretation": "This explicitly lists system constraints.",
+            "confidence": "high",
+            "rationale_summary": "Constraint list is direct and positive."
+          }
+        ],
+        "confidence_values": [
+          "high"
+        ],
+        "requires_review": false
+      },
+      {
+        "memory_evidence_id": "MEM_EVIDENCE_019",
+        "evidence_type": "EV_STAKEHOLDER_NEED",
+        "source_info_ids": [
+          "SRC_INFO_018"
+        ],
+        "source_excerpts": [
+          "The description focuses on user interaction, remote viewing and control transfer."
+        ],
+        "agent_assessments": [
+          {
+            "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+            "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+            "original_evidence_id": "EVDET_019",
+            "interpretation": "This indicates the description emphasizes user interaction and remote viewing/control needs.",
+            "confidence": "medium",
+            "rationale_summary": "This is a stated focus area, supporting stakeholder-oriented needs at a high level."
+          }
+        ],
+        "confidence_values": [
+          "medium"
+        ],
+        "requires_review": false
+      }
+    ],
+    "rejected_evidence_candidates": [
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "source_info_id": "SRC_INFO_003",
+        "rejected_evidence_type": "EV_REQUIREMENT_STATEMENT",
+        "reason": "The text says the file is intentionally incomplete; this is meta-information about the source, not a system requirement."
+      },
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "source_info_id": "SRC_INFO_019",
+        "rejected_evidence_type": "EV_INTERFACE",
+        "reason": "The source explicitly says interfaces are not described in detail; no positive interface evidence is provided."
+      }
+    ],
+    "evidence_gaps": [
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "content": "No explicit validation criteria are provided."
+      },
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "content": "No explicit regulatory or standards references are provided."
+      },
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "content": "No explicit deployment architecture or system boundary definition is provided."
+      },
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "content": "No explicit performance requirements are provided."
+      },
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "content": "No explicit interface definitions are provided."
+      },
+      {
+        "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+        "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+        "content": "The exact content and storage location of recorded session information are not specified."
+      }
+    ],
+    "handover_summary": {
+      "detected_evidence_count": 19,
+      "rejected_candidate_count": 2,
+      "evidence_gap_count": 6,
+      "participating_agents": [
+        {
+          "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+          "persona_id": "PERSONA_EVIDENCE_STRICT_CLASSIFIER"
+        }
+      ],
+      "consensus_summary": {
+        "total_groups": 19,
+        "full_agreement": 19,
+        "majority_agreement": 0,
+        "majority_with_disagreement": 0,
+        "minority_interpretation": 0,
+        "conflict": 0,
+        "review_required": 0
+      }
+    }
+  }
+}

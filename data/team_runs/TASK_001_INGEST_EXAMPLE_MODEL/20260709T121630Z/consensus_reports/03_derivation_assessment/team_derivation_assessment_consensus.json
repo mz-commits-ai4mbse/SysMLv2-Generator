@@ -1,0 +1,208 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_DERIVATION_ASSESSMENT_20260709T121712Z",
+  "team_id": "TEAM_DERIVATION_ASSESSMENT",
+  "task_name": "Assess downstream model derivation support",
+  "created_at": "2026-07-09T12:17:12.484805+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+  ],
+  "summary": {
+    "total_groups": 11,
+    "full_agreement": 11,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "derivation::stakeholder needs",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder_needs: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::stakeholder requirements",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder_requirements: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::system requirements",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "system_requirements: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::functional model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "functional_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::logical architecture",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "logical_architecture: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::physical architecture",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "physical_architecture: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::interface model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "interface_model: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::data or artifact model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "data_or_artifact_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::constraint model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "constraint_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::validation or verification model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "validation_or_verification_model: not_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::traceability model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "traceability_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    }
+  ]
+}

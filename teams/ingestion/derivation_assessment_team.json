@@ -1,0 +1,40 @@
+{
+  "team_id": "TEAM_DERIVATION_ASSESSMENT",
+  "team_name": "Derivation Assessment Team",
+  "task_name": "Assess downstream model derivation support",
+  "role_id": "ROLE_DERIVATION_ASSESSOR",
+  "role_file": "agents/roles/derivation_assessor.md",
+  "description": "This team assesses which downstream SysML v2 model artifact types are supported by available evidence.",
+  "default_execution_mode": "multi_persona",
+  "members": [
+    {
+      "member_id": "DERIVATION_ASSESSOR_001",
+      "agent_id": "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR",
+      "persona_id": "PERSONA_DERIVATION_RULES_FOCUSED_ASSESSOR",
+      "persona_file": "agents/personas/derivation_assessment/rules_focused_assessor.md",
+      "perspective": "rules_focused"
+    },
+    {
+      "member_id": "DERIVATION_ASSESSOR_002",
+      "agent_id": "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+      "persona_id": "PERSONA_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+      "persona_file": "agents/personas/derivation_assessment/architecture_focused_assessor.md",
+      "perspective": "architecture_focused"
+    },
+    {
+      "member_id": "DERIVATION_ASSESSOR_003",
+      "agent_id": "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+      "persona_id": "PERSONA_DERIVATION_CONSERVATIVE_REVIEWER",
+      "persona_file": "agents/personas/derivation_assessment/conservative_reviewer.md",
+      "perspective": "conservative_review"
+    }
+  ],
+  "consensus_required": true,
+  "consensus_focus": [
+    "model_artifact_assessments",
+    "support_level_variance",
+    "missing_information",
+    "blocked_generation_tasks",
+    "recommended_actions"
+  ]
+}

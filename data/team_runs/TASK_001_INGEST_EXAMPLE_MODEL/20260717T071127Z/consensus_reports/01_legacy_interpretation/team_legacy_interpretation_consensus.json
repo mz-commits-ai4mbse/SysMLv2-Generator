@@ -1,0 +1,404 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_LEGACY_INTERPRETATION_20260717T071142Z",
+  "team_id": "TEAM_LEGACY_INTERPRETATION",
+  "task_name": "Interpret raw legacy data",
+  "created_at": "2026-07-17T07:11:42.949986+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_LEGACY_LITERAL_INTERPRETER"
+  ],
+  "agent_labels": {
+    "AGENT_LEGACY_LITERAL_INTERPRETER": "PERSONA_LEGACY_LITERAL_INTERPRETER"
+  },
+  "summary": {
+    "total_groups": 19,
+    "full_agreement": 19,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "source_information::the file is described as a simple raw legacy engineering description used for the first turing generator mvp ingestion task",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the file is described as a simple raw legacy engineering description used for the first turing generator mvp ingestion task": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The file is described as a simple raw legacy engineering description used for the first Turing Generator MVP ingestion task.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The file is described as a simple raw legacy engineering description used for the first Turing Generator MVP ingestion task."
+      }
+    },
+    {
+      "group_key": "source_information::it represents an informal engineering description of a small system",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "it represents an informal engineering description of a small system": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "It represents an informal engineering description of a small system.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "It represents an informal engineering description of a small system."
+      }
+    },
+    {
+      "group_key": "source_information::the file is intentionally incomplete but missing information is not explicitly listed in the input",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the file is intentionally incomplete but missing information is not explicitly listed in the input": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The file is intentionally incomplete, but missing information is not explicitly listed in the input.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The file is intentionally incomplete, but missing information is not explicitly listed in the input."
+      }
+    },
+    {
+      "group_key": "source_information::system name remote microscope streaming system",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "system name remote microscope streaming system": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "System name: Remote Microscope Streaming System.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "System name: Remote Microscope Streaming System."
+      }
+    },
+    {
+      "group_key": "source_information::the system allows a remote user to view a live microscope image stream through a software application",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the system allows a remote user to view a live microscope image stream through a software application": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The system allows a remote user to view a live microscope image stream through a software application.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The system allows a remote user to view a live microscope image stream through a software application."
+      }
+    },
+    {
+      "group_key": "source_information::a microscope operator starts a streaming session from the microscope workstation",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "a microscope operator starts a streaming session from the microscope workstation": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "A microscope operator starts a streaming session from the microscope workstation.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "A microscope operator starts a streaming session from the microscope workstation."
+      }
+    },
+    {
+      "group_key": "source_information::a remote expert can join the session through a client application",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "a remote expert can join the session through a client application": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "A remote expert can join the session through a client application.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "A remote expert can join the session through a client application."
+      }
+    },
+    {
+      "group_key": "source_information::the remote expert can view the live image stream and may request control of the microscope",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the remote expert can view the live image stream and may request control of the microscope": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The remote expert can view the live image stream and may request control of the microscope.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The remote expert can view the live image stream and may request control of the microscope."
+      }
+    },
+    {
+      "group_key": "source_information::the microscope operator can accept or reject the control request",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the microscope operator can accept or reject the control request": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The microscope operator can accept or reject the control request.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The microscope operator can accept or reject the control request."
+      }
+    },
+    {
+      "group_key": "source_information::if control is granted the remote expert can adjust the microscope view remotely",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "if control is granted the remote expert can adjust the microscope view remotely": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "If control is granted, the remote expert can adjust the microscope view remotely.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "If control is granted, the remote expert can adjust the microscope view remotely."
+      }
+    },
+    {
+      "group_key": "source_information::the system shall prevent two users from controlling the microscope at the same time",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the system shall prevent two users from controlling the microscope at the same time": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The system shall prevent two users from controlling the microscope at the same time.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The system shall prevent two users from controlling the microscope at the same time."
+      }
+    },
+    {
+      "group_key": "source_information::the system shall show who currently has control",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the system shall show who currently has control": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The system shall show who currently has control.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The system shall show who currently has control."
+      }
+    },
+    {
+      "group_key": "source_information::the system shall record basic session information for later traceability",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the system shall record basic session information for later traceability": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The system shall record basic session information for later traceability.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The system shall record basic session information for later traceability."
+      }
+    },
+    {
+      "group_key": "source_information::the description mentions user roles microscope operator and remote expert",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the description mentions user roles microscope operator and remote expert": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The description mentions user roles: microscope operator and remote expert.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The description mentions user roles: microscope operator and remote expert."
+      }
+    },
+    {
+      "group_key": "source_information::the description lists capabilities start streaming session join streaming session view live microscope image request remote control accept or reject remote control request adjust microscope view remotely prevent simultaneous control show current control owner record basic session information",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the description lists capabilities start streaming session join streaming session view live microscope image request remote control accept or reject remote control request adjust microscope view remotely prevent simultaneous control show current control owner record basic session information": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The description lists capabilities: start streaming session, join streaming session, view live microscope image, request remote control, accept or reject remote control request, adjust microscope view remotely, prevent simultaneous control, show current control owner, record basic session information.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The description lists capabilities: start streaming session, join streaming session, view live microscope image, request remote control, accept or reject remote control request, adjust microscope view remotely, prevent simultaneous control, show current control owner, record basic session information."
+      }
+    },
+    {
+      "group_key": "source_information::the description mentions system elements microscope workstation software application client application live image stream control request session information",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the description mentions system elements microscope workstation software application client application live image stream control request session information": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The description mentions system elements: microscope workstation, software application, client application, live image stream, control request, session information.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The description mentions system elements: microscope workstation, software application, client application, live image stream, control request, session information."
+      }
+    },
+    {
+      "group_key": "source_information::the description mentions constraints only one user may control the microscope at a time control transfer requires acceptance by the microscope operator and the current control owner must be visible",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the description mentions constraints only one user may control the microscope at a time control transfer requires acceptance by the microscope operator and the current control owner must be visible": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The description mentions constraints: only one user may control the microscope at a time, control transfer requires acceptance by the microscope operator, and the current control owner must be visible.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The description mentions constraints: only one user may control the microscope at a time, control transfer requires acceptance by the microscope operator, and the current control owner must be visible."
+      }
+    },
+    {
+      "group_key": "source_information::the description focuses on user interaction remote viewing and control transfer",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the description focuses on user interaction remote viewing and control transfer": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The description focuses on user interaction, remote viewing and control transfer.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The description focuses on user interaction, remote viewing and control transfer."
+      }
+    },
+    {
+      "group_key": "source_information::the description mentions software and workstation elements but does not describe deployment interfaces performance validation or regulatory context in detail",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the description mentions software and workstation elements but does not describe deployment interfaces performance validation or regulatory context in detail": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The description mentions software and workstation elements but does not describe deployment, interfaces, performance, validation, or regulatory context in detail.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_LEGACY_LITERAL_INTERPRETER": "The description mentions software and workstation elements but does not describe deployment, interfaces, performance, validation, or regulatory context in detail."
+      }
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_COMPLETENESS_REVIEW_20260709T115931Z",
+  "team_id": "TEAM_COMPLETENESS_REVIEW",
+  "task_name": "Check completeness, gaps, risks and review readiness",
+  "created_at": "2026-07-09T11:59:31.417902+00:00",
+  "total_agents": 3,
+  "agent_ids": [
+    "AGENT_COMPLETENESS_GAP_FINDER",
+    "AGENT_COMPLETENESS_RISK_REVIEWER",
+    "AGENT_COMPLETENESS_TRACEABILITY_CHECKER"
+  ],
+  "summary": {
+    "total_groups": 3,
+    "full_agreement": 0,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 3,
+    "conflict": 0,
+    "review_required": 3
+  },
+  "groups": [
+    {
+      "group_key": "unstructured_output::agent completeness gap finder",
+      "item_type": "unstructured_output",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team completeness review team name completeness review team task name check completeness gaps risks and revie": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_COMPLETENESS_REVIEW\",\n  \"team_name\": \"Completeness Review Team\",\n  \"task_name\": \"Check completeness, gaps, risks and revie",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    },
+    {
+      "group_key": "unstructured_output::agent completeness risk reviewer",
+      "item_type": "unstructured_output",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_RISK_REVIEWER"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team completeness review team name completeness review team task name check completeness gaps risks and revie": [
+          "AGENT_COMPLETENESS_RISK_REVIEWER"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_COMPLETENESS_REVIEW\",\n  \"team_name\": \"Completeness Review Team\",\n  \"task_name\": \"Check completeness, gaps, risks and revie",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    },
+    {
+      "group_key": "unstructured_output::agent completeness traceability checker",
+      "item_type": "unstructured_output",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_TRACEABILITY_CHECKER"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team completeness review team name completeness review team task name check completeness gaps risks and revie": [
+          "AGENT_COMPLETENESS_TRACEABILITY_CHECKER"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_COMPLETENESS_REVIEW\",\n  \"team_name\": \"Completeness Review Team\",\n  \"task_name\": \"Check completeness, gaps, risks and revie",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
+  "recipe_id": "REC_INGESTION_001",
+  "raw_input_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/legacy/raw/example_legacy_model_description.md",
+  "report_output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/ingestion_reports/task_001_ingestion_report_agentic.md",
+  "provider": "openai",
+  "model": "gpt-5.5",
+  "runs_per_agent": 1,
+  "created_at": "2026-07-08T10:34:12.941653+00:00",
+  "agent_results": [
+    {
+      "agent_id": "AGENT_LEGACY_DATA_INTERPRETER",
+      "task_name": "Interpret raw legacy data",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "response_id": "resp_0c94559adbdcd5cb006a4e26751fac81a182aee570aa9752bd",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/agent_runs/TASK_001_INGEST_EXAMPLE_MODEL/20260708T102907Z/agent_legacy_data_interpreter/agent_legacy_data_interpreter_run_01.json",
+      "usage": {
+        "input_tokens": 5227,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 4374,
+        "output_tokens_details": {
+          "reasoning_tokens": 416
+        },
+        "total_tokens": 9601
+      }
+    },
+    {
+      "agent_id": "AGENT_EVIDENCE_CLASSIFIER",
+      "task_name": "Classify engineering evidence",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "response_id": "resp_058bb957e2e4f0d7006a4e26a45fb881a09daeb4ab86de38f8",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/agent_runs/TASK_001_INGEST_EXAMPLE_MODEL/20260708T102907Z/agent_evidence_classifier/agent_evidence_classifier_run_01.json",
+      "usage": {
+        "input_tokens": 5199,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 7691,
+        "output_tokens_details": {
+          "reasoning_tokens": 1999
+        },
+        "total_tokens": 12890
+      }
+    },
+    {
+      "agent_id": "AGENT_DERIVATION_ASSESSOR",
+      "task_name": "Assess downstream model derivation support",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "response_id": "resp_08c688d43ac037d8006a4e26f94ec881a29f1b3ab799caf93c",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/agent_runs/TASK_001_INGEST_EXAMPLE_MODEL/20260708T102907Z/agent_derivation_assessor/agent_derivation_assessor_run_01.json",
+      "usage": {
+        "input_tokens": 21732,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 3251,
+        "output_tokens_details": {
+          "reasoning_tokens": 1552
+        },
+        "total_tokens": 24983
+      }
+    },
+    {
+      "agent_id": "AGENT_COMPLETENESS_CHECKER",
+      "task_name": "Check completeness, gaps, risks and review readiness",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "response_id": "resp_024f8d191f104290006a4e272e1a588191905e7138cc9a39db",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/agent_runs/TASK_001_INGEST_EXAMPLE_MODEL/20260708T102907Z/agent_completeness_checker/agent_completeness_checker_run_01.json",
+      "usage": {
+        "input_tokens": 12739,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 3303,
+        "output_tokens_details": {
+          "reasoning_tokens": 244
+        },
+        "total_tokens": 16042
+      }
+    },
+    {
+      "agent_id": "AGENT_REPORT_COMPOSER",
+      "task_name": "Compose structured ingestion report",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.5",
+      "response_id": "resp_0665c39f633df11b006a4e275a9af0819f9ececb2f26af1342",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/agent_runs/TASK_001_INGEST_EXAMPLE_MODEL/20260708T102907Z/agent_report_composer/agent_report_composer_run_01.json",
+      "usage": {
+        "input_tokens": 16355,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 7387,
+        "output_tokens_details": {
+          "reasoning_tokens": 217
+        },
+        "total_tokens": 23742
+      }
+    }
+  ]
+}

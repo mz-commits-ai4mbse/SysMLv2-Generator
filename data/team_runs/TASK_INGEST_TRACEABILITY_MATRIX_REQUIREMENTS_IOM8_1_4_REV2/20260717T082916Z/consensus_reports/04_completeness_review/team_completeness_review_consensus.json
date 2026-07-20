@@ -1,0 +1,164 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_COMPLETENESS_REVIEW_20260717T083053Z",
+  "team_id": "TEAM_COMPLETENESS_REVIEW",
+  "task_name": "Check completeness, gaps, risks and review readiness",
+  "created_at": "2026-07-17T08:30:53.368305+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_COMPLETENESS_GAP_FINDER"
+  ],
+  "agent_labels": {
+    "AGENT_COMPLETENESS_GAP_FINDER": "PERSONA_COMPLETENESS_GAP_FINDER"
+  },
+  "summary": {
+    "total_groups": 7,
+    "full_agreement": 7,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "gap::a glossary or legend for acronyms and codes such as mpa mpc mpa sip hpsrs rec roi poi op ov and op mb is not provided in the source",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "a glossary or legend for acronyms and codes such as mpa mpc mpa sip hpsrs rec roi poi op ov and op mb is not provided in the source": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "A glossary or legend for acronyms and codes such as MPA, MPC, MPA-SIP, HPSRS, REC, ROI, POI, OP-OV, and OP-MB is not provided in the source.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "A glossary or legend for acronyms and codes such as MPA, MPC, MPA-SIP, HPSRS, REC, ROI, POI, OP-OV, and OP-MB is not provided in the source."
+      }
+    },
+    {
+      "group_key": "gap::explicit interface descriptions data flows and control relationships between the named components are absent the matrix mostly provides traceability links only",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "explicit interface descriptions data flows and control relationships between the named components are absent the matrix mostly provides traceability links only": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "Explicit interface descriptions, data flows, and control relationships between the named components are absent; the matrix mostly provides traceability links only.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "Explicit interface descriptions, data flows, and control relationships between the named components are absent; the matrix mostly provides traceability links only."
+      }
+    },
+    {
+      "group_key": "gap::validation criteria pass fail thresholds and test procedures for the listed test ids are not included",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "validation criteria pass fail thresholds and test procedures for the listed test ids are not included": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "Validation criteria, pass/fail thresholds, and test procedures for the listed test IDs are not included.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "Validation criteria, pass/fail thresholds, and test procedures for the listed test IDs are not included."
+      }
+    },
+    {
+      "group_key": "gap::several rows are fragmented wrapped or blank and some identifiers repeat across multiple sections without explicit explanation",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "several rows are fragmented wrapped or blank and some identifiers repeat across multiple sections without explicit explanation": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "Several rows are fragmented, wrapped, or blank, and some identifiers repeat across multiple sections without explicit explanation.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "Several rows are fragmented, wrapped, or blank, and some identifiers repeat across multiple sections without explicit explanation."
+      }
+    },
+    {
+      "group_key": "gap::the full system boundary and relationship between the various subsystems components is not explicitly stated",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "the full system boundary and relationship between the various subsystems components is not explicitly stated": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "The full system boundary and relationship between the various subsystems/components is not explicitly stated.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "The full system boundary and relationship between the various subsystems/components is not explicitly stated."
+      }
+    },
+    {
+      "group_key": "gap::operational workflow sequences and function decomposition are not explicit even though many user facing behaviors are stated",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "operational workflow sequences and function decomposition are not explicit even though many user facing behaviors are stated": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "Operational workflow sequences and function decomposition are not explicit, even though many user-facing behaviors are stated.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "Operational workflow sequences and function decomposition are not explicit, even though many user-facing behaviors are stated."
+      }
+    },
+    {
+      "group_key": "recommended_review_decision",
+      "item_type": "recommended_review_decision",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "incomplete but reviewable": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "incomplete_but_reviewable",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "incomplete_but_reviewable"
+      }
+    }
+  ]
+}

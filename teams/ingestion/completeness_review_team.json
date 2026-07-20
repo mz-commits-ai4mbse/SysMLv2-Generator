@@ -1,0 +1,40 @@
+{
+  "team_id": "TEAM_COMPLETENESS_REVIEW",
+  "team_name": "Completeness Review Team",
+  "task_name": "Check completeness, gaps, risks and review readiness",
+  "role_id": "ROLE_COMPLETENESS_CHECKER",
+  "role_file": "agents/roles/completeness_checker.md",
+  "description": "This team checks whether the ingestion result is complete enough for human review.",
+  "default_execution_mode": "multi_persona",
+  "members": [
+    {
+      "member_id": "COMPLETENESS_CHECKER_001",
+      "agent_id": "AGENT_COMPLETENESS_GAP_FINDER",
+      "persona_id": "PERSONA_COMPLETENESS_GAP_FINDER",
+      "persona_file": "agents/personas/completeness_review/gap_finder.md",
+      "perspective": "gap_focused"
+    },
+    {
+      "member_id": "COMPLETENESS_CHECKER_002",
+      "agent_id": "AGENT_COMPLETENESS_RISK_REVIEWER",
+      "persona_id": "PERSONA_COMPLETENESS_RISK_REVIEWER",
+      "persona_file": "agents/personas/completeness_review/risk_reviewer.md",
+      "perspective": "risk_and_ambiguity_focused"
+    },
+    {
+      "member_id": "COMPLETENESS_CHECKER_003",
+      "agent_id": "AGENT_COMPLETENESS_TRACEABILITY_CHECKER",
+      "persona_id": "PERSONA_COMPLETENESS_TRACEABILITY_CHECKER",
+      "persona_file": "agents/personas/completeness_review/traceability_checker.md",
+      "perspective": "traceability_focused"
+    }
+  ],
+  "consensus_required": true,
+  "consensus_focus": [
+    "gaps",
+    "ambiguities_and_risks",
+    "review_questions",
+    "recommended_review_decision",
+    "traceability_issues"
+  ]
+}

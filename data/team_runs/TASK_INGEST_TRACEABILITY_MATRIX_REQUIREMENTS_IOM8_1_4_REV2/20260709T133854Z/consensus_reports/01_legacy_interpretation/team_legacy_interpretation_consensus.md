@@ -1,0 +1,46 @@
+# Consensus and Variance Report
+
+## Report Metadata
+
+- Consensus Report ID: `CONSENSUS_TEAM_LEGACY_INTERPRETATION_20260709T133923Z`
+- Team ID: `TEAM_LEGACY_INTERPRETATION`
+- Task Name: Interpret raw legacy data
+- Created At: 2026-07-09T13:39:23.740084+00:00
+- Total Agents: 1
+
+## Summary
+
+| Metric | Count |
+|---|---:|
+| total_groups | 20 |
+| full_agreement | 20 |
+| majority_agreement | 0 |
+| majority_with_disagreement | 0 |
+| minority_interpretation | 0 |
+| conflict | 0 |
+| review_required | 0 |
+
+## Consensus Groups
+
+| Agreement Level | Item Type | Representative Value | Supporting Agents | Review Required | Reason |
+|---|---|---|---|---|---|
+| full_agreement | source_information | The file is a CSV with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | Requirement UR-027 states: 'The user must be able to see the initialization status of the system'; it is linked to HPSRS-010, Component Host PC, Test ID VERIF-HPC-001, and REC numbers REC-00937, REC-00938, REC-00729, REC-00730; a related verification reference PIO22RM-041 is present. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-027 is followed by multiple related entries including SSRS-MPA-016, SSRS-MPA-017, SSRS-MPA-019, SSRS-MPA-023, SSRS-MPA-129, SSRS-MPA-130, SSRS-MPA-131, SSRS-MPA-132, XY-FW-002, XY-FW-020, Z-FW-002, Z-FW-020, Z-FW-058 with associated components/test IDs/REC references in the row data. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | Requirement UR-028 states: 'The user must be able to see that the startup was successful.'; linked to SSRS-MPA-025, Component MPA, Test ID T-UI-MPA-025, REC-00884. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | Requirement UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'; linked to SSRS-MPA-018, SSRS-MPA-020, SSRS-MPA-021, SSRS-MPA-022, SSRS-MPA-024, SSRS-MPA-129, SSRS-MPA-130, SSRS-MPA-131, SSRS-MPA-132 and related REC references, primarily REC-00884 and REC-00863. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-030 states the user must be able to insert multiple slides at once; UR-031 states the user must be able to place slides even and plane; UR-032 states the user must be able to handle slides without spillage; UR-033 states the user must be able to understand the correct insertion of the slides. These rows reference TRAY-012 and related SSRS/XY entries. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-035 states the user must be able to receive an overview image for each slide in the system; UR-036 states the user must be able to quickly receive an overview image. Both reference OP-OV entries and multiple SSRS-MPA items such as SSRS-MPA-026, 261, 052, 136-149, 160-167, 145-150 and XY/Z firmware/electrical/mechanical references. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-038 states the user must be able to see an overview of all overview images; UR-039 states the user must be able to navigate between slides referred by overview images; UR-041 states the user must be able to navigate to an ROI using the overview image. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-043 states the user must be able to view a slide label independently; UR-044 states the user must be able to rotate the slide label to its correct orientation; both reference SSRS-MPA-051 and MPA-SIP implementation items. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-046 states the user must be able to receive a digital microscopic magnified image; UR-047 states the user must be able to magnify the sample to provide enough detail for the analytic question; UR-048 states the user must be able to seamlessly zoom into the sample; UR-049 states the user must be able to navigate to ROI positions on the sample. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-050 states the user must be able to quickly select a specific magnification level; UR-051 states the user must be able to digitally magnify the sample image into empty magnification; UR-052 states the user must be able to see when a digital zoomed into empty magnification; UR-053 states the user must be able to automatically focus the sample; UR-054 states the user must be able to manually adjust the focus; UR-055 states the user must be able to adjust the image illumination of digital microscopic magnified image. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-056 states the user must be able to access information that explains how system features are intended to be used; UR-057 states the user must be able to configure how often information that explains system features is displayed. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The file includes requirements for language readability (UR-060), marking a POI (UR-062), making notes to a marked POI (UR-063), moving between several marked POIs (UR-064), seeing an overview of all annotations (UR-065), seeing as much of the sample as possible (UR-066), hiding annotations (UR-067), changing annotation color (UR-068), changing annotation font size (UR-069), knowing when the microscope is working (UR-072), identifying annotation location from the list and vice versa (UR-073), using hotkeys for common functions (UR-074), creating a screenshot (UR-075), and storing screenshots (UR-076). | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-079 states screenshots must be saved in common file formats; UR-080 states the system shall be remotely controllable with the streaming software iO:Stream; UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view; UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The CSV contains repeated references to many SSRS-MPA, XY-FW, Z-FW, XY-EL, Z-EL, SRS-AM and other IDs, and many blank rows/empty fields; some rows repeat the same IDs with different related references. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The content appears to be a traceability matrix linking user requirements to specification items, implementation specs, test IDs, and REC references. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The matrix references multiple components or subsystems including MPA, MPA-SIP, MPC, PPI, Host PC, TRAY-012, overview image functions, magnification functions, firmware, electrical and mechanical items. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The subject matter includes slide handling, microscopy views, overview images, ROI navigation, magnification, focus, illumination, annotations, screenshots, streaming control, and Ergopointer input. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The matrix repeatedly points to REC identifiers as related specifications or source references, but the file does not define what those REC documents contain. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | Several requirement statements contain awkward or possibly corrupted wording, suggesting transcription/OCR issues or non-native phrasing. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |

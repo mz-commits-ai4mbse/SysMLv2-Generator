@@ -1,0 +1,124 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_COMPLETENESS_REVIEW_20260717T081356Z",
+  "team_id": "TEAM_COMPLETENESS_REVIEW",
+  "task_name": "Check completeness, gaps, risks and review readiness",
+  "created_at": "2026-07-17T08:13:56.266828+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_COMPLETENESS_GAP_FINDER"
+  ],
+  "agent_labels": {
+    "AGENT_COMPLETENESS_GAP_FINDER": "PERSONA_COMPLETENESS_GAP_FINDER"
+  },
+  "summary": {
+    "total_groups": 5,
+    "full_agreement": 5,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "gap::explicit interface definitions between microscope workstation software application client application live image stream and control request are not provided",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "explicit interface definitions between microscope workstation software application client application live image stream and control request are not provided": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "Explicit interface definitions between microscope workstation, software application, client application, live image stream, and control request are not provided.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "Explicit interface definitions between microscope workstation, software application, client application, live image stream, and control request are not provided."
+      }
+    },
+    {
+      "group_key": "gap::the relationship between software application and client application is not explicitly defined",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "the relationship between software application and client application is not explicitly defined": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "The relationship between 'software application' and 'client application' is not explicitly defined.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "The relationship between 'software application' and 'client application' is not explicitly defined."
+      }
+    },
+    {
+      "group_key": "gap::the structure and fields of basic session information are not specified",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "the structure and fields of basic session information are not specified": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "The structure and fields of 'basic session information' are not specified.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "The structure and fields of 'basic session information' are not specified."
+      }
+    },
+    {
+      "group_key": "gap::validation test criteria and acceptance thresholds are absent",
+      "item_type": "gap",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "validation test criteria and acceptance thresholds are absent": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "Validation, test criteria, and acceptance thresholds are absent.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "Validation, test criteria, and acceptance thresholds are absent."
+      }
+    },
+    {
+      "group_key": "recommended_review_decision",
+      "item_type": "recommended_review_decision",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_COMPLETENESS_GAP_FINDER"
+      ],
+      "value_distribution": {
+        "incomplete but reviewable": [
+          "AGENT_COMPLETENESS_GAP_FINDER"
+        ]
+      },
+      "representative_value": "incomplete_but_reviewable",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_COMPLETENESS_GAP_FINDER": "incomplete_but_reviewable"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2437 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_DERIVATION_ASSESSMENT_20260717T072113Z",
+  "team_id": "TEAM_DERIVATION_ASSESSMENT",
+  "task_name": "Assess downstream model derivation support",
+  "created_at": "2026-07-17T07:21:13.234339+00:00",
+  "total_agents": 3,
+  "agent_ids": [
+    "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+    "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+    "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+  ],
+  "agent_labels": {
+    "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "PERSONA_DERIVATION_RULES_FOCUSED_ASSESSOR",
+    "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "PERSONA_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+    "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "PERSONA_DERIVATION_CONSERVATIVE_REVIEWER"
+  },
+  "summary": {
+    "total_groups": 106,
+    "full_agreement": 25,
+    "majority_agreement": 25,
+    "majority_with_disagreement": 4,
+    "minority_interpretation": 52,
+    "conflict": 0,
+    "review_required": 56
+  },
+  "groups": [
+    {
+      "group_key": "candidate_model_element::stakeholder::user",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder: user [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "stakeholder: user [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::system::microscopy system",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "system: microscopy system [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "system: microscopy system [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 027 initialization status visibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-027 initialization status visibility [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-027 initialization status visibility [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-027 initialization status visibility [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-027 initialization status visibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 028 startup successful visibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-028 startup successful visibility [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-028 startup successful visibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 029 initialization error guidance",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-029 initialization error guidance [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-029 initialization error guidance [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-029 initialization error guidance [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 030 multiple slide insertion",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-030 multiple slide insertion [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-030 multiple slide insertion [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-030 multiple slide insertion [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-030 multiple slide insertion [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 031 slide placement flatness",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-031 slide placement flatness [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-031 slide placement flatness [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 032 slide handling without spillage",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-032 slide handling without spillage [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-032 slide handling without spillage [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-032 slide handling without spillage [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 033 correct slide insertion understanding",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-033 correct slide insertion understanding [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-033 correct slide insertion understanding [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-033 correct slide insertion understanding [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-033 correct slide insertion understanding [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 035 overview image per slide",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-035 overview image per slide [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-035 overview image per slide [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-035 overview image per slide [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-035 overview image per slide [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 036 quick overview image",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-036 quick overview image [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-036 quick overview image [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-036 quick overview image [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-036 quick overview image [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 038 overview of overview images",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-038 overview of overview images [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-038 overview of overview images [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 039 navigation between slides via overview images",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-039 navigation between slides via overview images [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-039 navigation between slides via overview images [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-039 navigation between slides via overview images [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 041 roi navigation using overview image",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-041 ROI navigation using overview image [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-041 ROI navigation using overview image [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-041 ROI navigation using overview image [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 043 slide label independent viewing",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-043 slide label independent viewing [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-043 slide label independent viewing [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 044 slide label rotation",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-044 slide label rotation [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-044 slide label rotation [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-044 slide label rotation [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 046 digital microscopic magnified image",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-046 digital microscopic magnified image [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-046 digital microscopic magnified image [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-046 digital microscopic magnified image [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-046 digital microscopic magnified image [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 047 sufficient magnification for analysis",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-047 sufficient magnification for analysis [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-047 sufficient magnification for analysis [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-047 sufficient magnification for analysis [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-047 sufficient magnification for analysis [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 048 seamless zoom into sample",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-048 seamless zoom into sample [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-048 seamless zoom into sample [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-048 seamless zoom into sample [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-048 seamless zoom into sample [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 049 roi navigation on sample",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-049 ROI navigation on sample [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-049 ROI navigation on sample [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-049 ROI navigation on sample [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 050 quick selection of magnification level",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-050 quick selection of magnification level [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-050 quick selection of magnification level [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-050 quick selection of magnification level [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 051 digital magnification into empty magnification",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-051 digital magnification into empty magnification [partial]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-051 digital magnification into empty magnification [partial]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-051 digital magnification into empty magnification [partial]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-051 digital magnification into empty magnification [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 052 feedback on empty magnification zoom",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-052 feedback on empty magnification zoom [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-052 feedback on empty magnification zoom [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 053 automatic focus",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-053 automatic focus [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-053 automatic focus [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-053 automatic focus [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 054 manual focus adjustment",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-054 manual focus adjustment [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-054 manual focus adjustment [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-054 manual focus adjustment [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-054 manual focus adjustment [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 055 image illumination adjustment",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-055 image illumination adjustment [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-055 image illumination adjustment [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-055 image illumination adjustment [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-055 image illumination adjustment [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 056 feature usage help information",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-056 feature usage help information [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-056 feature usage help information [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-056 feature usage help information [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 057 help display frequency configuration",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-057 help display frequency configuration [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-057 help display frequency configuration [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-057 help display frequency configuration [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 060 ui language comprehensibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-060 UI language comprehensibility [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-060 UI language comprehensibility [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-060 UI language comprehensibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 062 mark poi",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-062 mark POI [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-062 mark POI [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-062 mark POI [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 063 note to marked poi",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-063 note to marked POI [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-063 note to marked POI [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-063 note to marked POI [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 064 move between marked pois",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-064 move between marked POIs [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-064 move between marked POIs [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-064 move between marked POIs [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-064 move between marked POIs [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 065 annotation overview",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-065 annotation overview [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-065 annotation overview [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-065 annotation overview [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-065 annotation overview [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 067 hide annotation for full sample visibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-067 hide annotation for full sample visibility [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-067 hide annotation for full sample visibility [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-067 hide annotation for full sample visibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 068 annotation color change",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-068 annotation color change [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-068 annotation color change [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-068 annotation color change [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-068 annotation color change [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 069 annotation description font size change",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-069 annotation description font size change [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-069 annotation description font size change [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-069 annotation description font size change [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-069 annotation description font size change [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 072 microscope working status awareness",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-072 microscope working status awareness [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-072 microscope working status awareness [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-072 microscope working status awareness [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 073 annotation location cross reference",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-073 annotation location cross-reference [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-073 annotation location cross-reference [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-073 annotation location cross-reference [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-073 annotation location cross-reference [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 074 hotkeys for common functions",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-074 hotkeys for common functions [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-074 hotkeys for common functions [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-074 hotkeys for common functions [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-074 hotkeys for common functions [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 075 screenshot creation",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-075 screenshot creation [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-075 screenshot creation [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-075 screenshot creation [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 076 screenshot storage",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-076 screenshot storage [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-076 screenshot storage [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-076 screenshot storage [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 079 screenshot file format saving",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-079 screenshot file format saving [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-079 screenshot file format saving [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 080 remote controllability with io stream",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-080 remote controllability with iO:Stream [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-080 remote controllability with iO:Stream [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-080 remote controllability with iO:Stream [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-080 remote controllability with iO:Stream [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 081 ergopointer as microscopy input device",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-081 Ergopointer as microscopy input device [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-081 Ergopointer as microscopy input device [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-081 Ergopointer as microscopy input device [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 082 consumer connected ergopointer input device",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-082 consumer-connected Ergopointer input device [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-082 consumer-connected Ergopointer input device [ready]",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: UR-082 consumer-connected Ergopointer input device [ready]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::stakeholder model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "stakeholder_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=[\"Specific stakeholder roles beyond 'user' are not defined.\"]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "stakeholder_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Actual stakeholder names/roles', 'Stakeholder priorities and distinctions']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "stakeholder_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=[\"Specific stakeholder roles beyond 'user' are not defined.\"]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::requirements model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirements_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Meaning of REC references and component abbreviations is undefined.', \"Some phrases are ambiguous, such as 'even and plane' and 'empty magnification'.\"]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirements_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Semantics of REC identifiers, component abbreviations, and some ambiguous phrases.', 'No explicit acceptance criteria.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirements_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Normalized requirement taxonomy', 'Clarification of ambiguous phrases in a few rows']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirements_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Meaning of REC references and component abbreviations is undefined.', \"Some phrases are ambiguous, such as 'even and plane' and 'empty magnification'.\"]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::use case model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "use_case_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['No explicit actors, triggers, preconditions, postconditions, or named use cases are provided.']",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "use_case_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Use case boundaries', 'Primary/secondary actors', 'Preconditions and postconditions', 'Main/alternate flows']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "use_case_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['No explicit actors, triggers, preconditions, postconditions, or named use cases are provided.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::functional model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "functional_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Functional grouping and sequencing are not explicitly given.']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "functional_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Operational sequencing and internal functional decomposition are not fully defined.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "functional_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Function decomposition and sequencing', 'Responsibility allocation']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "functional_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Functional grouping and sequencing are not explicitly given.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::logical architecture model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported blocked false": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "not supported review questions only false": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ],
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "logical_architecture_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['No explicit logical elements, services, modules, or responsibility areas are named.']",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "logical_architecture_model: not_supported; can_be_generated_now=False; scope=review_questions_only; missing=['No explicit logical system elements, services, or responsibility areas are named in the source.', 'No coherent logical grouping is directly evidenced.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "logical_architecture_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Explicit logical components/services', 'Allocation rules between functions and logical elements']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "logical_architecture_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['No explicit logical elements, services, modules, or responsibility areas are named.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::physical architecture model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "majority_with_disagreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "partially supported review questions only true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "physical_architecture_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Component abbreviations are not defined, and no deployment or ownership model is given.', 'Physical boundaries and interfaces are ambiguous.']",
+      "review_required": true,
+      "reason": "A majority exists, but at least one agent disagrees.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "physical_architecture_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Component abbreviations are not defined, and no deployment or ownership model is given.', 'Physical boundaries and interfaces are ambiguous.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "physical_architecture_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Glossary for component abbreviations', 'System boundary and deployment context', 'Physical relationships and interfaces']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "physical_architecture_model: partially_supported; can_be_generated_now=True; scope=review_questions_only; missing=['The semantics of component abbreviations are not defined.', 'Deployment, interfaces, and ownership are not explicit enough for a detailed architecture.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::interface model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "majority_with_disagreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "partially supported review questions only true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "interface_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Named interfaces, directions, exchanged data, and endpoints are not explicitly defined.', 'No explicit interface pairs are stated beyond the requirement wording.']",
+      "review_required": true,
+      "reason": "A majority exists, but at least one agent disagrees.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "interface_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Named interfaces, directions, exchanged data, and endpoints are not explicitly defined.', 'No explicit interface pairs are stated beyond the requirement wording.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "interface_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Explicit interface definitions', 'Direction, data exchanged, and protocol details']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "interface_model: partially_supported; can_be_generated_now=True; scope=review_questions_only; missing=['Specific endpoint-to-endpoint interactions, data exchanged, and directionality are not fully defined.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::data or artifact model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported blocked false": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ],
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "data_or_artifact_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['No substantial domain data objects, message types, records, or information artifacts are defined beyond the matrix itself.']",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "data_or_artifact_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['No deeper data schema beyond the matrix structure is defined.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "data_or_artifact_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Structure, lifecycle, and ownership of the referenced artifacts']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "data_or_artifact_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['No substantial domain data objects, message types, records, or information artifacts are defined beyond the matrix itself.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::constraint model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported review questions only true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "constraint_model: partially_supported; can_be_generated_now=True; scope=review_questions_only; missing=['No separately stated constraints or measurable limits are provided.']",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "constraint_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Measurable thresholds and formal constraint wording']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "constraint_model: partially_supported; can_be_generated_now=True; scope=review_questions_only; missing=['No separately stated constraints or measurable limits are provided.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::validation model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported blocked false": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "not supported review questions only false": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "validation_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['No explicit acceptance criteria, verification methods, or pass/fail thresholds are stated.']",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "validation_model: not_supported; can_be_generated_now=False; scope=review_questions_only; missing=['No explicit validation criteria, acceptance thresholds, or test outcomes are provided.']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "validation_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['No explicit acceptance criteria, verification methods, or pass/fail thresholds are stated.']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::traceability model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "traceability_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Semantics of REC numbers and component abbreviations remain undefined, so trace links may need human interpretation.']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "traceability_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Meaning of the traceability reference codes is not defined, and some rows are malformed.']",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "traceability_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Semantics of REC numbering and some component abbreviations']",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "traceability_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Semantics of REC numbers and component abbreviations remain undefined, so trace links may need human interpretation.']"
+      }
+    },
+    {
+      "group_key": "derivation::stakeholder model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder_model: supported",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "stakeholder_model: supported"
+      }
+    },
+    {
+      "group_key": "derivation::requirements model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirements_model: supported",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirements_model: supported"
+      }
+    },
+    {
+      "group_key": "derivation::use case model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "use_case_model: partially_supported",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "use_case_model: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::functional model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "functional_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "functional_model: supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "functional_model: supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "functional_model: supported"
+      }
+    },
+    {
+      "group_key": "derivation::logical architecture model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_with_disagreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "partially supported": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "logical_architecture_model: not_supported",
+      "review_required": true,
+      "reason": "A majority exists, but at least one agent disagrees.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "logical_architecture_model: not_supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "logical_architecture_model: partially_supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "logical_architecture_model: not_supported"
+      }
+    },
+    {
+      "group_key": "derivation::physical architecture model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "physical_architecture_model: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "physical_architecture_model: partially_supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "physical_architecture_model: partially_supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "physical_architecture_model: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::interface model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "interface_model: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "interface_model: partially_supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "interface_model: partially_supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "interface_model: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::data or artifact model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ],
+        "partially supported": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "data_or_artifact_model: not_supported",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "data_or_artifact_model: supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "data_or_artifact_model: partially_supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "data_or_artifact_model: not_supported"
+      }
+    },
+    {
+      "group_key": "derivation::constraint model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_with_disagreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ],
+        "not supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "constraint_model: partially_supported",
+      "review_required": true,
+      "reason": "A majority exists, but at least one agent disagrees.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "constraint_model: not_supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "constraint_model: partially_supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "constraint_model: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::validation model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "validation_model: not_supported",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "validation_model: not_supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "validation_model: not_supported"
+      }
+    },
+    {
+      "group_key": "derivation::traceability model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER",
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "traceability_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "traceability_model: supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "traceability_model: supported",
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "traceability_model: supported"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 028 startup success visibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-028 startup success visibility [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-028 startup success visibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 031 slide placement even and plane",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-031 slide placement even and plane [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-031 slide placement even and plane [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 038 overview of all overview images",
+      "item_type": "candidate_model_element",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-038 overview of all overview images [ready]",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-038 overview of all overview images [ready]",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-038 overview of all overview images [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 039 navigate between slides via overview images",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-039 navigate between slides via overview images [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-039 navigate between slides via overview images [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 041 navigate to roi using overview image",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-041 navigate to ROI using overview image [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-041 navigate to ROI using overview image [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 043 independent slide label view",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-043 independent slide label view [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-043 independent slide label view [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 044 rotate slide label to correct orientation",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-044 rotate slide label to correct orientation [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-044 rotate slide label to correct orientation [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 049 navigate to roi positions on sample",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-049 navigate to ROI positions on sample [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-049 navigate to ROI positions on sample [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 052 detect digital zoom into empty magnification",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-052 detect digital zoom into empty magnification [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-052 detect digital zoom into empty magnification [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 053 automatic sample focus",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-053 automatic sample focus [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-053 automatic sample focus [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 056 feature use guidance information",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-056 feature-use guidance information [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-056 feature-use guidance information [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 057 configurable guidance display frequency",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-057 configurable guidance display frequency [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-057 configurable guidance display frequency [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 060 understandable ui language",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-060 understandable UI language [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-060 understandable UI language [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 062 mark a specific poi",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-062 mark a specific POI [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-062 mark a specific POI [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 063 note a marked poi",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-063 note a marked POI [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-063 note a marked POI [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 067 hide annotation to see sample fully",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-067 hide annotation to see sample fully [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-067 hide annotation to see sample fully [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 075 create screenshot",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-075 create screenshot [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-075 create screenshot [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 076 store screenshots",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-076 store screenshots [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-076 store screenshots [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 079 save screenshots in common file formats",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: UR-079 save screenshots in common file formats [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "requirement: UR-079 save screenshots in common file formats [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::data object::requirements traceability matrix csv",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "data_object: Requirements traceability matrix CSV [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "data_object: Requirements traceability matrix CSV [ready]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::stakeholder needs",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder_needs: supported; can_be_generated_now=True; scope=complete_preliminary; missing=[\"Stakeholder role is mostly generic 'user'; more specific roles are not identified.\"]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "stakeholder_needs: supported; can_be_generated_now=True; scope=complete_preliminary; missing=[\"Stakeholder role is mostly generic 'user'; more specific roles are not identified.\"]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::stakeholder requirements",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder_requirements: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Stakeholder ownership and distinction between user need and system requirement are not always explicit.']",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "stakeholder_requirements: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Stakeholder ownership and distinction between user need and system requirement are not always explicit.']"
+      }
+    },
+    {
+      "group_key": "derivation::stakeholder needs",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "stakeholder_needs: supported",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "stakeholder_needs: supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "stakeholder_needs: supported"
+      }
+    },
+    {
+      "group_key": "derivation::stakeholder requirements",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "stakeholder_requirements: supported",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "stakeholder_requirements: supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "stakeholder_requirements: supported"
+      }
+    },
+    {
+      "group_key": "derivation::system requirements",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "system_requirements: supported",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR": "system_requirements: supported",
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "system_requirements: supported"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 028 successful startup visibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-028 successful startup visibility [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-028 successful startup visibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 029 initialization error guidance message",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-029 initialization error guidance message [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-029 initialization error guidance message [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 031 slide placement flatness alignment",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-031 slide placement flatness/alignment [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-031 slide placement flatness/alignment [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 032 no spillage slide handling",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-032 no-spillage slide handling [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-032 no-spillage slide handling [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 043 independent slide label viewing",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-043 independent slide label viewing [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-043 independent slide label viewing [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 050 quick magnification level selection",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-050 quick magnification level selection [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-050 quick magnification level selection [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 052 empty magnification feedback",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-052 empty magnification feedback [partial]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-052 empty magnification feedback [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 072 microscope working status indication",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-072 microscope working status indication [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-072 microscope working status indication [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 079 screenshot export formats",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-079 screenshot export formats [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-079 screenshot export formats [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 081 ergopointer input for microscopy view",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-081 Ergopointer input for microscopy view [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-081 Ergopointer input for microscopy view [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::ur 082 consumer connected ergopointer input for microscopy view",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "requirement: UR-082 consumer-connected Ergopointer input for microscopy view [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "requirement: UR-082 consumer-connected Ergopointer input for microscopy view [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::package::requirements traceability matrix csv",
+      "item_type": "candidate_model_element",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "package: Requirements traceability matrix CSV [ready]",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "package: Requirements traceability matrix CSV [ready]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::verification model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "not supported blocked false": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "verification_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['Explicit test cases, procedures, and acceptance criteria']",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "verification_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['Explicit test cases, procedures, and acceptance criteria']"
+      }
+    },
+    {
+      "group_key": "derivation::validation or verification model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_DERIVATION_CONSERVATIVE_REVIEWER"
+        ]
+      },
+      "representative_value": "validation_or_verification_model: not_supported",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_DERIVATION_CONSERVATIVE_REVIEWER": "validation_or_verification_model: not_supported"
+      }
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "team_id": "TEAM_LEGACY_INTERPRETATION",
+  "team_name": "Legacy Interpretation Team",
+  "task_name": "Interpret raw legacy data",
+  "role_id": "ROLE_LEGACY_DATA_INTERPRETER",
+  "role_file": "agents/roles/legacy_data_interpreter.md",
+  "description": "This team interprets raw legacy engineering input from different perspectives.",
+  "default_execution_mode": "multi_persona",
+  "members": [
+    {
+      "member_id": "LEGACY_INTERPRETER_001",
+      "agent_id": "AGENT_LEGACY_LITERAL_INTERPRETER",
+      "persona_id": "PERSONA_LEGACY_LITERAL_INTERPRETER",
+      "persona_file": "agents/personas/legacy_interpretation/literal_interpreter.md",
+      "perspective": "literal_source_faithful"
+    },
+    {
+      "member_id": "LEGACY_INTERPRETER_002",
+      "agent_id": "AGENT_LEGACY_SYSTEMS_ENGINEERING_INTERPRETER",
+      "persona_id": "PERSONA_LEGACY_SYSTEMS_ENGINEERING_INTERPRETER",
+      "persona_file": "agents/personas/legacy_interpretation/systems_engineering_interpreter.md",
+      "perspective": "systems_engineering"
+    },
+    {
+      "member_id": "LEGACY_INTERPRETER_003",
+      "agent_id": "AGENT_LEGACY_SKEPTICAL_AMBIGUITY_INTERPRETER",
+      "persona_id": "PERSONA_LEGACY_SKEPTICAL_AMBIGUITY_INTERPRETER",
+      "persona_file": "agents/personas/legacy_interpretation/skeptical_ambiguity_interpreter.md",
+      "perspective": "skeptical_ambiguity"
+    }
+  ],
+  "consensus_required": true,
+  "consensus_focus": [
+    "source_information",
+    "explicit_vs_implied_information",
+    "assumptions",
+    "ambiguities",
+    "information_not_treated_as_positive_evidence"
+  ]
+}

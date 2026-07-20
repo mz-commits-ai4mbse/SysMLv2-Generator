@@ -1,0 +1,41 @@
+{
+  "team_id": "TEAM_REPORT_COMPOSITION",
+  "team_name": "Report Composition Team",
+  "task_name": "Compose structured ingestion report",
+  "role_id": "ROLE_REPORT_COMPOSER",
+  "role_file": "agents/roles/report_composer.md",
+  "description": "This team composes the final ingestion report from raw input, agent outputs and consensus results.",
+  "default_execution_mode": "single_persona",
+  "members": [
+    {
+      "member_id": "REPORT_COMPOSER_001",
+      "agent_id": "AGENT_REPORT_STRUCTURED_COMPOSER",
+      "persona_id": "PERSONA_REPORT_STRUCTURED_COMPOSER",
+      "persona_file": "agents/personas/report_composition/structured_report_composer.md",
+      "perspective": "structured_readability"
+    }
+  ],
+  "alternative_members": [
+    {
+      "member_id": "REPORT_COMPOSER_002",
+      "agent_id": "AGENT_REPORT_TRACEABILITY_COMPOSER",
+      "persona_id": "PERSONA_REPORT_TRACEABILITY_COMPOSER",
+      "persona_file": "agents/personas/report_composition/traceability_report_composer.md",
+      "perspective": "traceability_focused"
+    },
+    {
+      "member_id": "REPORT_COMPOSER_003",
+      "agent_id": "AGENT_REPORT_AUDIT_COMPOSER",
+      "persona_id": "PERSONA_REPORT_AUDIT_COMPOSER",
+      "persona_file": "agents/personas/report_composition/audit_report_composer.md",
+      "perspective": "audit_quality_focused"
+    }
+  ],
+  "consensus_required": false,
+  "consensus_focus": [
+    "report_structure",
+    "traceability_notes",
+    "review_gate_rule",
+    "agent_execution_summary"
+  ]
+}

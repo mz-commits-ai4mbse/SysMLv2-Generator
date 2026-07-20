@@ -1,0 +1,184 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260709T140047Z",
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "task_name": "Classify engineering evidence",
+  "created_at": "2026-07-09T14:00:47.110875+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+  ],
+  "agent_labels": {
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER": "PERSONA_EVIDENCE_STRICT_CLASSIFIER"
+  },
+  "summary": {
+    "total_groups": 8,
+    "full_agreement": 8,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 027 states the user must be able to see the initialization status of the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 027 states the user must be able to see the initialization status of the system": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-027 states: 'The user must be able to see the initialization status of the system'.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-027 states: 'The user must be able to see the initialization status of the system'."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 028 states the user must be able to see that the startup was successful",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 028 states the user must be able to see that the startup was successful": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-028 states: 'The user must be able to see that the startup was successful.'",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-028 states: 'The user must be able to see that the startup was successful.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 029 states the user must receive a message on how to solve and or to react on an initialization error",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 029 states the user must receive a message on how to solve and or to react on an initialization error": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 030 to ur 033 concern slide handling inserting multiple slides at once placing slides even and plane handling slides without spillage and understanding correct insertion of slides",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 030 to ur 033 concern slide handling inserting multiple slides at once placing slides even and plane handling slides without spillage and understanding correct insertion of slides": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-030 to UR-033 concern slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-030 to UR-033 concern slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::multiple requirements address overview images slide labels digital microscopic magnified images magnification roi navigation focusing illumination adjustment and related ui mpa mpa sip mpc references",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::multiple requirements address overview images slide labels digital microscopic magnified images magnification roi navigation focusing illumination adjustment and related ui mpa mpa sip mpc references": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Multiple requirements address overview images, slide labels, digital microscopic magnified images, magnification, ROI navigation, focusing, illumination adjustment, and related UI/MPA/MPA-SIP/MPC references.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Multiple requirements address overview images, slide labels, digital microscopic magnified images, magnification, ROI navigation, focusing, illumination adjustment, and related UI/MPA/MPA-SIP/MPC references."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 060 states with the system the user must be able to read the user interface and controls in a language he understand s",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 060 states with the system the user must be able to read the user interface and controls in a language he understand s": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-060 states: 'With the system the user must be able to read the user interface and controls in a language he understand s.'",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-060 states: 'With the system the user must be able to read the user interface and controls in a language he understand s.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::later requirements cover poi marking notes navigation between pois annotation overview hiding annotations changing annotation color and font size system working indication locating annotations hotkeys screenshot creation storage file formats",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::later requirements cover poi marking notes navigation between pois annotation overview hiding annotations changing annotation color and font size system working indication locating annotations hotkeys screenshot creation storage file formats": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Later requirements cover POI marking, notes, navigation between POIs, annotation overview, hiding annotations, changing annotation color and font size, system working indication, locating annotations, hotkeys, screenshot creation/storage/file formats.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Later requirements cover POI marking, notes, navigation between POIs, annotation overview, hiding annotations, changing annotation color and font size, system working indication, locating annotations, hotkeys, screenshot creation/storage/file formats."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 080 states the system shall be remotely controllable with streaming software io stream ur 081 states the system shall provide functionality to use the ergopointer as an input device for the microscopy view ur 082 states the system shall provide functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 080 states the system shall be remotely controllable with streaming software io stream ur 081 states the system shall provide functionality to use the ergopointer as an input device for the microscopy view ur 082 states the system shall provide functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-080 states the system shall be remotely controllable with streaming software iO:Stream. UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view. UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-080 states the system shall be remotely controllable with streaming software iO:Stream. UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view. UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view."
+      }
+    }
+  ]
+}

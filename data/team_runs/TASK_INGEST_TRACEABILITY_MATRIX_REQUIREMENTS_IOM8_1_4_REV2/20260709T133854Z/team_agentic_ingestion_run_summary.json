@@ -1,0 +1,190 @@
+{
+  "task_id": "TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2",
+  "recipe_id": "REC_INGESTION_001",
+  "raw_input_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/legacy/raw/user_uploads/Traceability_Matrix_Requirements_iOM8_1_4_Rev2.CSV",
+  "report_output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/ingestion_reports/task_ingest_traceability_matrix_requirements_iom8_1_4_rev2_team_agentic_ingestion_report.md",
+  "run_id": "20260709T133854Z",
+  "run_dir": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2/20260709T133854Z",
+  "provider": "openai",
+  "model": "gpt-5.4-mini",
+  "team_execution_mode": "llm_single_member_per_team",
+  "created_at": "2026-07-09T13:40:33.221826+00:00",
+  "agent_results": [
+    {
+      "agent_id": "AGENT_LEGACY_LITERAL_INTERPRETER",
+      "task_name": "Interpret raw legacy data",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "response_id": "resp_0e360d7dd2315a53006a4fa47075b08192bb466da90be59c0d",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2/20260709T133854Z/agent_outputs/01_legacy_interpretation/team_legacy_interpretation/agent_legacy_literal_interpreter/agent_legacy_literal_interpreter_run_01.json",
+      "usage": {
+        "input_tokens": 19288,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 3033,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 22321
+      }
+    },
+    {
+      "agent_id": "AGENT_EVIDENCE_STRICT_CLASSIFIER",
+      "task_name": "Classify engineering evidence",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "response_id": "resp_048e6178d3359c9d006a4fa48be8ac819f92b6f5a8d18ff9ef",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2/20260709T133854Z/agent_outputs/02_evidence_classification/team_evidence_classification/agent_evidence_strict_classifier/agent_evidence_strict_classifier_run_01.json",
+      "usage": {
+        "input_tokens": 24522,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 4278,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 28800
+      }
+    },
+    {
+      "agent_id": "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR",
+      "task_name": "Assess downstream model derivation support",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "response_id": "resp_0b3b0b0d6fc5b788006a4fa4a3e5a0819facd548ec0f64adfb",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2/20260709T133854Z/agent_outputs/03_derivation_assessment/team_derivation_assessment/agent_derivation_rules_focused_assessor/agent_derivation_rules_focused_assessor_run_01.json",
+      "usage": {
+        "input_tokens": 39388,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 1344,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 40732
+      }
+    },
+    {
+      "agent_id": "AGENT_COMPLETENESS_GAP_FINDER",
+      "task_name": "Check completeness, gaps, risks and review readiness",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "response_id": "resp_00b679e677e3d2af006a4fa4b03dd081a29fef25f8ccc9f0f7",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2/20260709T133854Z/agent_outputs/04_completeness_review/team_completeness_review/agent_completeness_gap_finder/agent_completeness_gap_finder_run_01.json",
+      "usage": {
+        "input_tokens": 41131,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 1639,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 42770
+      }
+    },
+    {
+      "agent_id": "AGENT_REPORT_STRUCTURED_COMPOSER",
+      "task_name": "Compose structured ingestion report",
+      "run_index": 1,
+      "provider": "openai",
+      "model": "gpt-5.4-mini",
+      "response_id": "resp_00b2bd1a22976255006a4fa4bbfc4481a1818af6c7841ca8cc",
+      "status": "completed",
+      "output_path": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/data/team_runs/TASK_INGEST_TRACEABILITY_MATRIX_REQUIREMENTS_IOM8_1_4_REV2/20260709T133854Z/agent_outputs/05_report_composition/team_report_composition/agent_report_structured_composer/agent_report_structured_composer_run_01.json",
+      "usage": {
+        "input_tokens": 44852,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 2843,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 47695
+      }
+    }
+  ],
+  "consensus_reports": [
+    {
+      "consensus_report_id": "CONSENSUS_TEAM_LEGACY_INTERPRETATION_20260709T133923Z",
+      "team_id": "TEAM_LEGACY_INTERPRETATION",
+      "task_name": "Interpret raw legacy data",
+      "created_at": "2026-07-09T13:39:23.740084+00:00",
+      "total_agents": 1,
+      "summary": {
+        "total_groups": 20,
+        "full_agreement": 20,
+        "majority_agreement": 0,
+        "majority_with_disagreement": 0,
+        "minority_interpretation": 0,
+        "conflict": 0,
+        "review_required": 0
+      }
+    },
+    {
+      "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260709T133947Z",
+      "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+      "task_name": "Classify engineering evidence",
+      "created_at": "2026-07-09T13:39:47.710620+00:00",
+      "total_agents": 1,
+      "summary": {
+        "total_groups": 44,
+        "full_agreement": 44,
+        "majority_agreement": 0,
+        "majority_with_disagreement": 0,
+        "minority_interpretation": 0,
+        "conflict": 0,
+        "review_required": 0
+      }
+    },
+    {
+      "consensus_report_id": "CONSENSUS_TEAM_DERIVATION_ASSESSMENT_20260709T134000Z",
+      "team_id": "TEAM_DERIVATION_ASSESSMENT",
+      "task_name": "Assess downstream model derivation support",
+      "created_at": "2026-07-09T13:40:00.060662+00:00",
+      "total_agents": 1,
+      "summary": {
+        "total_groups": 11,
+        "full_agreement": 11,
+        "majority_agreement": 0,
+        "majority_with_disagreement": 0,
+        "minority_interpretation": 0,
+        "conflict": 0,
+        "review_required": 0
+      }
+    },
+    {
+      "consensus_report_id": "CONSENSUS_TEAM_COMPLETENESS_REVIEW_20260709T134011Z",
+      "team_id": "TEAM_COMPLETENESS_REVIEW",
+      "task_name": "Check completeness, gaps, risks and review readiness",
+      "created_at": "2026-07-09T13:40:11.784318+00:00",
+      "total_agents": 1,
+      "summary": {
+        "total_groups": 7,
+        "full_agreement": 7,
+        "majority_agreement": 0,
+        "majority_with_disagreement": 0,
+        "minority_interpretation": 0,
+        "conflict": 0,
+        "review_required": 0
+      }
+    }
+  ]
+}

@@ -2,8 +2,8 @@
   "traceability_id": "TRACE_TASK_001_INGEST_EXAMPLE_MODEL",
   "task_id": "TASK_001_INGEST_EXAMPLE_MODEL",
   "recipe_id": "REC_INGESTION_001",
-  "run_id": "run_20260707_133708",
-  "generated_at": "2026-07-07T13:37:08Z",
+  "run_id": "run_20260708_081246",
+  "generated_at": "2026-07-08T08:12:46Z",
   "input_artifacts": [
     {
       "artifact_id": "RAW_EXAMPLE_MODEL_001",

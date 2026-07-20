@@ -1,0 +1,20 @@
+{
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "team_name": "Evidence Classification Team",
+  "task_name": "Classify engineering evidence",
+  "role_id": "ROLE_EVIDENCE_CLASSIFIER",
+  "role_file": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/agents/roles/evidence_classifier.md",
+  "member_id": "EVIDENCE_CLASSIFIER_003",
+  "agent_id": "AGENT_EVIDENCE_AUDIT_CLASSIFIER",
+  "persona_id": "PERSONA_EVIDENCE_AUDIT_CLASSIFIER",
+  "persona_file": "/Users/moritz/Desktop/MA Git/SysMLv2-Generator/agents/personas/evidence_classification/audit_classifier.md",
+  "perspective": "audit_false_positive_focused",
+  "run_index": 1,
+  "provider": "openai",
+  "model": "dry-run-model",
+  "response_id": null,
+  "status": "dry_run",
+  "usage": {},
+  "created_at": "2026-07-09T11:59:31.414409+00:00",
+  "output_text": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_EVIDENCE_CLASSIFICATION\",\n  \"team_name\": \"Evidence Classification Team\",\n  \"task_name\": \"Classify engineering evidence\",\n  \"role_id\": \"ROLE_EVIDENCE_CLASSIFIER\",\n  \"member_id\": \"EVIDENCE_CLASSIFIER_003\",\n  \"agent_id\": \"AGENT_EVIDENCE_AUDIT_CLASSIFIER\",\n  \"persona_id\": \"PERSONA_EVIDENCE_AUDIT_CLASSIFIER\",\n  \"perspective\": \"audit_false_positive_focused\",\n  \"model\": \"dry-run-model\",\n  \"run_index\": 1\n}"
+}

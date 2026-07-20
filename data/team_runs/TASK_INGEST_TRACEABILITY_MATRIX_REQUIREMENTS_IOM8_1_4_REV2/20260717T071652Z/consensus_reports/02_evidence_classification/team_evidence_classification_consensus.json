@@ -1,0 +1,1748 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260717T071843Z",
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "task_name": "Classify engineering evidence",
+  "created_at": "2026-07-17T07:18:43.419322+00:00",
+  "total_agents": 3,
+  "agent_ids": [
+    "AGENT_EVIDENCE_AUDIT_CLASSIFIER",
+    "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER",
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+  ],
+  "agent_labels": {
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER": "PERSONA_EVIDENCE_STRICT_CLASSIFIER",
+    "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "PERSONA_EVIDENCE_SEMANTIC_CLASSIFIER",
+    "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "PERSONA_EVIDENCE_AUDIT_CLASSIFIER"
+  },
+  "summary": {
+    "total_groups": 86,
+    "full_agreement": 0,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 86,
+    "conflict": 0,
+    "review_required": 86
+  },
+  "groups": [
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 027 states the user must be able to see the initialization status of the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 027 states the user must be able to see the initialization status of the system": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-027 states: 'The user must be able to see the initialization status of the system.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-027 states: 'The user must be able to see the initialization status of the system.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 028 states the user must be able to see that the startup was successful",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 028 states the user must be able to see that the startup was successful": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-028 states: 'The user must be able to see that the startup was successful.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-028 states: 'The user must be able to see that the startup was successful.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 029 states the user must receive a message on how to solve and or to react on an initialization error",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 029 states the user must receive a message on how to solve and or to react on an initialization error": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 030 through ur 033 relate to slide handling inserting multiple slides at once placing slides even and plane handling slides without spillage and understanding correct insertion of slides",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 030 through ur 033 relate to slide handling inserting multiple slides at once placing slides even and plane handling slides without spillage and understanding correct insertion of slides": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-030 through UR-033 relate to slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-030 through UR-033 relate to slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 035 states the user must be able to receive an overview image for each slide in the system ur 036 states the user must be able to quickly receive an overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 035 states the user must be able to receive an overview image for each slide in the system ur 036 states the user must be able to quickly receive an overview image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-035 states the user must be able to receive an overview image for each slide in the system; UR-036 states the user must be able to quickly receive an overview image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-035 states the user must be able to receive an overview image for each slide in the system; UR-036 states the user must be able to quickly receive an overview image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::requirements ur 038 ur 039 and ur 041 cover viewing an overview of all overview images navigating between slides referred by overview images and navigating to an roi using the overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::requirements ur 038 ur 039 and ur 041 cover viewing an overview of all overview images navigating between slides referred by overview images and navigating to an roi using the overview image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Requirements UR-038, UR-039, and UR-041 cover viewing an overview of all overview images, navigating between slides referred by overview images, and navigating to an ROI using the overview image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Requirements UR-038, UR-039, and UR-041 cover viewing an overview of all overview images, navigating between slides referred by overview images, and navigating to an ROI using the overview image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 043 and ur 044 state that the user must be able to view a slide label independently and rotate the slide label to its correct orientation",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 043 and ur 044 state that the user must be able to view a slide label independently and rotate the slide label to its correct orientation": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-043 and UR-044 state that the user must be able to view a slide label independently and rotate the slide label to its correct orientation.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-043 and UR-044 state that the user must be able to view a slide label independently and rotate the slide label to its correct orientation."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 046 to ur 049 cover digital microscopic magnified image magnifying the sample enough for analysis seamlessly zooming into the sample and navigating to roi positions on the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 046 to ur 049 cover digital microscopic magnified image magnifying the sample enough for analysis seamlessly zooming into the sample and navigating to roi positions on the sample": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-046 to UR-049 cover digital microscopic magnified image, magnifying the sample enough for analysis, seamlessly zooming into the sample, and navigating to ROI positions on the sample.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-046 to UR-049 cover digital microscopic magnified image, magnifying the sample enough for analysis, seamlessly zooming into the sample, and navigating to ROI positions on the sample."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 050 to ur 055 cover selecting a specific magnification level digitally magnifying the sample image into empty magnification seeing when a digital zoom is into empty magnification automatically focusing the sample manually adjusting focus and adjusting illumination of the digital microscopic magnified image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 050 to ur 055 cover selecting a specific magnification level digitally magnifying the sample image into empty magnification seeing when a digital zoom is into empty magnification automatically focusing the sample manually adjusting focus and adjusting illumination of the digital microscopic magnified image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-050 to UR-055 cover selecting a specific magnification level, digitally magnifying the sample image into empty magnification, seeing when a digital zoom is into empty magnification, automatically focusing the sample, manually adjusting focus, and adjusting illumination of the digital microscopic magnified image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-050 to UR-055 cover selecting a specific magnification level, digitally magnifying the sample image into empty magnification, seeing when a digital zoom is into empty magnification, automatically focusing the sample, manually adjusting focus, and adjusting illumination of the digital microscopic magnified image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::requirements ur 056 and ur 057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::requirements ur 056 and ur 057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Requirements UR-056 and UR-057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Requirements UR-056 and UR-057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::requirement ur 060 states that the user must be able to read the user interface and controls in a language he understands",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::requirement ur 060 states that the user must be able to read the user interface and controls in a language he understands": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Requirement UR-060 states that the user must be able to read the user interface and controls in a language he understands.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Requirement UR-060 states that the user must be able to read the user interface and controls in a language he understands."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::requirements ur 062 to ur 069 cover marking a poi making notes to a marked poi moving between marked pois seeing an overview of all annotations hiding annotations to fully see the sample changing annotation color and changing the font size of annotation descriptions",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::requirements ur 062 to ur 069 cover marking a poi making notes to a marked poi moving between marked pois seeing an overview of all annotations hiding annotations to fully see the sample changing annotation color and changing the font size of annotation descriptions": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Requirements UR-062 to UR-069 cover marking a POI, making notes to a marked POI, moving between marked POIs, seeing an overview of all annotations, hiding annotations to fully see the sample, changing annotation color, and changing the font size of annotation descriptions.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Requirements UR-062 to UR-069 cover marking a POI, making notes to a marked POI, moving between marked POIs, seeing an overview of all annotations, hiding annotations to fully see the sample, changing annotation color, and changing the font size of annotation descriptions."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::requirements ur 072 to ur 076 cover knowing when the microscope is working identifying annotation locations from the list and vice versa using hotkeys for common functions creating a screenshot and storing screenshots",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::requirements ur 072 to ur 076 cover knowing when the microscope is working identifying annotation locations from the list and vice versa using hotkeys for common functions creating a screenshot and storing screenshots": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Requirements UR-072 to UR-076 cover knowing when the microscope is working, identifying annotation locations from the list and vice versa, using hotkeys for common functions, creating a screenshot, and storing screenshots.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Requirements UR-072 to UR-076 cover knowing when the microscope is working, identifying annotation locations from the list and vice versa, using hotkeys for common functions, creating a screenshot, and storing screenshots."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::requirements ur 079 to ur 082 cover saving screenshots in common file formats remote controllability with io stream using ergopointer as an input device for the microscopy view and using an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::requirements ur 079 to ur 082 cover saving screenshots in common file formats remote controllability with io stream using ergopointer as an input device for the microscopy view and using an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: Requirements UR-079 to UR-082 cover saving screenshots in common file formats, remote controllability with iO:Stream, using Ergopointer as an input device for the microscopy view, and using an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: Requirements UR-079 to UR-082 cover saving screenshots in common file formats, remote controllability with iO:Stream, using Ergopointer as an input device for the microscopy view, and using an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::the file is a csv traceability matrix with columns requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::the file is a csv traceability matrix with columns requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: The file is a CSV traceability matrix with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: The file is a CSV traceability matrix with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec."
+      }
+    },
+    {
+      "group_key": "evidence::EV_INTERFACE::columns include component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_INTERFACE::columns include component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_INTERFACE: Columns include ... Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_INTERFACE: Columns include ... Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::ur 027 states the user must be able to see the initialization status of the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::ur 027 states the user must be able to see the initialization status of the system": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: UR-027 states: 'The user must be able to see the initialization status of the system.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: UR-027 states: 'The user must be able to see the initialization status of the system.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::ur 028 states the user must be able to see that the startup was successful",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::ur 028 states the user must be able to see that the startup was successful": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: UR-028 states: 'The user must be able to see that the startup was successful.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: UR-028 states: 'The user must be able to see that the startup was successful.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::ur 030 through ur 033 relate to slide handling inserting multiple slides at once placing slides even and plane handling slides without spillage and understanding correct insertion of slides",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::ur 030 through ur 033 relate to slide handling inserting multiple slides at once placing slides even and plane handling slides without spillage and understanding correct insertion of slides": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: UR-030 through UR-033 relate to slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: UR-030 through UR-033 relate to slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 038 ur 039 and ur 041 cover viewing an overview of all overview images navigating between slides referred by overview images and navigating to an roi using the overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 038 ur 039 and ur 041 cover viewing an overview of all overview images navigating between slides referred by overview images and navigating to an roi using the overview image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-038, UR-039, and UR-041 cover viewing an overview of all overview images, navigating between slides referred by overview images, and navigating to an ROI using the overview image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-038, UR-039, and UR-041 cover viewing an overview of all overview images, navigating between slides referred by overview images, and navigating to an ROI using the overview image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 056 and ur 057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 056 and ur 057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-056 and UR-057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-056 and UR-057 state that the user must access information explaining how system features are intended to be used and configure how often that information is displayed."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 062 to ur 069 cover marking a poi making notes to a marked poi moving between marked pois seeing an overview of all annotations hiding annotations to fully see the sample changing annotation color and changing the font size of annotation descriptions",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 062 to ur 069 cover marking a poi making notes to a marked poi moving between marked pois seeing an overview of all annotations hiding annotations to fully see the sample changing annotation color and changing the font size of annotation descriptions": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-062 to UR-069 cover marking a POI, making notes to a marked POI, moving between marked POIs, seeing an overview of all annotations, hiding annotations to fully see the sample, changing annotation color, and changing the font size of annotation descriptions.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-062 to UR-069 cover marking a POI, making notes to a marked POI, moving between marked POIs, seeing an overview of all annotations, hiding annotations to fully see the sample, changing annotation color, and changing the font size of annotation descriptions."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 072 to ur 076 cover knowing when the microscope is working identifying annotation locations from the list and vice versa using hotkeys for common functions creating a screenshot and storing screenshots",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 072 to ur 076 cover knowing when the microscope is working identifying annotation locations from the list and vice versa using hotkeys for common functions creating a screenshot and storing screenshots": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-072 to UR-076 cover knowing when the microscope is working, identifying annotation locations from the list and vice versa, using hotkeys for common functions, creating a screenshot, and storing screenshots.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-072 to UR-076 cover knowing when the microscope is working, identifying annotation locations from the list and vice versa, using hotkeys for common functions, creating a screenshot, and storing screenshots."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 079 to ur 082 cover saving screenshots in common file formats remote controllability with io stream using ergopointer as an input device for the microscopy view and using an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::requirements ur 079 to ur 082 cover saving screenshots in common file formats remote controllability with io stream using ergopointer as an input device for the microscopy view and using an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-079 to UR-082 cover saving screenshots in common file formats, remote controllability with iO:Stream, using Ergopointer as an input device for the microscopy view, and using an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: Requirements UR-079 to UR-082 cover saving screenshots in common file formats, remote controllability with iO:Stream, using Ergopointer as an input device for the microscopy view, and using an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view."
+      }
+    },
+    {
+      "group_key": "evidence::EV_CONSTRAINT::many rows contain only identifiers component names rec numbers and test ids without a descriptive sentence in the description column",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_CONSTRAINT::many rows contain only identifiers component names rec numbers and test ids without a descriptive sentence in the description column": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_CONSTRAINT: Many rows contain only identifiers, component names, REC numbers, and test IDs without a descriptive sentence in the Description column.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_CONSTRAINT: Many rows contain only identifiers, component names, REC numbers, and test IDs without a descriptive sentence in the Description column."
+      }
+    },
+    {
+      "group_key": "evidence::EV_DATA_OR_ARTIFACT::the file is a csv traceability matrix",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_DATA_OR_ARTIFACT::the file is a csv traceability matrix": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_DATA_OR_ARTIFACT: The file is a CSV traceability matrix",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_DATA_OR_ARTIFACT: The file is a CSV traceability matrix"
+      }
+    },
+    {
+      "group_key": "evidence::EV_DATA_OR_ARTIFACT::several csv cells contain line breaks extra whitespace repeated entries and quoted lists of ids such as ssrs mpa 129 ssrs mpa 130 ssrs mpa 152 and similar rows",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_DATA_OR_ARTIFACT::several csv cells contain line breaks extra whitespace repeated entries and quoted lists of ids such as ssrs mpa 129 ssrs mpa 130 ssrs mpa 152 and similar rows": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_DATA_OR_ARTIFACT: Several CSV cells contain line breaks, extra whitespace, repeated entries, and quoted lists of IDs such as SSRS-MPA-129, SSRS-MPA-130, SSRS-MPA-152, and similar rows.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_DATA_OR_ARTIFACT: Several CSV cells contain line breaks, extra whitespace, repeated entries, and quoted lists of IDs such as SSRS-MPA-129, SSRS-MPA-130, SSRS-MPA-152, and similar rows."
+      }
+    },
+    {
+      "group_key": "evidence::EV_DATA_OR_ARTIFACT::the file is a csv titled as a traceability matrix for requirements column headings include requirements description requirement specification component test id rec nr specification related specification rec nr related spec and verification related columns",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_DATA_OR_ARTIFACT::the file is a csv titled as a traceability matrix for requirements column headings include requirements description requirement specification component test id rec nr specification related specification rec nr related spec and verification related columns": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_DATA_OR_ARTIFACT: The file is a CSV titled as a traceability matrix for requirements. Column headings include Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), and verification-related columns.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_DATA_OR_ARTIFACT: The file is a CSV titled as a traceability matrix for requirements. Column headings include Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), and verification-related columns."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 027 states the user must be able to see the initialization status of the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 027 states the user must be able to see the initialization status of the system": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-027 states: 'The user must be able to see the initialization status of the system.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-027 states: 'The user must be able to see the initialization status of the system.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 028 states the user must be able to see that the startup was successful",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 028 states the user must be able to see that the startup was successful": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-028 states: 'The user must be able to see that the startup was successful.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-028 states: 'The user must be able to see that the startup was successful.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 029 states the user must receive a message on how to solve and or to react on an initialization error",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 029 states the user must receive a message on how to solve and or to react on an initialization error": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'"
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 030 states the user must be able to insert multiple slides at once ur 031 states the user must be able to place slides even and plane ur 032 states the user must be able to handle slides without spillage",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 030 states the user must be able to insert multiple slides at once ur 031 states the user must be able to place slides even and plane ur 032 states the user must be able to handle slides without spillage": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-030 states the user must be able to insert multiple slides at once; UR-031 states the user must be able to place slides even and plane; UR-032 states the user must be able to handle slides without spillage.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-030 states the user must be able to insert multiple slides at once; UR-031 states the user must be able to place slides even and plane; UR-032 states the user must be able to handle slides without spillage."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 035 states the user must be able to receive an overview image for each slide in the system ur 036 states the user must be able to quickly receive an overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 035 states the user must be able to receive an overview image for each slide in the system ur 036 states the user must be able to quickly receive an overview image": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-035 states the user must be able to receive an overview image for each slide in the system; UR-036 states the user must be able to quickly receive an overview image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-035 states the user must be able to receive an overview image for each slide in the system; UR-036 states the user must be able to quickly receive an overview image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements about overview images navigation between slides via overview images navigation to roi using the overview image viewing slide labels independently and rotating slide labels to correct orientation",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements about overview images navigation between slides via overview images navigation to roi using the overview image viewing slide labels independently and rotating slide labels to correct orientation": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: The file contains requirements about overview images, navigation between slides via overview images, navigation to ROI using the overview image, viewing slide labels independently, and rotating slide labels to correct orientation.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: The file contains requirements about overview images, navigation between slides via overview images, navigation to ROI using the overview image, viewing slide labels independently, and rotating slide labels to correct orientation."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements about digital microscopic magnified images magnification zooming roi navigation sample focus image illumination and related support entries",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements about digital microscopic magnified images magnification zooming roi navigation sample focus image illumination and related support entries": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: The file contains requirements about digital microscopic magnified images, magnification, zooming, ROI navigation, sample focus, image illumination, and related support entries.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: The file contains requirements about digital microscopic magnified images, magnification, zooming, ROI navigation, sample focus, image illumination, and related support entries."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 060 states that the user must be able to read the user interface and controls in a language they understand",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 060 states that the user must be able to read the user interface and controls in a language they understand": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-060 states that the user must be able to read the user interface and controls in a language they understand.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-060 states that the user must be able to read the user interface and controls in a language they understand."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements for marking pois making notes to pois moving between marked pois viewing annotation overviews hiding annotations changing annotation color changing annotation font size knowing when the microscope is working identifying annotation locations from lists and vice versa using hotkeys creating screenshots and storing screenshots",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements for marking pois making notes to pois moving between marked pois viewing annotation overviews hiding annotations changing annotation color changing annotation font size knowing when the microscope is working identifying annotation locations from lists and vice versa using hotkeys creating screenshots and storing screenshots": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: The file contains requirements for marking POIs, making notes to POIs, moving between marked POIs, viewing annotation overviews, hiding annotations, changing annotation color, changing annotation font size, knowing when the microscope is working, identifying annotation locations from lists and vice versa, using hotkeys, creating screenshots, and storing screenshots.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: The file contains requirements for marking POIs, making notes to POIs, moving between marked POIs, viewing annotation overviews, hiding annotations, changing annotation color, changing annotation font size, knowing when the microscope is working, identifying annotation locations from lists and vice versa, using hotkeys, creating screenshots, and storing screenshots."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements related to remote controllability with io stream and use of an ergopointer as an input device for microscopy view including a variant for an ergopointer connected to the consumer of the streaming software",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::the file contains requirements related to remote controllability with io stream and use of an ergopointer as an input device for microscopy view including a variant for an ergopointer connected to the consumer of the streaming software": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: The file contains requirements related to remote controllability with iO:Stream and use of an Ergopointer as an input device for microscopy view, including a variant for an Ergopointer connected to the consumer of the streaming software.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: The file contains requirements related to remote controllability with iO:Stream and use of an Ergopointer as an input device for microscopy view, including a variant for an Ergopointer connected to the consumer of the streaming software."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 051 states the user must be able to digitally magnify the sample image into empty magnification ur 052 states the user must be able to see when a digital zoomed into empty magnification",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 051 states the user must be able to digitally magnify the sample image into empty magnification ur 052 states the user must be able to see when a digital zoomed into empty magnification": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-051 states the user must be able to digitally magnify the sample image into empty magnification; UR-052 states the user must be able to see when a digital zoomed into empty magnification.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-051 states the user must be able to digitally magnify the sample image into empty magnification; UR-052 states the user must be able to see when a digital zoomed into empty magnification."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 053 states the user must be able to automatically focus the sample ur 054 states the user must be able to manually adjust the focus ur 055 states the user must be able to adjust the image illumination of digital microscopic magnified image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 053 states the user must be able to automatically focus the sample ur 054 states the user must be able to manually adjust the focus ur 055 states the user must be able to adjust the image illumination of digital microscopic magnified image": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-053 states the user must be able to automatically focus the sample; UR-054 states the user must be able to manually adjust the focus; UR-055 states the user must be able to adjust the image illumination of digital microscopic magnified image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_REQUIREMENT_STATEMENT: UR-053 states the user must be able to automatically focus the sample; UR-054 states the user must be able to manually adjust the focus; UR-055 states the user must be able to adjust the image illumination of digital microscopic magnified image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_DATA_OR_ARTIFACT::many rows contain only identifiers component names rec numbers and test ids without a descriptive sentence in the description column",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_DATA_OR_ARTIFACT::many rows contain only identifiers component names rec numbers and test ids without a descriptive sentence in the description column": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_DATA_OR_ARTIFACT: Many rows contain only identifiers, component names, REC numbers, and test IDs without a descriptive sentence in the Description column.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER": "EV_DATA_OR_ARTIFACT: Many rows contain only identifiers, component names, REC numbers, and test IDs without a descriptive sentence in the Description column."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 027 the user must be able to see the initialization status of the system hpsrs 010 host pc verif hpc 001 rec 00937 rec 00938 rec 00729 rec 00730",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 027 the user must be able to see the initialization status of the system hpsrs 010 host pc verif hpc 001 rec 00937 rec 00938 rec 00729 rec 00730": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-027;The user must be able to see the initialization status of the system;HPSRS-010;Host PC;VERIF-HPC-001;REC-00937, REC-00938, REC-00729, REC-00730",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-027;The user must be able to see the initialization status of the system;HPSRS-010;Host PC;VERIF-HPC-001;REC-00937, REC-00938, REC-00729, REC-00730"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 028 the user must be able to see that the startup was successful ssrs mpa 025 mpa t ui mpa 025 rec 00884",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 028 the user must be able to see that the startup was successful ssrs mpa 025 mpa t ui mpa 025 rec 00884": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-028;The user must be able to see that the startup was successful.;SSRS-MPA-025;MPA;T-UI-MPA-025 ;REC-00884",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-028;The user must be able to see that the startup was successful.;SSRS-MPA-025;MPA;T-UI-MPA-025 ;REC-00884"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 029 the user must receive a message on how to solve and or to react on an initialization error",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 029 the user must receive a message on how to solve and or to react on an initialization error": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-029;The user must receive a message on how to solve and/or to react on an initialization error.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-029;The user must receive a message on how to solve and/or to react on an initialization error."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 030 with the system the user must be able to insert multiple slides at once",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 030 with the system the user must be able to insert multiple slides at once": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-030;With the system the user must be able to insert multiple slides at once.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-030;With the system the user must be able to insert multiple slides at once."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 031 with the system the user must be able to place slides even and plane",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 031 with the system the user must be able to place slides even and plane": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-031;With the system the user must be able to place slides even and plane.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-031;With the system the user must be able to place slides even and plane."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 032 with the system the user must be able to handle slides without spillage",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 032 with the system the user must be able to handle slides without spillage": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-032;With the system the user must be able to handle slides without spillage.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-032;With the system the user must be able to handle slides without spillage."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 033 with the system the user must be able to understand the correct insertion of the slides",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 033 with the system the user must be able to understand the correct insertion of the slides": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-033;With the system the user must be able to understand the correct insertion of the slides.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-033;With the system the user must be able to understand the correct insertion of the slides."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 035 with the system the user must be able to to receive an overview image for each slide in the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 035 with the system the user must be able to to receive an overview image for each slide in the system": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-035;With the system the user must be able to to receive an overview image for each slide in the system.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-035;With the system the user must be able to to receive an overview image for each slide in the system."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 036 with the system the user must be able to quickly receive an overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 036 with the system the user must be able to quickly receive an overview image": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-036;With the system the user must be able to quickly receive an overview image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-036;With the system the user must be able to quickly receive an overview image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 038 with the system the user must be able to see an overview of all overview images",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 038 with the system the user must be able to see an overview of all overview images": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-038;With the system the user must be able to see an overview of all overview images.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-038;With the system the user must be able to see an overview of all overview images."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 039 with the system the user must be able to navigate between slides referred by overview images",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 039 with the system the user must be able to navigate between slides referred by overview images": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-039;With the system the user must be able to navigate between slides referred by overview images.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-039;With the system the user must be able to navigate between slides referred by overview images."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 041 with the system the user must be able to navigate to an roi using the overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 041 with the system the user must be able to navigate to an roi using the overview image": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-041;With the system the user must be able to navigate to an ROI using the overview image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-041;With the system the user must be able to navigate to an ROI using the overview image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 043 with the system the user must be able to view a slide label independently",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 043 with the system the user must be able to view a slide label independently": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-043;With the system the user must be able to view a slide label independently.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-043;With the system the user must be able to view a slide label independently."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 044 with the system the user must be able to rotate the slide label to its correct orientation",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 044 with the system the user must be able to rotate the slide label to its correct orientation": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-044;With the system the user must be able to rotate the slide label to its correct orientation.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-044;With the system the user must be able to rotate the slide label to its correct orientation."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 046 with the system the user must be able to receive a digital microscopic magnified image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 046 with the system the user must be able to receive a digital microscopic magnified image": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-046;With the system the user must be able to receive a digital microscopic magnified image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-046;With the system the user must be able to receive a digital microscopic magnified image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 047 with the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 047 with the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-047;With the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-047;With the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 048 with the system the user must be able to seamlessly zoom into the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 048 with the system the user must be able to seamlessly zoom into the sample": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-048;With the system the user must be able to seamlessly zoom into the sample.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-048;With the system the user must be able to seamlessly zoom into the sample."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 049 with the system the user must be able to navigate to roi region of interest positions on the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 049 with the system the user must be able to navigate to roi region of interest positions on the sample": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-049;With the system the user must be able to navigate to ROI (Region of Interest) positions on the sample.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-049;With the system the user must be able to navigate to ROI (Region of Interest) positions on the sample."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 050 with the system the user must be able to quickly select a specific magnification level",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 050 with the system the user must be able to quickly select a specific magnification level": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-050;With the system the user must be able to quickly select a specific magnification level.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-050;With the system the user must be able to quickly select a specific magnification level."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 051 with the system the user must be able to digitally magnify the sample image into empty magnification",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 051 with the system the user must be able to digitally magnify the sample image into empty magnification": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-051;With the system the user must be able to digitally magnify the sample image into empty magnification.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-051;With the system the user must be able to digitally magnify the sample image into empty magnification."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 052 with the system the user must be able to see when a digital zoomed into empty magnification",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 052 with the system the user must be able to see when a digital zoomed into empty magnification": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-052;With the system the user must be able to see when a digital zoomed into empty magnification.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-052;With the system the user must be able to see when a digital zoomed into empty magnification."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 053 with the system the user must be able to automatically focus the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 053 with the system the user must be able to automatically focus the sample": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-053;With the system the user must be able to automatically focus the sample.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-053;With the system the user must be able to automatically focus the sample."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 054 with the system the user must be able to manually adjust the focus",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 054 with the system the user must be able to manually adjust the focus": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-054;With the system the user must be able to manually adjust the focus.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-054;With the system the user must be able to manually adjust the focus."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 055 with the system the user must be able to adjust the image illumination of digital microscopic magnified image",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 055 with the system the user must be able to adjust the image illumination of digital microscopic magnified image": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-055;With the system the user must be able to adjust the image illumination of digital microscopic magnified image.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-055;With the system the user must be able to adjust the image illumination of digital microscopic magnified image."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 056 with the system the user must be able to access information that explains how system features are intended to be used",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 056 with the system the user must be able to access information that explains how system features are intended to be used": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-056;With the system the user must be able to access information that explains how system features are intended to be used.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-056;With the system the user must be able to access information that explains how system features are intended to be used."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 057 with the system the user must be able to configure how often information that explains system features is displayed",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 057 with the system the user must be able to configure how often information that explains system features is displayed": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-057;With the system the user must be able to configure how often information that explains system features is displayed.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-057;With the system the user must be able to configure how often information that explains system features is displayed."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 060 with the system the user must be able to read the user interface and controls in a language he understand s",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 060 with the system the user must be able to read the user interface and controls in a language he understand s": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-060;With the system the user must be able to read the user interface and controls in a language he understand s.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-060;With the system the user must be able to read the user interface and controls in a language he understand s."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 062 with the system the user must be able to mark a specific poi point of interest",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 062 with the system the user must be able to mark a specific poi point of interest": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-062;With the system the user must be able to mark a specific POI (Point of Interest).",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-062;With the system the user must be able to mark a specific POI (Point of Interest)."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 063 with the system the user must be able to make a note to a marked poi",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 063 with the system the user must be able to make a note to a marked poi": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-063;With the system the user must be able to make a note to a marked POI.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-063;With the system the user must be able to make a note to a marked POI."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 064 with the system the user must be able to move between several marked pois",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 064 with the system the user must be able to move between several marked pois": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-064;With the system the user must be able to move between several marked POIs.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-064;With the system the user must be able to move between several marked POIs."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 065 with the system the user must be able to see an overview of all annotations",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 065 with the system the user must be able to see an overview of all annotations": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-065;With the system the user must be able to see an overview of all annotations.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-065;With the system the user must be able to see an overview of all annotations."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 067 with the system the user must be able to hide an annotation so that the sample is fully visible",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 067 with the system the user must be able to hide an annotation so that the sample is fully visible": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-067;With the system the user must be able to hide an annotation so that the sample is fully visible.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-067;With the system the user must be able to hide an annotation so that the sample is fully visible."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 068 with the system the user must be able to change the color of annotations",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 068 with the system the user must be able to change the color of annotations": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-068;With the system the user must be able to change the color of annotations.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-068;With the system the user must be able to change the color of annotations."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 069 with the system the user must be able to change the font size of an annotation description",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 069 with the system the user must be able to change the font size of an annotation description": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-069;With the system the user must be able to change the font size of an annotation description.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-069;With the system the user must be able to change the font size of an annotation description."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 072 with the system the user must be able to know when the microscope is working",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 072 with the system the user must be able to know when the microscope is working": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-072;With the system the user must be able to know when the microscope is working.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-072;With the system the user must be able to know when the microscope is working."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 073 with the system the user must be able to identify the location of an annotation from the list of annotations and vise versa",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 073 with the system the user must be able to identify the location of an annotation from the list of annotations and vise versa": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-073;With the system the user must be able to identify the location of an annotation from the list of annotations and vise versa.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-073;With the system the user must be able to identify the location of an annotation from the list of annotations and vise versa."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 074 with the system the user must be able to to use hotkeys for common functions",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 074 with the system the user must be able to to use hotkeys for common functions": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-074;With the system the user must be able to to use hotkeys for common functions.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-074;With the system the user must be able to to use hotkeys for common functions."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 075 with the system the user must be able to create a screenshot",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 075 with the system the user must be able to create a screenshot": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-075;With the system the user must be able to create a screenshot",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-075;With the system the user must be able to create a screenshot"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 076 with the system the user must be able to store screenshots",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 076 with the system the user must be able to store screenshots": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-076;With the system the user must be able to store screenshots",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-076;With the system the user must be able to store screenshots"
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 079 with the system the user must be able to save screenshots in common file formats",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 079 with the system the user must be able to save screenshots in common file formats": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-079;With the system the user must be able to save screenshots in common file formats.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-079;With the system the user must be able to save screenshots in common file formats."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 080 the system shall be remotely controllable with the streaming software io stream",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 080 the system shall be remotely controllable with the streaming software io stream": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-080;The system shall be remotely controllable with the streaming software iO:Stream.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-080;The system shall be remotely controllable with the streaming software iO:Stream."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 081 the system shall provide the functionality to use the ergopointer as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 081 the system shall provide the functionality to use the ergopointer as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-081;The system shall provide the functionality to use the Ergopointer as an input device for the microscopy view.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-081;The system shall provide the functionality to use the Ergopointer as an input device for the microscopy view."
+      }
+    },
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::ur 082 the system shall provide the functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::ur 082 the system shall provide the functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: UR-082;The system shall provide the functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view.",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_STAKEHOLDER_NEED: UR-082;The system shall provide the functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view."
+      }
+    },
+    {
+      "group_key": "evidence::EV_REGULATORY_OR_STANDARD_REFERENCE::requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REGULATORY_OR_STANDARD_REFERENCE::requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REGULATORY_OR_STANDARD_REFERENCE: Requirements;Description;Requirement Specification;Component;Test ID;REC-Nr. Specification;Related Specification;REC-Nr. (related Spec.);<- Verification of Implementation Spec.;<- Verification of Implementation related Spec",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_REGULATORY_OR_STANDARD_REFERENCE: Requirements;Description;Requirement Specification;Component;Test ID;REC-Nr. Specification;Related Specification;REC-Nr. (related Spec.);<- Verification of Implementation Spec.;<- Verification of Implementation related Spec"
+      }
+    },
+    {
+      "group_key": "evidence::EV_DATA_OR_ARTIFACT::rows starting with ur 027 through ur 082",
+      "item_type": "detected_evidence",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_DATA_OR_ARTIFACT::rows starting with ur 027 through ur 082": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_DATA_OR_ARTIFACT: Rows starting with UR-027 through UR-082",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation.",
+      "agent_values": {
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER": "EV_DATA_OR_ARTIFACT: Rows starting with UR-027 through UR-082"
+      }
+    }
+  ]
+}

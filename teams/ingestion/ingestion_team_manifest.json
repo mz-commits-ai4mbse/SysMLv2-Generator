@@ -1,0 +1,33 @@
+{
+  "manifest_id": "INGESTION_TEAM_MANIFEST_001",
+  "name": "Turing Generator Agentic Ingestion Teams",
+  "description": "Defines the teams used for agentic ingestion of legacy engineering data.",
+  "workflow_stage": "agentic_ingestion",
+  "teams": [
+    {
+      "team_id": "TEAM_LEGACY_INTERPRETATION",
+      "team_file": "teams/ingestion/legacy_interpretation_team.json",
+      "task_name": "Interpret raw legacy data"
+    },
+    {
+      "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+      "team_file": "teams/ingestion/evidence_classification_team.json",
+      "task_name": "Classify engineering evidence"
+    },
+    {
+      "team_id": "TEAM_DERIVATION_ASSESSMENT",
+      "team_file": "teams/ingestion/derivation_assessment_team.json",
+      "task_name": "Assess downstream model derivation support"
+    },
+    {
+      "team_id": "TEAM_COMPLETENESS_REVIEW",
+      "team_file": "teams/ingestion/completeness_review_team.json",
+      "task_name": "Check completeness, gaps, risks and review readiness"
+    },
+    {
+      "team_id": "TEAM_REPORT_COMPOSITION",
+      "team_file": "teams/ingestion/report_composition_team.json",
+      "task_name": "Compose structured ingestion report"
+    }
+  ]
+}

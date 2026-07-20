@@ -1,0 +1,124 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_SYNTHETIC_DERIVATION_ASSESSMENT_20260709T114623Z",
+  "team_id": "TEAM_SYNTHETIC_DERIVATION_ASSESSMENT",
+  "task_name": "Synthetic derivation assessment consensus test",
+  "created_at": "2026-07-09T11:46:23.465334+00:00",
+  "total_agents": 3,
+  "agent_ids": [
+    "AGENT_A",
+    "AGENT_B",
+    "AGENT_C"
+  ],
+  "summary": {
+    "total_groups": 5,
+    "full_agreement": 1,
+    "majority_agreement": 1,
+    "majority_with_disagreement": 2,
+    "minority_interpretation": 1,
+    "conflict": 0,
+    "review_required": 3
+  },
+  "groups": [
+    {
+      "group_key": "derivation::functional model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_A",
+        "AGENT_B",
+        "AGENT_C"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_A",
+          "AGENT_B",
+          "AGENT_C"
+        ]
+      },
+      "representative_value": "functional_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "derivation::validation or verification model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "majority_with_disagreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_A",
+        "AGENT_B"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_A",
+          "AGENT_B"
+        ],
+        "partially supported": [
+          "AGENT_C"
+        ]
+      },
+      "representative_value": "validation_or_verification_model: not_supported",
+      "review_required": true,
+      "reason": "A majority exists, but at least one agent disagrees."
+    },
+    {
+      "group_key": "gap::validation criteria",
+      "item_type": "gap",
+      "agreement_level": "majority_agreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_A",
+        "AGENT_B"
+      ],
+      "value_distribution": {
+        "validation criteria": [
+          "AGENT_A",
+          "AGENT_B"
+        ]
+      },
+      "representative_value": "validation criteria",
+      "review_required": false,
+      "reason": "A majority of agents produced the same comparable item."
+    },
+    {
+      "group_key": "recommended_review_decision",
+      "item_type": "recommended_review_decision",
+      "agreement_level": "majority_with_disagreement",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_A",
+        "AGENT_B"
+      ],
+      "value_distribution": {
+        "incomplete but reviewable": [
+          "AGENT_A",
+          "AGENT_B"
+        ],
+        "review required": [
+          "AGENT_C"
+        ]
+      },
+      "representative_value": "incomplete_but_reviewable",
+      "review_required": true,
+      "reason": "A majority exists, but at least one agent disagrees."
+    },
+    {
+      "group_key": "gap::explicit validation criteria",
+      "item_type": "gap",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_C"
+      ],
+      "value_distribution": {
+        "explicit validation criteria": [
+          "AGENT_C"
+        ]
+      },
+      "representative_value": "explicit validation criteria",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    }
+  ]
+}

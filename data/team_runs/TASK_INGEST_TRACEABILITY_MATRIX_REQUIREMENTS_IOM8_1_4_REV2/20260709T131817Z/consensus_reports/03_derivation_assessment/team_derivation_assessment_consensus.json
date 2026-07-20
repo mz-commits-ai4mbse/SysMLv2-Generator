@@ -1,0 +1,38 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_DERIVATION_ASSESSMENT_20260709T131817Z",
+  "team_id": "TEAM_DERIVATION_ASSESSMENT",
+  "task_name": "Assess downstream model derivation support",
+  "created_at": "2026-07-09T13:18:17.660939+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+  ],
+  "summary": {
+    "total_groups": 1,
+    "full_agreement": 1,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "unstructured_output::agent derivation rules focused assessor",
+      "item_type": "unstructured_output",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team derivation assessment team name derivation assessment team task name assess downstream model derivation su": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_DERIVATION_ASSESSMENT\",\n  \"team_name\": \"Derivation Assessment Team\",\n  \"task_name\": \"Assess downstream model derivation su",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    }
+  ]
+}

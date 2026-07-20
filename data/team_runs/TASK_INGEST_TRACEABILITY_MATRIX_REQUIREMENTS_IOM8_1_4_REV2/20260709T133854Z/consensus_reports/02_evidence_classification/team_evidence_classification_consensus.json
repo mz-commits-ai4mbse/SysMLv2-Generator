@@ -1,0 +1,769 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260709T133947Z",
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "task_name": "Classify engineering evidence",
+  "created_at": "2026-07-09T13:39:47.710620+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+  ],
+  "summary": {
+    "total_groups": 44,
+    "full_agreement": 44,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 027 the user must be able to see the initialization status of the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 027 the user must be able to see the initialization status of the system": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-027;The user must be able to see the initialization status of the system;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 028 the user must be able to see that the startup was successful",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 028 the user must be able to see that the startup was successful": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-028;The user must be able to see that the startup was successful.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 029 the user must receive a message on how to solve and or to react on an initialization error",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 029 the user must receive a message on how to solve and or to react on an initialization error": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-029;The user must receive a message on how to solve and/or to react on an initialization error.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 030 with the system the user must be able to insert multiple slides at once",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 030 with the system the user must be able to insert multiple slides at once": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-030;With the system the user must be able to insert multiple slides at once.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 031 with the system the user must be able to place slides even and plane",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 031 with the system the user must be able to place slides even and plane": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-031;With the system the user must be able to place slides even and plane.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 032 with the system the user must be able to handle slides without spillage",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 032 with the system the user must be able to handle slides without spillage": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-032;With the system the user must be able to handle slides without spillage.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 033 with the system the user must be able to understand the correct insertion of the slides",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 033 with the system the user must be able to understand the correct insertion of the slides": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-033;With the system the user must be able to understand the correct insertion of the slides.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 035 with the system the user must be able to to receive an overview image for each slide in the system",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 035 with the system the user must be able to to receive an overview image for each slide in the system": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-035;With the system the user must be able to to receive an overview image for each slide in the system.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 036 with the system the user must be able to quickly receive an overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 036 with the system the user must be able to quickly receive an overview image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-036;With the system the user must be able to quickly receive an overview image.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 038 with the system the user must be able to see an overview of all overview images",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 038 with the system the user must be able to see an overview of all overview images": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-038;With the system the user must be able to see an overview of all overview images.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 039 with the system the user must be able to navigate between slides referred by overview images",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 039 with the system the user must be able to navigate between slides referred by overview images": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-039;With the system the user must be able to navigate between slides referred by overview images.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 041 with the system the user must be able to navigate to an roi using the overview image",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 041 with the system the user must be able to navigate to an roi using the overview image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-041;With the system the user must be able to navigate to an ROI using the overview image.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 043 with the system the user must be able to view a slide label independently",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 043 with the system the user must be able to view a slide label independently": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-043;With the system the user must be able to view a slide label independently.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 044 with the system the user must be able to rotate the slide label to its correct orientation",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 044 with the system the user must be able to rotate the slide label to its correct orientation": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-044;With the system the user must be able to rotate the slide label to its correct orientation.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 046 with the system the user must be able to receive a digital microscopic magnified image",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 046 with the system the user must be able to receive a digital microscopic magnified image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-046;With the system the user must be able to receive a digital microscopic magnified image.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 047 with the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 047 with the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-047;With the system the user must be able to magnify the sample to a degree that provides enough detail for his analytic question.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 048 with the system the user must be able to seamlessly zoom into the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 048 with the system the user must be able to seamlessly zoom into the sample": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-048;With the system the user must be able to seamlessly zoom into the sample.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 049 with the system the user must be able to navigate to roi region of interest positions on the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 049 with the system the user must be able to navigate to roi region of interest positions on the sample": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-049;With the system the user must be able to navigate to ROI (Region of Interest) positions on the sample.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 050 with the system the user must be able to quickly select a specific magnification level",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 050 with the system the user must be able to quickly select a specific magnification level": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-050;With the system the user must be able to quickly select a specific magnification level.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 053 with the system the user must be able to automatically focus the sample",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 053 with the system the user must be able to automatically focus the sample": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-053;With the system the user must be able to automatically focus the sample.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 054 with the system the user must be able to manually adjust the focus",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 054 with the system the user must be able to manually adjust the focus": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-054;With the system the user must be able to manually adjust the focus.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 055 with the system the user must be able to adjust the image illumination of digital microscopic magnified image",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 055 with the system the user must be able to adjust the image illumination of digital microscopic magnified image": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-055;With the system the user must be able to adjust the image illumination of digital microscopic magnified image.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 056 with the system the user must be able to access information that explains how system features are intended to be used",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 056 with the system the user must be able to access information that explains how system features are intended to be used": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-056;With the system the user must be able to access information that explains how system features are intended to be used.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 057 with the system the user must be able to configure how often information that explains system features is displayed",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 057 with the system the user must be able to configure how often information that explains system features is displayed": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-057;With the system the user must be able to configure how often information that explains system features is displayed.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 060 with the system the user must be able to read the user interface and controls in a language he understand s",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 060 with the system the user must be able to read the user interface and controls in a language he understand s": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-060;With the system the user must be able to read the user interface and controls in a language he understand s.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 062 with the system the user must be able to mark a specific poi point of interest",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 062 with the system the user must be able to mark a specific poi point of interest": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-062;With the system the user must be able to mark a specific POI (Point of Interest).;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 063 with the system the user must be able to make a note to a marked poi",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 063 with the system the user must be able to make a note to a marked poi": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-063;With the system the user must be able to make a note to a marked POI.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 064 with the system the user must be able to move between several marked pois",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 064 with the system the user must be able to move between several marked pois": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-064;With the system the user must be able to move between several marked POIs.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 065 with the system the user must be able to see an overview of all annotations",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 065 with the system the user must be able to see an overview of all annotations": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-065;With the system the user must be able to see an overview of all annotations.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 066 with the system the user must be able to see as much of the sample as possible",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 066 with the system the user must be able to see as much of the sample as possible": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-066;With the system the user must be able to see as much of the sample as possible.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 067 with the system the user must be able to hide an annotation so that the sample is fully visible",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 067 with the system the user must be able to hide an annotation so that the sample is fully visible": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-067;With the system the user must be able to hide an annotation so that the sample is fully visible.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 068 with the system the user must be able to change the color of annotations",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 068 with the system the user must be able to change the color of annotations": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-068;With the system the user must be able to change the color of annotations.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 069 with the system the user must be able to change the font size of an annotation description",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 069 with the system the user must be able to change the font size of an annotation description": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-069;With the system the user must be able to change the font size of an annotation description.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 072 with the system the user must be able to know when the microscope is working",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 072 with the system the user must be able to know when the microscope is working": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-072;With the system the user must be able to know when the microscope is working.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 073 with the system the user must be able to identify the location of an annotation from the list of annotations and vise versa",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 073 with the system the user must be able to identify the location of an annotation from the list of annotations and vise versa": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-073;With the system the user must be able to identify the location of an annotation from the list of annotations and vise versa.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 074 with the system the user must be able to to use hotkeys for common functions",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 074 with the system the user must be able to to use hotkeys for common functions": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-074;With the system the user must be able to to use hotkeys for common functions.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 075 with the system the user must be able to create a screenshot",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 075 with the system the user must be able to create a screenshot": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-075;With the system the user must be able to create a screenshot;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 076 with the system the user must be able to store screenshots",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 076 with the system the user must be able to store screenshots": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-076;With the system the user must be able to store screenshots;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 079 with the system the user must be able to save screenshots in common file formats",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 079 with the system the user must be able to save screenshots in common file formats": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-079;With the system the user must be able to save screenshots in common file formats.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 080 the system shall be remotely controllable with the streaming software io stream",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 080 the system shall be remotely controllable with the streaming software io stream": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-080;The system shall be remotely controllable with the streaming software iO:Stream.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 081 the system shall provide the functionality to use the ergopointer as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 081 the system shall provide the functionality to use the ergopointer as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-081;The system shall provide the functionality to use the Ergopointer as an input device for the microscopy view.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::ur 082 the system shall provide the functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::ur 082 the system shall provide the functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: UR-082;The system shall provide the functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view.;",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_REQUIREMENT_STATEMENT::requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_REQUIREMENT_STATEMENT::requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_REQUIREMENT_STATEMENT: Requirements;Description;Requirement Specification;Component;Test ID;REC-Nr. Specification;Related Specification;REC-Nr. (related Spec.);<- Verification of Implementation Spec.;<- Verification of Implementation related Spec",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "evidence::EV_INTERFACE::component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_INTERFACE::component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_INTERFACE: Component;Test ID;REC-Nr. Specification;Related Specification;REC-Nr. (related Spec.);<- Verification of Implementation Spec.;<- Verification of Implementation related Spec",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    }
+  ]
+}

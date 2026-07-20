@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+
+  "authoritative_sources": {
+    "problem_space": {
+      "tool": "CATIA Magic System of Systems Architect",
+      "language": "SysML v2",
+      "status": "authoritative",
+      "location": "External to repository",
+      "contains": [
+        "Stakeholders",
+        "User Needs",
+        "Stakeholder Requirements",
+        "Use Cases",
+        "System Architecture",
+        "Model Relationships"
+      ]
+    },
+
+    "solution_space": {
+      "tool": "Repository Source Code",
+      "status": "authoritative",
+      "contains": [
+        "Agent Teams",
+        "Memory Artifacts",
+        "Recipes",
+        "Prompt Definitions",
+        "Pipeline",
+        "Validation",
+        "User Interface"
+      ]
+    },
+
+    "collaboration": {
+      "tool": "Collaboration Knowledge Base",
+      "status": "authoritative",
+      "contains": [
+        "Roadmap",
+        "Current State",
+        "Working Rules",
+        "Architecture Decisions",
+        "Project Handovers"
+      ]
+    }
+  },
+
+  "shadow_model": {
+    "tool": "SYSIDE",
+    "status": "temporary",
+
+    "purpose": "Prototype and syntax experimentation",
+
+    "planned_migration": {
+      "roadmap_item": "N",
+      "target": "CATIA Magic",
+      "status": "planned"
+    }
+  },
+
+  "implementation_repository": {
+  "provider": "GitHub",
+  "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
+  "default_branch": "main",
+  "status": "authoritative_for_committed_implementation",
+  "access_method": "ChatGPT GitHub connector",
+  "rules": [
+    "Committed and pushed repository content is authoritative for the implementation state.",
+    "Local uncommitted changes are not visible through the GitHub connector.",
+    "After every SSOT UPDATE, repository synchronization shall be verified.",
+    "The collaboration directory has no runtime or implementation dependency on the Turing Generator."
+  ]
+}
+
+  "rules": [
+    "The SysML model shall never be manually duplicated inside repository documentation.",
+    "Documentation shall reference stable model element identifiers whenever possible.",
+    "Repository documentation may summarize model content but never redefine it.",
+    "If contradictions occur, the authoritative model always takes precedence."
+  ]
+}

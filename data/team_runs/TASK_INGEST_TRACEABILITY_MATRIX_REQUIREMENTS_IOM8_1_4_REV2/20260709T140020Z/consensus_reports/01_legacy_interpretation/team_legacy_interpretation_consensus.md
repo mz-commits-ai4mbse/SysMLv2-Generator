@@ -1,0 +1,67 @@
+# Consensus and Variance Report
+
+## Report Metadata
+
+- Consensus Report ID: `CONSENSUS_TEAM_LEGACY_INTERPRETATION_20260709T140038Z`
+- Team ID: `TEAM_LEGACY_INTERPRETATION`
+- Task Name: Interpret raw legacy data
+- Created At: 2026-07-09T14:00:38.824191+00:00
+- Total Agents: 1
+
+## Summary
+
+| Metric | Count |
+|---|---:|
+| total_groups | 15 |
+| full_agreement | 15 |
+| majority_agreement | 0 |
+| majority_with_disagreement | 0 |
+| minority_interpretation | 0 |
+| conflict | 0 |
+| review_required | 0 |
+
+## Agent / Persona Mapping
+
+| Agent ID | Persona ID |
+|---|---|
+| AGENT_LEGACY_LITERAL_INTERPRETER | PERSONA_LEGACY_LITERAL_INTERPRETER |
+
+## Agent Comparison Matrix
+
+| Item Type | Agreement | Representative Value | AGENT_LEGACY_LITERAL_INTERPRETER | Review Required |
+|---|---|---|---|---|
+| source_information | full_agreement | The file is a CSV with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec. | The file is a CSV with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec. | False |
+| source_information | full_agreement | The file contains requirement identifiers such as UR-027 through UR-082 and related specification identifiers such as SSRS-MPA-xxx, HPSRS-xxx, OP-OV-xxx, OP-MB-xxx, XY-FW-xxx, Z-FW-xxx, TRAY-012, and others. | The file contains requirement identifiers such as UR-027 through UR-082 and related specification identifiers such as SSRS-MPA-xxx, HPSRS-xxx, OP-OV-xxx, OP-MB-xxx, XY-FW-xxx, Z-FW-xxx, TRAY-012, and others. | False |
+| source_information | full_agreement | UR-027 states: 'The user must be able to see the initialization status of the system'. It references HPSRS-010, Component 'Host PC', Test ID 'VERIF-HPC-001', and REC references 'REC-00937, REC-00938, REC-00729, REC-00730'. | UR-027 states: 'The user must be able to see the initialization status of the system'. It references HPSRS-010, Component 'Host PC', Test ID 'VERIF-HPC-001', and REC references 'REC-00937, REC-00938, REC-00729, REC-00730'. | False |
+| source_information | full_agreement | UR-028 states: 'The user must be able to see that the startup was successful.' It references SSRS-MPA-025, Component 'MPA', Test ID 'T-UI-MPA-025', and REC reference 'REC-00884'. | UR-028 states: 'The user must be able to see that the startup was successful.' It references SSRS-MPA-025, Component 'MPA', Test ID 'T-UI-MPA-025', and REC reference 'REC-00884'. | False |
+| source_information | full_agreement | UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.' It references multiple SSRS-MPA items including SSRS-MPA-018, -020, -021, -022, -024, -129, -130, -131, and -132, with components MPA or MPC and REC references including REC-00884 and REC-00863. | UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.' It references multiple SSRS-MPA items including SSRS-MPA-018, -020, -021, -022, -024, -129, -130, -131, and -132, with components MPA or MPC and REC references including REC-00884 and REC-00863. | False |
+| source_information | full_agreement | UR-030 to UR-033 concern slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides. Associated rows reference TRAY-012, XY-MECH-001, and SSRS-MPA-028/-029. | UR-030 to UR-033 concern slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides. Associated rows reference TRAY-012, XY-MECH-001, and SSRS-MPA-028/-029. | False |
+| source_information | full_agreement | Multiple requirements address overview images, slide labels, digital microscopic magnified images, magnification, ROI navigation, focusing, illumination adjustment, and related UI/MPA/MPA-SIP/MPC references. | Multiple requirements address overview images, slide labels, digital microscopic magnified images, magnification, ROI navigation, focusing, illumination adjustment, and related UI/MPA/MPA-SIP/MPC references. | False |
+| source_information | full_agreement | UR-060 states: 'With the system the user must be able to read the user interface and controls in a language he understand s.' It references SSRS-MPA-002, SSRS-MPA-003, SSRS-MPA-014, SSRS-MPA-081, SSRS-MPA-082, SSRS-MPA-083, SSRS-MPA-084, SSRS-MPA-085, and SSRS-MPA-119. | UR-060 states: 'With the system the user must be able to read the user interface and controls in a language he understand s.' It references SSRS-MPA-002, SSRS-MPA-003, SSRS-MPA-014, SSRS-MPA-081, SSRS-MPA-082, SSRS-MPA-083, SSRS-MPA-084, SSRS-MPA-085, and SSRS-MPA-119. | False |
+| source_information | full_agreement | Later requirements cover POI marking, notes, navigation between POIs, annotation overview, hiding annotations, changing annotation color and font size, system working indication, locating annotations, hotkeys, screenshot creation/storage/file formats, and related linked SSRS-MPA items. | Later requirements cover POI marking, notes, navigation between POIs, annotation overview, hiding annotations, changing annotation color and font size, system working indication, locating annotations, hotkeys, screenshot creation/storage/file formats, and related linked SSRS-MPA items. | False |
+| source_information | full_agreement | UR-080 states the system shall be remotely controllable with streaming software iO:Stream. UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view. UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view. | UR-080 states the system shall be remotely controllable with streaming software iO:Stream. UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view. UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view. | False |
+| source_information | full_agreement | The file contains repeated identifiers, repeated linked specifications, blank cells, and some rows with inconsistent formatting or line breaks inside cells. | The file contains repeated identifiers, repeated linked specifications, blank cells, and some rows with inconsistent formatting or line breaks inside cells. | False |
+| source_information | full_agreement | The file appears to be a traceability matrix linking user requirements to specification identifiers, components, test IDs, and REC numbers. | The file appears to be a traceability matrix linking user requirements to specification identifiers, components, test IDs, and REC numbers. | False |
+| source_information | full_agreement | The listed requirements are associated with multiple components and subsystems, including Host PC, MPA, MPC, MPA-SIP, TRAY-012, XY-FW, Z-FW, and others. | The listed requirements are associated with multiple components and subsystems, including Host PC, MPA, MPC, MPA-SIP, TRAY-012, XY-FW, Z-FW, and others. | False |
+| source_information | full_agreement | The file does not explain the meaning of the abbreviations MPA, MPC, MPA-SIP, HPSRS, SSRS, OP, UR, XY, Z, TRAY, or REC. | The file does not explain the meaning of the abbreviations MPA, MPC, MPA-SIP, HPSRS, SSRS, OP, UR, XY, Z, TRAY, or REC. | False |
+| source_information | full_agreement | The file does not provide dates, authors, version history, or explicit status labels for the requirements. | The file does not provide dates, authors, version history, or explicit status labels for the requirements. | False |
+
+## Consensus Groups
+
+| Agreement Level | Item Type | Representative Value | Supporting Agents | Review Required | Reason |
+|---|---|---|---|---|---|
+| full_agreement | source_information | The file is a CSV with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The file contains requirement identifiers such as UR-027 through UR-082 and related specification identifiers such as SSRS-MPA-xxx, HPSRS-xxx, OP-OV-xxx, OP-MB-xxx, XY-FW-xxx, Z-FW-xxx, TRAY-012, and others. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-027 states: 'The user must be able to see the initialization status of the system'. It references HPSRS-010, Component 'Host PC', Test ID 'VERIF-HPC-001', and REC references 'REC-00937, REC-00938, REC-00729, REC-00730'. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-028 states: 'The user must be able to see that the startup was successful.' It references SSRS-MPA-025, Component 'MPA', Test ID 'T-UI-MPA-025', and REC reference 'REC-00884'. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.' It references multiple SSRS-MPA items including SSRS-MPA-018, -020, -021, -022, -024, -129, -130, -131, and -132, with components MPA or MPC and REC references including REC-00884 and REC-00863. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-030 to UR-033 concern slide handling: inserting multiple slides at once, placing slides even and plane, handling slides without spillage, and understanding correct insertion of slides. Associated rows reference TRAY-012, XY-MECH-001, and SSRS-MPA-028/-029. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | Multiple requirements address overview images, slide labels, digital microscopic magnified images, magnification, ROI navigation, focusing, illumination adjustment, and related UI/MPA/MPA-SIP/MPC references. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-060 states: 'With the system the user must be able to read the user interface and controls in a language he understand s.' It references SSRS-MPA-002, SSRS-MPA-003, SSRS-MPA-014, SSRS-MPA-081, SSRS-MPA-082, SSRS-MPA-083, SSRS-MPA-084, SSRS-MPA-085, and SSRS-MPA-119. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | Later requirements cover POI marking, notes, navigation between POIs, annotation overview, hiding annotations, changing annotation color and font size, system working indication, locating annotations, hotkeys, screenshot creation/storage/file formats, and related linked SSRS-MPA items. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | UR-080 states the system shall be remotely controllable with streaming software iO:Stream. UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view. UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The file contains repeated identifiers, repeated linked specifications, blank cells, and some rows with inconsistent formatting or line breaks inside cells. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The file appears to be a traceability matrix linking user requirements to specification identifiers, components, test IDs, and REC numbers. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The listed requirements are associated with multiple components and subsystems, including Host PC, MPA, MPC, MPA-SIP, TRAY-012, XY-FW, Z-FW, and others. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The file does not explain the meaning of the abbreviations MPA, MPC, MPA-SIP, HPSRS, SSRS, OP, UR, XY, Z, TRAY, or REC. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |
+| full_agreement | source_information | The file does not provide dates, authors, version history, or explicit status labels for the requirements. | AGENT_LEGACY_LITERAL_INTERPRETER | False | All agents produced the same comparable item. |

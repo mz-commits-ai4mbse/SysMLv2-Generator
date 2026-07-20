@@ -1,0 +1,444 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_DERIVATION_ASSESSMENT_20260709T140108Z",
+  "team_id": "TEAM_DERIVATION_ASSESSMENT",
+  "task_name": "Assess downstream model derivation support",
+  "created_at": "2026-07-09T14:01:08.759978+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+  ],
+  "agent_labels": {
+    "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "PERSONA_DERIVATION_RULES_FOCUSED_ASSESSOR"
+  },
+  "summary": {
+    "total_groups": 21,
+    "full_agreement": 21,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "candidate_model_element::requirement::initialization status visibility",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: Initialization status visibility [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: Initialization status visibility [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::startup success indication",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: Startup success indication [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: Startup success indication [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::requirement::initialization error guidance message",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirement: Initialization error guidance message [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirement: Initialization error guidance message [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::function::slide handling support",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "ready": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "function: Slide handling support [ready]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "function: Slide handling support [ready]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::function::overview image display",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "function: Overview image display [partial]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "function: Overview image display [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::item::overview image",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "item: Overview image [partial]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "item: Overview image [partial]"
+      }
+    },
+    {
+      "group_key": "candidate_model_element::interface::remote control and ergopointer interaction",
+      "item_type": "candidate_model_element",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partial": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "interface: Remote control and Ergopointer interaction [partial]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "interface: Remote control and Ergopointer interaction [partial]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::stakeholder model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "stakeholder_model: supported; can_be_generated_now=True; scope=complete_preliminary",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "stakeholder_model: supported; can_be_generated_now=True; scope=complete_preliminary"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::requirements model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "requirements_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Formal requirement normalization', 'Deduplication of overlapping rows', 'Requirement ownership and hierarchy']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "requirements_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Formal requirement normalization', 'Deduplication of overlapping rows', 'Requirement ownership and hierarchy']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::use case model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "use_case_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Main and alternate flows', 'Triggers and preconditions', \"Actor distinctions beyond 'user'\"]",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "use_case_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Main and alternate flows', 'Triggers and preconditions', \"Actor distinctions beyond 'user'\"]"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::functional model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "functional_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Functional decomposition', 'Inter-function dependencies', 'Detailed sequence constraints']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "functional_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Functional decomposition', 'Inter-function dependencies', 'Detailed sequence constraints']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::logical architecture model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "logical_architecture_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Explicit logical responsibilities', 'Component interaction rationale', 'Allocation of functions to logical elements']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "logical_architecture_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Explicit logical responsibilities', 'Component interaction rationale', 'Allocation of functions to logical elements']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::physical model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "physical_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Deployment context', 'Hardware/software classification for each component', 'Physical interfaces and ownership']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "physical_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Deployment context', 'Hardware/software classification for each component', 'Physical interfaces and ownership']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::interface model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported partial preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "interface_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Message/data definitions', 'Directionality', 'Protocol or API details']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "interface_model: partially_supported; can_be_generated_now=True; scope=partial_preliminary; missing=['Message/data definitions', 'Directionality', 'Protocol or API details']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::verification model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported blocked false": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "verification_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['Measurable acceptance criteria', 'Test pass/fail conditions', 'Verification method details']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "verification_model: not_supported; can_be_generated_now=False; scope=blocked; missing=['Measurable acceptance criteria', 'Test pass/fail conditions', 'Verification method details']"
+      }
+    },
+    {
+      "group_key": "sysml_model_buildability::traceability model",
+      "item_type": "sysml_model_buildability",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported complete preliminary true": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "traceability_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Normalized link semantics for all row variants', 'Resolution of repeated and blank rows', 'Explicit source-to-derived mapping rules']",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "traceability_model: supported; can_be_generated_now=True; scope=complete_preliminary; missing=['Normalized link semantics for all row variants', 'Resolution of repeated and blank rows', 'Explicit source-to-derived mapping rules']"
+      }
+    },
+    {
+      "group_key": "derivation::functional model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "functional_model: supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "functional_model: supported"
+      }
+    },
+    {
+      "group_key": "derivation::logical architecture",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "logical_architecture: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "logical_architecture: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::physical architecture",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "physical_architecture: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "physical_architecture: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::interface model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "partially supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "interface_model: partially_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "interface_model: partially_supported"
+      }
+    },
+    {
+      "group_key": "derivation::validation or verification model",
+      "item_type": "model_artifact_assessment",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+      ],
+      "value_distribution": {
+        "not supported": [
+          "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR"
+        ]
+      },
+      "representative_value": "validation_or_verification_model: not_supported",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_DERIVATION_RULES_FOCUSED_ASSESSOR": "validation_or_verification_model: not_supported"
+      }
+    }
+  ]
+}

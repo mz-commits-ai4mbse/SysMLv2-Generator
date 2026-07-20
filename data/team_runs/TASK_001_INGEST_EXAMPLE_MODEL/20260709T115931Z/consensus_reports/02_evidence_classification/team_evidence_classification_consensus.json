@@ -1,0 +1,74 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260709T115931Z",
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "task_name": "Classify engineering evidence",
+  "created_at": "2026-07-09T11:59:31.414630+00:00",
+  "total_agents": 3,
+  "agent_ids": [
+    "AGENT_EVIDENCE_AUDIT_CLASSIFIER",
+    "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER",
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+  ],
+  "summary": {
+    "total_groups": 3,
+    "full_agreement": 0,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 3,
+    "conflict": 0,
+    "review_required": 3
+  },
+  "groups": [
+    {
+      "group_key": "unstructured_output::agent evidence strict classifier",
+      "item_type": "unstructured_output",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team evidence classification team name evidence classification team task name classify engineering evidence": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_EVIDENCE_CLASSIFICATION\",\n  \"team_name\": \"Evidence Classification Team\",\n  \"task_name\": \"Classify engineering evidence\",\n ",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    },
+    {
+      "group_key": "unstructured_output::agent evidence semantic classifier",
+      "item_type": "unstructured_output",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team evidence classification team name evidence classification team task name classify engineering evidence": [
+          "AGENT_EVIDENCE_SEMANTIC_CLASSIFIER"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_EVIDENCE_CLASSIFICATION\",\n  \"team_name\": \"Evidence Classification Team\",\n  \"task_name\": \"Classify engineering evidence\",\n ",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    },
+    {
+      "group_key": "unstructured_output::agent evidence audit classifier",
+      "item_type": "unstructured_output",
+      "agreement_level": "minority_interpretation",
+      "total_agents": 3,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "dry run true message no llm call was made team id team evidence classification team name evidence classification team task name classify engineering evidence": [
+          "AGENT_EVIDENCE_AUDIT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "{\n  \"dry_run\": true,\n  \"message\": \"No LLM call was made.\",\n  \"team_id\": \"TEAM_EVIDENCE_CLASSIFICATION\",\n  \"team_name\": \"Evidence Classification Team\",\n  \"task_name\": \"Classify engineering evidence\",\n ",
+      "review_required": true,
+      "reason": "Only one agent produced this interpretation."
+    }
+  ]
+}

@@ -1,0 +1,404 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_EVIDENCE_CLASSIFICATION_20260717T081301Z",
+  "team_id": "TEAM_EVIDENCE_CLASSIFICATION",
+  "task_name": "Classify engineering evidence",
+  "created_at": "2026-07-17T08:13:01.122702+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+  ],
+  "agent_labels": {
+    "AGENT_EVIDENCE_STRICT_CLASSIFIER": "PERSONA_EVIDENCE_STRICT_CLASSIFIER"
+  },
+  "summary": {
+    "total_groups": 19,
+    "full_agreement": 19,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "evidence::EV_STAKEHOLDER_NEED::the system allows a remote user to view a live microscope image stream through a software application",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_STAKEHOLDER_NEED::the system allows a remote user to view a live microscope image stream through a software application": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_STAKEHOLDER_NEED: The system allows a remote user to view a live microscope image stream through a software application.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_STAKEHOLDER_NEED: The system allows a remote user to view a live microscope image stream through a software application."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USER_ROLE::a microscope operator starts a streaming session from the microscope workstation",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USER_ROLE::a microscope operator starts a streaming session from the microscope workstation": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USER_ROLE: A microscope operator starts a streaming session from the microscope workstation.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USER_ROLE: A microscope operator starts a streaming session from the microscope workstation."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USE_CASE_OR_WORKFLOW::a microscope operator starts a streaming session from the microscope workstation",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USE_CASE_OR_WORKFLOW::a microscope operator starts a streaming session from the microscope workstation": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USE_CASE_OR_WORKFLOW: A microscope operator starts a streaming session from the microscope workstation.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USE_CASE_OR_WORKFLOW: A microscope operator starts a streaming session from the microscope workstation."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USER_ROLE::a remote expert can join the session through a client application",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USER_ROLE::a remote expert can join the session through a client application": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USER_ROLE: A remote expert can join the session through a client application.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USER_ROLE: A remote expert can join the session through a client application."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USE_CASE_OR_WORKFLOW::a remote expert can join the session through a client application",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USE_CASE_OR_WORKFLOW::a remote expert can join the session through a client application": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USE_CASE_OR_WORKFLOW: A remote expert can join the session through a client application.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USE_CASE_OR_WORKFLOW: A remote expert can join the session through a client application."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::the remote expert can view the live image stream and may request control of the microscope",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::the remote expert can view the live image stream and may request control of the microscope": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: The remote expert can view the live image stream and may request control of the microscope.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: The remote expert can view the live image stream and may request control of the microscope."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USE_CASE_OR_WORKFLOW::the remote expert can view the live image stream and may request control of the microscope",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USE_CASE_OR_WORKFLOW::the remote expert can view the live image stream and may request control of the microscope": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USE_CASE_OR_WORKFLOW: The remote expert can view the live image stream and may request control of the microscope.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USE_CASE_OR_WORKFLOW: The remote expert can view the live image stream and may request control of the microscope."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::the microscope operator can accept or reject the control request",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::the microscope operator can accept or reject the control request": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: The microscope operator can accept or reject the control request.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: The microscope operator can accept or reject the control request."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USE_CASE_OR_WORKFLOW::the microscope operator can accept or reject the control request",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USE_CASE_OR_WORKFLOW::the microscope operator can accept or reject the control request": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USE_CASE_OR_WORKFLOW: The microscope operator can accept or reject the control request.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USE_CASE_OR_WORKFLOW: The microscope operator can accept or reject the control request."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::if control is granted the remote expert can adjust the microscope view remotely",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::if control is granted the remote expert can adjust the microscope view remotely": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: If control is granted, the remote expert can adjust the microscope view remotely.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: If control is granted, the remote expert can adjust the microscope view remotely."
+      }
+    },
+    {
+      "group_key": "evidence::EV_CONSTRAINT::the system shall prevent two users from controlling the microscope at the same time",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_CONSTRAINT::the system shall prevent two users from controlling the microscope at the same time": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_CONSTRAINT: The system shall prevent two users from controlling the microscope at the same time.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_CONSTRAINT: The system shall prevent two users from controlling the microscope at the same time."
+      }
+    },
+    {
+      "group_key": "evidence::EV_CONSTRAINT::the system shall show who currently has control",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_CONSTRAINT::the system shall show who currently has control": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_CONSTRAINT: The system shall show who currently has control.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_CONSTRAINT: The system shall show who currently has control."
+      }
+    },
+    {
+      "group_key": "evidence::EV_DATA_OR_ARTIFACT::the system shall record basic session information for later traceability",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_DATA_OR_ARTIFACT::the system shall record basic session information for later traceability": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_DATA_OR_ARTIFACT: The system shall record basic session information for later traceability.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_DATA_OR_ARTIFACT: The system shall record basic session information for later traceability."
+      }
+    },
+    {
+      "group_key": "evidence::EV_CONSTRAINT::the system shall record basic session information for later traceability",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_CONSTRAINT::the system shall record basic session information for later traceability": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_CONSTRAINT: The system shall record basic session information for later traceability.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_CONSTRAINT: The system shall record basic session information for later traceability."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USER_ROLE::mentioned user roles are microscope operator and remote expert",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USER_ROLE::mentioned user roles are microscope operator and remote expert": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USER_ROLE: Mentioned user roles are microscope operator and remote expert.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USER_ROLE: Mentioned user roles are microscope operator and remote expert."
+      }
+    },
+    {
+      "group_key": "evidence::EV_FUNCTION_OR_CAPABILITY::mentioned capabilities include starting and joining a streaming session viewing the live microscope image requesting remote control accepting or rejecting the request adjusting the microscope view remotely preventing simultaneous control showing current control owner and recording basic session information",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_FUNCTION_OR_CAPABILITY::mentioned capabilities include starting and joining a streaming session viewing the live microscope image requesting remote control accepting or rejecting the request adjusting the microscope view remotely preventing simultaneous control showing current control owner and recording basic session information": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_FUNCTION_OR_CAPABILITY: Mentioned capabilities include starting and joining a streaming session, viewing the live microscope image, requesting remote control, accepting or rejecting the request, adjusting the microscope view remotely, preventing simultaneous control, showing current control owner, and recording basic session information.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_FUNCTION_OR_CAPABILITY: Mentioned capabilities include starting and joining a streaming session, viewing the live microscope image, requesting remote control, accepting or rejecting the request, adjusting the microscope view remotely, preventing simultaneous control, showing current control owner, and recording basic session information."
+      }
+    },
+    {
+      "group_key": "evidence::EV_LOGICAL_ELEMENT::mentioned system elements are microscope workstation software application client application live image stream control request and session information",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_LOGICAL_ELEMENT::mentioned system elements are microscope workstation software application client application live image stream control request and session information": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_LOGICAL_ELEMENT: Mentioned system elements are microscope workstation, software application, client application, live image stream, control request, and session information.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_LOGICAL_ELEMENT: Mentioned system elements are microscope workstation, software application, client application, live image stream, control request, and session information."
+      }
+    },
+    {
+      "group_key": "evidence::EV_CONSTRAINT::mentioned constraints are only one user may control the microscope at a time control transfer requires acceptance by the microscope operator the current control owner must be visible",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_CONSTRAINT::mentioned constraints are only one user may control the microscope at a time control transfer requires acceptance by the microscope operator the current control owner must be visible": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_CONSTRAINT: Mentioned constraints are: only one user may control the microscope at a time; control transfer requires acceptance by the microscope operator; the current control owner must be visible.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_CONSTRAINT: Mentioned constraints are: only one user may control the microscope at a time; control transfer requires acceptance by the microscope operator; the current control owner must be visible."
+      }
+    },
+    {
+      "group_key": "evidence::EV_USE_CASE_OR_WORKFLOW::the description focuses on user interaction remote viewing and control transfer",
+      "item_type": "detected_evidence",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+      ],
+      "value_distribution": {
+        "evidence::EV_USE_CASE_OR_WORKFLOW::the description focuses on user interaction remote viewing and control transfer": [
+          "AGENT_EVIDENCE_STRICT_CLASSIFIER"
+        ]
+      },
+      "representative_value": "EV_USE_CASE_OR_WORKFLOW: The description focuses on user interaction, remote viewing, and control transfer.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item.",
+      "agent_values": {
+        "AGENT_EVIDENCE_STRICT_CLASSIFIER": "EV_USE_CASE_OR_WORKFLOW: The description focuses on user interaction, remote viewing, and control transfer."
+      }
+    }
+  ]
+}

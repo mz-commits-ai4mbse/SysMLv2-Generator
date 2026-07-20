@@ -1,0 +1,361 @@
+{
+  "consensus_report_id": "CONSENSUS_TEAM_LEGACY_INTERPRETATION_20260709T133923Z",
+  "team_id": "TEAM_LEGACY_INTERPRETATION",
+  "task_name": "Interpret raw legacy data",
+  "created_at": "2026-07-09T13:39:23.740084+00:00",
+  "total_agents": 1,
+  "agent_ids": [
+    "AGENT_LEGACY_LITERAL_INTERPRETER"
+  ],
+  "summary": {
+    "total_groups": 20,
+    "full_agreement": 20,
+    "majority_agreement": 0,
+    "majority_with_disagreement": 0,
+    "minority_interpretation": 0,
+    "conflict": 0,
+    "review_required": 0
+  },
+  "groups": [
+    {
+      "group_key": "source_information::the file is a csv with columns requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the file is a csv with columns requirements description requirement specification component test id rec nr specification related specification rec nr related spec verification of implementation spec verification of implementation related spec": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The file is a CSV with columns: Requirements, Description, Requirement Specification, Component, Test ID, REC-Nr. Specification, Related Specification, REC-Nr. (related Spec.), <- Verification of Implementation Spec., <- Verification of Implementation related Spec",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::requirement ur 027 states the user must be able to see the initialization status of the system it is linked to hpsrs 010 component host pc test id verif hpc 001 and rec numbers rec 00937 rec 00938 rec 00729 rec 00730 a related verification reference pio22rm 041 is present",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "requirement ur 027 states the user must be able to see the initialization status of the system it is linked to hpsrs 010 component host pc test id verif hpc 001 and rec numbers rec 00937 rec 00938 rec 00729 rec 00730 a related verification reference pio22rm 041 is present": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "Requirement UR-027 states: 'The user must be able to see the initialization status of the system'; it is linked to HPSRS-010, Component Host PC, Test ID VERIF-HPC-001, and REC numbers REC-00937, REC-00938, REC-00729, REC-00730; a related verification reference PIO22RM-041 is present.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 027 is followed by multiple related entries including ssrs mpa 016 ssrs mpa 017 ssrs mpa 019 ssrs mpa 023 ssrs mpa 129 ssrs mpa 130 ssrs mpa 131 ssrs mpa 132 xy fw 002 xy fw 020 z fw 002 z fw 020 z fw 058 with associated components test ids rec references in the row data",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 027 is followed by multiple related entries including ssrs mpa 016 ssrs mpa 017 ssrs mpa 019 ssrs mpa 023 ssrs mpa 129 ssrs mpa 130 ssrs mpa 131 ssrs mpa 132 xy fw 002 xy fw 020 z fw 002 z fw 020 z fw 058 with associated components test ids rec references in the row data": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-027 is followed by multiple related entries including SSRS-MPA-016, SSRS-MPA-017, SSRS-MPA-019, SSRS-MPA-023, SSRS-MPA-129, SSRS-MPA-130, SSRS-MPA-131, SSRS-MPA-132, XY-FW-002, XY-FW-020, Z-FW-002, Z-FW-020, Z-FW-058 with associated components/test IDs/REC references in the row data.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::requirement ur 028 states the user must be able to see that the startup was successful linked to ssrs mpa 025 component mpa test id t ui mpa 025 rec 00884",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "requirement ur 028 states the user must be able to see that the startup was successful linked to ssrs mpa 025 component mpa test id t ui mpa 025 rec 00884": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "Requirement UR-028 states: 'The user must be able to see that the startup was successful.'; linked to SSRS-MPA-025, Component MPA, Test ID T-UI-MPA-025, REC-00884.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::requirement ur 029 states the user must receive a message on how to solve and or to react on an initialization error linked to ssrs mpa 018 ssrs mpa 020 ssrs mpa 021 ssrs mpa 022 ssrs mpa 024 ssrs mpa 129 ssrs mpa 130 ssrs mpa 131 ssrs mpa 132 and related rec references primarily rec 00884 and rec 00863",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "requirement ur 029 states the user must receive a message on how to solve and or to react on an initialization error linked to ssrs mpa 018 ssrs mpa 020 ssrs mpa 021 ssrs mpa 022 ssrs mpa 024 ssrs mpa 129 ssrs mpa 130 ssrs mpa 131 ssrs mpa 132 and related rec references primarily rec 00884 and rec 00863": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "Requirement UR-029 states: 'The user must receive a message on how to solve and/or to react on an initialization error.'; linked to SSRS-MPA-018, SSRS-MPA-020, SSRS-MPA-021, SSRS-MPA-022, SSRS-MPA-024, SSRS-MPA-129, SSRS-MPA-130, SSRS-MPA-131, SSRS-MPA-132 and related REC references, primarily REC-00884 and REC-00863.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 030 states the user must be able to insert multiple slides at once ur 031 states the user must be able to place slides even and plane ur 032 states the user must be able to handle slides without spillage ur 033 states the user must be able to understand the correct insertion of the slides these rows reference tray 012 and related ssrs xy entries",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 030 states the user must be able to insert multiple slides at once ur 031 states the user must be able to place slides even and plane ur 032 states the user must be able to handle slides without spillage ur 033 states the user must be able to understand the correct insertion of the slides these rows reference tray 012 and related ssrs xy entries": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-030 states the user must be able to insert multiple slides at once; UR-031 states the user must be able to place slides even and plane; UR-032 states the user must be able to handle slides without spillage; UR-033 states the user must be able to understand the correct insertion of the slides. These rows reference TRAY-012 and related SSRS/XY entries.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 035 states the user must be able to receive an overview image for each slide in the system ur 036 states the user must be able to quickly receive an overview image both reference op ov entries and multiple ssrs mpa items such as ssrs mpa 026 261 052 136 149 160 167 145 150 and xy z firmware electrical mechanical references",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 035 states the user must be able to receive an overview image for each slide in the system ur 036 states the user must be able to quickly receive an overview image both reference op ov entries and multiple ssrs mpa items such as ssrs mpa 026 261 052 136 149 160 167 145 150 and xy z firmware electrical mechanical references": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-035 states the user must be able to receive an overview image for each slide in the system; UR-036 states the user must be able to quickly receive an overview image. Both reference OP-OV entries and multiple SSRS-MPA items such as SSRS-MPA-026, 261, 052, 136-149, 160-167, 145-150 and XY/Z firmware/electrical/mechanical references.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 038 states the user must be able to see an overview of all overview images ur 039 states the user must be able to navigate between slides referred by overview images ur 041 states the user must be able to navigate to an roi using the overview image",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 038 states the user must be able to see an overview of all overview images ur 039 states the user must be able to navigate between slides referred by overview images ur 041 states the user must be able to navigate to an roi using the overview image": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-038 states the user must be able to see an overview of all overview images; UR-039 states the user must be able to navigate between slides referred by overview images; UR-041 states the user must be able to navigate to an ROI using the overview image.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 043 states the user must be able to view a slide label independently ur 044 states the user must be able to rotate the slide label to its correct orientation both reference ssrs mpa 051 and mpa sip implementation items",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 043 states the user must be able to view a slide label independently ur 044 states the user must be able to rotate the slide label to its correct orientation both reference ssrs mpa 051 and mpa sip implementation items": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-043 states the user must be able to view a slide label independently; UR-044 states the user must be able to rotate the slide label to its correct orientation; both reference SSRS-MPA-051 and MPA-SIP implementation items.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 046 states the user must be able to receive a digital microscopic magnified image ur 047 states the user must be able to magnify the sample to provide enough detail for the analytic question ur 048 states the user must be able to seamlessly zoom into the sample ur 049 states the user must be able to navigate to roi positions on the sample",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 046 states the user must be able to receive a digital microscopic magnified image ur 047 states the user must be able to magnify the sample to provide enough detail for the analytic question ur 048 states the user must be able to seamlessly zoom into the sample ur 049 states the user must be able to navigate to roi positions on the sample": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-046 states the user must be able to receive a digital microscopic magnified image; UR-047 states the user must be able to magnify the sample to provide enough detail for the analytic question; UR-048 states the user must be able to seamlessly zoom into the sample; UR-049 states the user must be able to navigate to ROI positions on the sample.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 050 states the user must be able to quickly select a specific magnification level ur 051 states the user must be able to digitally magnify the sample image into empty magnification ur 052 states the user must be able to see when a digital zoomed into empty magnification ur 053 states the user must be able to automatically focus the sample ur 054 states the user must be able to manually adjust the focus ur 055 states the user must be able to adjust the image illumination of digital microscopic magnified image",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 050 states the user must be able to quickly select a specific magnification level ur 051 states the user must be able to digitally magnify the sample image into empty magnification ur 052 states the user must be able to see when a digital zoomed into empty magnification ur 053 states the user must be able to automatically focus the sample ur 054 states the user must be able to manually adjust the focus ur 055 states the user must be able to adjust the image illumination of digital microscopic magnified image": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-050 states the user must be able to quickly select a specific magnification level; UR-051 states the user must be able to digitally magnify the sample image into empty magnification; UR-052 states the user must be able to see when a digital zoomed into empty magnification; UR-053 states the user must be able to automatically focus the sample; UR-054 states the user must be able to manually adjust the focus; UR-055 states the user must be able to adjust the image illumination of digital microscopic magnified image.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 056 states the user must be able to access information that explains how system features are intended to be used ur 057 states the user must be able to configure how often information that explains system features is displayed",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 056 states the user must be able to access information that explains how system features are intended to be used ur 057 states the user must be able to configure how often information that explains system features is displayed": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-056 states the user must be able to access information that explains how system features are intended to be used; UR-057 states the user must be able to configure how often information that explains system features is displayed.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::the file includes requirements for language readability ur 060 marking a poi ur 062 making notes to a marked poi ur 063 moving between several marked pois ur 064 seeing an overview of all annotations ur 065 seeing as much of the sample as possible ur 066 hiding annotations ur 067 changing annotation color ur 068 changing annotation font size ur 069 knowing when the microscope is working ur 072 identifying annotation location from the list and vice versa ur 073 using hotkeys for common functions ur 074 creating a screenshot ur 075 and storing screenshots ur 076",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the file includes requirements for language readability ur 060 marking a poi ur 062 making notes to a marked poi ur 063 moving between several marked pois ur 064 seeing an overview of all annotations ur 065 seeing as much of the sample as possible ur 066 hiding annotations ur 067 changing annotation color ur 068 changing annotation font size ur 069 knowing when the microscope is working ur 072 identifying annotation location from the list and vice versa ur 073 using hotkeys for common functions ur 074 creating a screenshot ur 075 and storing screenshots ur 076": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The file includes requirements for language readability (UR-060), marking a POI (UR-062), making notes to a marked POI (UR-063), moving between several marked POIs (UR-064), seeing an overview of all annotations (UR-065), seeing as much of the sample as possible (UR-066), hiding annotations (UR-067), changing annotation color (UR-068), changing annotation font size (UR-069), knowing when the microscope is working (UR-072), identifying annotation location from the list and vice versa (UR-073), using hotkeys for common functions (UR-074), creating a screenshot (UR-075), and storing screenshots (UR-076).",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::ur 079 states screenshots must be saved in common file formats ur 080 states the system shall be remotely controllable with the streaming software io stream ur 081 states the system shall provide functionality to use the ergopointer as an input device for the microscopy view ur 082 states the system shall provide functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "ur 079 states screenshots must be saved in common file formats ur 080 states the system shall be remotely controllable with the streaming software io stream ur 081 states the system shall provide functionality to use the ergopointer as an input device for the microscopy view ur 082 states the system shall provide functionality to use an ergopointer connected to the consumer of the streaming software as an input device for the microscopy view": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "UR-079 states screenshots must be saved in common file formats; UR-080 states the system shall be remotely controllable with the streaming software iO:Stream; UR-081 states the system shall provide functionality to use the Ergopointer as an input device for the microscopy view; UR-082 states the system shall provide functionality to use an Ergopointer connected to the consumer of the streaming software as an input device for the microscopy view.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::the csv contains repeated references to many ssrs mpa xy fw z fw xy el z el srs am and other ids and many blank rows empty fields some rows repeat the same ids with different related references",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the csv contains repeated references to many ssrs mpa xy fw z fw xy el z el srs am and other ids and many blank rows empty fields some rows repeat the same ids with different related references": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The CSV contains repeated references to many SSRS-MPA, XY-FW, Z-FW, XY-EL, Z-EL, SRS-AM and other IDs, and many blank rows/empty fields; some rows repeat the same IDs with different related references.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::the content appears to be a traceability matrix linking user requirements to specification items implementation specs test ids and rec references",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the content appears to be a traceability matrix linking user requirements to specification items implementation specs test ids and rec references": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The content appears to be a traceability matrix linking user requirements to specification items, implementation specs, test IDs, and REC references.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::the matrix references multiple components or subsystems including mpa mpa sip mpc ppi host pc tray 012 overview image functions magnification functions firmware electrical and mechanical items",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the matrix references multiple components or subsystems including mpa mpa sip mpc ppi host pc tray 012 overview image functions magnification functions firmware electrical and mechanical items": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The matrix references multiple components or subsystems including MPA, MPA-SIP, MPC, PPI, Host PC, TRAY-012, overview image functions, magnification functions, firmware, electrical and mechanical items.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::the subject matter includes slide handling microscopy views overview images roi navigation magnification focus illumination annotations screenshots streaming control and ergopointer input",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the subject matter includes slide handling microscopy views overview images roi navigation magnification focus illumination annotations screenshots streaming control and ergopointer input": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The subject matter includes slide handling, microscopy views, overview images, ROI navigation, magnification, focus, illumination, annotations, screenshots, streaming control, and Ergopointer input.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::the matrix repeatedly points to rec identifiers as related specifications or source references but the file does not define what those rec documents contain",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "the matrix repeatedly points to rec identifiers as related specifications or source references but the file does not define what those rec documents contain": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "The matrix repeatedly points to REC identifiers as related specifications or source references, but the file does not define what those REC documents contain.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    },
+    {
+      "group_key": "source_information::several requirement statements contain awkward or possibly corrupted wording suggesting transcription ocr issues or non native phrasing",
+      "item_type": "source_information",
+      "agreement_level": "full_agreement",
+      "total_agents": 1,
+      "supporting_agents": [
+        "AGENT_LEGACY_LITERAL_INTERPRETER"
+      ],
+      "value_distribution": {
+        "several requirement statements contain awkward or possibly corrupted wording suggesting transcription ocr issues or non native phrasing": [
+          "AGENT_LEGACY_LITERAL_INTERPRETER"
+        ]
+      },
+      "representative_value": "Several requirement statements contain awkward or possibly corrupted wording, suggesting transcription/OCR issues or non-native phrasing.",
+      "review_required": false,
+      "reason": "All agents produced the same comparable item."
+    }
+  ]
+}
