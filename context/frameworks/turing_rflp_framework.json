@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0.0",
+  "template_id": "TURING_RFLP_FRAMEWORK",
+  "template_version": "1.0.0",
+  "name": "Turing Stakeholder/System/Subsystem Framework",
+  "status": "active",
+  "authority": {
+    "definition_basis": "Accepted Phase P scope in the Collaboration Knowledge Base",
+    "engineering_authority": "CATIA Magic Systems of Systems Architect SysML v2 model",
+    "shadow_model_rule": "The temporary model/ shadow model may supplement unavailable CATIA information until Phase N but shall never override or contradict CATIA.",
+    "non_normative_references": [
+      {
+        "source_id": "SRC_APOLLO11_SYSML_V2",
+        "path": "context/examples/apollo11_structure_reference.md",
+        "repository": "https://github.com/airbus/apollo-11-sysml-v2",
+        "reviewed_commit": "6e9c93f",
+        "review_status": "reviewed_for_p1",
+        "usage": "Reviewed structural reference only. No Apollo engineering content or package hierarchy defines this template.",
+        "adopted_pattern_ids": [
+          "APOLLO_PATTERN_001",
+          "APOLLO_PATTERN_002",
+          "APOLLO_PATTERN_003",
+          "APOLLO_PATTERN_004",
+          "APOLLO_PATTERN_005",
+          "APOLLO_PATTERN_006",
+          "APOLLO_PATTERN_007",
+          "APOLLO_PATTERN_008"
+        ]
+      }
+    ]
+  },
+  "information_unit_mapping": {
+    "eligible_source_roles": [
+      "engineering_source"
+    ],
+    "cardinality_per_information_unit": "zero_to_many",
+    "target_reference_field": "node_id",
+    "unknown_target_behavior": "reject",
+    "context_only_mapping_allowed": false
+  },
+  "assessment_semantics": {
+    "preliminary_coverage": {
+      "label": "Preliminary Coverage",
+      "eligible_source_roles": [
+        "engineering_source"
+      ],
+      "requires_human_approval": false,
+      "phase_p_available": true,
+      "excluded_source_roles": [
+        "context_only"
+      ]
+    },
+    "approved_readiness": {
+      "label": "Approved Generation Readiness",
+      "eligible_source_roles": [
+        "engineering_source"
+      ],
+      "requires_human_approval": true,
+      "phase_p_available": false,
+      "available_from_phase": "G",
+      "excluded_source_roles": [
+        "context_only"
+      ]
+    }
+  },
+  "nodes": [
+    {
+      "node_id": "FW_LEVEL_STAKEHOLDER",
+      "mapping_key": "stakeholder_level",
+      "name": "Stakeholder Level",
+      "node_type": "level",
+      "parent_node_id": null,
+      "mapping_target": false,
+      "order": 1
+    },
+    {
+      "node_id": "FW_STAKEHOLDER_STAKEHOLDERS",
+      "mapping_key": "stakeholder.stakeholders",
+      "name": "Stakeholders",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_STAKEHOLDER",
+      "mapping_target": true,
+      "order": 1
+    },
+    {
+      "node_id": "FW_STAKEHOLDER_USER_NEEDS",
+      "mapping_key": "stakeholder.user_needs",
+      "name": "User Needs",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_STAKEHOLDER",
+      "mapping_target": true,
+      "order": 2
+    },
+    {
+      "node_id": "FW_STAKEHOLDER_STAKEHOLDER_REQUIREMENTS",
+      "mapping_key": "stakeholder.stakeholder_requirements",
+      "name": "Stakeholder Requirements",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_STAKEHOLDER",
+      "mapping_target": true,
+      "order": 3
+    },
+    {
+      "node_id": "FW_STAKEHOLDER_USE_CASES",
+      "mapping_key": "stakeholder.use_cases",
+      "name": "Use Cases",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_STAKEHOLDER",
+      "mapping_target": true,
+      "order": 4
+    },
+    {
+      "node_id": "FW_LEVEL_SYSTEM",
+      "mapping_key": "system_level",
+      "name": "System Level",
+      "node_type": "level",
+      "parent_node_id": null,
+      "mapping_target": false,
+      "order": 2
+    },
+    {
+      "node_id": "FW_SYSTEM_REQUIREMENTS",
+      "mapping_key": "system.requirements",
+      "name": "Requirements",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SYSTEM",
+      "mapping_target": true,
+      "order": 1
+    },
+    {
+      "node_id": "FW_SYSTEM_FUNCTIONAL",
+      "mapping_key": "system.functional",
+      "name": "Functional",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SYSTEM",
+      "mapping_target": true,
+      "order": 2
+    },
+    {
+      "node_id": "FW_SYSTEM_LOGICAL",
+      "mapping_key": "system.logical",
+      "name": "Logical",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SYSTEM",
+      "mapping_target": true,
+      "order": 3
+    },
+    {
+      "node_id": "FW_SYSTEM_PHYSICAL",
+      "mapping_key": "system.physical",
+      "name": "Physical",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SYSTEM",
+      "mapping_target": true,
+      "order": 4
+    },
+    {
+      "node_id": "FW_LEVEL_SUBSYSTEM",
+      "mapping_key": "subsystem_level",
+      "name": "Subsystem Level",
+      "node_type": "level",
+      "parent_node_id": null,
+      "mapping_target": false,
+      "order": 3
+    },
+    {
+      "node_id": "FW_SUBSYSTEM_REQUIREMENTS",
+      "mapping_key": "subsystem.requirements",
+      "name": "Requirements",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SUBSYSTEM",
+      "mapping_target": true,
+      "order": 1
+    },
+    {
+      "node_id": "FW_SUBSYSTEM_FUNCTIONAL",
+      "mapping_key": "subsystem.functional",
+      "name": "Functional",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SUBSYSTEM",
+      "mapping_target": true,
+      "order": 2
+    },
+    {
+      "node_id": "FW_SUBSYSTEM_LOGICAL",
+      "mapping_key": "subsystem.logical",
+      "name": "Logical",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SUBSYSTEM",
+      "mapping_target": true,
+      "order": 3
+    },
+    {
+      "node_id": "FW_SUBSYSTEM_PHYSICAL",
+      "mapping_key": "subsystem.physical",
+      "name": "Physical",
+      "node_type": "framework_node",
+      "parent_node_id": "FW_LEVEL_SUBSYSTEM",
+      "mapping_target": true,
+      "order": 4
+    }
+  ]
+}

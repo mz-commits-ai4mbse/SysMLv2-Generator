@@ -68,190 +68,303 @@ If Apollo 11 uses constructs that are outside the MVP target notation, those con
 
 Current review status:
 
-`not_reviewed`
+`reviewed_for_p1`
 
-This file currently contains a review template only.
+Reviewed repository:
 
-Structural observations shall be added after reviewing the local Apollo 11 repository.
+`https://github.com/airbus/apollo-11-sysml-v2`
+
+Reviewed branch and commit:
+
+`main` at `6e9c93f`
+
+Review scope:
+
+- transferable structuring patterns
+- naming conventions
+- hierarchy patterns
+- separation of definitions and usages
+- package dependency organization
+
+The review does not approve Apollo 11 engineering content, its CoSMA
+framework, its package layout or its SysML v2 constructs as normative input.
 
 ---
 
-## Review Questions
-
-The Apollo 11 repository shall be reviewed using the following questions.
+## Review Findings
 
 ### 1. Top-Level Package Organization
 
-Questions:
+Observed pattern:
 
-- How is the model divided into top-level packages?
-- Are packages organized by discipline, viewpoint, lifecycle phase, system decomposition or another principle?
-- Which top-level structure patterns are useful for the Turing Generator?
-- Which top-level structure patterns are too complex for the MVP?
+- A single root package, `Apollo11Model`, provides a discoverable entry point.
+- Model content is distributed across files and packages with coherent
+  responsibilities.
+- Imports in the root package are grouped by model concern.
+- Directory names and package responsibilities are visibly aligned.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- Use one clearly identifiable framework-template entry point.
+- Keep each file and module focused on one responsibility.
+- Preserve an explicit hierarchy between framework levels and framework nodes.
+
+Not adopted:
+
+- The Apollo 11 top-level taxonomy is based on the CoSMA layers and is not
+  transferred to the Turing framework.
+- The accepted Stakeholder/System/Subsystem structure remains unchanged.
 
 ---
 
 ### 2. System Decomposition
 
-Questions:
+Observed pattern:
 
-- How are system elements decomposed?
-- Are elements decomposed into functional, logical and physical structures?
-- How deep is the decomposition?
-- How are larger structures kept manageable?
+- Reusable definitions are separated from concrete usages and individuals.
+- Specialization is used to create consistent element families.
+- Composition is explicit rather than inferred from file location.
+- Higher-level elements assemble lower-level elements through named usages.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- Framework nodes require stable identities independent of their presentation.
+- Parent-child relationships shall be represented explicitly.
+- File or folder position alone shall not define framework hierarchy.
+
+Not adopted:
+
+- Apollo-specific system, mission and hardware decompositions.
+- Apollo-specific specialization hierarchies.
 
 ---
 
 ### 3. Functional Modeling Patterns
 
-Questions:
+Observed pattern:
 
-- How are functions represented?
-- Are action definitions used?
-- Are action usages used?
-- Are workflows modeled formally or documented textually?
-- Which patterns could inform the Turing Generator functional view?
+- Functions are represented as named `action def` elements.
+- Definition names use descriptive verb-object names in `UpperCamelCase`.
+- Action usages use concise `lowerCamelCase` names.
+- A top-level function is decomposed into progressively more detailed
+  sub-functions.
+- Leaf functions remain reusable definitions.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- Stable machine identifiers and readable names shall remain separate.
+- Hierarchy shall proceed from broad framework areas to explicit mapping
+  targets.
+- Names shall describe responsibility rather than implementation location.
+
+Not adopted:
+
+- Apollo-specific functions or functional decomposition.
+- The CoSMA Operational-to-Functional transition as a Turing framework level.
 
 ---
 
 ### 4. Logical Structure Patterns
 
-Questions:
+Observed pattern:
 
-- How are logical components represented?
-- Are part definitions used for reusable components?
-- Are part usages used for architecture configurations?
-- How are logical elements named and grouped?
+- Logical components are named by responsibility rather than physical form.
+- Functional behavior is allocated explicitly to logical components.
+- Logical definitions remain separate from technical implementation elements.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- The accepted Logical nodes at System and Subsystem level remain distinct
+  from Physical nodes.
+- Information mapped to Logical and Physical nodes shall not be treated as
+  interchangeable.
+
+Not adopted:
+
+- Apollo-specific logical components or allocations.
 
 ---
 
 ### 5. Physical Structure Patterns
 
-Questions:
+Observed pattern:
 
-- How are physical components represented?
-- How is the physical architecture separated from logical architecture?
-- Are implementation-specific elements modeled directly?
-- Which patterns are useful for the Turing Generator MVP physical architecture?
+- Reusable technical types are represented separately from concrete
+  individuals.
+- Compositions, multiplicities and interfaces are modeled explicitly.
+- Ports and interfaces are maintained separately from component definitions.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- The framework shall preserve the Physical mapping targets as distinct nodes.
+- Later model-generation stages may distinguish reusable definitions,
+  concrete usages and individuals.
+
+Not adopted:
+
+- Apollo hardware structures, identifiers, quantities or interface content.
+- Detailed physical modeling constructs during P1.
 
 ---
 
 ### 6. Requirements and Constraints
 
-Questions:
+Observed pattern:
 
-- How are requirements represented?
-- Are requirements grouped by category?
-- Are constraints modeled formally or documented textually?
-- Are stable requirement IDs used?
+- Requirement definitions are centralized in dedicated packages.
+- Stable identifiers use semantic prefixes.
+- Human-readable requirement names are separated from identifiers.
+- Requirement definitions are separated from requirement usages and
+  specification contexts.
+- Traceability is expressed outside the original requirement definition where
+  appropriate.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- Every framework node requires a stable identifier.
+- Machine identifiers shall not depend on display names.
+- Later information units may reference one or more stable framework-node IDs.
+
+Not adopted:
+
+- Apollo prefixes such as `SHN-N`, `HLR-R`, `FLR-R` or `CLR-R`.
+- Apollo requirement wording or example requirements.
+- Inconsistent capitalization between some Apollo definition and usage IDs.
 
 ---
 
 ### 7. Traceability Patterns
 
-Questions:
+Observed pattern:
 
-- How are relationships between requirements, functions, logical elements and physical elements represented?
-- Are formal relationships used?
-- Are documentation blocks used?
-- Are traceability links explicit and reviewable?
+- `refines`, `satisfy` and `perform` relationships express different
+  traceability semantics.
+- Relationships may be many-to-many.
+- Definitions, usages and satisfaction contexts remain distinguishable.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- One information unit may map to multiple framework nodes.
+- Framework mapping shall reference stable node IDs.
+- Mapping alone shall not be interpreted as approval, satisfaction or
+  generation readiness.
+
+Not adopted:
+
+- Apollo-specific relationships or traceability chains.
+- Automatic translation of a framework assignment into a SysML relationship.
 
 ---
 
 ### 8. Naming Conventions
 
-Questions:
+Observed pattern:
 
-- Which naming conventions are used for packages?
-- Which naming conventions are used for definitions?
-- Which naming conventions are used for usages?
-- Are IDs used?
-- Are names human-readable and stable?
+- Package names generally use `UpperCamelCase` and the suffix `Package`.
+- Definition names generally use `UpperCamelCase`.
+- Usage names generally use `lowerCamelCase`.
+- Stable requirement IDs use type-oriented prefixes.
+- Names containing special characters are quoted where required by SysML v2.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- Framework template IDs and node IDs use stable uppercase identifiers.
+- Machine-readable mapping keys use a consistent lowercase notation.
+- Human-readable labels remain independent from identifiers.
+- Naming conventions shall be validated deterministically.
+
+Not adopted:
+
+- Apollo-specific abbreviations.
+- Apollo-specific capitalization inconsistencies.
+- Package suffixes as a mandatory convention for non-SysML repository files.
 
 ---
 
 ### 9. Documentation Style
 
-Questions:
+Observed pattern:
 
-- How much explanatory documentation is included in the model?
-- Are assumptions documented?
-- Are rationales documented?
-- Are model areas self-explanatory?
+- The repository documents the purpose of each architectural layer.
+- Model elements frequently include concise documentation.
+- Sourced and postulated data are explicitly distinguished.
+- Assumptions and limitations are visible rather than hidden.
 
-Findings:
+P1 relevance:
 
-_To be filled after review._
+- The framework template shall document its authority and derivation basis.
+- The Apollo reference shall remain marked as non-normative.
+- Preliminary coverage and approved readiness shall be explicitly separated.
+- Context-only information shall remain distinguishable from engineering
+  evidence.
+
+Not adopted:
+
+- Apollo documentation as direct prompt or generation content.
 
 ---
 
 ### 10. Useful Patterns for Turing Generator
 
-Potentially useful patterns:
+Accepted patterns:
 
-_To be filled after review._
+- one discoverable framework-template entry point
+- one clear responsibility per file or module
+- stable machine identifiers separated from readable names
+- explicit and ordered parent-child hierarchy
+- explicit mapping targets
+- separation of definitions from later usages and compositions
+- consistent naming conventions
+- explicit source authority, provenance and review status
+- support for many-to-many traceability
 
 Rejected or intentionally excluded patterns:
 
-_To be filled after review._
+- the CoSMA five-layer framework
+- the Apollo folder and package layout
+- Apollo-specific model elements and identifiers
+- Apollo-specific requirements and traceability content
+- a custom CoSMA base-type library
+- broad wildcard-import structures as a general Turing pattern
+- large monolithic specification files
+- execution, snapshot, timeslice and analysis constructs during P1
 
 Reason for exclusion:
 
-_To be filled after review._
+The Apollo 11 model demonstrates useful organization techniques, but its
+engineering domain, methodology and modeling objectives differ from the Turing
+Generator. P1 adopts only reviewed structural principles that are compatible
+with the already accepted Phase P scope.
 
 ---
 
 ## MVP Relevance Assessment
 
-The following table shall be filled after reviewing Apollo 11.
-
-| Pattern ID | Observed Pattern | Useful for MVP | Useful for Target Architecture | Notes |
+| Pattern ID | Observed Pattern | Useful for MVP | Useful for Target Architecture | Decision |
 |---|---|---:|---:|---|
-| APOLLO_PATTERN_001 | To be filled | TBD | TBD | TBD |
-| APOLLO_PATTERN_002 | To be filled | TBD | TBD | TBD |
-| APOLLO_PATTERN_003 | To be filled | TBD | TBD | TBD |
+| APOLLO_PATTERN_001 | Root model as discoverable entry point | Yes | Yes | Adopt conceptually |
+| APOLLO_PATTERN_002 | One package per coherent responsibility | Yes | Yes | Adopt conceptually |
+| APOLLO_PATTERN_003 | Stable ID separated from readable name | Yes | Yes | Adopt |
+| APOLLO_PATTERN_004 | Explicit and ordered hierarchy | Yes | Yes | Adopt |
+| APOLLO_PATTERN_005 | Definitions separated from usages | Partly | Yes | Prepare in P1, apply later |
+| APOLLO_PATTERN_006 | Consistent definition and usage naming | Yes | Yes | Adopt as naming rule |
+| APOLLO_PATTERN_007 | Explicit provenance and assumptions | Yes | Yes | Adopt |
+| APOLLO_PATTERN_008 | Many-to-many traceability | Yes | Yes | Adopt |
+| APOLLO_PATTERN_009 | CoSMA five-layer package structure | No | No | Reject for Turing |
+| APOLLO_PATTERN_010 | Broad root wildcard imports | No | No | Do not adopt |
 
 ---
 
 ## Current Assumptions
 
-- Apollo 11 is used only as an example model reference.
+- Apollo 11 is used only as a non-normative example-model reference.
 - Apollo 11 is not used as direct legacy input.
 - Apollo 11 is not copied into prompts in full.
-- Only reviewed and summarized structural patterns are used as curated context.
-- The Turing Generator MVP remains constrained by its own target notation.
+- No Apollo engineering content is transferred into the Turing framework.
+- Only the reviewed patterns explicitly marked as adopted may influence P1.
+- The accepted Stakeholder/System/Subsystem framework remains unchanged.
+- The Turing Generator MVP remains constrained by its own target notation and
+  source-authority rules.
 
 ---
 
@@ -273,12 +386,16 @@ Project principles:
 
 `context/global/project_principles.md`
 
+Planned framework template:
+
+`context/frameworks/turing_rflp_framework.json`
+
 ---
 
-## Next Review Action
+## Next P1 Action
 
-Review the local Apollo 11 repository and summarize only those patterns that are useful for the Turing Generator.
+Use only the accepted patterns from this review when defining the versioned
+Turing framework template.
 
-Do not copy large source sections into this file.
-
-Prefer concise structural observations with clear relevance decisions.
+The template shall retain the accepted Stakeholder/System/Subsystem structure.
+It shall not reproduce the Apollo 11 package hierarchy or engineering content.
