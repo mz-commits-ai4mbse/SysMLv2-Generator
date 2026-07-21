@@ -2,13 +2,7 @@
 
 ## Purpose
 
-This document provides the starting point for every new implementation chat.
-
-Its purpose is to establish the current project context without relying on previous chat history.
-
-It summarizes the current engineering state, the next implementation objective and the authoritative project documents.
-
-This document is updated after every SSOT UPDATE.
+This document is the starting point for the next implementation chat. It contains the current accepted project context and intentionally does not rely on previous chat history.
 
 ---
 
@@ -20,11 +14,23 @@ Turing Generator
 
 Repository
 
-SysMLv2-Generator
+`mz-commits-ai4mbse/SysMLv2-Generator`
+
+Branch
+
+`main`
+
+Verified Implementation Commit
+
+`adce9ec65ca3e36b89686b55d397a34dd382fdb1`
 
 Current Phase
 
-F – Agentic Ingestion UI
+P – Project Workspace
+
+Current Status
+
+Scope Defined — Implementation Not Started
 
 Architecture Version
 
@@ -32,235 +38,152 @@ Architecture Version
 
 Knowledge Base Version
 
-1.0
+1.1
 
 Implementation Version
 
-0.4
+0.5
+
+Roadmap Version
+
+1.1
 
 ---
 
 # Read Before Starting
 
-Before continuing implementation, the following documents shall be considered authoritative.
+Read the Collaboration Knowledge Base in this order:
 
-1. collaboration/current_state.md
+1. `collaboration/current_state.md`
+2. `collaboration/roadmap.md`
+3. `collaboration/working_rules.md`
+4. `collaboration/model_registry.json`
+5. `collaboration/decisions/`
 
-2. collaboration/roadmap.md
+Then inspect the committed repository implementation relevant to Phase P.
 
-3. collaboration/working_rules.md
-
-4. collaboration/model_registry.json
-
-5. collaboration/decisions/
-
-The SysML v2 model is the authoritative source for the engineering model.
-
-Older chat conversations are not authoritative.
+Do not use previous chat history as a source of truth.
 
 ---
 
-# Current Objective
+# Source Authority
 
-Complete Phase F.
+1. The CATIA SysML v2 model is authoritative for engineering knowledge.
+2. The committed GitHub repository is authoritative for implementation reality.
+3. The Collaboration Knowledge Base is authoritative for roadmap, status, accepted decisions and working rules.
+4. Chat history and generated artifacts are non-authoritative.
 
-Current remaining objectives include
-
-- improve engineering review reports
-- improve report usability
-- implement artifact browser
-- finalize the demonstration UI
-
-No implementation work shall begin on Phase P before Phase F has been completed and an SSOT UPDATE has been performed.
+If required engineering information is not yet available in CATIA, the temporary shadow model under `model/` may supplement it until Phase N. It shall never override or contradict CATIA.
 
 ---
 
-# Current Architecture
+# Completed Baseline
 
-The current MVP follows a staged processing pipeline.
+Phase F is complete and verified at commit `adce9ec65ca3e36b89686b55d397a34dd382fdb1`.
 
-Raw Source
+Completed capabilities include:
 
-↓
+- team-based agentic ingestion
+- memory pipeline and consensus reports
+- deterministic engineering review report
+- traceable gaps, risks, questions and source references
+- Streamlit ingestion UI
+- artifact browser with five result tabs
+- Dry Run and LLM execution paths
+- automated test suite with 9 passing tests
 
-Interpretation Team
-
-↓
-
-Interpretation Memory
-
-↓
-
-Evidence Team
-
-↓
-
-Evidence Memory
-
-↓
-
-Derivation Team
-
-↓
-
-Derivation Memory
-
-↓
-
-Completeness Team
-
-↓
-
-Completeness Memory
-
-↓
-
-Deterministic Review Report
-
-Human review and model generation are intentionally outside the current MVP.
+The existing Phase F pipeline shall remain operational while Phase P adds project-oriented processing around it.
 
 ---
 
-# Current MVP Scope
+# Accepted Phase P Scope
 
-Implemented
+## Framework
 
-- Agent Teams
-- Team Runner
-- Consensus Framework
-- Memory Pipeline
-- Deterministic Review Reports
-- Streamlit UI
-- Dry Run
-- OpenAI Integration
+The initial framework is:
 
-Planned
+- Stakeholder Level: Stakeholders, User Needs, Stakeholder Requirements, Use Cases
+- System Level: Requirements, Functional, Logical, Physical
+- Subsystem Level: Requirements, Functional, Logical, Physical
 
-- Project Workspace
-- Approved Input Promotion
-- Model Candidate Layer
-- Model Generation
-- SysML v2 Generator
-- Validation
-- Export
+The actual Apollo 11 package layout shall not be copied unchanged. `context/examples/apollo11_structure_reference.md` is a non-normative, currently unreviewed reference. Additional framework templates are post-MVP scope.
 
----
+## Projects and Sources
 
-# Current Development Roadmap
+- Every new upload must be assigned to exactly one selected project.
+- No permanent unassigned source pool is allowed.
+- A project may contain multiple individually processed sources.
+- Every run and artifact must remain traceable to its project and source.
+- Cross-project mixing must be prevented.
 
-The project shall be implemented in the following order.
+## Information Units
 
-F
+One engineering source may yield multiple heterogeneous, traceable information units. An information unit may map to multiple framework nodes.
 
-Agentic Ingestion UI
+The intended minimum semantics include identity, project and source references, source location, information type, original and normalized statement, framework assignments, confidence, review status and traceability. The exact schema is an implementation decision within Phase P.
 
-↓
+## Source Roles
 
-P
+- `engineering_source`: may contribute to clearly marked preliminary coverage; it may contribute to readiness or generation only after human approval.
+- `context_only`: may explain product context or terminology, but shall not create generation evidence or satisfy coverage or readiness.
 
-Project Workspace
+Optional context-document upload during project creation is not required for Phase P UI completion, but the data-role distinction must be supported by the architecture.
 
-↓
+## Dashboard and Later Generation
 
-G
+The Project Dashboard shall display project metadata, source inventory, processing state, framework coverage, ingestion runs and reports.
 
-Approved Input Promotion
+It shall distinguish:
 
-↓
+- preliminary support based on unreviewed engineering information
+- approved generation readiness based only on human-approved information
 
-H
+Phase P may display disabled controls for `Generate Project-wide Model` and `Generate Selected SubModel`. They shall not execute in Phase P. Approved Input Promotion belongs to Phase G; candidate creation and actual model generation belong to Phases H–J.
 
-Model Candidate Layer
-
-↓
-
-I
-
-Model Generation Agent
-
-↓
-
-J
-
-SysML v2 Code Generator
-
-↓
-
-K
-
-Validation Layer
-
-↓
-
-L
-
-Output Writer
-
-↓
-
-N
-
-CATIA Migration
-
-↓
-
-M
-
-Evaluation
-
-↓
-
-O
-
-Thesis & Demonstration
-
-No roadmap phases shall be skipped.
+Later Project-wide generation shall generate only sufficiently supported models. Unsupported models remain disabled and show their information gaps.
 
 ---
 
-# Engineering Rules
+# Phase P Work Breakdown
 
-The following rules are especially important.
-
-- Single Responsibility
-- Memory-based communication
-- Deterministic processing whenever possible
-- Human-in-the-loop before model generation
-- No duplicated engineering knowledge
-- CATIA remains the authoritative engineering model
-
-Detailed rules are maintained in
-
-working_rules.md
+1. P1 — Framework Template Definition
+2. P2 — Project Manifest and Workspace Structure
+3. P3 — Source Registry and mandatory Project Assignment
+4. P4 — Framework-mapped heterogeneous Information Units
+5. P5 — Processing State and Artifact Organization
+6. P6 — Coverage and Preliminary Readiness Engine
+7. P7 — Project Dashboard
+8. P8 — Tests and Phase Review
 
 ---
 
-# Starting Prompt for a New Chat
+# Next Implementation Step
 
-Continue the implementation of the Turing Generator.
+Start P1 — Framework Template Definition.
 
-Use the Collaboration Knowledge Base as the authoritative project context.
+Before writing code:
 
-Source priority:
+- verify the authoritative repository commit and working tree context
+- inspect existing mapping, context and ingestion structures relevant to P1
+- review the non-normative Apollo 11 reference
+- propose a versioned, machine-readable framework-template contract with stable node identifiers
+- discuss any architecture decision that would constrain P2 persistence
 
-1. CATIA SysML v2 model (engineering knowledge)
-
-2. Repository source code (implementation)
-
-3. Collaboration Knowledge Base
-
-Ignore conflicting information from previous chat conversations.
-
-Current implementation phase:
-
-F – Agentic Ingestion UI
-
-Before proposing implementation changes, align your work with the current roadmap and working rules.
+The concrete Project Workspace persistence layout is not yet accepted. ADR-005 shall be created when the architecture is discussed and explicitly approved; do not infer it from this handover.
 
 ---
 
-# Notes
+# Starting Prompt for the Next Chat
 
-This document is intended to minimize context loss between implementation chats.
+Continue the implementation of the Turing Generator in repository `mz-commits-ai4mbse/SysMLv2-Generator`, branch `main`.
 
-It contains only the current engineering context and intentionally omits historical discussions.
+Begin by reading the Collaboration Knowledge Base. Then verify the committed implementation baseline and summarize:
+
+- current roadmap phase
+- current implementation status
+- current architecture version
+- next implementation step
+
+Do not use previous chat history as a source of truth. Do not start implementation before presenting the summary.
+
+After the summary, begin P1 — Framework Template Definition, using the accepted Phase P scope and source-authority rules.

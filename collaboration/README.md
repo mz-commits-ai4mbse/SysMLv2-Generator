@@ -2,20 +2,18 @@
 
 ## Purpose
 
-This directory is the single source of truth for the collaboration between the project owner and AI assistants.
+This directory is the single source of truth for project coordination between the project owner and AI assistants.
 
-It does **not** replace the SysML v2 model and it does **not** replace the implementation.
-
-Instead, it captures:
+It does **not** replace the authoritative CATIA SysML v2 engineering model or the repository implementation. It captures:
 
 - current project status
-- roadmap
-- accepted implementation decisions
+- roadmap and phase scope
+- accepted implementation and architecture decisions
 - working rules
 - project handovers
 - collaboration context
 
-The objective is to ensure that future chats always continue with the current project state without relying on previous conversation history.
+Future chats shall use these files instead of previous conversation history.
 
 ---
 
@@ -23,93 +21,38 @@ The objective is to ensure that future chats always continue with the current pr
 
 The following priority always applies.
 
-## Level 1 (Authoritative)
+## Level 1 — Engineering Authority
 
-CATIA Magic SysML v2 Model
+The CATIA Magic Systems of Systems Architect SysML v2 model is authoritative for engineering knowledge, including stakeholders, needs, requirements, use cases, architecture and model relationships.
 
-Authoritative for:
+If required engineering information is not yet available in CATIA, the temporary shadow model under `model/` may supplement CATIA until Phase N. It shall never override or contradict CATIA.
 
-- Stakeholders
-- User Needs
-- Stakeholder Requirements
-- Use Cases
-- System Architecture
-- Model Relationships
+## Level 2 — Implementation Authority
 
----
+The GitHub repository source code on the authoritative branch is authoritative for committed implementation, module structure, recipes, agents, prompts, configuration and data structures.
 
-## Level 2 (Authoritative)
+## Level 3 — Coordination Authority
 
-Repository Source Code
+The Collaboration Knowledge Base is authoritative for the current roadmap, implementation status, accepted decisions, working rules and chat handovers.
 
-Authoritative for:
+## Level 4 — Non-authoritative Context
 
-- implementation
-- module structure
-- recipes
-- agents
-- prompts
-- configuration
-- data structures
+Chat history, generated reports, generated Markdown and temporary summaries are not authoritative.
 
 ---
 
-## Level 3 (Authoritative)
+# Conflict Rules
 
-Collaboration Knowledge Base
-
-Authoritative for:
-
-- current roadmap
-- implementation status
-- accepted implementation decisions
-- collaboration rules
-- chat handovers
-
----
-
-## Level 4 (Derived)
-
-Generated reports
-
-Generated markdown
-
-Temporary summaries
-
-These files are never authoritative.
-
----
-
-# Rules
-
-If contradictions occur:
-
-CATIA Model
-
-overrides
-
-Repository Documentation
-
-Repository Code
-
-overrides
-
-Collaboration Files
-
-Collaboration Files
-
-override
-
-older chat conversations.
+- CATIA overrides the shadow model and all other representations of engineering knowledge.
+- The shadow model may only fill information that is not yet available in CATIA.
+- Repository source code overrides Collaboration files when determining committed implementation reality.
+- Collaboration files define the accepted roadmap, status and coordination rules.
+- Previous chat history never overrides the sources above.
 
 ---
 
 # Updating
 
-The collaboration knowledge base is updated using the keyword
+The Collaboration Knowledge Base is updated through an explicit `SSOT UPDATE`.
 
-SSOT UPDATE
-
-Only explicitly accepted decisions are transferred.
-
-Brainstorming and rejected ideas are never added automatically.
+Only explicitly accepted decisions are transferred. Brainstorming and rejected ideas are never added automatically. An update is complete only after the changed files have been committed, pushed and verified on the authoritative repository branch.

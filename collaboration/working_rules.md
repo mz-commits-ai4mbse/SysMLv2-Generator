@@ -21,6 +21,10 @@ The following priority always applies.
 
 Chat conversations are never authoritative.
 
+CATIA is always authoritative for engineering knowledge. If required engineering information is not yet available in CATIA, the temporary shadow model under `model/` may supplement it until Phase N. The shadow model shall never override or contradict CATIA.
+
+The committed repository source on the authoritative branch represents implementation reality. Local uncommitted changes are not authoritative implementation state.
+
 No architectural decision becomes valid until it has been transferred into the Collaboration Knowledge Base using the SSOT UPDATE process.
 
 ---
@@ -288,23 +292,60 @@ Chat conversations alone never change the SSOT.
 
 The Collaboration Knowledge Base should normally be updated through an explicit SSOT UPDATE.
 
-Direct manual modifications are permitted when intentionally performed by the project owner. 
+Direct manual modifications are permitted when intentionally performed by the project owner.
+
+During an SSOT UPDATE, the assistant shall generate explicit modifications for every affected Collaboration Knowledge Base file.
+
+For every Collaboration file exactly one of the following outcomes shall be produced:
+
+- No changes required.
+- Apply the following modifications.
+
+An SSOT UPDATE is complete only after all affected files have been processed accordingly.
 
 ## Repository Synchronization
 
 After every SSOT UPDATE, the project owner shall be reminded to commit and push
 all relevant local changes to the authoritative GitHub repository.
 
-After the changes have been pushed, the repository shall be checked to verify that:
+After the changes have been pushed, the repository shall be checked to verify that
 
-- the updated Collaboration Knowledge Base is available on the authoritative branch,
-- the documented implementation status is consistent with the committed repository state,
-- newly implemented components referenced by the SSOT are present,
-- removed or superseded components are no longer described as active,
-- the current branch and repository revision are clearly identified.
+- the Collaboration Knowledge Base reflects the committed repository state,
+- referenced implementation changes are present,
+- obsolete implementation descriptions have been removed,
+- the repository is synchronized with the current SSOT.
 
-An SSOT UPDATE is considered synchronized only after the corresponding repository
-changes have been committed, pushed and verified.
+Local uncommitted files shall never be assumed to represent the authoritative implementation state.
 
-Local uncommitted files are not visible through the GitHub repository and shall
-not be assumed to represent the authoritative implementation state.
+---
+
+# 17. Project Sources and Information Roles
+
+Every source ingested by the Project Workspace shall be assigned to exactly one project. A permanent unassigned source pool is not permitted.
+
+Project data shall use explicit source roles.
+
+## Engineering Source
+
+An engineering source may produce source-traceable information units and may contribute to clearly marked preliminary framework coverage.
+
+It may contribute to generation readiness or model generation only after the relevant information has been reviewed and approved by a human through the Phase G workflow.
+
+## Context-only Source
+
+A context-only source may explain product context, terminology or interpretation. It shall not
+
+- create engineering evidence for model generation,
+- satisfy framework coverage,
+- satisfy readiness criteria,
+- or contribute model content.
+
+Context-only information shall remain visibly distinguishable and traceable to its source.
+
+## Coverage and Readiness
+
+Preliminary coverage may describe what unreviewed engineering information appears to support, but it shall always be labelled as preliminary.
+
+Approved readiness is a separate state and shall be calculated only from human-approved engineering information.
+
+No UI state, generated report or consensus result may silently promote unreviewed information into approved model-generation input.

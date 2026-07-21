@@ -19,21 +19,29 @@ have been successfully completed.
 
 # Project Status
 
-Current Architecture Version
+Architecture Version
 
 0.9
 
-Current Roadmap Version
+Knowledge Base Version
 
-1.0
+1.1
+
+Implementation Version
+
+0.5
+
+Roadmap Version
+
+1.1
 
 Last SSOT Update
 
-2026-07-20
+2026-07-21
 
 Current Phase
 
-**F – Agentic Ingestion UI**
+**P – Project Workspace**
 
 ---
 
@@ -63,7 +71,17 @@ Provide a functional user interface for the complete agentic ingestion workflow.
 
 ## Status
 
-In Progress
+Completed
+
+Verified in
+
+`adce9ec65ca3e36b89686b55d397a34dd382fdb1`
+
+Verification
+
+- Complete automated test suite: 9 passed
+- Agentic Ingestion UI smoke test: passed
+- Engineering review report regression: passed
 
 ---
 
@@ -71,30 +89,81 @@ In Progress
 
 ## Objective
 
-Introduce project-oriented processing instead of isolated document processing.
+Introduce project-oriented processing around the completed Phase F ingestion pipeline. Multiple individually ingested sources shall produce heterogeneous, traceable information units that can later support framework-specific SubModels.
+
+## Framework Template
+
+The initial project framework is:
+
+- Stakeholder Level
+  - Stakeholders
+  - User Needs
+  - Stakeholder Requirements
+  - Use Cases
+- System Level
+  - Requirements
+  - Functional
+  - Logical
+  - Physical
+- Subsystem Level
+  - Requirements
+  - Functional
+  - Logical
+  - Physical
+
+The Apollo 11 reference is non-normative input for P1 review. Its package layout shall not be copied unchanged. Additional framework templates are a post-MVP extension.
 
 ## Deliverables
 
-- Project structure
-- Multiple source documents
-- Context management
-- Framework coverage overview
-- Processing state tracking
-- Report organization
+- P1 — Framework Template Definition
+- P2 — Project Manifest and Workspace Structure
+- P3 — Source Registry and mandatory Project Assignment
+- P4 — Framework-mapped heterogeneous Information Units
+- P5 — Processing State and Artifact Organization
+- P6 — Coverage and Preliminary Readiness Engine
+- P7 — Project Dashboard
+- P8 — Tests and Phase Review
+
+## Data and Review Boundaries
+
+- Every new upload must be assigned to exactly one project. No permanent unassigned source pool is permitted.
+- One source may yield multiple source-traceable information units, and one information unit may map to multiple framework nodes.
+- Engineering sources may contribute to preliminary coverage. Only human-approved engineering information may later contribute to generation readiness and model generation.
+- Context-only sources may explain terminology and system context, but shall not satisfy coverage, readiness or model-generation evidence.
+- Preliminary coverage and approved readiness shall be displayed separately.
+
+## Dashboard Scope
+
+The Project Dashboard shall provide:
+
+- project metadata
+- source inventory and processing state
+- graphical framework coverage
+- preliminary indication of potentially supported models and SubModels
+- separate approved readiness, which remains unavailable until Phase G supplies approved inputs
+- disabled controls for future Project-wide Model and selected SubModel generation
+
+Phase P does not generate models. The disabled controls communicate later capability only. Actual candidate creation and model generation remain assigned to Phases H–J.
 
 ## Exit Criteria
 
-- Complete project workspace implemented
-- Sources assigned to projects
-- Project dashboard operational
+- A project can be created, persisted and reopened.
+- At least two source files can be assigned to one project and processed through the Phase F pipeline.
+- Every source, ingestion run, information unit, report and artifact remains traceable to its project and source.
+- Project source registry and processing state persist across application restarts.
+- The dashboard displays project metadata, source inventory, processing state, framework coverage, runs and reports.
+- Preliminary coverage is visibly distinct from approved readiness.
+- Cross-project data mixing is prevented and tested.
+- Human approval from Phase G and model generation from Phases H–J are not pulled forward.
+- Automated tests and a UI smoke test pass.
 
 ## Status
 
-Planned
+In Progress — Scope Defined, Implementation Not Started
 
 Depends on
 
-Phase F
+Phase F — Satisfied
 
 ---
 
@@ -368,6 +437,15 @@ Start Next Phase
 ---
 
 # Change Management
+
+Roadmap changes require:
+
+- explicit discussion
+- explicit agreement by the project owner
+- an SSOT UPDATE
+- repository commit, push and verification
+
+Ideas and future options shall not be recorded as committed roadmap scope until they have been explicitly accepted.
 
 The roadmap may only be changed after
 

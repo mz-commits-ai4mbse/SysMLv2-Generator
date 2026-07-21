@@ -1,13 +1,11 @@
 {
-  "version": "1.0",
-
+  "version": "1.1",
+  "last_updated": "2026-07-21",
   "authoritative_sources": {
-    "problem_space": {
-      "tool": "CATIA Magic System of Systems Architect",
-      "language": "SysML v2",
+    "engineering_model": {
+      "tool": "CATIA Magic Systems of Systems Architect",
       "status": "authoritative",
-      "location": "External to repository",
-      "contains": [
+      "authority": [
         "Stakeholders",
         "User Needs",
         "Stakeholder Requirements",
@@ -16,65 +14,92 @@
         "Model Relationships"
       ]
     },
-
-    "solution_space": {
-      "tool": "Repository Source Code",
-      "status": "authoritative",
-      "contains": [
-        "Agent Teams",
-        "Memory Artifacts",
-        "Recipes",
-        "Prompt Definitions",
-        "Pipeline",
-        "Validation",
-        "User Interface"
-      ]
+    "implementation": {
+      "provider": "GitHub",
+      "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
+      "default_branch": "main",
+      "verified_commit": "adce9ec65ca3e36b89686b55d397a34dd382fdb1",
+      "status": "authoritative_for_committed_implementation"
     },
-
     "collaboration": {
-      "tool": "Collaboration Knowledge Base",
-      "status": "authoritative",
-      "contains": [
-        "Roadmap",
-        "Current State",
+      "location": "collaboration/",
+      "status": "authoritative_for_project_coordination",
+      "authority": [
+        "Current Project State",
+        "Development Roadmap",
         "Working Rules",
-        "Architecture Decisions",
+        "Accepted Architecture Decisions",
         "Project Handovers"
       ]
+    },
+    "derived_artifacts": {
+      "status": "non_authoritative",
+      "examples": [
+        "Generated Reports",
+        "Generated Markdown",
+        "Temporary Summaries",
+        "Chat History"
+      ]
     }
   },
-
   "shadow_model": {
+    "location": "model/",
     "tool": "SYSIDE",
-    "status": "temporary",
-
-    "purpose": "Prototype and syntax experimentation",
-
-    "planned_migration": {
-      "roadmap_item": "N",
-      "target": "CATIA Magic",
-      "status": "planned"
+    "status": "temporary_supplement",
+    "valid_until_phase": "N",
+    "usage_rule": "Use only when required engineering information is not yet available in CATIA.",
+    "conflict_rule": "The shadow model shall never override or contradict CATIA."
+  },
+  "project_framework": {
+    "template_id": "TURING_RFLP_FRAMEWORK",
+    "status": "scope_defined_not_implemented",
+    "planned_definition_phase": "P1",
+    "non_normative_reference": "context/examples/apollo11_structure_reference.md",
+    "reference_review_status": "not_reviewed",
+    "levels": {
+      "stakeholder_level": [
+        "Stakeholders",
+        "User Needs",
+        "Stakeholder Requirements",
+        "Use Cases"
+      ],
+      "system_level": [
+        "Requirements",
+        "Functional",
+        "Logical",
+        "Physical"
+      ],
+      "subsystem_level": [
+        "Requirements",
+        "Functional",
+        "Logical",
+        "Physical"
+      ]
+    },
+    "future_extension_rule": "Additional framework templates are a post-MVP extension."
+  },
+  "project_source_roles": {
+    "engineering_source": {
+      "may_create_engineering_information_units": true,
+      "may_contribute_to_preliminary_coverage": true,
+      "may_contribute_to_generation_after_human_approval": true
+    },
+    "context_only": {
+      "may_support_system_context_and_interpretation": true,
+      "may_create_context_information": true,
+      "may_create_engineering_information_units": false,
+      "may_contribute_to_coverage_or_readiness": false,
+      "may_contribute_to_model_generation": false
     }
   },
-
-  "implementation_repository": {
-  "provider": "GitHub",
-  "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
-  "default_branch": "main",
-  "status": "authoritative_for_committed_implementation",
-  "access_method": "ChatGPT GitHub connector",
   "rules": [
-    "Committed and pushed repository content is authoritative for the implementation state.",
-    "Local uncommitted changes are not visible through the GitHub connector.",
-    "After every SSOT UPDATE, repository synchronization shall be verified.",
-    "The collaboration directory has no runtime or implementation dependency on the Turing Generator."
-  ]
-}
-
-  "rules": [
-    "The SysML model shall never be manually duplicated inside repository documentation.",
-    "Documentation shall reference stable model element identifiers whenever possible.",
-    "Repository documentation may summarize model content but never redefine it.",
-    "If contradictions occur, the authoritative model always takes precedence."
+    "CATIA is always authoritative for engineering knowledge.",
+    "The temporary shadow model may supplement CATIA only when required information is unavailable in CATIA.",
+    "Committed repository content is authoritative for implementation state.",
+    "Local uncommitted changes are not authoritative implementation state.",
+    "Every ingested source shall be assigned to exactly one project.",
+    "Only human-approved engineering information may become input to model generation.",
+    "Context-only sources shall never satisfy framework coverage, readiness or model-generation evidence.",
+    "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
   ]
 }
