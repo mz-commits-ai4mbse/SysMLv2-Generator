@@ -7,14 +7,13 @@ Current scope:
 - configure pipeline parameters
 - validate execution configuration
 - start team-based agentic ingestion pipeline
-
-Result browsing and rich report display will be added in F5.
+- browse generated reports and technical artifacts
 """
 
 from __future__ import annotations
 
 import os
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -66,7 +65,10 @@ def render_team_agentic_ingestion_ui(project_root: Path) -> None:
 
     st.subheader("1. Input Data")
 
-    uploaded_path = render_upload_section(upload_dir=upload_dir)
+    uploaded_path = render_upload_section(
+        upload_dir=upload_dir,
+        project_root=project_root,
+    )
 
     available_files = list_legacy_input_files(legacy_raw_dir)
 
@@ -81,7 +83,10 @@ def render_team_agentic_ingestion_ui(project_root: Path) -> None:
         st.info("Select or upload a legacy input file to continue.")
         return
 
-    render_selected_file_preview(selected_input_path)
+    render_selected_file_preview(
+        path=selected_input_path,
+        project_root=project_root,
+    )
 
     st.subheader("2. Pipeline Configuration")
 
@@ -100,7 +105,10 @@ def render_team_agentic_ingestion_ui(project_root: Path) -> None:
 
     st.subheader("4. Prepared Configuration")
 
-    st.json(get_safe_config_dict(config))
+    render_prepared_configuration(
+        config=config,
+        project_root=project_root,
+    )
 
     st.subheader("5. Run Pipeline")
 
@@ -115,12 +123,16 @@ def render_status_warning() -> None:
     """Render review status warning."""
 
     st.warning(
-        "Status: Unreviewed Agentic Ingestion Output. "
-        "Human review and approved input promotion are not implemented yet."
+        "Review gate pending: generated artifacts are unreviewed. "
+        "Browsing an artifact does not approve or promote it."
     )
 
 
-def render_upload_section(*, upload_dir: Path) -> Path | None:
+def render_upload_section(
+    *,
+    upload_dir: Path,
+    project_root: Path,
+) -> Path | None:
     """Render file upload section and return uploaded file path if available."""
 
     uploaded_file = st.file_uploader(
@@ -137,7 +149,10 @@ def render_upload_section(*, upload_dir: Path) -> Path | None:
 
     output_path.write_bytes(uploaded_file.getbuffer())
 
-    st.success(f"Uploaded file saved: {output_path}")
+    st.success(
+        "Uploaded file saved: "
+        f"{format_display_path(output_path, project_root)}"
+    )
 
     return output_path
 
@@ -170,17 +185,19 @@ def render_existing_file_selector(
     return project_root / selected
 
 
-def render_selected_file_preview(path: Path) -> None:
+def render_selected_file_preview(
+    *,
+    path: Path,
+    project_root: Path,
+) -> None:
     """Render selected file metadata and preview."""
 
     st.subheader("Selected Input Preview")
 
-    st.write(
-        {
-            "file": str(path),
-            "suffix": path.suffix,
-            "size_bytes": path.stat().st_size,
-        }
+    st.caption(
+        f"{format_display_path(path, project_root)} · "
+        f"{format_file_size(path.stat().st_size)} · "
+        f"{path.suffix.lower().lstrip('.').upper()}"
     )
 
     try:
@@ -331,17 +348,54 @@ def render_api_key_configuration(
     return None, "missing"
 
 
-def get_safe_config_dict(config: PipelineConfig) -> dict[str, Any]:
-    """Return config without exposing secrets."""
+def render_prepared_configuration(
+    *,
+    config: PipelineConfig,
+    project_root: Path,
+) -> None:
+    """Render a concise, secret-free configuration summary."""
 
-    payload = asdict(config)
+    execution_mode = (
+        "Dry run — no LLM calls"
+        if config.dry_run
+        else "Live LLM execution"
+    )
+    model = "Not used in dry run" if config.dry_run else config.model
+    team_scope = (
+        "All configured members"
+        if config.max_members_per_team_value is None
+        else f"Maximum {config.max_members_per_team_value} member(s) per team"
+    )
 
-    if payload.get("api_key"):
-        payload["api_key"] = "***provided***"
-    else:
-        payload["api_key"] = None
+    rows = [
+        {
+            "Setting": "Input",
+            "Value": format_display_path(
+                Path(config.selected_input_path),
+                project_root,
+            ),
+        },
+        {
+            "Setting": "Report",
+            "Value": format_display_path(
+                Path(config.report_output_path),
+                project_root,
+            ),
+        },
+        {"Setting": "Task", "Value": config.task_id},
+        {"Setting": "Recipe", "Value": config.recipe_id},
+        {"Setting": "Execution", "Value": execution_mode},
+        {"Setting": "Model", "Value": model},
+        {"Setting": "Team scope", "Value": team_scope},
+        {"Setting": "Runs per member", "Value": config.runs_per_member},
+    ]
 
-    return payload
+    with st.expander("Show technical configuration", expanded=False):
+        st.dataframe(
+            rows,
+            hide_index=True,
+            use_container_width=True,
+        )
 
 
 def render_report_output_path_configuration(
@@ -383,16 +437,27 @@ def render_execution_readiness(
 
     estimated_agent_runs = estimate_agent_runs(config)
 
-    st.write(
-        {
-            "estimated_agent_runs": estimated_agent_runs,
-            "dry_run": config.dry_run,
-            "execution_mode": "no LLM calls" if config.dry_run else "real LLM calls",
-        }
+    mode_column, runs_column, team_column = st.columns(3)
+
+    mode_column.metric(
+        "Execution mode",
+        "Dry run" if config.dry_run else "Live LLM",
+    )
+    runs_column.metric("Estimated agent runs", estimated_agent_runs)
+    team_column.metric(
+        "Team scope",
+        (
+            "All members"
+            if config.max_members_per_team_value is None
+            else f"{config.max_members_per_team_value} per team"
+        ),
     )
 
     if config.dry_run:
-        st.success("Dry run is enabled. This configuration will not call the LLM.")
+        st.info(
+            "Structural dry run: validates execution, persistence and artifact "
+            "browsing without producing an engineering assessment or calling an LLM."
+        )
     else:
         st.warning(
             "Dry run is disabled. This configuration will call the selected LLM provider."
@@ -456,7 +521,7 @@ def render_pipeline_execution_section(
             config=config,
         )
 
-    render_last_run_result()
+    render_last_run_result(project_root=project_root)
 
 
 def execute_pipeline_from_ui(
@@ -488,6 +553,7 @@ def execute_pipeline_from_ui(
                 "run_id": result.run_id,
                 "run_dir": str(result.run_dir),
                 "report_path": str(result.report_path),
+                "dry_run": config.dry_run,
                 "agent_results_count": len(result.agent_results),
                 "consensus_reports_count": len(result.consensus_reports),
                 "agent_outputs": [
@@ -522,7 +588,7 @@ def execute_pipeline_from_ui(
             st.exception(exc)
 
 
-def render_last_run_result() -> None:
+def render_last_run_result(*, project_root: Path) -> None:
     """Render last run result stored in session state."""
 
     last_run = st.session_state.get("team_agentic_last_run")
@@ -539,26 +605,60 @@ def render_last_run_result() -> None:
 
     st.success("Last run finished successfully.")
 
-    st.write(
-        {
-            "task_id": last_run.get("task_id"),
-            "run_id": last_run.get("run_id"),
-            "run_dir": last_run.get("run_dir"),
-            "report_path": last_run.get("report_path"),
-            "agent_results": last_run.get("agent_results_count"),
-            "consensus_reports": last_run.get("consensus_reports_count"),
-        }
+    agents_column, consensus_column, run_column = st.columns(3)
+    agents_column.metric(
+        "Agent outputs",
+        last_run.get("agent_results_count", 0),
+    )
+    consensus_column.metric(
+        "Consensus reports",
+        last_run.get("consensus_reports_count", 0),
+    )
+    run_column.metric("Run ID", last_run.get("run_id", "Unknown"))
+
+    st.caption(f"Task: {last_run.get('task_id', 'Unknown')}")
+
+    if last_run.get("dry_run"):
+        st.info(
+            "Dry-run result: the artifacts verify the workflow structure and "
+            "do not contain an engineering assessment."
+        )
+
+    with st.expander("Show run locations", expanded=False):
+        st.code(
+            "\n".join(
+                [
+                    "Run directory: "
+                    + format_display_path(
+                        Path(str(last_run.get("run_dir", ""))),
+                        project_root,
+                    ),
+                    "Final report: "
+                    + format_display_path(
+                        Path(str(last_run.get("report_path", ""))),
+                        project_root,
+                    ),
+                ]
+            ),
+            language="text",
+        )
+
+    render_result_artifacts(
+        last_run=last_run,
+        project_root=project_root,
     )
 
-    render_result_artifacts(last_run)
-
-    st.info(
-        "F5 status: result artifacts are displayed in the UI. "
-        "Outputs are still unreviewed and require human review before approved input promotion."
+    st.warning(
+        "Review status: unreviewed. Artifact browsing does not record a human "
+        "decision or promote information to approved input."
     )
 
 
-def render_result_artifacts(last_run: dict[str, Any]) -> None:
+def render_result_artifacts(
+    *,
+    last_run: dict[str, Any],
+    project_root: Path,
+) -> None:
     """Render final report, run summary, consensus reports and agent outputs."""
 
     run_dir = Path(str(last_run.get("run_dir", "")))
@@ -578,25 +678,42 @@ def render_result_artifacts(last_run: dict[str, Any]) -> None:
         render_markdown_file(
             title="Final Ingestion Report",
             path=report_path,
+            project_root=project_root,
         )
 
     with tab_summary:
         render_markdown_file(
             title="Run Summary",
             path=run_dir / "team_agentic_ingestion_run_summary.md",
+            project_root=project_root,
         )
 
     with tab_consensus:
-        render_consensus_report_browser(run_dir)
+        render_consensus_report_browser(
+            run_dir=run_dir,
+            project_root=project_root,
+        )
 
     with tab_agents:
-        render_agent_output_browser(run_dir)
+        render_agent_output_browser(
+            run_dir=run_dir,
+            project_root=project_root,
+        )
 
     with tab_paths:
-        render_artifact_paths(run_dir=run_dir, report_path=report_path)
+        render_artifact_paths(
+            run_dir=run_dir,
+            report_path=report_path,
+            project_root=project_root,
+        )
 
 
-def render_markdown_file(*, title: str, path: Path) -> None:
+def render_markdown_file(
+    *,
+    title: str,
+    path: Path,
+    project_root: Path,
+) -> None:
     """Render a Markdown file if it exists."""
 
     st.markdown(f"### {title}")
@@ -607,11 +724,15 @@ def render_markdown_file(*, title: str, path: Path) -> None:
 
     text = path.read_text(encoding="utf-8")
 
-    st.caption(str(path))
+    st.caption(format_display_path(path, project_root))
     st.markdown(text)
 
 
-def render_consensus_report_browser(run_dir: Path) -> None:
+def render_consensus_report_browser(
+    *,
+    run_dir: Path,
+    project_root: Path,
+) -> None:
     """Render selectable consensus Markdown reports."""
 
     st.markdown("### Consensus Reports")
@@ -639,10 +760,15 @@ def render_consensus_report_browser(run_dir: Path) -> None:
     render_markdown_file(
         title=selected_label,
         path=selected_path,
+        project_root=project_root,
     )
 
 
-def render_agent_output_browser(run_dir: Path) -> None:
+def render_agent_output_browser(
+    *,
+    run_dir: Path,
+    project_root: Path,
+) -> None:
     """Render selectable raw agent JSON outputs."""
 
     st.markdown("### Agent Outputs")
@@ -667,7 +793,7 @@ def render_agent_output_browser(run_dir: Path) -> None:
 
     selected_path = run_dir / selected_label
 
-    st.caption(str(selected_path))
+    st.caption(format_display_path(selected_path, project_root))
 
     try:
         import json
@@ -682,7 +808,12 @@ def render_agent_output_browser(run_dir: Path) -> None:
         )
 
 
-def render_artifact_paths(*, run_dir: Path, report_path: Path) -> None:
+def render_artifact_paths(
+    *,
+    run_dir: Path,
+    report_path: Path,
+    project_root: Path,
+) -> None:
     """Render artifact path overview."""
 
     st.markdown("### Artifact Paths")
@@ -690,10 +821,10 @@ def render_artifact_paths(*, run_dir: Path, report_path: Path) -> None:
     path_overview = chr(10).join(
         [
             "Run directory:",
-            str(run_dir),
+            format_display_path(run_dir, project_root),
             "",
             "Final report:",
-            str(report_path),
+            format_display_path(report_path, project_root),
         ]
     )
 
@@ -709,8 +840,38 @@ def render_artifact_paths(*, run_dir: Path, report_path: Path) -> None:
 
     st.markdown("### Files in Run Directory")
 
-    for artifact_path in artifact_files:
-        st.code(str(artifact_path), language="text")
+    st.code(
+        "\n".join(
+            format_display_path(path, project_root)
+            for path in artifact_files
+        ),
+        language="text",
+    )
+
+
+def format_display_path(path: Path, project_root: Path) -> str:
+    """Return a repository-relative path when the path belongs to the project."""
+
+    candidate = path if path.is_absolute() else project_root / path
+
+    try:
+        return str(candidate.resolve().relative_to(project_root.resolve()))
+    except ValueError:
+        return str(path)
+
+
+def format_file_size(size_bytes: int) -> str:
+    """Format a byte count for compact display in the UI."""
+
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+
+    size_kib = size_bytes / 1024
+
+    if size_kib < 1024:
+        return f"{size_kib:.1f} KiB"
+
+    return f"{size_kib / 1024:.1f} MiB"
 
 
 def validate_pipeline_config(config: PipelineConfig) -> list[str]:

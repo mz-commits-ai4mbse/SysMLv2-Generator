@@ -10,6 +10,7 @@ It does not propose relationships.
 from __future__ import annotations
 
 import json
+import re
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,8 @@ def write_ingestion_review_report(
 ) -> None:
     """Build and write the deterministic ingestion review report."""
 
+    project_root = determine_project_root(run_dir)
+
     derivation_payloads = load_result_payloads(derivation_results)
     completeness_payloads = load_result_payloads(completeness_results)
 
@@ -42,9 +45,14 @@ def write_ingestion_review_report(
         derivation_payloads=derivation_payloads,
         completeness_payloads=completeness_payloads,
     )
+    risks = collect_ambiguities_and_risks(
+        completeness_payloads=completeness_payloads,
+    )
     review_questions = collect_review_questions(
         derivation_payloads=derivation_payloads,
         completeness_payloads=completeness_payloads,
+        missing_information=missing_information,
+        risks=risks,
     )
 
     agent_ids = sorted(
@@ -63,6 +71,7 @@ def write_ingestion_review_report(
             raw_input_path=raw_input_path,
             run_id=run_id,
             run_dir=run_dir,
+            project_root=project_root,
         )
     )
 
@@ -72,25 +81,14 @@ def write_ingestion_review_report(
             explicit_links=explicit_links,
             buildability=buildability,
             missing_information=missing_information,
+            risks=risks,
+            review_questions=review_questions,
         )
     )
 
     lines.extend(
         build_candidate_comparison_section(
             candidates=candidates,
-            agent_ids=agent_ids,
-        )
-    )
-
-    lines.extend(
-        build_element_details_section(
-            candidates=candidates,
-        )
-    )
-
-    lines.extend(
-        build_explicit_links_section(
-            explicit_links=explicit_links,
             agent_ids=agent_ids,
         )
     )
@@ -109,8 +107,27 @@ def write_ingestion_review_report(
     )
 
     lines.extend(
+        build_risks_section(
+            risks=risks,
+        )
+    )
+
+    lines.extend(
         build_review_questions_section(
             review_questions=review_questions,
+        )
+    )
+
+    lines.extend(
+        build_explicit_links_section(
+            explicit_links=explicit_links,
+            agent_ids=agent_ids,
+        )
+    )
+
+    lines.extend(
+        build_element_details_section(
+            candidates=candidates,
         )
     )
 
@@ -120,6 +137,7 @@ def write_ingestion_review_report(
             completeness_results=completeness_results,
             consensus_reports=consensus_reports,
             narrative_report_path=narrative_report_path,
+            project_root=project_root,
         )
     )
 
@@ -200,12 +218,19 @@ def collect_candidate_elements(
                 {
                     "element_type": element_type,
                     "candidate_name": candidate_name,
+                    "candidate_ids": [],
                     "agent_results": {},
                     "source_assignments": [],
                 },
             )
 
+            extend_unique(
+                candidate["candidate_ids"],
+                [entry.get("candidate_id", "")],
+            )
+
             candidate["agent_results"][agent_id] = {
+                "candidate_id": entry.get("candidate_id", ""),
                 "persona_id": persona_id,
                 "description": entry.get("description", ""),
                 "confidence": entry.get("confidence", ""),
@@ -303,10 +328,14 @@ def collect_missing_information(
     derivation_payloads: list[dict[str, Any]],
     completeness_payloads: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Collect missing information from derivation and completeness stages."""
+    """Collect and deterministically consolidate model-building gaps.
+
+    Derivation and completeness agents often describe the same gap with
+    different wording. Consolidation therefore uses normalized token overlap;
+    it never asks an LLM and never creates a new engineering statement.
+    """
 
     items: list[dict[str, Any]] = []
-    seen: set[str] = set()
 
     for payload in derivation_payloads:
         for entry in payload["output"].get(
@@ -316,21 +345,17 @@ def collect_missing_information(
             if not isinstance(entry, dict):
                 continue
 
-            description = str(entry.get("missing_information", "")).strip()
-            key = normalize(description)
-
-            if not description or key in seen:
-                continue
-
-            seen.add(key)
-            items.append(
-                {
-                    "missing_information": description,
-                    "limits_or_blocks": entry.get("limits_or_blocks", []),
-                    "needed_for": entry.get("needed_for", []),
-                    "review_question": entry.get("review_question", ""),
-                    "reported_by": [payload["agent_id"]],
-                }
+            merge_missing_information_item(
+                items=items,
+                description=entry.get("missing_information", ""),
+                limits_or_blocks=entry.get("limits_or_blocks", []),
+                needed_for=entry.get("needed_for", []),
+                rationales=[],
+                review_questions=[entry.get("review_question", "")],
+                suggested_actions=[],
+                reported_by=[payload["agent_id"]],
+                source_stages=["derivation_assessment"],
+                source_ids=[entry.get("missing_info_id", "")],
             )
 
     for payload in completeness_payloads:
@@ -338,38 +363,90 @@ def collect_missing_information(
             if not isinstance(entry, dict):
                 continue
 
-            description = str(entry.get("missing_information", "")).strip()
-            key = normalize(description)
-
-            if not description:
-                continue
-
-            if key in seen:
-                continue
-
-            seen.add(key)
-            items.append(
-                {
-                    "missing_information": description,
-                    "limits_or_blocks": [entry.get("why_it_matters", "")],
-                    "needed_for": [],
-                    "review_question": entry.get("suggested_human_action", ""),
-                    "reported_by": [payload["agent_id"]],
-                }
+            merge_missing_information_item(
+                items=items,
+                description=entry.get("missing_information", ""),
+                limits_or_blocks=[],
+                needed_for=[],
+                rationales=[entry.get("why_it_matters", "")],
+                review_questions=[],
+                suggested_actions=[entry.get("suggested_human_action", "")],
+                reported_by=[payload["agent_id"]],
+                source_stages=["completeness_review"],
+                source_ids=[entry.get("gap_id", "")],
             )
 
+    for index, item in enumerate(items, start=1):
+        item["report_gap_id"] = f"GAP-{index:03d}"
+
     return items
+
+
+def collect_ambiguities_and_risks(
+    *,
+    completeness_payloads: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Collect ambiguity and risk statements without converting them to gaps."""
+
+    risks: list[dict[str, Any]] = []
+
+    for payload in completeness_payloads:
+        for entry in payload["output"].get("ambiguities_and_risks", []):
+            if not isinstance(entry, dict):
+                continue
+
+            topic = str(entry.get("topic", "")).strip()
+            description = str(entry.get("description", "")).strip()
+
+            if not topic and not description:
+                continue
+
+            existing = find_related_record(
+                records=risks,
+                candidate_text=f"{topic} {description}",
+                text_fields=("topic", "description"),
+            )
+
+            if existing is None:
+                existing = {
+                    "topic": topic,
+                    "description": description,
+                    "potential_impacts": [],
+                    "review_actions": [],
+                    "reported_by": [],
+                    "source_stages": [],
+                    "source_ids": [],
+                }
+                risks.append(existing)
+
+            extend_unique(
+                existing["potential_impacts"],
+                [entry.get("potential_impact", "")],
+            )
+            extend_unique(
+                existing["review_actions"],
+                [entry.get("suggested_review_action", "")],
+            )
+            extend_unique(existing["reported_by"], [payload["agent_id"]])
+            extend_unique(existing["source_stages"], ["completeness_review"])
+            extend_unique(existing["source_ids"], [entry.get("risk_id", "")])
+
+    for index, risk in enumerate(risks, start=1):
+        risk["report_risk_id"] = f"RISK-{index:03d}"
+
+    return risks
 
 
 def collect_review_questions(
     *,
     derivation_payloads: list[dict[str, Any]],
     completeness_payloads: list[dict[str, Any]],
-) -> list[dict[str, str]]:
-    """Collect explicit human-review questions."""
+    missing_information: list[dict[str, Any]],
+    risks: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Collect review questions not already represented by a gap action."""
 
-    questions: list[dict[str, str]] = []
-    seen: set[str] = set()
+    questions: list[dict[str, Any]] = []
 
     for payload in derivation_payloads:
         for entry in payload["output"].get(
@@ -381,16 +458,17 @@ def collect_review_questions(
 
             question = str(entry.get("review_question", "")).strip()
 
-            if not question or normalize(question) in seen:
+            if not question:
                 continue
 
-            seen.add(normalize(question))
-            questions.append(
-                {
-                    "question": question,
-                    "topic": str(entry.get("topic", "")),
-                    "reason": str(entry.get("reason_not_accepted", "")),
-                }
+            merge_review_question(
+                questions=questions,
+                question=question,
+                topics=[entry.get("topic", "")],
+                reasons=[entry.get("reason_not_accepted", "")],
+                reported_by=[payload["agent_id"]],
+                source_stages=["derivation_assessment"],
+                source_ids=[],
             )
 
     for payload in completeness_payloads:
@@ -400,21 +478,341 @@ def collect_review_questions(
 
             question = str(entry.get("question", "")).strip()
 
-            if not question or normalize(question) in seen:
+            if not question:
                 continue
 
-            seen.add(normalize(question))
-            questions.append(
-                {
-                    "question": question,
-                    "topic": str(
-                        entry.get("related_artifact_or_candidate", "")
-                    ),
-                    "reason": str(entry.get("reason", "")),
-                }
+            merge_review_question(
+                questions=questions,
+                question=question,
+                topics=[entry.get("related_artifact_or_candidate", "")],
+                reasons=[entry.get("reason", "")],
+                reported_by=[payload["agent_id"]],
+                source_stages=["completeness_review"],
+                source_ids=[entry.get("question_id", "")],
             )
 
-    return questions
+    independent_questions = [
+        question
+        for question in questions
+        if not question_is_covered_by_gap(
+            question=question["question"],
+            missing_information=missing_information,
+        )
+    ]
+
+    for index, question in enumerate(independent_questions, start=1):
+        question["report_question_id"] = f"RQ-{index:03d}"
+        question["related_risk_ids"] = find_related_risk_ids(
+            question=question["question"],
+            risks=risks or [],
+        )
+
+    return independent_questions
+
+
+def merge_missing_information_item(
+    *,
+    items: list[dict[str, Any]],
+    description: Any,
+    limits_or_blocks: Any,
+    needed_for: Any,
+    rationales: Any,
+    review_questions: Any,
+    suggested_actions: Any,
+    reported_by: Any,
+    source_stages: Any,
+    source_ids: Any,
+) -> None:
+    """Merge one gap record while preserving all source-provided details."""
+
+    description_text = str(description or "").strip()
+
+    if not description_text:
+        return
+
+    existing = find_related_record(
+        records=items,
+        candidate_text=description_text,
+        text_fields=("missing_information",),
+    )
+
+    if existing is None:
+        existing = {
+            "missing_information": description_text,
+            "alternative_descriptions": [],
+            "limits_or_blocks": [],
+            "needed_for": [],
+            "rationales": [],
+            "review_questions": [],
+            "suggested_actions": [],
+            "reported_by": [],
+            "source_stages": [],
+            "source_ids": [],
+        }
+        items.append(existing)
+    elif normalize(existing["missing_information"]) != normalize(description_text):
+        extend_unique(existing["alternative_descriptions"], [description_text])
+
+    extend_unique(existing["limits_or_blocks"], limits_or_blocks)
+    extend_unique(existing["needed_for"], needed_for)
+    extend_unique(existing["rationales"], rationales)
+    extend_unique(existing["review_questions"], review_questions)
+    extend_unique(existing["suggested_actions"], suggested_actions)
+    extend_unique(existing["reported_by"], reported_by)
+    extend_unique(existing["source_stages"], source_stages)
+    extend_unique(existing["source_ids"], source_ids)
+
+
+def merge_review_question(
+    *,
+    questions: list[dict[str, Any]],
+    question: str,
+    topics: Any,
+    reasons: Any,
+    reported_by: Any,
+    source_stages: Any,
+    source_ids: Any,
+) -> None:
+    """Merge repeated review questions without inventing a new formulation."""
+
+    existing = find_related_record(
+        records=questions,
+        candidate_text=question,
+        text_fields=("question",),
+    )
+
+    if existing is None:
+        existing = {
+            "question": question,
+            "alternative_questions": [],
+            "topics": [],
+            "reasons": [],
+            "reported_by": [],
+            "source_stages": [],
+            "source_ids": [],
+        }
+        questions.append(existing)
+    elif normalize(existing["question"]) != normalize(question):
+        extend_unique(existing["alternative_questions"], [question])
+
+    extend_unique(existing["topics"], topics)
+    extend_unique(existing["reasons"], reasons)
+    extend_unique(existing["reported_by"], reported_by)
+    extend_unique(existing["source_stages"], source_stages)
+    extend_unique(existing["source_ids"], source_ids)
+
+
+def question_is_covered_by_gap(
+    *,
+    question: str,
+    missing_information: list[dict[str, Any]],
+) -> bool:
+    """Return True when a question already appears as a consolidated gap action."""
+
+    for item in missing_information:
+        descriptions = [item.get("missing_information", "")]
+        descriptions.extend(item.get("alternative_descriptions", []))
+
+        if any(texts_are_related(question, value) for value in descriptions):
+            return True
+
+        if any(
+            texts_are_action_equivalent(question, value)
+            for value in (
+                item.get("review_questions", [])
+                + item.get("suggested_actions", [])
+            )
+        ):
+            return True
+
+    return False
+
+
+def find_related_risk_ids(
+    *,
+    question: str,
+    risks: list[dict[str, Any]],
+) -> list[str]:
+    """Return report risk IDs that address the same review topic."""
+
+    related_ids: list[str] = []
+
+    for risk in risks:
+        comparison_values = [
+            risk.get("topic", ""),
+            risk.get("description", ""),
+        ]
+        comparison_values.extend(risk.get("review_actions", []))
+
+        if any(
+            texts_are_related(question, value)
+            or texts_are_action_equivalent(question, value)
+            for value in comparison_values
+        ):
+            extend_unique(
+                related_ids,
+                [risk.get("report_risk_id", "")],
+            )
+
+    return related_ids
+
+
+def find_related_record(
+    *,
+    records: list[dict[str, Any]],
+    candidate_text: str,
+    text_fields: tuple[str, ...],
+) -> dict[str, Any] | None:
+    """Find the first deterministically related record."""
+
+    for record in records:
+        record_text = " ".join(
+            str(record.get(field, ""))
+            for field in text_fields
+        )
+
+        if texts_are_related(candidate_text, record_text):
+            return record
+
+    return None
+
+
+def texts_are_related(left: Any, right: Any) -> bool:
+    """Compare two statements using deterministic significant-token overlap."""
+
+    left_tokens = significant_tokens(left)
+    right_tokens = significant_tokens(right)
+
+    if not left_tokens or not right_tokens:
+        return False
+
+    if left_tokens == right_tokens:
+        return True
+
+    intersection_size = len(left_tokens & right_tokens)
+
+    if intersection_size < 3:
+        return False
+
+    union_size = len(left_tokens | right_tokens)
+    smaller_size = min(len(left_tokens), len(right_tokens))
+
+    jaccard = intersection_size / union_size
+    containment = intersection_size / smaller_size
+
+    return (
+        jaccard >= 0.45
+        or containment >= 0.65
+        or (intersection_size >= 4 and jaccard >= 0.33)
+    )
+
+
+def texts_are_action_equivalent(left: Any, right: Any) -> bool:
+    """Use a slightly broader match for two review-action formulations."""
+
+    left_tokens = significant_tokens(left)
+    right_tokens = significant_tokens(right)
+
+    if not left_tokens or not right_tokens:
+        return False
+
+    intersection_size = len(left_tokens & right_tokens)
+    generic_entity_tokens = {
+        "application",
+        "client",
+        "component",
+        "element",
+        "information",
+        "microscope",
+        "model",
+        "session",
+        "software",
+        "system",
+        "workstation",
+    }
+    action_specific_overlap = (
+        left_tokens & right_tokens
+    ) - generic_entity_tokens
+
+    if intersection_size < 3 or not action_specific_overlap:
+        return False
+
+    union_size = len(left_tokens | right_tokens)
+    smaller_size = min(len(left_tokens), len(right_tokens))
+
+    jaccard = intersection_size / union_size
+    containment = intersection_size / smaller_size
+
+    return jaccard >= 0.30 or containment >= 0.50
+
+
+def significant_tokens(value: Any) -> set[str]:
+    """Return normalized content tokens for deterministic comparison."""
+
+    aliases = {
+        "acceptance": "accept",
+        "activities": "activity",
+        "boundaries": "boundary",
+        "cases": "case",
+        "components": "component",
+        "criteria": "criterion",
+        "definitions": "definition",
+        "directionality": "direction",
+        "directions": "direction",
+        "distinct": "separate",
+        "endpoints": "endpoint",
+        "fields": "field",
+        "formats": "format",
+        "interfaces": "interface",
+        "messages": "message",
+        "models": "model",
+        "postconditions": "postcondition",
+        "preconditions": "precondition",
+        "protocols": "protocol",
+        "questions": "question",
+        "requirements": "requirement",
+        "represented": "representation",
+        "transported": "transport",
+        "scenarios": "scenario",
+        "tests": "test",
+        "thresholds": "threshold",
+        "verification": "validation",
+    }
+    stopwords = {
+        "a", "an", "and", "are", "as", "at", "be", "between", "by",
+        "can", "for", "from", "how", "in", "is", "it", "of", "or",
+        "such", "that", "the", "their", "this", "to", "used", "what",
+        "when", "where", "which", "who", "with",
+    }
+
+    tokens = re.findall(r"[a-z0-9]+", str(value or "").lower())
+
+    return {
+        aliases.get(token, token)
+        for token in tokens
+        if token not in stopwords and len(token) > 1
+    }
+
+
+def extend_unique(target: list[str], values: Any) -> None:
+    """Append non-empty values once while retaining original wording and order."""
+
+    if isinstance(values, (list, tuple, set)):
+        candidates = values
+    else:
+        candidates = [values]
+
+    seen = {normalize(value) for value in target}
+
+    for value in candidates:
+        text = str(value or "").strip()
+        key = normalize(text)
+
+        if not text or key in seen:
+            continue
+
+        target.append(text)
+        seen.add(key)
 
 
 def build_header(
@@ -424,6 +822,7 @@ def build_header(
     raw_input_path: Path,
     run_id: str,
     run_dir: Path,
+    project_root: Path,
 ) -> list[str]:
     return [
         "# Ingestion Review Report",
@@ -437,8 +836,8 @@ def build_header(
         f"- Task ID: `{task_id}`",
         f"- Recipe ID: `{recipe_id}`",
         f"- Run ID: `{run_id}`",
-        f"- Source: `{raw_input_path}`",
-        f"- Run Directory: `{run_dir}`",
+        f"- Source: `{repository_relative_path(raw_input_path, project_root)}`",
+        f"- Run Directory: `{repository_relative_path(run_dir, project_root)}`",
         "",
     ]
 
@@ -449,6 +848,8 @@ def build_review_dashboard(
     explicit_links: list[dict[str, Any]],
     buildability: dict[str, dict[str, Any]],
     missing_information: list[dict[str, Any]],
+    risks: list[dict[str, Any]],
+    review_questions: list[dict[str, Any]],
 ) -> list[str]:
     ready_models = sum(
         1
@@ -475,7 +876,9 @@ def build_review_dashboard(
         f"| Explicit source-based links | {len(explicit_links)} |",
         f"| Assessed SysML model types | {len(buildability)} |",
         f"| Models considered preliminarily buildable by at least one agent | {ready_models} |",
-        f"| Missing-information items | {len(missing_information)} |",
+        f"| Consolidated missing-information items | {len(missing_information)} |",
+        f"| Ambiguities and risks | {len(risks)} |",
+        f"| Independent review questions | {len(review_questions)} |",
         "",
     ]
 
@@ -499,7 +902,16 @@ def build_candidate_comparison_section(
         )
         return lines
 
-    header = ["Element Type", "Candidate"]
+    if len(agent_ids) == 1:
+        lines.extend(
+            [
+                "> Single-agent execution: candidate identification has not "
+                "been cross-checked by another agent.",
+                "",
+            ]
+        )
+
+    header = ["Candidate ID", "Element Type", "Candidate"]
     header.extend(agent_ids)
     header.extend(["Agreement", "Review Required"])
 
@@ -508,6 +920,7 @@ def build_candidate_comparison_section(
 
     for candidate in candidates.values():
         row = [
+            join_values(candidate.get("candidate_ids", [])),
             candidate["element_type"],
             candidate["candidate_name"],
         ]
@@ -531,7 +944,9 @@ def build_candidate_comparison_section(
 
         identified_count = len(candidate["agent_results"])
 
-        if agent_ids and identified_count == len(agent_ids):
+        if len(agent_ids) == 1:
+            agreement = "Single-agent observation — no cross-agent consensus"
+        elif agent_ids and identified_count == len(agent_ids):
             agreement = "All agents identified candidate"
         elif identified_count > len(agent_ids) / 2:
             agreement = "Majority identified candidate"
@@ -563,7 +978,7 @@ def build_element_details_section(
     candidates: dict[str, dict[str, Any]],
 ) -> list[str]:
     lines = [
-        "## 3. Element Details and Assigned Source Content",
+        "## 8. Element Details and Assigned Source Content",
         "",
     ]
 
@@ -572,10 +987,13 @@ def build_element_details_section(
         return lines
 
     for index, candidate in enumerate(candidates.values(), start=1):
+        display_id = candidate_display_id(candidate, index)
         lines.extend(
             [
-                f"### ELEM-{index:03d} — {candidate['candidate_name']}",
+                f"### {display_id} — {candidate['candidate_name']}",
                 "",
+                f"- Candidate IDs: "
+                f"{', '.join(candidate.get('candidate_ids', [])) or 'Not provided'}",
                 f"- Element Type: `{candidate['element_type']}`",
                 f"- Agents Identifying Candidate: "
                 f"{', '.join(candidate['agent_results'].keys())}",
@@ -658,7 +1076,7 @@ def build_explicit_links_section(
     agent_ids: list[str],
 ) -> list[str]:
     lines = [
-        "## 4. Explicit Source-Based Links",
+        "## 7. Explicit Source-Based Links",
         "",
         "> No relationships are proposed in this ingestion stage. "
         "The table contains only links that an agent considered directly "
@@ -677,9 +1095,9 @@ def build_explicit_links_section(
 
     lines.extend(
         [
-            "| Source Candidate | Link Type | Target Candidate | "
+            "| Link ID | Source Candidate | Link Type | Target Candidate | "
             "Source Statement | Confidence | Agent / Persona |",
-            "|---|---|---|---|---|---|",
+            "|---|---|---|---|---|---|---|",
         ]
     )
 
@@ -687,6 +1105,7 @@ def build_explicit_links_section(
         lines.append(
             markdown_row(
                 [
+                    link.get("link_id", ""),
                     link.get("source_element_candidate", ""),
                     link.get("link_type", ""),
                     link.get("target_element_candidate", ""),
@@ -710,7 +1129,7 @@ def build_model_buildability_section(
     agent_ids: list[str],
 ) -> list[str]:
     lines = [
-        "## 5. Buildable SysML Models",
+        "## 3. Buildable SysML Models",
         "",
         "> `can_be_generated_now = true` means only that a preliminary "
         "model candidate may be generated for further human review.",
@@ -725,6 +1144,15 @@ def build_model_buildability_section(
             ]
         )
         return lines
+
+    if len(agent_ids) == 1:
+        lines.extend(
+            [
+                "> Single-agent execution: buildability assessments have not "
+                "been cross-checked by another agent.",
+                "",
+            ]
+        )
 
     header = ["SysML Model Type"]
     header.extend(agent_ids)
@@ -764,7 +1192,9 @@ def build_model_buildability_section(
             for item in assessments
         }
 
-        if len(signatures) <= 1:
+        if len(agent_ids) == 1:
+            review_signal = "Single-agent assessment — no cross-agent consensus"
+        elif len(signatures) <= 1:
             review_signal = "Assessments aligned"
         else:
             review_signal = "Conflicting assessments — review required"
@@ -796,7 +1226,7 @@ def build_missing_information_section(
     missing_information: list[dict[str, Any]],
 ) -> list[str]:
     lines = [
-        "## 6. Missing Information for Further Modeling",
+        "## 4. Missing Information for Further Modeling",
         "",
     ]
 
@@ -811,9 +1241,9 @@ def build_missing_information_section(
 
     lines.extend(
         [
-            "| Missing Information | Limits or Blocks | Needed For | "
-            "Review Question / Action |",
-            "|---|---|---|---|",
+            "| Gap ID | Missing Information | Limits or Blocks | Needed For | "
+            "Why It Matters | Review Question | Suggested Action | Evidence Origin |",
+            "|---|---|---|---|---|---|---|---|",
         ]
     )
 
@@ -821,10 +1251,58 @@ def build_missing_information_section(
         lines.append(
             markdown_row(
                 [
+                    item.get("report_gap_id", ""),
                     item.get("missing_information", ""),
                     join_values(item.get("limits_or_blocks", [])),
                     join_values(item.get("needed_for", [])),
-                    item.get("review_question", ""),
+                    join_values(item.get("rationales", [])),
+                    join_values(item.get("review_questions", [])),
+                    join_values(item.get("suggested_actions", [])),
+                    format_evidence_origin(item),
+                ]
+            )
+        )
+
+    lines.append("")
+    return lines
+
+
+def build_risks_section(
+    *,
+    risks: list[dict[str, Any]],
+) -> list[str]:
+    lines = [
+        "## 5. Ambiguities and Risks",
+        "",
+    ]
+
+    if not risks:
+        lines.extend(
+            [
+                "No structured ambiguity or risk items were returned.",
+                "",
+            ]
+        )
+        return lines
+
+    lines.extend(
+        [
+            "| Risk ID | Topic | Description | Potential Impact | "
+            "Review Action | Evidence Origin |",
+            "|---|---|---|---|---|---|",
+        ]
+    )
+
+    for risk in risks:
+        lines.append(
+            markdown_row(
+                [
+                    risk.get("report_risk_id", ""),
+                    risk.get("topic", ""),
+                    risk.get("description", ""),
+                    join_values(risk.get("potential_impacts", [])),
+                    join_values(risk.get("review_actions", [])),
+                    format_evidence_origin(risk),
                 ]
             )
         )
@@ -835,10 +1313,13 @@ def build_missing_information_section(
 
 def build_review_questions_section(
     *,
-    review_questions: list[dict[str, str]],
+    review_questions: list[dict[str, Any]],
 ) -> list[str]:
     lines = [
-        "## 7. Review Questions",
+        "## 6. Review Questions",
+        "",
+        "> Questions already represented by a consolidated gap action are not "
+        "repeated in this section.",
         "",
     ]
 
@@ -853,8 +1334,9 @@ def build_review_questions_section(
 
     lines.extend(
         [
-            "| Question | Related Topic | Why Review Is Required |",
-            "|---|---|---|",
+            "| Question ID | Question | Related Topic / References | "
+            "Related Risks | Why Review Is Required | Evidence Origin |",
+            "|---|---|---|---|---|---|",
         ]
     )
 
@@ -862,9 +1344,12 @@ def build_review_questions_section(
         lines.append(
             markdown_row(
                 [
+                    item.get("report_question_id", ""),
                     item.get("question", ""),
-                    item.get("topic", ""),
-                    item.get("reason", ""),
+                    join_values(item.get("topics", [])),
+                    join_values(item.get("related_risk_ids", [])),
+                    join_values(item.get("reasons", [])),
+                    format_evidence_origin(item),
                 ]
             )
         )
@@ -879,9 +1364,10 @@ def build_traceability_section(
     completeness_results: list[AgentRunResult],
     consensus_reports: list[dict[str, Any]],
     narrative_report_path: Path | None,
+    project_root: Path,
 ) -> list[str]:
     lines = [
-        "## 8. Technical Traceability",
+        "## 9. Technical Traceability",
         "",
         "### Agent Output Artifacts",
         "",
@@ -895,7 +1381,7 @@ def build_traceability_section(
                 [
                     result.agent_id,
                     result.task_name,
-                    str(result.output_path),
+                    repository_relative_path(result.output_path, project_root),
                 ]
             )
         )
@@ -917,7 +1403,7 @@ def build_traceability_section(
                 [
                     report.get("team_id", ""),
                     summary.get("total_groups", 0),
-                    summary.get("review_required", 0),
+                    review_required_group_count(report),
                 ]
             )
         )
@@ -928,7 +1414,7 @@ def build_traceability_section(
                 "",
                 "### Narrative Supplement",
                 "",
-                f"`{narrative_report_path}`",
+                f"`{repository_relative_path(narrative_report_path, project_root)}`",
             ]
         )
 
@@ -946,6 +1432,83 @@ def build_traceability_section(
     )
 
     return lines
+
+
+def format_evidence_origin(item: dict[str, Any]) -> str:
+    """Format source stage, source identifiers and reporting agents."""
+
+    parts: list[str] = []
+
+    if item.get("source_stages"):
+        parts.append(
+            "Stages: " + ", ".join(item["source_stages"])
+        )
+
+    if item.get("source_ids"):
+        parts.append(
+            "Source IDs: " + ", ".join(item["source_ids"])
+        )
+
+    if item.get("reported_by"):
+        parts.append(
+            "Agents: " + ", ".join(item["reported_by"])
+        )
+
+    return "<br>".join(parts)
+
+
+def candidate_display_id(
+    candidate: dict[str, Any],
+    fallback_index: int,
+) -> str:
+    """Return a source-provided candidate ID or a report-local fallback."""
+
+    candidate_ids = candidate.get("candidate_ids", [])
+
+    if len(candidate_ids) == 1:
+        return str(candidate_ids[0])
+
+    return f"REPORT_ELEM_{fallback_index:03d}"
+
+
+def determine_project_root(run_dir: Path) -> Path:
+    """Determine the repository root from a run directory."""
+
+    resolved_run_dir = run_dir.resolve()
+
+    for candidate in [resolved_run_dir, *resolved_run_dir.parents]:
+        if (candidate / "modules").is_dir() and (candidate / "data").is_dir():
+            return candidate
+
+    if len(resolved_run_dir.parents) > 3:
+        return resolved_run_dir.parents[3]
+
+    return resolved_run_dir.parent
+
+
+def repository_relative_path(path: Path, project_root: Path) -> str:
+    """Render repository-owned paths without machine-specific prefixes."""
+
+    try:
+        return str(path.resolve().relative_to(project_root.resolve()))
+    except ValueError:
+        return str(path)
+
+
+def review_required_group_count(report: dict[str, Any]) -> int:
+    """Return a stable review-required count for old and new reports."""
+
+    summary = report.get("summary", {})
+    summary_value = summary.get("review_required")
+
+    if isinstance(summary_value, int):
+        return summary_value
+
+    return sum(
+        1
+        for group in report.get("groups", [])
+        if group.get("review_required") is True
+    )
 
 
 def candidate_requires_review(candidate: dict[str, Any]) -> bool:
@@ -1012,8 +1575,10 @@ def join_values(values: Any) -> str:
 
 
 def sanitize(value: Any) -> str:
+    text = "" if value is None else str(value)
+
     return (
-        str(value or "")
+        text
         .replace("|", "\\|")
         .replace("\n", " ")
         .strip()
