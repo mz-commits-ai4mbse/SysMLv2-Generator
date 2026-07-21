@@ -25,15 +25,15 @@ Architecture Version
 
 Knowledge Base Version
 
-1.1
+1.2
 
 Implementation Version
 
-0.5
+0.6
 
 Roadmap Version
 
-1.1
+1.2
 
 Last SSOT Update
 
@@ -111,18 +111,54 @@ The initial project framework is:
   - Logical
   - Physical
 
-The Apollo 11 reference is non-normative input for P1 review. Its package layout shall not be copied unchanged. Additional framework templates are a post-MVP extension.
+The Apollo 11 reference was reviewed during P1 for transferable structuring,
+naming and hierarchy patterns.
 
-## Deliverables
+It remains non-normative. Its CoSMA framework, package layout, engineering
+content and identifiers were not transferred.
 
-- P1 — Framework Template Definition
-- P2 — Project Manifest and Workspace Structure
-- P3 — Source Registry and mandatory Project Assignment
-- P4 — Framework-mapped heterogeneous Information Units
-- P5 — Processing State and Artifact Organization
-- P6 — Coverage and Preliminary Readiness Engine
-- P7 — Project Dashboard
-- P8 — Tests and Phase Review
+The initial framework is implemented as the versioned, machine-readable
+template:
+
+`context/frameworks/turing_rflp_framework.json`
+
+Additional framework templates remain a post-MVP extension.
+
+## Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| P1 | Framework Template Definition | Completed |
+| P2 | Project Manifest and Workspace Structure | Next |
+| P3 | Source Registry and mandatory Project Assignment | Planned |
+| P4 | Framework-mapped heterogeneous Information Units | Planned |
+| P5 | Processing State and Artifact Organization | Planned |
+| P6 | Coverage and Preliminary Readiness Engine | Planned |
+| P7 | Project Dashboard | Planned |
+| P8 | Tests and Phase Review | Planned |
+
+## P1 Completion
+
+P1 was completed and verified in:
+
+`82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
+
+Implemented deliverables:
+
+- reviewed non-normative Apollo 11 structural reference
+- versioned framework template `TURING_RFLP_FRAMEWORK`
+- stable identifiers for 3 levels and 12 mapping targets
+- zero-to-many information-unit mapping contract
+- exclusion of `context_only` sources from framework mapping
+- explicit separation of preliminary coverage and approved readiness
+- deterministic framework-template validation
+- automated P1 tests
+
+Verification:
+
+- P1 framework tests: 9 passed
+- complete automated test suite: 18 passed
+- `git diff --check`: passed
 
 ## Data and Review Boundaries
 
@@ -159,7 +195,19 @@ Phase P does not generate models. The disabled controls communicate later capabi
 
 ## Status
 
-In Progress — Scope Defined, Implementation Not Started
+In Progress — P1 Completed, P2 Architecture Definition Not Started
+
+Verified P1 Implementation
+
+`82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
+
+Next Step
+
+P2 — Project Manifest and Workspace Structure
+
+Before P2 implementation begins, the Project Workspace architecture and
+persistence boundaries shall be discussed, explicitly accepted and recorded in
+ADR-005.
 
 Depends on
 

@@ -1,5 +1,5 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "last_updated": "2026-07-21",
   "authoritative_sources": {
     "engineering_model": {
@@ -18,7 +18,7 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "adce9ec65ca3e36b89686b55d397a34dd382fdb1",
+      "verified_commit": "82b5cbbe9bedac77a4b02928a596ea8fbdacc873",
       "status": "authoritative_for_committed_implementation"
     },
     "collaboration": {
@@ -52,35 +52,78 @@
   },
   "project_framework": {
     "template_id": "TURING_RFLP_FRAMEWORK",
-    "status": "scope_defined_not_implemented",
-    "planned_definition_phase": "P1",
-    "non_normative_reference": "context/examples/apollo11_structure_reference.md",
-    "reference_review_status": "not_reviewed",
-    "levels": {
-      "stakeholder_level": [
-        "Stakeholders",
-        "User Needs",
-        "Stakeholder Requirements",
-        "Use Cases"
+    "status": "implemented_verified",
+    "definition_phase": "P1",
+    "template_path": "context/frameworks/turing_rflp_framework.json",
+    "schema_version": "1.0.0",
+    "template_version": "1.0.0",
+    "verified_commit": "82b5cbbe9bedac77a4b02928a596ea8fbdacc873",
+    "non_normative_references": [
+      {
+        "source_id": "SRC_APOLLO11_SYSML_V2",
+        "path": "context/examples/apollo11_structure_reference.md",
+        "repository": "https://github.com/airbus/apollo-11-sysml-v2",
+        "reviewed_commit": "6e9c93f",
+        "review_status": "reviewed_for_p1",
+        "usage_rule": "Use only explicitly accepted structuring, naming and hierarchy patterns. Do not transfer Apollo engineering content, its CoSMA framework or its package layout."
+      }
+    ],
+    "structure": {
+      "level_count": 3,
+      "mapping_target_count": 12,
+      "levels": {
+        "stakeholder_level": [
+          "Stakeholders",
+          "User Needs",
+          "Stakeholder Requirements",
+          "Use Cases"
+        ],
+        "system_level": [
+          "Requirements",
+          "Functional",
+          "Logical",
+          "Physical"
+        ],
+        "subsystem_level": [
+          "Requirements",
+          "Functional",
+          "Logical",
+          "Physical"
+        ]
+      }
+    },
+    "mapping_contract": {
+      "target_identifier": "node_id",
+      "cardinality_per_information_unit": "zero_to_many",
+      "unknown_target_behavior": "reject",
+      "eligible_source_roles": [
+        "engineering_source"
       ],
-      "system_level": [
-        "Requirements",
-        "Functional",
-        "Logical",
-        "Physical"
-      ],
-      "subsystem_level": [
-        "Requirements",
-        "Functional",
-        "Logical",
-        "Physical"
-      ]
+      "context_only_mapping_allowed": false
+    },
+    "assessment_boundary": {
+      "preliminary_coverage": {
+        "available_in_phase_p": true,
+        "requires_human_approval": false,
+        "eligible_source_roles": [
+          "engineering_source"
+        ]
+      },
+      "approved_readiness": {
+        "available_in_phase_p": false,
+        "available_from_phase": "G",
+        "requires_human_approval": true,
+        "eligible_source_roles": [
+          "engineering_source"
+        ]
+      }
     },
     "future_extension_rule": "Additional framework templates are a post-MVP extension."
   },
   "project_source_roles": {
     "engineering_source": {
       "may_create_engineering_information_units": true,
+      "may_create_framework_assignments": true,
       "may_contribute_to_preliminary_coverage": true,
       "may_contribute_to_generation_after_human_approval": true
     },
@@ -88,6 +131,7 @@
       "may_support_system_context_and_interpretation": true,
       "may_create_context_information": true,
       "may_create_engineering_information_units": false,
+      "may_create_framework_assignments": false,
       "may_contribute_to_coverage_or_readiness": false,
       "may_contribute_to_model_generation": false
     }
@@ -98,8 +142,13 @@
     "Committed repository content is authoritative for implementation state.",
     "Local uncommitted changes are not authoritative implementation state.",
     "Every ingested source shall be assigned to exactly one project.",
+    "Framework assignments shall reference valid mapping-target node IDs from the active framework template.",
+    "One engineering information unit may map to zero, one or multiple framework nodes.",
+    "Unknown framework node IDs shall be rejected.",
     "Only human-approved engineering information may become input to model generation.",
-    "Context-only sources shall never satisfy framework coverage, readiness or model-generation evidence.",
+    "Preliminary coverage shall remain separate from approved generation readiness.",
+    "Context-only sources shall never create framework assignments or satisfy coverage, readiness or model-generation evidence.",
+    "Apollo 11 remains a non-normative structural reference and shall not override the accepted Turing framework.",
     "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
   ]
 }

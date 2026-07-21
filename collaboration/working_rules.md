@@ -166,14 +166,21 @@ LLMs shall only be used where semantic reasoning is actually required.
 
 Architectural changes shall never be introduced implicitly.
 
-Every accepted architecture change requires
+Every accepted architecture change requires:
 
 - discussion
-- explicit agreement
-- SSOT UPDATE
+- explicit agreement by the project owner
+- documentation in an Architecture Decision Record
+- local review
+- commit and push by the project owner
 
-before becoming part of the project.
+The accepted ADR shall be committed before implementation depends on the
+architecture decision.
 
+A complete synchronization of all Collaboration Knowledge Base files is
+performed during the next scheduled SSOT UPDATE.
+
+A separate full SSOT UPDATE is not required for every internal roadmap step.
 ---
 
 # 10. Project Knowledge
@@ -303,6 +310,26 @@ For every Collaboration file exactly one of the following outcomes shall be prod
 
 An SSOT UPDATE is complete only after all affected files have been processed accordingly.
 
+## Update Cadence
+
+A regular SSOT UPDATE is performed after completion of a complete major roadmap
+phase.
+
+Internal work steps within a phase do not require their own full SSOT UPDATE.
+
+For Phase P, the internal steps P1 through P8 are tracked through:
+
+- committed implementation changes
+- automated test evidence
+- reviewed Architecture Decision Records
+- explicit project-owner decisions
+
+The next regular SSOT UPDATE after this synchronization shall be performed when
+Phase P has been completed through P8.
+
+An earlier SSOT UPDATE is performed only when explicitly requested by the
+project owner or when a critical handover would otherwise become unreliable.
+
 ## Repository Synchronization
 
 After every SSOT UPDATE, the project owner shall be reminded to commit and push
@@ -349,3 +376,79 @@ Preliminary coverage may describe what unreviewed engineering information appear
 Approved readiness is a separate state and shall be calculated only from human-approved engineering information.
 
 No UI state, generated report or consensus result may silently promote unreviewed information into approved model-generation input.
+
+---
+
+# 18. Repository Collaboration Workflow
+
+GitHub repositories and repository links are used passively by AI assistants.
+
+Permitted passive actions include:
+
+- reading repository files
+- inspecting branches and committed revisions
+- reviewing public reference repositories
+- comparing committed implementation states
+- cloning a repository into a temporary local review location without changing
+  the remote repository
+- verifying a commit after the project owner has pushed it
+
+AI assistants shall not:
+
+- directly modify GitHub repository content
+- create or update branches in the remote repository
+- commit repository changes
+- push repository changes
+- open or merge pull requests
+- use GitHub write APIs or connectors
+- stage files in the project owner's local working tree
+- perform destructive cleanup of the project owner's working tree
+
+All repository changes shall be:
+
+1. proposed by the AI assistant with the affected repository-relative file path,
+2. applied locally by the project owner,
+3. reviewed locally,
+4. tested locally,
+5. staged explicitly by file path,
+6. committed locally by the project owner,
+7. pushed by the project owner,
+8. verified passively after the push.
+
+Before proposing a repository change, the AI assistant shall identify every
+affected file by its repository-relative path.
+
+Unless the project owner explicitly requests a grouped change, modifications
+shall be presented one file at a time.
+
+The AI assistant acts as an implementation guide and may provide:
+
+- complete replacement content
+- targeted replacement blocks
+- copy-and-paste-ready commands
+- validation commands
+- expected command output
+- review and test criteria
+- proposed commit messages
+
+When unrelated local changes exist, staging commands shall list the intended
+files explicitly.
+
+Broad staging commands such as
+
+`git add .`
+
+or
+
+`git add -A`
+
+shall not be proposed for a mixed working tree.
+
+External repositories remain non-authoritative unless their role and authority
+have been explicitly registered in the project source hierarchy.
+
+Content from a non-normative reference shall be reviewed and curated before it
+may influence repository implementation or project context.
+
+The project owner retains final authority over every local modification, commit
+and push.

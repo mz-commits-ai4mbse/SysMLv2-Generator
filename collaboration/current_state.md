@@ -2,7 +2,9 @@
 
 ## Purpose
 
-This document describes the current implementation reality of the Turing Generator. It is updated during every `SSOT UPDATE` and shall not redefine engineering knowledge contained in the authoritative CATIA SysML v2 model.
+This document describes the current implementation reality of the Turing
+Generator. It is updated during every `SSOT UPDATE` and shall not redefine
+engineering knowledge contained in the authoritative CATIA SysML v2 model.
 
 ---
 
@@ -22,7 +24,7 @@ Current Branch
 
 Verified Implementation Commit
 
-`adce9ec65ca3e36b89686b55d397a34dd382fdb1`
+`82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
 
 Architecture Version
 
@@ -30,15 +32,15 @@ Architecture Version
 
 Knowledge Base Version
 
-1.1
+1.2
 
 Implementation Version
 
-0.5
+0.6
 
 Current Roadmap Version
 
-1.1
+1.2
 
 Current Development Phase
 
@@ -46,7 +48,7 @@ P – Project Workspace
 
 Current Status
 
-Scope Defined — Implementation Not Started
+P1 Completed — P2 Architecture Definition Not Started
 
 Last SSOT Update
 
@@ -56,15 +58,13 @@ Last SSOT Update
 
 # Current Objective
 
-Implement a project-oriented workspace around the completed agentic ingestion pipeline.
+Define and implement a project-oriented workspace around the completed agentic
+ingestion pipeline.
 
-Current focus:
+The immediate focus is P2 — Project Manifest and Workspace Structure.
 
-- define the Stakeholder/System/Subsystem framework template
-- define project identity, metadata and source assignment
-- represent multiple heterogeneous, traceable information units from each source
-- prepare project coverage and preliminary readiness views
-- prepare a project dashboard without implementing approval or model generation early
+Before implementation depends on a persistence layout, the Project Workspace
+architecture shall be discussed, explicitly accepted and recorded in ADR-005.
 
 ---
 
@@ -72,25 +72,32 @@ Current focus:
 
 Priority 1
 
-Complete P1 — Framework Template Definition.
+Define the Project Workspace architecture and persistence boundaries for P2.
 
 Priority 2
 
-Define the Project Workspace architecture and persistence boundaries for P2. Record the accepted architecture in ADR-005 before implementation depends on it.
+Record the explicitly accepted architecture in ADR-005 before implementing the
+Project Manifest and Workspace Structure.
 
 Priority 3
 
-Implement project assignment, project artifacts, coverage and the Project Dashboard in the remaining Phase P steps.
+Continue with source assignment, information units, processing state, coverage
+and the Project Dashboard through the remaining Phase P steps.
 
-No work shall begin on Phase G or later phases before Phase P has been completed and an SSOT UPDATE has been performed.
+No work shall begin on Phase G or later phases before Phase P has been completed
+and an SSOT UPDATE has been performed.
 
 ---
 
 # Implemented Baseline
 
-Phase F is complete at commit `adce9ec65ca3e36b89686b55d397a34dd382fdb1`.
+## Phase F — Agentic Ingestion UI
 
-Implemented and verified:
+Phase F is complete and remains verified at commit:
+
+`adce9ec65ca3e36b89686b55d397a34dd382fdb1`
+
+Implemented capabilities include:
 
 - modular agent and team execution architecture
 - memory-based ingestion pipeline
@@ -100,9 +107,8 @@ Implemented and verified:
 - Streamlit Agentic Ingestion UI
 - Dry Run and LLM execution paths
 - report, run-summary, consensus, agent-output and artifact browsing
-- automated test suite with 9 passing tests
 
-The current pipeline remains:
+The Phase F pipeline remains:
 
 Raw Source
 
@@ -126,52 +132,120 @@ Completeness Team and Memory
 
 Deterministic Review Report
 
+## P1 — Framework Template Definition
+
+P1 is complete and verified at commit:
+
+`82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
+
+Implemented and verified:
+
+- reviewed Apollo 11 structural reference
+- explicit separation of accepted and rejected reference patterns
+- versioned machine-readable framework template
+- stable identifiers for all framework levels and nodes
+- 3 framework levels
+- 12 explicit information-unit mapping targets
+- zero-to-many framework assignments
+- rejection of unknown framework targets
+- exclusion of `context_only` sources from framework mapping
+- explicit separation of preliminary coverage and approved readiness
+- deterministic framework-template validator
+- automated framework-template tests
+- complete automated test suite with 18 passing tests
+
+Framework template:
+
+`context/frameworks/turing_rflp_framework.json`
+
+Template ID:
+
+`TURING_RFLP_FRAMEWORK`
+
+Template Version:
+
+`1.0.0`
+
 ---
 
 # Active Phase P Scope
 
-Phase P will add a Project Workspace around the existing ingestion pipeline.
+Phase P adds a Project Workspace around the existing ingestion pipeline.
 
 ## Project and Source Rules
 
 - Every new upload must be assigned to a selected project.
 - There is no permanent unassigned source pool.
-- A project may contain multiple sources that are processed individually and aggregated deterministically.
-- Each ingestion run and resulting artifact must remain traceable to its project and source.
+- A project may contain multiple sources that are processed individually and
+  aggregated deterministically.
+- Each ingestion run and resulting artifact must remain traceable to its project
+  and source.
 - Sources must not be mixed across projects.
 
 ## Information Units
 
-A single engineering source may yield multiple heterogeneous, source-traceable information units. Information units may map to more than one framework node.
+A single engineering source may yield multiple heterogeneous,
+source-traceable information units.
 
-Context-only project documents may explain terminology or product context, but shall not create engineering evidence, satisfy coverage or readiness, or contribute to model generation.
+An information unit may map to zero, one or multiple valid framework nodes.
+
+Context-only project documents may explain terminology or product context, but
+shall not create engineering evidence, satisfy coverage or readiness, or
+contribute to model generation.
 
 ## Framework
 
-The initial framework has three levels:
+The implemented initial framework has three levels:
 
-- Stakeholder Level: Stakeholders, User Needs, Stakeholder Requirements, Use Cases
-- System Level: Requirements, Functional, Logical, Physical
-- Subsystem Level: Requirements, Functional, Logical, Physical
+- Stakeholder Level
+  - Stakeholders
+  - User Needs
+  - Stakeholder Requirements
+  - Use Cases
+- System Level
+  - Requirements
+  - Functional
+  - Logical
+  - Physical
+- Subsystem Level
+  - Requirements
+  - Functional
+  - Logical
+  - Physical
 
-The Apollo 11 reference is non-normative and has not yet been reviewed. P1 shall curate the framework template without copying the Apollo package layout unchanged. Additional framework templates are post-MVP scope.
+The Apollo 11 repository has been reviewed for transferable structuring,
+naming and hierarchy patterns.
 
-## Dashboard and Generation Boundary
+It remains a non-normative reference. Its CoSMA framework, package layout,
+engineering content and identifiers were not transferred.
 
-The dashboard shall display project metadata, source inventory, processing state, framework coverage and preliminary model support.
+Additional framework templates remain post-MVP scope.
 
-Preliminary coverage based on unreviewed engineering information must be clearly marked as preliminary. Approved generation readiness must be separate and may use only human-approved information.
+## Coverage and Generation Boundary
 
-Phase P may show disabled controls for a Project-wide Model and selected SubModels. Phase P shall not execute model generation. Later generation shall create only models whose approved data is sufficient; unsupported models remain disabled and their gaps remain visible.
+Preliminary coverage may use unreviewed information from an
+`engineering_source` when clearly marked as preliminary.
+
+Approved readiness is separate and requires human-approved engineering
+information. It remains unavailable during Phase P.
+
+Phase P may show disabled controls for a Project-wide Model and selected
+SubModels. Phase P shall not execute model generation.
+
+Approved Input Promotion belongs to Phase G. Candidate creation and model
+generation remain assigned to Phases H–J.
 
 ---
 
 # Not Yet Implemented
 
-- Project Workspace persistence and dashboard
+- Project Workspace architecture and ADR-005
+- Project Manifest and Workspace persistence
 - source registry and mandatory project assignment
 - framework-mapped information-unit repository
 - persisted human review decisions
+- coverage and preliminary readiness calculation
+- Project Dashboard
 - Approved Input Promotion
 - Model Candidate Layer
 - model generation
@@ -186,31 +260,54 @@ Phase P may show disabled controls for a Project-wide Model and selected SubMode
 ## Medium
 
 - The Project Workspace persistence architecture is not yet accepted.
-- The initial framework template still requires P1 review and definition.
-- The Apollo 11 reference remains non-normative and unreviewed.
+- ADR-005 has not yet been created.
 - Full-team LLM execution still requires performance and token optimization.
 
 ## Controlled by Design
 
+- Framework mapping uses validated stable node identifiers.
+- Unknown framework targets are rejected.
 - Unreviewed information cannot be treated as approved generation input.
 - Context-only documents cannot satisfy coverage or readiness.
-- CATIA remains authoritative and the temporary shadow model cannot override it.
+- CATIA remains authoritative for engineering knowledge.
+- The temporary shadow model cannot override or contradict CATIA.
+- Apollo 11 remains a non-normative structural reference.
 
 ---
 
 # Next Milestone
 
-P1 — Framework Template Definition
+P2 — Project Manifest and Workspace Structure
 
-Expected outcome:
+Before implementation:
 
-- a versioned, machine-readable framework template
-- stable identifiers for every framework node
-- explicit mapping targets for heterogeneous information units
-- documented distinction between preliminary coverage and approved readiness
-- tests for template validity and identifiers
+- define project identity and required metadata
+- define the Project Manifest contract
+- define the workspace directory structure
+- define persistence and reopening behavior
+- define project isolation boundaries
+- define how later sources, runs and artifacts will reference a project
+- discuss consequences and alternatives
+- record the accepted decision in ADR-005
 
-The detailed Project Workspace persistence layout is intentionally deferred until it is discussed and accepted for P2.
+P2 implementation shall not begin before the architecture has been explicitly
+accepted.
+
+---
+
+# Repository Collaboration Workflow
+
+External GitHub repositories and repository links are used passively for
+inspection only.
+
+AI assistants shall not commit, push or directly modify GitHub repository
+content.
+
+Repository changes are applied, reviewed, committed and pushed locally by the
+project owner.
+
+AI assistants act as implementation guides and shall identify every affected
+file by its repository-relative path before proposing a change.
 
 ---
 
@@ -221,3 +318,5 @@ The detailed Project Workspace persistence layout is intentionally deferred unti
 - Architecture Decisions: `decisions/`
 - Model Registry: `model_registry.json`
 - Handover: `handovers/current_chat_handover.md`
+- Framework Template: `../context/frameworks/turing_rflp_framework.json`
+- Apollo 11 Review: `../context/examples/apollo11_structure_reference.md`
