@@ -1,6 +1,6 @@
 {
-  "version": "1.2",
-  "last_updated": "2026-07-21",
+  "version": "1.3",
+  "last_updated": "2026-07-24",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -10,6 +10,7 @@
         "User Needs",
         "Stakeholder Requirements",
         "Use Cases",
+        "System Requirements",
         "System Architecture",
         "Model Relationships"
       ]
@@ -18,8 +19,14 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "82b5cbbe9bedac77a4b02928a596ea8fbdacc873",
-      "status": "authoritative_for_committed_implementation"
+      "verified_commit": "0c8ba428e7e6469e410b541c114d7a5a9474321c",
+      "status": "authoritative_for_committed_implementation",
+      "verification": {
+        "complete_automated_test_count": 2594,
+        "own_source_diff_check": "passed",
+        "external_ontology_integrity_check": "passed",
+        "remote_synchronization": "HEAD_equals_origin_main"
+      }
     },
     "collaboration": {
       "location": "collaboration/",
@@ -29,7 +36,8 @@
         "Development Roadmap",
         "Working Rules",
         "Accepted Architecture Decisions",
-        "Project Handovers"
+        "Project Handovers",
+        "Project Change Log"
       ]
     },
     "derived_artifacts": {
@@ -38,7 +46,10 @@
         "Generated Reports",
         "Generated Markdown",
         "Temporary Summaries",
-        "Chat History"
+        "Chat History",
+        "Unreviewed Agent Results",
+        "Consensus Results",
+        "Coverage Indications"
       ]
     }
   },
@@ -48,7 +59,9 @@
     "status": "temporary_supplement",
     "valid_until_phase": "N",
     "usage_rule": "Use only when required engineering information is not yet available in CATIA.",
-    "conflict_rule": "The shadow model shall never override or contradict CATIA."
+    "conflict_rule": "The shadow model shall never override or contradict CATIA.",
+    "phase_n_migration_required": true,
+    "phase_n_requirements_reconciliation_required": true
   },
   "project_framework": {
     "template_id": "TURING_RFLP_FRAMEWORK",
@@ -101,40 +114,224 @@
       ],
       "context_only_mapping_allowed": false
     },
-    "assessment_boundary": {
-      "preliminary_coverage": {
-        "available_in_phase_p": true,
-        "requires_human_approval": false,
-        "eligible_source_roles": [
-          "engineering_source"
-        ]
-      },
-      "approved_readiness": {
-        "available_in_phase_p": false,
-        "available_from_phase": "G",
-        "requires_human_approval": true,
-        "eligible_source_roles": [
-          "engineering_source"
-        ]
-      }
-    },
     "future_extension_rule": "Additional framework templates are a post-MVP extension."
   },
-  "project_source_roles": {
-    "engineering_source": {
-      "may_create_engineering_information_units": true,
-      "may_create_framework_assignments": true,
-      "may_contribute_to_preliminary_coverage": true,
-      "may_contribute_to_generation_after_human_approval": true
+  "project_workspace": {
+    "status": "implemented_verified",
+    "implementation_phase": "P2",
+    "architecture_decision": "collaboration/decisions/ADR-005-project-workspace-architecture.md",
+    "verified_commit": "36184a2d90db349555ac3bd64ccd5c27ecb68cec",
+    "project_identity": {
+      "format": "six_digit_numeric",
+      "display_name_must_be_unique": true,
+      "display_name_equals_project_id_allowed": false
     },
-    "context_only": {
-      "may_support_system_context_and_interpretation": true,
-      "may_create_context_information": true,
-      "may_create_engineering_information_units": false,
-      "may_create_framework_assignments": false,
-      "may_contribute_to_coverage_or_readiness": false,
-      "may_contribute_to_model_generation": false
+    "isolation_rule": "Project artifacts shall not be mixed across project boundaries."
+  },
+  "project_sources": {
+    "status": "implemented_verified",
+    "implementation_phase": "P3",
+    "architecture_decisions": [
+      "collaboration/decisions/ADR-009-textual-source-processing-boundary.md",
+      "collaboration/decisions/ADR-010-project-source-registry-architecture.md"
+    ],
+    "verified_commit": "55cc4f104082ecfef70b3dcdeb8f28406ed95105",
+    "source_identity": {
+      "format": "SRC-six_digit_numeric",
+      "separate_from_project_id": true
+    },
+    "source_roles": {
+      "engineering_source": {
+        "may_create_engineering_information_units": true,
+        "may_create_framework_assignments": true,
+        "may_contribute_to_preliminary_coverage": true,
+        "may_contribute_to_generation_after_human_approval": true
+      },
+      "context_only": {
+        "may_support_system_context_and_interpretation": true,
+        "may_create_engineering_information_units": false,
+        "may_create_framework_assignments": false,
+        "may_contribute_to_coverage_or_readiness": false,
+        "may_contribute_to_model_generation": false
+      }
+    },
+    "processing_boundary": {
+      "mvp_information_boundary": "textual",
+      "native_text_supported": true,
+      "deterministic_text_projection_supported": true,
+      "pdf_text_layer_supported": true,
+      "ocr_supported": false,
+      "technical_drawing_interpretation_supported": false,
+      "unrestricted_multimodal_extraction_supported": false
     }
+  },
+  "semantic_processing": {
+    "status": "implemented_verified",
+    "implementation_phase": "P4",
+    "architecture_decision": "collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md",
+    "verified_commit": "0c8ba428e7e6469e410b541c114d7a5a9474321c",
+    "source_projection": {
+      "supported_adapters": [
+        "text",
+        "markdown",
+        "json",
+        "csv",
+        "tsv",
+        "pdf_text_layer"
+      ],
+      "content_hash_binding": true,
+      "source_locator_required": true
+    },
+    "ontology_registry": {
+      "path": "context/semantics/ontology_registry.json",
+      "registry_id": "TURING_ONTOLOGY_REGISTRY",
+      "registry_version": "1.0.0",
+      "runtime_live_queries_allowed": false,
+      "automatic_downloads_allowed": false,
+      "automatic_updates_allowed": false,
+      "complete_ontology_prompt_loading_allowed": false
+    },
+    "external_reference_systems": [
+      {
+        "reference_system_id": "BFO_2020",
+        "role": "top_level_reference",
+        "status": "pinned_runtime_reference",
+        "snapshot_path": "external/ontologies/bfo/2020/bfo-core.owl",
+        "license_path": "external/ontologies/bfo/2020/LICENSE.md",
+        "license": "CC BY 4.0",
+        "authority": "reference_only"
+      },
+      {
+        "reference_system_id": "IOF_CORE_202602",
+        "role": "industrial_reference",
+        "status": "pinned_runtime_reference",
+        "snapshot_path": "external/ontologies/iof/202602/Core.rdf",
+        "descriptor_path": "external/ontologies/iof/202602/AboutIOFProd.rdf",
+        "annotation_vocabulary_path": "external/ontologies/iof/202602/AnnotationVocabulary.rdf",
+        "license_path": "external/ontologies/iof/202602/LICENSE.md",
+        "license": "MIT",
+        "authority": "reference_only"
+      }
+    ],
+    "reference_concept_index": {
+      "path": "context/semantics/reference_concept_index.json",
+      "authority": "derived_non_authoritative",
+      "deterministic": true,
+      "concept_count": 236
+    },
+    "turing_core_vocabulary": {
+      "path": "context/semantics/turing_core_vocabulary.json",
+      "authority": "project_semantic_bridge",
+      "external_mappings_require_review": true,
+      "automatic_project_mutation_allowed": false
+    },
+    "project_glossary": {
+      "status": "implemented_verified",
+      "authority": "accepted_project_terminology",
+      "candidate_changes_require_human_decision": true
+    },
+    "information_units": {
+      "status": "implemented_verified",
+      "source_traceability_required": true,
+      "immutable_manifest": true,
+      "project_isolation_required": true
+    },
+    "multi_agent_consensus": {
+      "status": "implemented_verified",
+      "confidence_role": "review_evidence",
+      "variance_role": "review_evidence",
+      "publication_authority": false
+    },
+    "terminology_mapping": {
+      "status": "implemented_verified",
+      "candidate_authority": "non_authoritative",
+      "reference_validation_required": true
+    },
+    "framework_assignment": {
+      "status": "implemented_verified",
+      "candidate_authority": "non_authoritative",
+      "reference_validation_required": true
+    }
+  },
+  "human_review": {
+    "status": "implemented_verified",
+    "implementation_phase": "P4",
+    "verified_commit": "0c8ba428e7e6469e410b541c114d7a5a9474321c",
+    "decision_id_format": "HRD-six_digit_numeric",
+    "target_types": [
+      "information_unit_publication",
+      "terminology_mapping_candidate",
+      "framework_assignment_candidate"
+    ],
+    "decisions": [
+      "confirm",
+      "reject",
+      "request_changes"
+    ],
+    "confirmation_required": true,
+    "automatic_publication_allowed": false,
+    "exact_target_content_fingerprint_required": true,
+    "exact_reference_validation_fingerprint_required": true,
+    "quick_confirmation_preserves_detailed_review_option": true
+  },
+  "token_budget": {
+    "status": "implemented_verified",
+    "implementation_phase": "P4",
+    "policy_id": "TURING_DETERMINISTIC_CONTEXT_BUDGET",
+    "policy_version": "1.0.0",
+    "required_context_overflow_behavior": "block",
+    "silent_required_context_truncation_allowed": false,
+    "complete_codebase_prompt_loading_allowed": false,
+    "complete_ontology_prompt_loading_allowed": false,
+    "selection_is_deterministic": true,
+    "selected_and_omitted_references_are_auditable": true
+  },
+  "assessment_boundary": {
+    "preliminary_coverage": {
+      "available_in_phase_p": true,
+      "requires_human_approval": false,
+      "eligible_source_roles": [
+        "engineering_source"
+      ]
+    },
+    "approved_readiness": {
+      "available_in_phase_p": false,
+      "available_from_phase": "G",
+      "requires_human_approval": true,
+      "eligible_source_roles": [
+        "engineering_source"
+      ]
+    }
+  },
+  "phase_n_model_reconciliation": {
+    "status": "planned",
+    "work_package_id": "N2",
+    "name": "Architecture-to-Requirements Reconciliation",
+    "purpose": "Reconcile accepted architecture decisions and implemented and planned capabilities with the authoritative engineering model.",
+    "implementation_is_automatic_requirement_authority": false,
+    "human_review_required": true,
+    "catia_update_requires_explicit_acceptance": true,
+    "required_outputs": [
+      "Architecture Decision Inventory",
+      "Requirement Coverage Matrix",
+      "Requirement and Model Change Candidates",
+      "Accepted CATIA Model Updates",
+      "Decision-to-Requirement Traceability"
+    ]
+  },
+  "phase_q_thesis_documentation": {
+    "status": "planned",
+    "name": "Thesis Architecture Documentation",
+    "scope": [
+      "All Architecture Decisions from Phases A through P",
+      "All Architecture Decisions accepted after Phase P",
+      "Decision Context and Alternatives",
+      "Decision Rationale and Consequences",
+      "Decision-to-Requirement Traceability",
+      "Decision-to-Implementation Traceability",
+      "Literature and Standard References"
+    ],
+    "depends_on_phase": "N"
   },
   "rules": [
     "CATIA is always authoritative for engineering knowledge.",
@@ -142,13 +339,17 @@
     "Committed repository content is authoritative for implementation state.",
     "Local uncommitted changes are not authoritative implementation state.",
     "Every ingested source shall be assigned to exactly one project.",
-    "Framework assignments shall reference valid mapping-target node IDs from the active framework template.",
-    "One engineering information unit may map to zero, one or multiple framework nodes.",
-    "Unknown framework node IDs shall be rejected.",
-    "Only human-approved engineering information may become input to model generation.",
-    "Preliminary coverage shall remain separate from approved generation readiness.",
-    "Context-only sources shall never create framework assignments or satisfy coverage, readiness or model-generation evidence.",
-    "Apollo 11 remains a non-normative structural reference and shall not override the accepted Turing framework.",
+    "Project identity and source identity shall remain separate.",
+    "Framework assignments shall reference valid mapping-target node IDs.",
+    "Unknown framework or ontology reference IDs shall be rejected.",
+    "Context-only sources shall not create engineering evidence.",
+    "Consensus, confidence and variance shall not authorize publication.",
+    "Every publication target shall require an exact Human Review Decision.",
+    "Required LLM context shall never be silently truncated.",
+    "External ontology systems are references and shall not override project engineering authority.",
+    "Implementation evidence shall not silently create normative requirements.",
+    "Phase N shall reconcile accepted architecture decisions with the authoritative engineering model.",
+    "Phase Q shall document every accepted architecture decision.",
     "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
   ]
 }

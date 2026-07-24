@@ -2,30 +2,38 @@
 
 ## Purpose
 
-This document defines the mandatory engineering rules for developing the Turing Generator.
+This document defines the mandatory engineering rules for developing the
+Turing Generator.
 
-These rules are binding for all future development work, regardless of whether implementation is performed by a human developer or an AI assistant.
+These rules are binding for all future development work, regardless of whether
+implementation is performed by a human developer or an AI assistant.
 
-The goal is to ensure architectural consistency, reproducibility and traceability throughout the project.
+The goal is to ensure architectural consistency, reproducibility and
+traceability throughout the project.
 
 ---
 
 # 1. Single Source of Truth
 
-The following priority always applies.
+The following authority hierarchy always applies:
 
-1. CATIA SysML v2 model
-2. Repository source code
-3. Collaboration Knowledge Base
-4. Chat conversations
+1. CATIA SysML v2 model for engineering knowledge
+2. committed repository for implementation reality
+3. Collaboration Knowledge Base for coordination and accepted decisions
+4. chat conversations and generated temporary artifacts
 
 Chat conversations are never authoritative.
 
-CATIA is always authoritative for engineering knowledge. If required engineering information is not yet available in CATIA, the temporary shadow model under `model/` may supplement it until Phase N. The shadow model shall never override or contradict CATIA.
+If required engineering information is unavailable in CATIA, the temporary
+shadow model under `model/` may supplement it until Phase N.
 
-The committed repository source on the authoritative branch represents implementation reality. Local uncommitted changes are not authoritative implementation state.
+The shadow model shall never override or contradict CATIA.
 
-No architectural decision becomes valid until it has been transferred into the Collaboration Knowledge Base using the SSOT UPDATE process.
+Local uncommitted changes are not authoritative implementation state.
+
+No architecture decision becomes accepted project knowledge until it has been
+documented in an Architecture Decision Record and transferred into the
+Collaboration Knowledge Base through the SSOT process.
 
 ---
 
@@ -35,7 +43,7 @@ The project strictly separates the problem space from the solution space.
 
 ## Problem Space
 
-Maintained exclusively inside the SysML v2 model.
+Maintained in the authoritative SysML v2 model.
 
 Includes:
 
@@ -43,13 +51,13 @@ Includes:
 - User Needs
 - Stakeholder Requirements
 - Use Cases
+- System Requirements
 - System Architecture
-
-These elements shall never be duplicated manually inside repository documentation.
+- Model Relationships
 
 ## Solution Space
 
-Implemented inside the repository.
+Implemented in the repository.
 
 Includes:
 
@@ -57,20 +65,25 @@ Includes:
 - Recipes
 - Memory Artifacts
 - Consensus Mechanisms
+- Semantic Processing
+- Persistence
 - UI
 - Model Generation
 - Validation
 - Reports
 
+Repository implementation shall not silently redefine authoritative
+requirements.
+
 ---
 
 # 3. Single Responsibility
 
-Every module, agent and processing stage shall have exactly one clearly defined responsibility.
+Every module, agent and processing stage shall have exactly one clearly defined
+responsibility.
 
-Responsibilities shall never overlap.
-
-Whenever a component starts solving multiple independent problems, it shall be split into separate modules.
+Whenever a component starts solving multiple independent problems, it shall be
+split into separate modules.
 
 ---
 
@@ -78,93 +91,92 @@ Whenever a component starts solving multiple independent problems, it shall be s
 
 The pipeline consists of independent processing stages.
 
-A stage may only communicate through explicitly defined artifacts.
+A stage may communicate only through explicitly defined, validated artifacts.
 
-Direct access to previous agent outputs is forbidden unless explicitly required by the architecture.
+Direct access to previous agent conversations or undeclared intermediate state
+is forbidden unless explicitly required by an accepted architecture decision.
 
 ---
 
 # 5. Memory-Based Communication
 
-Agent teams communicate exclusively through Memory Artifacts.
+Agent teams communicate through versioned Memory Artifacts.
 
-Example:
+The complete conversation history of previous agents shall not be forwarded.
 
-Interpretation Team
-
-↓
-
-Interpretation Memory
-
-↓
-
-Evidence Team
-
-↓
-
-Evidence Memory
-
-↓
-
-Derivation Team
-
-↓
-
-Derivation Memory
-
-↓
-
-Completeness Team
-
-↓
-
-Completeness Memory
-
-The complete conversation history of previous agents must never be forwarded.
+Only the relevant, traceable and budgeted context required by the next stage
+may be provided.
 
 ---
 
 # 6. Human in the Loop
 
-The system shall never silently invent engineering information.
+The system shall never silently invent or authorize engineering information.
 
 Whenever insufficient evidence exists:
 
 - uncertainty shall be preserved
 - ambiguity shall be reported
 - missing information shall be documented
-- human review shall be requested
+- conflicts shall remain explicit
+- Human Review shall be requested
+
+Multi-agent agreement, confidence and low variance are review evidence. They
+are not publication authority.
+
+Every publication target requires an explicit persisted Human Review Decision.
+
+The reviewer shall always retain the option to enter detailed review, including
+when quick confirmation is offered.
+
+Only an exact `confirm` decision bound to the current target-content and
+reference-validation fingerprints may pass a publication gate.
 
 ---
 
-# 7. Explainability
+# 7. Explainability and Traceability
 
 Every generated artifact shall be explainable.
 
-Every engineering statement shall be traceable back to its originating source.
+Every engineering statement shall be traceable to:
+
+- its project
+- its source
+- its source location
+- the relevant source projection
+- its extraction or derivation provenance
+- applicable semantic and framework mappings
+- its Human Review Decision where required
+
+Traceability shall not be reconstructed from filenames or chat history.
 
 ---
 
 # 8. Deterministic Components
 
-Whenever deterministic processing is sufficient, deterministic implementations shall be preferred over LLM calls.
+Whenever deterministic processing is sufficient, deterministic
+implementations shall be preferred over LLM calls.
 
 Examples include:
 
 - report generation
 - file handling
+- text projection
+- identifier allocation
 - artifact conversion
 - formatting
 - validation
 - persistence
+- hashing
+- prompt-context selection
 
-LLMs shall only be used where semantic reasoning is actually required.
+LLMs shall be used only where semantic interpretation or reasoning is required.
 
 ---
 
 # 9. Architecture Changes
 
-Architectural changes shall never be introduced implicitly.
+Architecture changes shall never be introduced implicitly.
 
 Every accepted architecture change requires:
 
@@ -177,31 +189,33 @@ Every accepted architecture change requires:
 The accepted ADR shall be committed before implementation depends on the
 architecture decision.
 
-A complete synchronization of all Collaboration Knowledge Base files is
-performed during the next scheduled SSOT UPDATE.
+A complete synchronization of the Collaboration Knowledge Base is performed
+during the next scheduled SSOT UPDATE.
 
 A separate full SSOT UPDATE is not required for every internal roadmap step.
+
 ---
 
 # 10. Project Knowledge
 
-The Collaboration Knowledge Base documents
+The Collaboration Knowledge Base documents:
 
 - current project status
 - accepted decisions
 - roadmap
 - working rules
+- source authority
 - project handovers
+- change history
 
-It shall never duplicate the SysML model.
-
-Whenever possible, it references model element IDs instead of copying model content.
+It shall reference authoritative model elements rather than duplicating
+engineering-model content whenever possible.
 
 ---
 
 # 11. Development Workflow
 
-Each major development phase follows the same process.
+Each major development phase follows:
 
 Implementation
 
@@ -221,7 +235,11 @@ SSOT UPDATE
 
 Next Development Phase
 
-Development continues only after the SSOT has been updated.
+Internal work steps may proceed without a complete SSOT UPDATE when:
+
+- their architecture is already accepted or documented in an ADR
+- their implementation is tested and committed
+- no critical handover would become unreliable
 
 ---
 
@@ -229,9 +247,16 @@ Development continues only after the SSOT has been updated.
 
 Temporary implementations are discouraged.
 
-Whenever feasible, components shall be implemented directly according to the target architecture.
+Whenever feasible, components shall be implemented directly according to the
+accepted target architecture.
 
-Large temporary implementations that require later restructuring should be avoided.
+When consecutive work steps modify the same file and can be safely implemented
+and reviewed together, they should be grouped to avoid unnecessary replacement
+cycles.
+
+Intermediate increments remain appropriate when they establish an independently
+testable contract, reduce implementation risk or enable meaningful Human
+Review.
 
 ---
 
@@ -239,25 +264,28 @@ Large temporary implementations that require later restructuring should be avoid
 
 The repository shall remain modular.
 
-Large monolithic files should be avoided.
+Large monolithic files should be avoided where decomposition preserves a clear
+public contract.
 
-Each folder should represent a clearly identifiable architectural responsibility.
+Each folder shall represent a clearly identifiable architectural
+responsibility.
 
 ---
 
 # 14. Current Development Roadmap
 
-The official roadmap is maintained in
+The official roadmap is maintained in:
 
-roadmap.md
+`collaboration/roadmap.md`
 
-This file shall not contain roadmap information.
+This file defines working rules and shall not independently redefine roadmap
+status.
 
 ---
 
 # 15. Rule Changes
 
-Changes to this document require
+Changes to this document require:
 
 - explicit discussion
 - explicit agreement
@@ -265,117 +293,117 @@ Changes to this document require
 
 before becoming valid.
 
+---
+
 # 16. SSOT UPDATE
 
-SSOT UPDATE is the official synchronization process of the Collaboration Knowledge Base.
+SSOT UPDATE is the official synchronization process of the Collaboration
+Knowledge Base.
 
-Its purpose is to transfer accepted engineering knowledge from implementation work into the authoritative project documentation.
+Its purpose is to transfer accepted project knowledge and verified
+implementation status into authoritative coordination documents.
 
-An SSOT UPDATE shall perform the following steps.
+An SSOT UPDATE shall:
 
-1. Review the completed work.
+1. review the completed work
+2. identify accepted decisions
+3. ignore rejected ideas and brainstorming results
+4. verify the committed implementation status
+5. check whether the roadmap changed
+6. identify affected Collaboration Knowledge Base documents
+7. update every affected document
+8. update version numbers where required
+9. update the project change log
+10. generate a new `current_chat_handover.md`
+11. validate all changed files
+12. commit, push and verify the synchronization
 
-2. Identify accepted engineering decisions.
-
-3. Ignore rejected ideas and brainstorming results.
-
-4. Determine the current implementation status.
-
-5. Check whether the roadmap has changed.
-
-6. Identify affected Collaboration Knowledge Base documents.
-
-7. Update the affected documents.
-
-8. Update version numbers where required.
-
-9. Update the project change log.
-
-10. Generate a new current_chat_handover.md.
-
-Only explicitly accepted decisions may become part of the Collaboration Knowledge Base.
+Only explicitly accepted decisions may become part of the Collaboration
+Knowledge Base.
 
 Chat conversations alone never change the SSOT.
 
-The Collaboration Knowledge Base should normally be updated through an explicit SSOT UPDATE.
+For every Collaboration file, exactly one outcome shall be produced:
 
-Direct manual modifications are permitted when intentionally performed by the project owner.
-
-During an SSOT UPDATE, the assistant shall generate explicit modifications for every affected Collaboration Knowledge Base file.
-
-For every Collaboration file exactly one of the following outcomes shall be produced:
-
-- No changes required.
-- Apply the following modifications.
-
-An SSOT UPDATE is complete only after all affected files have been processed accordingly.
+- no changes required
+- apply the following modifications
 
 ## Update Cadence
 
 A regular SSOT UPDATE is performed after completion of a complete major roadmap
 phase.
 
-Internal work steps within a phase do not require their own full SSOT UPDATE.
+Internal work steps within a phase do not normally require their own full SSOT
+UPDATE.
 
-For Phase P, the internal steps P1 through P8 are tracked through:
+An earlier SSOT UPDATE may be performed when:
 
-- committed implementation changes
-- automated test evidence
-- reviewed Architecture Decision Records
-- explicit project-owner decisions
+- explicitly requested by the project owner
+- a substantial architecture baseline has been completed
+- chat or handover performance would make continuation unreliable
+- a critical handover is required
 
-The next regular SSOT UPDATE after this synchronization shall be performed when
-Phase P has been completed through P8.
+For the current Phase P:
 
-An earlier SSOT UPDATE is performed only when explicitly requested by the
-project owner or when a critical handover would otherwise become unreliable.
+- P1–P4 are completed and synchronized through the 2026-07-24 update
+- P5–P8 remain
+- the next regular SSOT UPDATE remains due after P8
 
 ## Repository Synchronization
 
-After every SSOT UPDATE, the project owner shall be reminded to commit and push
-all relevant local changes to the authoritative GitHub repository.
+After every SSOT UPDATE, the project owner shall commit and push all relevant
+local changes.
 
-After the changes have been pushed, the repository shall be checked to verify that
+After the push, the repository shall be checked to verify:
 
-- the Collaboration Knowledge Base reflects the committed repository state,
-- referenced implementation changes are present,
-- obsolete implementation descriptions have been removed,
-- the repository is synchronized with the current SSOT.
-
-Local uncommitted files shall never be assumed to represent the authoritative implementation state.
+- the Collaboration Knowledge Base reflects committed implementation
+- referenced commits exist
+- obsolete implementation descriptions were removed
+- `HEAD` and `origin/main` are synchronized
 
 ---
 
 # 17. Project Sources and Information Roles
 
-Every source ingested by the Project Workspace shall be assigned to exactly one project. A permanent unassigned source pool is not permitted.
+Every ingested source shall be assigned to exactly one project.
 
-Project data shall use explicit source roles.
+A permanent unassigned source pool is not permitted.
+
+Project identity and source identity shall remain separate.
 
 ## Engineering Source
 
-An engineering source may produce source-traceable information units and may contribute to clearly marked preliminary framework coverage.
+An `engineering_source` may:
 
-It may contribute to generation readiness or model generation only after the relevant information has been reviewed and approved by a human through the Phase G workflow.
+- create source-traceable engineering Information Units
+- create terminology and framework-mapping candidates
+- contribute to clearly marked preliminary coverage
+- contribute to later generation only after the responsible review and
+  promotion gates
 
 ## Context-only Source
 
-A context-only source may explain product context, terminology or interpretation. It shall not
+A `context_only` source may explain product context, terminology or
+interpretation.
 
-- create engineering evidence for model generation,
-- satisfy framework coverage,
-- satisfy readiness criteria,
-- or contribute model content.
+It shall not:
 
-Context-only information shall remain visibly distinguishable and traceable to its source.
+- create engineering Information Units
+- create framework assignments
+- satisfy coverage
+- satisfy readiness
+- contribute model content
 
 ## Coverage and Readiness
 
-Preliminary coverage may describe what unreviewed engineering information appears to support, but it shall always be labelled as preliminary.
+Preliminary coverage may describe what unreviewed engineering information
+appears to support, but it shall always be labelled as preliminary.
 
-Approved readiness is a separate state and shall be calculated only from human-approved engineering information.
+Approved readiness is separate and shall be calculated only from
+human-approved engineering information.
 
-No UI state, generated report or consensus result may silently promote unreviewed information into approved model-generation input.
+No UI state, report, confidence or consensus result may silently promote
+unreviewed information.
 
 ---
 
@@ -389,66 +417,177 @@ Permitted passive actions include:
 - inspecting branches and committed revisions
 - reviewing public reference repositories
 - comparing committed implementation states
-- cloning a repository into a temporary local review location without changing
-  the remote repository
-- verifying a commit after the project owner has pushed it
+- verifying a commit after the project owner pushes it
 
 AI assistants shall not:
 
 - directly modify GitHub repository content
-- create or update branches in the remote repository
-- commit repository changes
-- push repository changes
+- create or update remote branches
+- commit or push changes
 - open or merge pull requests
-- use GitHub write APIs or connectors
-- stage files in the project owner's local working tree
-- perform destructive cleanup of the project owner's working tree
+- use GitHub write APIs
+- stage files in the project owner's working tree
+- perform destructive cleanup without explicit, resolved scope
 
 All repository changes shall be:
 
-1. proposed by the AI assistant with the affected repository-relative file path,
-2. applied locally by the project owner,
-3. reviewed locally,
-4. tested locally,
-5. staged explicitly by file path,
-6. committed locally by the project owner,
-7. pushed by the project owner,
-8. verified passively after the push.
-
-Before proposing a repository change, the AI assistant shall identify every
-affected file by its repository-relative path.
+1. proposed with affected repository-relative paths
+2. applied locally by the project owner
+3. reviewed locally
+4. tested locally
+5. staged explicitly by path
+6. committed locally by the project owner
+7. pushed by the project owner
+8. verified passively after the push
 
 Unless the project owner explicitly requests a grouped change, modifications
 shall be presented one file at a time.
 
-The AI assistant acts as an implementation guide and may provide:
-
-- complete replacement content
-- targeted replacement blocks
-- copy-and-paste-ready commands
-- validation commands
-- expected command output
-- review and test criteria
-- proposed commit messages
-
-When unrelated local changes exist, staging commands shall list the intended
-files explicitly.
-
-Broad staging commands such as
-
-`git add .`
-
-or
-
-`git add -A`
-
-shall not be proposed for a mixed working tree.
+Broad staging commands such as `git add .` or `git add -A` shall not be
+proposed for a mixed working tree.
 
 External repositories remain non-authoritative unless their role and authority
-have been explicitly registered in the project source hierarchy.
+are explicitly registered.
 
-Content from a non-normative reference shall be reviewed and curated before it
-may influence repository implementation or project context.
+The project owner retains final authority over every modification, commit and
+push.
 
-The project owner retains final authority over every local modification, commit
-and push.
+---
+
+# 19. Textual Source-processing Boundary
+
+The MVP semantic-processing boundary is textual information.
+
+Permitted inputs include:
+
+- native textual sources
+- deterministic textual projections
+- PDF files with extractable text layers
+
+The following remain outside the MVP:
+
+- OCR
+- image-only PDF interpretation
+- technical-drawing interpretation
+- unrestricted multimodal engineering extraction
+
+Support for additional media requires its own accepted architecture,
+validation and Human Review design.
+
+Deterministic text projection shall preserve content and source location. It
+shall not perform semantic normalization or ontology interpretation.
+
+---
+
+# 20. Semantic Authority and Ontology Use
+
+The semantic authority hierarchy is:
+
+1. authoritative project engineering knowledge
+2. accepted project terminology decisions
+3. Turing Core Vocabulary
+4. curated external reference concepts
+
+BFO 2020 and IOF Core 202602 are registered reference systems.
+
+They shall not override project engineering authority.
+
+External ontology mappings are explicit candidates until reviewed.
+
+Live ontology queries, automatic ontology updates and unrestricted runtime
+graph traversal are not permitted in the MVP.
+
+Complete ontology snapshots shall not be loaded into prompts.
+
+Project glossary changes shall not be performed automatically.
+
+---
+
+# 21. Multi-agent Consensus and Confidence
+
+Semantic confidence shall be based on explicit agent-result agreement and
+disagreement evidence, including variance where applicable.
+
+Agent personalities may contribute independent perspectives but shall not
+receive publication authority.
+
+The system shall preserve:
+
+- individual agent results
+- run completeness
+- consensus level
+- disagreement
+- variance
+- review recommendation
+
+High confidence, unanimous consensus or low variance shall not bypass Human
+Review.
+
+---
+
+# 22. Prompt and Token Budgeting
+
+LLM prompts shall use deterministic, relevant context slices.
+
+The complete codebase, complete ontology snapshots and unrelated project
+artifacts shall not be loaded automatically.
+
+Every prompt budget shall reserve capacity for:
+
+- system instructions
+- expected output
+- safety margin
+
+Required context shall be included completely or the LLM invocation shall be
+blocked.
+
+Required context shall never be silently truncated.
+
+Optional context shall be selected deterministically according to the accepted
+priority policy.
+
+Selected and omitted references shall remain auditable.
+
+---
+
+# 23. Architecture-to-Requirements Reconciliation
+
+Phase N shall reconcile all accepted architecture decisions and implemented
+and planned capabilities with the authoritative engineering model.
+
+The reconciliation shall:
+
+- inventory all accepted architecture decisions
+- map decisions and capabilities to model elements
+- identify missing, outdated and conflicting requirements
+- create traceable requirement and model-change candidates
+- distinguish stakeholder need, requirement, design constraint and
+  implementation detail
+- preserve the accepted derivation chain
+- require Human Review before CATIA changes
+
+Implementation is evidence for reconciliation. It is not automatic requirement
+authority.
+
+No existing feature shall silently become a normative requirement merely
+because it has already been implemented.
+
+---
+
+# 24. Thesis Architecture Documentation
+
+Phase Q shall document:
+
+- every architecture decision from Phases A–P
+- every architecture decision accepted after Phase P
+- decision context and alternatives
+- rationale and consequences
+- requirement and implementation traceability
+- relevant literature, standards and ontology sources
+- limitations and deferred work
+
+The thesis documentation shall be based on the reconciled authoritative model
+after Phase N.
+
+Architecture decisions shall remain documented even when their implementation
+is later superseded, with status and consequences made explicit.

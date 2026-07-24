@@ -6,7 +6,7 @@ This roadmap defines the official development phases of the Turing Generator.
 
 Each phase represents a major engineering milestone.
 
-A phase is considered complete only after
+A phase is considered complete only after:
 
 - implementation
 - testing
@@ -21,27 +21,35 @@ have been successfully completed.
 
 Architecture Version
 
-0.9
+1.0
 
 Knowledge Base Version
 
-1.2
+1.3
 
 Implementation Version
 
-0.6
+0.7
 
 Roadmap Version
 
-1.2
+1.3
 
 Last SSOT Update
 
-2026-07-21
+2026-07-24
 
 Current Phase
 
 **P – Project Workspace**
+
+Current Status
+
+P1–P4 Completed — P5 Next
+
+Verified Implementation Commit
+
+`0c8ba428e7e6469e410b541c114d7a5a9474321c`
 
 ---
 
@@ -49,7 +57,8 @@ Current Phase
 
 ## Objective
 
-Provide a functional user interface for the complete agentic ingestion workflow.
+Provide a functional user interface for the complete agentic ingestion
+workflow.
 
 ## Deliverables
 
@@ -64,24 +73,18 @@ Provide a functional user interface for the complete agentic ingestion workflow.
 
 ## Exit Criteria
 
-- Complete ingestion workflow operational
-- Review report suitable for engineering review
-- Memory pipeline fully integrated
-- Stable demonstration UI
+- complete ingestion workflow operational
+- review report suitable for engineering review
+- memory pipeline fully integrated
+- stable demonstration UI
 
 ## Status
 
 Completed
 
-Verified in
+Verified in:
 
 `adce9ec65ca3e36b89686b55d397a34dd382fdb1`
-
-Verification
-
-- Complete automated test suite: 9 passed
-- Agentic Ingestion UI smoke test: passed
-- Engineering review report regression: passed
 
 ---
 
@@ -89,7 +92,11 @@ Verification
 
 ## Objective
 
-Introduce project-oriented processing around the completed Phase F ingestion pipeline. Multiple individually ingested sources shall produce heterogeneous, traceable information units that can later support framework-specific SubModels.
+Introduce project-oriented processing around the completed Phase F ingestion
+pipeline.
+
+Multiple individually ingested sources shall produce heterogeneous, traceable
+information units that can later support framework-specific SubModels.
 
 ## Framework Template
 
@@ -117,8 +124,7 @@ naming and hierarchy patterns.
 It remains non-normative. Its CoSMA framework, package layout, engineering
 content and identifiers were not transferred.
 
-The initial framework is implemented as the versioned, machine-readable
-template:
+The initial framework is implemented as:
 
 `context/frameworks/turing_rflp_framework.json`
 
@@ -129,10 +135,10 @@ Additional framework templates remain a post-MVP extension.
 | Step | Deliverable | Status |
 |---|---|---|
 | P1 | Framework Template Definition | Completed |
-| P2 | Project Manifest and Workspace Structure | Next |
-| P3 | Source Registry and mandatory Project Assignment | Planned |
-| P4 | Framework-mapped heterogeneous Information Units | Planned |
-| P5 | Processing State and Artifact Organization | Planned |
+| P2 | Project Manifest and Workspace Structure | Completed |
+| P3 | Source Registry and mandatory Project Assignment | Completed |
+| P4 | Framework-mapped heterogeneous Information Units | Completed |
+| P5 | Processing State and Artifact Organization | Next |
 | P6 | Coverage and Preliminary Readiness Engine | Planned |
 | P7 | Project Dashboard | Planned |
 | P8 | Tests and Phase Review | Planned |
@@ -149,24 +155,95 @@ Implemented deliverables:
 - versioned framework template `TURING_RFLP_FRAMEWORK`
 - stable identifiers for 3 levels and 12 mapping targets
 - zero-to-many information-unit mapping contract
-- exclusion of `context_only` sources from framework mapping
-- explicit separation of preliminary coverage and approved readiness
 - deterministic framework-template validation
-- automated P1 tests
+
+## P2 Completion
+
+P2 architecture is documented in:
+
+`collaboration/decisions/ADR-005-project-workspace-architecture.md`
+
+P2 implementation is verified through:
+
+`36184a2d90db349555ac3bd64ccd5c27ecb68cec`
+
+Implemented deliverables:
+
+- project identity and display-name rules
+- strict Project Manifest contract
+- project workspace persistence
+- safe reopening and project isolation
+- public Project Workspace API
+
+## P3 Completion
+
+P3 architecture is documented in:
+
+- `collaboration/decisions/ADR-009-textual-source-processing-boundary.md`
+- `collaboration/decisions/ADR-010-project-source-registry-architecture.md`
+
+P3 implementation is verified through:
+
+`55cc4f104082ecfef70b3dcdeb8f28406ed95105`
+
+Implemented deliverables:
+
+- mandatory project assignment
+- immutable project-local source manifests
+- separate project and source identities
+- `engineering_source` and `context_only` roles
+- duplicate-content protection
+- safe source persistence and scanning
+
+## P4 Completion
+
+P4 architecture is documented in:
+
+`collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md`
+
+P4 implementation is verified in:
+
+`0c8ba428e7e6469e410b541c114d7a5a9474321c`
 
 Verification:
 
-- P1 framework tests: 9 passed
-- complete automated test suite: 18 passed
-- `git diff --check`: passed
+- complete automated test suite: 2594 passed
+- own-source diff validation: passed
+- pinned external ontology integrity validation: passed
+- `HEAD == origin/main`
+
+Implemented deliverables:
+
+- deterministic source projections
+- text, Markdown, JSON, CSV, TSV and PDF text-layer adapters
+- source-projection manifests and repositories
+- pinned BFO 2020 and IOF Core 202602 snapshots
+- ontology registry and deterministic reference-concept index
+- Turing Core Vocabulary
+- project-specific glossary and terminology decisions
+- source-traceable Information Units
+- semantic extraction candidate contracts
+- multi-agent semantic consensus and variance
+- terminology-mapping candidates
+- framework-assignment candidates
+- reference validation
+- immutable Human Review Decisions
+- exact publication gates
+- deterministic token budgeting
+- fail-closed required-context handling
 
 ## Data and Review Boundaries
 
-- Every new upload must be assigned to exactly one project. No permanent unassigned source pool is permitted.
-- One source may yield multiple source-traceable information units, and one information unit may map to multiple framework nodes.
-- Engineering sources may contribute to preliminary coverage. Only human-approved engineering information may later contribute to generation readiness and model generation.
-- Context-only sources may explain terminology and system context, but shall not satisfy coverage, readiness or model-generation evidence.
-- Preliminary coverage and approved readiness shall be displayed separately.
+- Every source is assigned to exactly one project.
+- Project identity and source identity remain separate.
+- One source may yield multiple source-traceable Information Units.
+- One Information Unit may map to multiple valid framework nodes.
+- Context-only sources shall not create engineering Information Units.
+- Context-only sources shall not satisfy coverage or readiness.
+- Multi-agent consensus and confidence remain review evidence.
+- No consensus result may bypass Human Review.
+- Publication requires an exact human confirmation.
+- Required LLM context shall not be silently truncated.
 
 ## Dashboard Scope
 
@@ -176,40 +253,49 @@ The Project Dashboard shall provide:
 - source inventory and processing state
 - graphical framework coverage
 - preliminary indication of potentially supported models and SubModels
-- separate approved readiness, which remains unavailable until Phase G supplies approved inputs
-- disabled controls for future Project-wide Model and selected SubModel generation
+- separate approved readiness
+- disabled controls for future Project-wide Model and selected SubModel
+  generation until their responsible phases
 
-Phase P does not generate models. The disabled controls communicate later capability only. Actual candidate creation and model generation remain assigned to Phases H–J.
+Phase P does not generate models.
 
 ## Exit Criteria
 
-- A project can be created, persisted and reopened.
-- At least two source files can be assigned to one project and processed through the Phase F pipeline.
-- Every source, ingestion run, information unit, report and artifact remains traceable to its project and source.
-- Project source registry and processing state persist across application restarts.
-- The dashboard displays project metadata, source inventory, processing state, framework coverage, runs and reports.
-- Preliminary coverage is visibly distinct from approved readiness.
-- Cross-project data mixing is prevented and tested.
-- Human approval from Phase G and model generation from Phases H–J are not pulled forward.
-- Automated tests and a UI smoke test pass.
+- a project can be created, persisted and reopened
+- multiple sources can be assigned and processed independently
+- every artifact remains traceable to its project and source
+- project source registry and processing state persist
+- semantic candidates and decisions remain project-isolated
+- preliminary coverage is distinct from approved readiness
+- cross-project data mixing is prevented
+- Human Review gates cannot be bypassed
+- Project Dashboard shows the accepted Phase P information
+- automated tests and UI smoke tests pass
+- P8 phase review and SSOT UPDATE are complete
 
 ## Status
 
-In Progress — P1 Completed, P2 Architecture Definition Not Started
+In Progress — P1–P4 Completed, P5 Next
 
-Verified P1 Implementation
+## Next Step
 
-`82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
+P5 — Processing State and Artifact Organization
 
-Next Step
+P5 shall define:
 
-P2 — Project Manifest and Workspace Structure
+- canonical project processing states
+- allowed state transitions
+- artifact organization across the P1–P4 repositories
+- failure and retry behavior
+- supersession behavior
+- reopening behavior
+- project-level aggregation without duplicating artifact authority
+- explicit traceability across state transitions
 
-Before P2 implementation begins, the Project Workspace architecture and
-persistence boundaries shall be discussed, explicitly accepted and recorded in
-ADR-005.
+The P5 architecture shall be discussed and accepted before implementation
+depends on it.
 
-Depends on
+Depends on:
 
 Phase F — Satisfied
 
@@ -219,24 +305,27 @@ Phase F — Satisfied
 
 ## Objective
 
-Separate reviewed engineering knowledge from raw ingestion results.
+Separate reviewed engineering knowledge from raw and candidate ingestion
+results.
 
 ## Deliverables
 
-- Human review workflow
-- Approval decisions
+- approved engineering-information state
+- promotion workflow using persisted Human Review Decisions
 - Approved Input repository
-- Review persistence
+- promotion traceability
+- revocation and supersession behavior
 
 ## Exit Criteria
 
-- Approved engineering information available for downstream model generation
+- only exactly confirmed engineering information can become Approved Input
+- promotion remains traceable to source, candidate and review decision
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase P
 
@@ -246,24 +335,24 @@ Phase P
 
 ## Objective
 
-Generate validated model candidates from approved engineering information.
+Generate validated model candidates from Approved Input.
 
 ## Deliverables
 
-- Candidate model elements
-- Candidate relationships
-- Candidate metadata
-- Full traceability
+- candidate model elements
+- candidate relationships
+- candidate metadata
+- full traceability
 
 ## Exit Criteria
 
-- Candidate layer generated without producing SysML v2 code
+- candidate layer generated without producing SysML v2 code
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase G
 
@@ -277,19 +366,19 @@ Create an internal engineering model from approved model candidates.
 
 ## Deliverables
 
-- Model generation agent
-- Internal model assembly
-- Structural consistency
+- Model Generation Agent
+- internal model assembly
+- structural consistency
 
 ## Exit Criteria
 
-- Internal model representation successfully generated
+- internal model representation successfully generated
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase H
 
@@ -309,13 +398,13 @@ Generate valid SysML v2 textual notation.
 
 ## Exit Criteria
 
-- Valid SysML v2 textual model generated
+- valid SysML v2 textual model generated
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase I
 
@@ -329,20 +418,20 @@ Validate generated engineering models before export.
 
 ## Deliverables
 
-- Syntax validation
-- Structural validation
-- Traceability validation
-- Engineering rule validation
+- syntax validation
+- structural validation
+- traceability validation
+- engineering-rule validation
 
 ## Exit Criteria
 
-- Invalid models detected automatically
+- invalid models detected automatically
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase J
 
@@ -357,46 +446,132 @@ Export validated engineering artifacts.
 ## Deliverables
 
 - SysML v2 output files
-- Versioned output structure
-- Export package
+- versioned output structure
+- export package
 
 ## Exit Criteria
 
-- Complete export package generated automatically
+- complete export package generated automatically
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase K
 
 ---
 
-# Phase N – CATIA Migration
+# Phase N – CATIA Migration and Model Reconciliation
 
 ## Objective
 
-Replace the temporary SYSIDE shadow model with the authoritative CATIA Magic model.
+Replace the temporary SYSIDE shadow model with the authoritative CATIA Magic
+model and reconcile the engineering model with the accepted system
+architecture.
 
-## Deliverables
+## Work Package N1 — Shadow-model Migration
 
-- Migration of the shadow model
-- Synchronization with repository
-- Updated model registry
+Deliverables:
+
+- migration of the shadow model
+- synchronization with the repository
+- updated model registry
+- removal of duplicated maintained model authority
+
+## Work Package N2 — Architecture-to-Requirements Reconciliation
+
+Purpose:
+
+The accepted architecture decisions and the implemented and planned system
+capabilities contain features that are not yet completely represented by
+requirements in the authoritative engineering model.
+
+Deliverables:
+
+- complete inventory of accepted architecture decisions
+- mapping from decisions and capabilities to existing model elements
+- Requirement Coverage Matrix
+- identified missing, outdated and conflicting requirements
+- traceable requirement and model-change candidates
+- classification of stakeholder need, requirement, design constraint and
+  implementation detail
+- Human Review of every proposed model change
+- accepted additions to Stakeholder Requirements, Use Cases, System
+  Requirements and downstream model elements
+- traceability from accepted model elements to architecture-decision and
+  implementation evidence
+
+Rules:
+
+- implementation reality is evidence, not automatic normative authority
+- no requirement is created silently from existing code
+- the accepted derivation chain remains mandatory
+- CATIA is updated only after explicit Human Review
+- existing IDs and accepted model semantics are preserved unless a reviewed
+  change requires otherwise
 
 ## Exit Criteria
 
-- CATIA Magic becomes the only maintained engineering model
+- CATIA Magic is the only maintained engineering model
+- every accepted architecture decision is mapped to model coverage
+- missing requirements have been resolved or explicitly deferred
+- every accepted model addition has derivation and source traceability
+- implementation and authoritative requirements are reconciled without
+  silently converting implementation details into requirements
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase L
+
+---
+
+# Phase Q – Thesis Architecture Documentation
+
+## Objective
+
+Document and justify the complete Turing Generator architecture for the
+written thesis.
+
+Phase Q is intentionally placed after Phase N so that the documentation uses
+the reconciled authoritative engineering model.
+
+## Deliverables
+
+- thesis-ready documentation of every architecture decision from Phases A–P
+- documentation of every architecture decision accepted after Phase P
+- decision context, alternatives, rationale and consequences
+- mapping from architecture decisions to requirements and implementation
+- explanation and justification of BFO 2020 as top-level reference
+- explanation and justification of IOF Core as industrial reference
+- explanation of the project-specific glossary and Turing Core Vocabulary
+- explanation of semantic authority and ontology boundaries
+- explanation of multi-agent consensus, variance and Human Review
+- explanation of deterministic token budgeting
+- source-backed literature and standard references
+- thesis figures and architecture views
+- open limitations and future-work boundaries
+
+## Exit Criteria
+
+- all accepted architecture decisions are represented in the thesis
+- all claims that require literature or standards are supported by sources
+- architecture, authoritative requirements and committed implementation are
+  consistent
+- known deviations and deferred decisions are explicit
+
+## Status
+
+Planned
+
+Depends on:
+
+Phase N
 
 ---
 
@@ -408,53 +583,54 @@ Evaluate the completed MVP against the original project objectives.
 
 ## Deliverables
 
-- Feature release matrix
+- feature release matrix
 - Stakeholder Requirement coverage
-- Comparison with the Kickoff presentation
-- Integration of professor feedback
+- comparison with the Kickoff presentation
+- integration of professor feedback
 - MVP evaluation report
 
 ## Exit Criteria
 
 - MVP formally evaluated
-- Remaining gaps documented
-- Roadmap for future work established
+- remaining gaps documented
+- roadmap for future work established
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
-Phase N
+Phase Q
 
 ---
 
-# Phase O – Thesis & Demonstration
+# Phase O – Thesis and Demonstration Completion
 
 ## Objective
 
-Prepare the final research prototype and thesis.
+Prepare the final research prototype, demonstration and thesis submission.
 
 ## Deliverables
 
-- Thesis figures
-- Demonstration material
-- Repository cleanup
-- Documentation review
-- Final presentation
+- final thesis figures
+- demonstration material
+- repository cleanup
+- documentation review
+- final presentation
+- submission-ready thesis
 
 ## Exit Criteria
 
-- Prototype ready for submission
-- Demonstration ready
-- Thesis complete
+- prototype ready for submission
+- demonstration ready
+- thesis complete
 
 ## Status
 
 Planned
 
-Depends on
+Depends on:
 
 Phase M
 
@@ -462,7 +638,7 @@ Phase M
 
 # Development Workflow
 
-Every phase follows the same engineering process.
+Every phase follows the same engineering process:
 
 Implementation
 
@@ -484,6 +660,21 @@ Start Next Phase
 
 ---
 
+# SSOT Update Cadence
+
+A complete SSOT UPDATE is normally performed after completion of a major
+roadmap phase.
+
+This update is an explicitly requested intermediate synchronization after P4
+because P4 introduced a substantial semantic architecture baseline and a new
+handover is required.
+
+The next regular complete SSOT UPDATE remains due after P8 and completion of
+Phase P unless the project owner explicitly requests an earlier update or a
+critical handover need arises.
+
+---
+
 # Change Management
 
 Roadmap changes require:
@@ -493,12 +684,8 @@ Roadmap changes require:
 - an SSOT UPDATE
 - repository commit, push and verification
 
-Ideas and future options shall not be recorded as committed roadmap scope until they have been explicitly accepted.
+Ideas and future options shall not be recorded as committed roadmap scope until
+they have been explicitly accepted.
 
-The roadmap may only be changed after
-
-- discussion
-- explicit agreement
-- SSOT UPDATE
-
-Roadmap changes become effective only after the Collaboration Knowledge Base has been updated.
+Roadmap changes become effective only after the Collaboration Knowledge Base
+has been updated, committed, pushed and verified.
