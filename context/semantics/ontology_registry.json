@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0.0",
+  "registry_id": "TURING_ONTOLOGY_REGISTRY",
+  "registry_version": "1.0.0",
+  "status": "active",
+  "authority": {
+    "registry_role": "curated_reference_metadata",
+    "ontology_snapshot_role": "auditable_external_semantic_reference",
+    "reference_concept_index_role": "derived_non_authoritative",
+    "engineering_authority": "CATIA Magic Systems of Systems Architect",
+    "engineering_authority_rule": "Ontology references support terminology and semantic consistency but shall not create, approve, overwrite or contradict authoritative engineering information."
+  },
+  "runtime_boundary": {
+    "live_ontology_queries": false,
+    "automatic_downloads": false,
+    "automatic_updates": false,
+    "remote_runtime_dependency_resolution": false,
+    "owl_reasoner": false,
+    "triple_store": false,
+    "unrestricted_graph_traversal": false,
+    "complete_ontology_prompt_loading": false,
+    "snapshot_update_policy": "explicit_reviewed_change_only"
+  },
+  "reference_systems": [
+    {
+      "reference_system_id": "BFO_2020",
+      "name": "Basic Formal Ontology 2020",
+      "reference_role": "top_level_ontology",
+      "version": "2020",
+      "version_iri": "http://purl.obolibrary.org/obo/bfo/2020/bfo-core.owl",
+      "maturity": "released",
+      "runtime_enabled": true,
+      "enabled_runtime_role": "foundational_reference",
+      "source_authority": {
+        "provider": "BFO development team",
+        "repository": "https://github.com/BFO-ontology/BFO-2020",
+        "reference_type": "commit",
+        "reference": "dd89f4a193038b66ef0e891d546c05a5b477f40f"
+      },
+      "license": {
+        "identifier": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "url": "https://creativecommons.org/licenses/by/4.0/",
+        "local_path": "external/ontologies/bfo/2020/LICENSE.md"
+      },
+      "artifacts": [
+        {
+          "artifact_id": "BFO_CORE_2020",
+          "artifact_role": "ontology",
+          "serialization": "RDF/XML",
+          "media_type": "application/rdf+xml",
+          "local_path": "external/ontologies/bfo/2020/bfo-core.owl",
+          "source_path": "21838-2/owl/bfo-core.owl",
+          "git_blob_sha": "4c39f81413f8cdbf0af2aed6694b2aa602cd27c1",
+          "size_bytes": 98418,
+          "checksum": {
+            "algorithm": "sha256",
+            "value": "b65c817a7a25501499d287981aea972f2ce33146dcfb855915a459f6a051718d"
+          }
+        }
+      ]
+    },
+    {
+      "reference_system_id": "IOF_CORE_202602",
+      "name": "Industrial Ontologies Foundry Core",
+      "reference_role": "industrial_mid_level_ontology",
+      "version": "202602",
+      "version_iri": "https://spec.industrialontologies.org/ontology/202602/core/Core/",
+      "maturity": "released",
+      "runtime_enabled": true,
+      "enabled_runtime_role": "industrial_semantic_reference",
+      "source_authority": {
+        "provider": "Industrial Ontologies Foundry",
+        "repository": "https://github.com/iofoundry/ontology",
+        "reference_type": "release_tag",
+        "reference": "Release_202602"
+      },
+      "license": {
+        "identifier": "MIT",
+        "name": "MIT License",
+        "url": "http://opensource.org/licenses/MIT",
+        "local_path": "external/ontologies/iof/202602/LICENSE.md"
+      },
+      "artifacts": [
+        {
+          "artifact_id": "IOF_CORE_ABOUT_PROD_202602",
+          "artifact_role": "production_descriptor",
+          "serialization": "RDF/XML",
+          "media_type": "application/rdf+xml",
+          "version_iri": "https://spec.industrialontologies.org/ontology/202602/core/AboutIOFProd/",
+          "local_path": "external/ontologies/iof/202602/AboutIOFProd.rdf",
+          "source_path": "core/AboutIOFProd.rdf",
+          "git_blob_sha": "596c683da3c89500b28f90b3cbb0095bfae19e6b",
+          "size_bytes": 1999,
+          "checksum": {
+            "algorithm": "sha256",
+            "value": "b9acd4a043961694f6d863160e6b9402ab8f3e138e241163ca43ab25467647e9"
+          }
+        },
+        {
+          "artifact_id": "IOF_CORE_202602",
+          "artifact_role": "ontology",
+          "serialization": "RDF/XML",
+          "media_type": "application/rdf+xml",
+          "version_iri": "https://spec.industrialontologies.org/ontology/202602/core/Core/",
+          "local_path": "external/ontologies/iof/202602/Core.rdf",
+          "source_path": "core/Core.rdf",
+          "git_blob_sha": "2d60ca9868037e289a94fbe0380fd5ad603523ee",
+          "size_bytes": 403731,
+          "checksum": {
+            "algorithm": "sha256",
+            "value": "a653bcacef50a241aa1696d0d647b60527497cb1f32726f1891a05cbe5cb7638"
+          }
+        },
+        {
+          "artifact_id": "IOF_ANNOTATION_VOCABULARY_202602",
+          "artifact_role": "annotation_vocabulary",
+          "serialization": "RDF/XML",
+          "media_type": "application/rdf+xml",
+          "version_iri": "https://spec.industrialontologies.org/ontology/202602/core/meta/AnnotationVocabulary/",
+          "declared_version_info": "202502",
+          "local_path": "external/ontologies/iof/202602/AnnotationVocabulary.rdf",
+          "source_path": "core/meta/AnnotationVocabulary.rdf",
+          "git_blob_sha": "afad012c8c19b4415c192563fb5f620a6c496055",
+          "size_bytes": 41249,
+          "checksum": {
+            "algorithm": "sha256",
+            "value": "0539c2e6c7fed457c922410808b13da74804b4e6781decb48b3c5cc2a6f7a488"
+          }
+        }
+      ]
+    }
+  ],
+  "reference_concept_index": {
+    "schema_version": "1.0.0",
+    "path": "context/semantics/reference_concept_index.json",
+    "status": "generated_read_only",
+    "authority": "derived_non_authoritative",
+    "deterministic": true,
+    "source_reference_system_ids": [
+      "BFO_2020",
+      "IOF_CORE_202602"
+    ],
+    "runtime_usage": "retrieve_relevant_concepts_only",
+    "complete_ontology_prompt_loading": false
+  }
+}

@@ -1,0 +1,564 @@
+{
+  "schema_version": "1.0.0",
+  "vocabulary_id": "TURING_CORE_VOCABULARY",
+  "vocabulary_version": "1.0.0",
+  "name": "Turing Core Vocabulary",
+  "status": "active",
+  "default_language": "en",
+  "authority": {
+    "role": "curated_semantic_bridge",
+    "engineering_authority": "CATIA Magic Systems of Systems Architect SysML v2 model",
+    "framework_authority": "TURING_RFLP_FRAMEWORK version 1.0.0",
+    "target_model_semantics": "SysML v2 and KerML",
+    "external_reference_systems": [
+      "BFO_2020",
+      "IOF_CORE_202602"
+    ],
+    "project_terminology_authority": "Human-reviewed Project Glossary",
+    "automatic_project_mutation_allowed": false,
+    "authority_rule": "Turing Core supports semantic interpretation and candidate mapping. It does not create engineering facts, approve engineering information, change the accepted framework or alter the authoritative engineering model."
+  },
+  "source_references": [
+    {
+      "source_reference_id": "SRC_TURING_CORE_ADR_011",
+      "path": "collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md",
+      "role": "accepted_semantic_architecture"
+    },
+    {
+      "source_reference_id": "SRC_TURING_CORE_FRAMEWORK",
+      "path": "context/frameworks/turing_rflp_framework.json",
+      "role": "accepted_framework_template",
+      "referenced_id": "TURING_RFLP_FRAMEWORK",
+      "referenced_version": "1.0.0"
+    },
+    {
+      "source_reference_id": "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+      "path": "context/frameworks/README.md",
+      "role": "framework_usage_guidance"
+    },
+    {
+      "source_reference_id": "SRC_TURING_CORE_SYSML_TARGET",
+      "path": "context/sysml/sysml_v2_target_notation.json",
+      "role": "allowed_sysml_v2_target_notation",
+      "referenced_id": "CTX_SYSML_V2_TARGET_NOTATION",
+      "referenced_version": "0.1.0"
+    },
+    {
+      "source_reference_id": "SRC_TURING_CORE_SYSML_REFERENCE",
+      "path": "context/sysml/sysml_v2_spec_reference.json",
+      "role": "curated_sysml_v2_reference",
+      "referenced_id": "CTX_SYSML_V2_SPEC_REFERENCE",
+      "referenced_version": "0.1.0"
+    },
+    {
+      "source_reference_id": "SRC_TURING_CORE_DERIVATION_RULES",
+      "path": "context/mapping/sysml_model_derivation_rules.json",
+      "role": "accepted_derivation_guidance",
+      "referenced_id": "CTX_SYSML_MODEL_DERIVATION_RULES",
+      "referenced_version": "0.1.0"
+    }
+  ],
+  "identifier_policy": {
+    "field": "concept_id",
+    "pattern": "^TC-[0-9]{6}$",
+    "scope": "global_to_turing_generator",
+    "allocation": "sequential",
+    "reuse_allowed": false,
+    "meaning_change_allowed": false
+  },
+  "label_policy": {
+    "preferred_label_required": true,
+    "preferred_label_unique_casefolded": true,
+    "alternative_labels_unique_within_concept_casefolded": true,
+    "preferred_label_may_equal_alternative_label_casefolded": false,
+    "automatic_synonym_generation_allowed": false
+  },
+  "concept_relation_policy": {
+    "allowed_relations": [
+      "broader_concept_ids",
+      "related_concept_ids"
+    ],
+    "self_reference_allowed": false,
+    "unknown_concept_reference_behavior": "reject"
+  },
+  "framework_mapping_policy": {
+    "framework_template_id": "TURING_RFLP_FRAMEWORK",
+    "framework_template_version": "1.0.0",
+    "candidate_target_field": "candidate_framework_node_ids",
+    "scope_reference_field": "framework_scope_node_ids",
+    "candidate_target_must_be_mapping_target": true,
+    "scope_reference_may_reference_level_node": true,
+    "automatic_framework_assignment_allowed": false,
+    "rule": "A Turing Core concept may constrain candidate framework nodes, but every Framework Assignment still requires evidence, rationale, consensus information and separate persistence."
+  },
+  "sysml_v2_mapping_policy": {
+    "target_notation_id": "CTX_SYSML_V2_TARGET_NOTATION",
+    "target_notation_version": "0.1.0",
+    "allowed_relation": "candidate_representation",
+    "unknown_construct_behavior": "reject",
+    "automatic_model_generation_allowed": false,
+    "rule": "A SysML v2 representation candidate identifies a permitted representation option. It is not an exact semantic equivalence and does not authorize model generation."
+  },
+  "external_mapping_policy": {
+    "registry_id": "TURING_ONTOLOGY_REGISTRY",
+    "allowed_reference_system_ids": [
+      "BFO_2020",
+      "IOF_CORE_202602"
+    ],
+    "allowed_relations": [
+      "exact_match",
+      "narrower_than",
+      "broader_than",
+      "related_to",
+      "no_equivalent"
+    ],
+    "mapping_required": false,
+    "review_required": true,
+    "automatic_exact_match_allowed": false,
+    "initial_mapping_status": "not_reviewed"
+  },
+  "concepts": [
+    {
+      "concept_id": "TC-000001",
+      "preferred_label": "Stakeholder",
+      "alternative_labels": [
+        "Concern Holder"
+      ],
+      "definition": "A person, group, organization or external concern-holder whose needs, interests or constraints are relevant to the system.",
+      "concept_kind": "stakeholder_context",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000002",
+        "TC-000003",
+        "TC-000004"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_STAKEHOLDER_STAKEHOLDERS"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_STAKEHOLDER"
+      ],
+      "sysml_v2_representation_candidates": [],
+      "target_notation_note": "The accepted MVP target notation contains no dedicated stakeholder construct. A representation shall not be inferred automatically.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_ADR_011",
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE"
+      ],
+      "status": "active",
+      "order": 1
+    },
+    {
+      "concept_id": "TC-000002",
+      "preferred_label": "Actor",
+      "alternative_labels": [
+        "Interacting Role"
+      ],
+      "definition": "A role that interacts with the system in the context of a use case.",
+      "concept_kind": "stakeholder_context",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000001",
+        "TC-000005"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_STAKEHOLDER_STAKEHOLDERS"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_STAKEHOLDER"
+      ],
+      "sysml_v2_representation_candidates": [],
+      "target_notation_note": "Actor and stakeholder remain distinct concepts. The MVP target notation contains no dedicated actor construct.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 2
+    },
+    {
+      "concept_id": "TC-000003",
+      "preferred_label": "User Need",
+      "alternative_labels": [
+        "Stakeholder Need",
+        "Need Statement"
+      ],
+      "definition": "A statement in stakeholder-oriented language describing a needed outcome, expectation, problem or goal without prematurely imposing a system solution.",
+      "concept_kind": "need",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000001",
+        "TC-000004"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_STAKEHOLDER_USER_NEEDS"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_STAKEHOLDER"
+      ],
+      "sysml_v2_representation_candidates": [],
+      "target_notation_note": "A User Need is not automatically represented as a SysML v2 requirement usage.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 3
+    },
+    {
+      "concept_id": "TC-000004",
+      "preferred_label": "Stakeholder Requirement",
+      "alternative_labels": [
+        "Stakeholder-Level Requirement"
+      ],
+      "definition": "A requirement derived from stakeholder needs that states a required outcome or capability while remaining distinct from a selected implementation.",
+      "concept_kind": "requirement",
+      "broader_concept_ids": [
+        "TC-000006"
+      ],
+      "related_concept_ids": [
+        "TC-000001",
+        "TC-000003",
+        "TC-000005"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_STAKEHOLDER_STAKEHOLDER_REQUIREMENTS"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_STAKEHOLDER"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_008",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits requirement usages for explicitly modeled requirements."
+        }
+      ],
+      "target_notation_note": "The representation remains conditional on an approved generation recipe and human-approved model input.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 4
+    },
+    {
+      "concept_id": "TC-000005",
+      "preferred_label": "Use Case",
+      "alternative_labels": [
+        "Stakeholder Use Case"
+      ],
+      "definition": "A stakeholder-centered description of an actor interaction with the system to achieve a goal under stated conditions.",
+      "concept_kind": "stakeholder_behavior",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000002",
+        "TC-000004",
+        "TC-000007"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_STAKEHOLDER_USE_CASES"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_STAKEHOLDER"
+      ],
+      "sysml_v2_representation_candidates": [],
+      "target_notation_note": "A Use Case is not equivalent to a system Function. The accepted MVP target notation contains no dedicated use-case construct.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 5
+    },
+    {
+      "concept_id": "TC-000006",
+      "preferred_label": "Requirement",
+      "alternative_labels": [
+        "Requirement Statement"
+      ],
+      "definition": "A statement expressing a required outcome, behavior, quality or constraint that is independently reviewable and supported by applicable evidence.",
+      "concept_kind": "requirement",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000003",
+        "TC-000004",
+        "TC-000007"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_SYSTEM_REQUIREMENTS",
+        "FW_SUBSYSTEM_REQUIREMENTS"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_SYSTEM",
+        "FW_LEVEL_SUBSYSTEM"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_008",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits requirement usages for explicitly modeled requirements."
+        }
+      ],
+      "target_notation_note": "The applicable framework level must be established from evidence and shall not be inferred from this concept alone.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_SYSML_REFERENCE",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 6
+    },
+    {
+      "concept_id": "TC-000007",
+      "preferred_label": "Function",
+      "alternative_labels": [
+        "System Function",
+        "Functional Behavior"
+      ],
+      "definition": "A technology-independent behavior or capability describing what a system or subsystem does.",
+      "concept_kind": "behavior",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000005",
+        "TC-000006",
+        "TC-000008"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_SYSTEM_FUNCTIONAL",
+        "FW_SUBSYSTEM_FUNCTIONAL"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_SYSTEM",
+        "FW_LEVEL_SUBSYSTEM"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_005",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation uses action definitions for reusable system functions."
+        },
+        {
+          "construct_id": "TN_006",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation uses action usages for included functions and workflow steps."
+        }
+      ],
+      "target_notation_note": "A Function remains distinct from a stakeholder Use Case and from an implementation-specific software function.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_SYSML_REFERENCE",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 7
+    },
+    {
+      "concept_id": "TC-000008",
+      "preferred_label": "Logical Architecture Element",
+      "alternative_labels": [
+        "Logical Element",
+        "Logical Component"
+      ],
+      "definition": "A technology-independent or implementation-independent architecture element representing a coherent responsibility, service or structural role.",
+      "concept_kind": "architecture_element",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000007",
+        "TC-000009",
+        "TC-000010",
+        "TC-000011"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_SYSTEM_LOGICAL",
+        "FW_SUBSYSTEM_LOGICAL"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_SYSTEM",
+        "FW_LEVEL_SUBSYSTEM"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_003",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits part definitions for reusable logical component types."
+        },
+        {
+          "construct_id": "TN_004",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits part usages for concrete logical architecture configurations."
+        }
+      ],
+      "target_notation_note": "Logical architecture remains distinct from physical implementation.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_SYSML_REFERENCE",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 8
+    },
+    {
+      "concept_id": "TC-000009",
+      "preferred_label": "Physical Architecture Element",
+      "alternative_labels": [
+        "Physical Element",
+        "Physical Component",
+        "Implementation Element"
+      ],
+      "definition": "A concrete hardware, software, deployment, module or other implementation-oriented architecture element.",
+      "concept_kind": "architecture_element",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000008",
+        "TC-000010",
+        "TC-000011"
+      ],
+      "candidate_framework_node_ids": [
+        "FW_SYSTEM_PHYSICAL",
+        "FW_SUBSYSTEM_PHYSICAL"
+      ],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_SYSTEM",
+        "FW_LEVEL_SUBSYSTEM"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_003",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits part definitions for reusable physical component types."
+        },
+        {
+          "construct_id": "TN_004",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits part usages for concrete physical architecture configurations."
+        }
+      ],
+      "target_notation_note": "A physical element requires concrete implementation evidence and shall not be derived from abstract stakeholder information alone.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_SYSML_REFERENCE",
+        "SRC_TURING_CORE_DERIVATION_RULES"
+      ],
+      "status": "active",
+      "order": 9
+    },
+    {
+      "concept_id": "TC-000010",
+      "preferred_label": "System",
+      "alternative_labels": [
+        "System of Interest"
+      ],
+      "definition": "The whole under consideration within an explicitly established system boundary.",
+      "concept_kind": "system_context",
+      "broader_concept_ids": [],
+      "related_concept_ids": [
+        "TC-000008",
+        "TC-000009",
+        "TC-000011"
+      ],
+      "candidate_framework_node_ids": [],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_SYSTEM"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_003",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits a reusable structural type to be represented as a part definition."
+        },
+        {
+          "construct_id": "TN_004",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits a system occurrence in an architecture configuration to be represented as a part usage."
+        }
+      ],
+      "target_notation_note": "The System framework level is a scope reference and is not itself a valid Framework Assignment target.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_SYSML_REFERENCE"
+      ],
+      "status": "active",
+      "order": 10
+    },
+    {
+      "concept_id": "TC-000011",
+      "preferred_label": "Subsystem",
+      "alternative_labels": [
+        "Sub-System"
+      ],
+      "definition": "A system that is treated as an explicitly bounded constituent of a containing system.",
+      "concept_kind": "system_context",
+      "broader_concept_ids": [
+        "TC-000010"
+      ],
+      "related_concept_ids": [
+        "TC-000008",
+        "TC-000009"
+      ],
+      "candidate_framework_node_ids": [],
+      "framework_scope_node_ids": [
+        "FW_LEVEL_SUBSYSTEM"
+      ],
+      "sysml_v2_representation_candidates": [
+        {
+          "construct_id": "TN_003",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits a reusable subsystem type to be represented as a part definition."
+        },
+        {
+          "construct_id": "TN_004",
+          "relation": "candidate_representation",
+          "rationale": "The accepted target notation permits a subsystem occurrence in an architecture configuration to be represented as a part usage."
+        }
+      ],
+      "target_notation_note": "The Subsystem framework level is a scope reference and is not itself a valid Framework Assignment target.",
+      "external_mapping_status": "not_reviewed",
+      "external_mappings": [],
+      "provenance_source_reference_ids": [
+        "SRC_TURING_CORE_FRAMEWORK",
+        "SRC_TURING_CORE_FRAMEWORK_GUIDANCE",
+        "SRC_TURING_CORE_SYSML_TARGET",
+        "SRC_TURING_CORE_SYSML_REFERENCE"
+      ],
+      "status": "active",
+      "order": 11
+    }
+  ]
+}
