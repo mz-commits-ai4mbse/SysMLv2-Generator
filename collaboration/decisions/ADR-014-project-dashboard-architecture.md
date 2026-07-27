@@ -10,6 +10,12 @@ Date
 
 2026-07-27
 
+Amendments
+
+2026-07-27 – First-Project Workspace Bootstrap
+
+2026-07-27 – Phase-P P9 Project-bound Ingestion Integration Boundary
+
 Context
 
 Phase P introduces a project-oriented engineering workspace around the completed
@@ -32,6 +38,12 @@ assessment.
 
 P7 introduces a read-only Project Dashboard for navigating the current project
 state and its supporting evidence.
+
+Phase P was subsequently extended with P9, Project-bound Agentic Ingestion
+Integration. P9 follows the P8 Tests and Integration Readiness Review and
+connects the existing Phase F ingestion capability to the project-oriented
+contracts established by P2-P7. This amendment defines only the P7 integration
+boundary. P9 requires its own architecture decision before implementation.
 
 The existing Team Agentic Ingestion UI remains an execution-oriented interface.
 It selects legacy inputs, configures ingestion runs, starts the pipeline and
@@ -85,10 +97,14 @@ The UI shall not reimplement business rules already owned by P2-P6.
 
 ## Read-only Scope
 
-P7 shall provide navigation and presentation only.
+The five Project Dashboard views shall provide navigation and presentation only.
+
+The application shell may expose one constrained P2 Project Workspace bootstrap action when no valid Project Workspace exists. This bootstrap exception creates the project boundary required before the read-only dashboard can operate.
 
 P7 shall not:
 
+- modify or delete an existing Project Workspace
+- accept a manually chosen Project ID
 - register or modify Sources
 - start, retry, supersede or mutate Processing Runs
 - create or modify Information Units
@@ -103,9 +119,26 @@ P7 shall not:
 - persist mutable dashboard state as project authority
 
 The existing Team Agentic Ingestion UI remains separate and unchanged during P7.
+Any adaptation that binds ingestion to a Project Workspace belongs to P9 and
+shall be governed by a separate architecture decision.
 
-A future navigation link may lead from the dashboard to the ingestion UI, but
-the P7 dashboard itself shall remain read-only.
+The only P7 write exception is the first-project bootstrap action. It shall:
+
+- call the existing P2 `ProjectWorkspace.create_project` contract
+- require a human-readable display name
+- allow an optional description
+- generate the six-digit Project ID through P2
+- pin the accepted Framework Template through the P2 Project Manifest
+- create no Sources, Processing Runs, semantic artifacts or review decisions
+- become unavailable after at least one valid Project Workspace exists
+
+After successful bootstrap, every Project Dashboard view remains read-only.
+
+Beginning with P9, the application shell may expose project-bound navigation
+from the dashboard to a separately governed ingestion execution view and back.
+The P7 dashboard views themselves remain read-only. Navigation does not authorize
+the dashboard presenter or renderer to register Sources, start Processing Runs
+or publish ingestion artifacts.
 
 ## Dashboard Composition
 
@@ -454,10 +487,28 @@ UI event handlers may:
 - open an Evidence Reference
 - choose among multiple Evidence References
 - apply presentation filters
+- request project-bound navigation to or from a P9 execution view
 
-UI event handlers shall not mutate P2-P6 project artifacts.
+Dashboard-view event handlers shall not mutate P2-P6 project artifacts. The
+first-project bootstrap remains the sole P7 write exception. Any P9 execution
+action is owned by the separately governed P9 integration layer, not by the
+dashboard view or presenter.
 
-## Project Selection
+## Project Selection and First-Project Bootstrap
+
+When no valid Project Workspace exists, the application shall present a prominent first-project form instead of a terminal empty state.
+
+The form shall contain:
+
+```text
+Project name
+Description (optional)
+Create project
+```
+
+The user shall not enter the internal Project ID. P2 generates the six-digit identifier and persists the Project Manifest atomically.
+
+After successful creation, the application shall select the new project, open the Overview and rerun the presentation layer.
 
 The dashboard shall list existing Project Workspaces.
 
@@ -475,6 +526,76 @@ An invalid or unsafe Project Workspace shall not be silently presented as a
 valid project.
 
 Project scan issues shall remain visible.
+
+## P9 Navigation and Integration Boundary
+
+P9 may connect the application shell to a separately defined project-bound
+Agentic Ingestion execution view. The integration shall preserve the separation
+between inspection and execution:
+
+```text
+Project Dashboard
+→ read-only inspection and evidence navigation
+
+Project-bound Agentic Ingestion
+→ explicit execution workflow governed by P9
+```
+
+The application shell may expose navigation controls such as:
+
+```text
+Start ingestion for this project
+Return to Project Dashboard
+```
+
+A navigation request shall carry only stable application identities and state,
+at least:
+
+```text
+project_id
+return_view
+optional selected entity identity
+```
+
+It shall not carry unrestricted filesystem paths.
+
+The selected six-digit Project ID is mandatory for project-bound ingestion. P9
+shall not silently fall back to a global, unassigned or different project when a
+project binding is unavailable or invalid.
+
+The separately governed P9 execution layer may coordinate existing authoritative
+contracts, including:
+
+- P3 Project Source Registry for Source registration and Source role assignment
+- P5 Processing operations for Processing Run and event persistence
+- the existing Phase F Team Agentic Ingestion pipeline as an execution engine
+- project-local publication of traceable reports and agent outputs
+
+ADR-014 does not authorize or define those write operations. Their exact
+transaction boundaries, failure behavior, artifact mapping and recovery rules
+shall be specified in the P9 architecture decision.
+
+After an ingestion execution returns to the dashboard, the application shall
+discard any stale dashboard snapshot and regenerate the selected project's view
+from the P2-P6 authorities. The dashboard shall not accept execution results
+directly as presentation truth.
+
+A completed ingestion run shall not create or imply Preliminary Coverage unless
+the required valid P4 Information Units, Framework Assignment Candidates,
+reference validations and Human Review Decisions actually exist. Processing
+visibility and Preliminary Coverage remain separate states.
+
+The intended demonstrator flow is:
+
+```text
+Create or select Project
+→ start project-bound ingestion
+→ register Source
+→ execute ingestion
+→ persist Processing evidence
+→ return to Dashboard
+→ regenerate and inspect project state
+```
 
 ## Visual Design Principles
 
@@ -713,6 +834,10 @@ P7 Step 6 of 6
 UI integration, tests, full regression and P7 acceptance
 ```
 
+P8 performs the Tests and Integration Readiness Review for P1-P7. P9 then
+implements Project-bound Agentic Ingestion Integration under its own ADR. This
+extension of Phase P does not change the six-step P7 implementation sequence.
+
 Consequences
 
 Positive consequences:
@@ -721,7 +846,9 @@ Positive consequences:
 - every relevant displayed result can lead to its supporting artifacts
 - multiple evidence chains remain explicit rather than hidden
 - P2-P6 remain authoritative
-- the existing ingestion UI remains stable
+- the existing ingestion UI remains stable during P7
+- P7 provides a defined navigation seam for the later P9 integration
+- P9 can update project state without moving execution logic into dashboard views
 - the visual design communicates status without decorative noise
 - the dashboard remains suitable for demonstration and technical inspection
 - traceability becomes directly explorable
@@ -733,7 +860,9 @@ Negative consequences:
 - repository-aware path resolvers add implementation effort
 - the internal viewer must safely handle multiple text formats
 - deep-link and navigation context require explicit UI state handling
-- the dashboard cannot provide write actions during P7
+- the dashboard views cannot provide write actions during P7
+- P9 requires a separate ADR and explicit adaptation of the existing ingestion flow
+- the integrated demonstrator remains split between inspection and execution views
 - some records may initially support only artifact-level rather than exact
   line-level navigation
 
@@ -744,6 +873,19 @@ Rejected Alternatives
 Rejected because execution configuration and project-state inspection have
 different responsibilities. Merging them would create a large UI with mixed
 read and write semantics.
+
+### Embed P9 execution controls inside dashboard views
+
+Rejected because navigation from a dashboard view to an execution workflow is
+not equivalent to making the view itself writable. Source registration,
+Processing Run creation and ingestion execution belong to the separately
+governed P9 execution layer.
+
+### Treat navigation alone as project-bound ingestion integration
+
+Rejected because a link between two screens would not bind Sources, Processing
+Runs or generated artifacts to the selected Project Workspace. P9 must implement
+the repository and lifecycle bridge, not only navigation.
 
 ### Use direct `file://` links
 
@@ -771,14 +913,22 @@ Rejected because color is reserved for status semantics.
 
 ### Add approval and review actions to P7
 
-Rejected because P7 is a read-only project dashboard. Write workflows require
+Rejected because P7 dashboard views are read-only. Write workflows require
 their own explicit architecture and authority boundaries.
+
+### Leave the initial empty state without a project bootstrap
+
+Rejected because the application would have no valid starting action in a fresh repository. The constrained P2 bootstrap creates only the Project Workspace boundary and does not weaken the read-only status of dashboard views.
+
+### Add full project lifecycle management to P7
+
+Rejected because editing, deleting or arbitrarily managing existing projects would exceed the minimal bootstrap exception and mix project administration with evidence presentation.
 
 Acceptance Criteria
 
 ADR-014 is satisfied when:
 
-1. the dashboard is a separate read-only application
+1. the five dashboard views are read-only and the only write action is the constrained first-project P2 bootstrap
 2. P2-P6 remain the sole domain authorities
 3. every traceable displayed value can expose Evidence References
 4. one Evidence Reference opens directly
@@ -790,6 +940,12 @@ ADR-014 is satisfied when:
 10. status meaning is also conveyed through text and icon or shape
 11. the dashboard exposes Preliminary Coverage and potential support accurately
 12. Approved Generation Readiness remains explicitly unavailable in Phase P
-13. the existing Team Agentic Ingestion UI remains unchanged
+13. the existing Team Agentic Ingestion UI remains unchanged during P7, and any P9 adaptation is governed by a separate ADR
 14. core dashboard behavior is testable without Streamlit
 15. the complete repository regression remains green
+16. a fresh repository can create its first Project Workspace without a manually entered Project ID
+17. successful bootstrap selects the new project and opens the Overview
+18. beginning with P9, the application shell may navigate to a separately governed execution view while dashboard views remain read-only
+19. P9 navigation carries a valid selected Project ID and no unrestricted filesystem path
+20. returning from P9 regenerates the dashboard snapshot from P2-P6 authorities
+21. ADR-014 does not authorize P9 Source registration, Processing Run creation or artifact publication
