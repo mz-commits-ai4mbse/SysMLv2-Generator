@@ -6,11 +6,14 @@ from types import SimpleNamespace
 
 import pytest
 
+from modules.project_sources import DuplicateSourceContentError
+
 from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
     SESSION_APP_VIEW,
     SESSION_PROJECT_ID,
+    SESSION_SELECTED_ENTITY_ID,
     ApplicationNavigationState,
     normalize_app_view,
     read_navigation_state,
@@ -18,6 +21,7 @@ from app.turing_generator_navigation import (
 )
 from app.turing_generator_ui import (
     render_project_bound_ingestion_entry,
+    render_project_source_registration,
     render_turing_generator_ui,
 )
 
@@ -31,9 +35,17 @@ class _Context:
 
 
 class FakeStreamlit:
-    def __init__(self, *, clicked_keys=()):
+    def __init__(
+        self,
+        *,
+        clicked_keys=(),
+        uploaded_file=None,
+        selected_source_role="engineering_source",
+    ):
         self.session_state = {}
         self.clicked_keys = set(clicked_keys)
+        self.uploaded_file = uploaded_file
+        self.selected_source_role = selected_source_role
         self.calls = []
         self.rerun_count = 0
 
@@ -66,21 +78,123 @@ class FakeStreamlit:
     def header(self, text):
         self.calls.append(("header", text))
 
+    def subheader(self, text):
+        self.calls.append(("subheader", text))
+
     def caption(self, text):
         self.calls.append(("caption", text))
 
     def info(self, text):
         self.calls.append(("info", text))
 
+    def warning(self, text):
+        self.calls.append(("warning", text))
+
     def error(self, text):
         self.calls.append(("error", text))
 
-    def button(self, label, *, key):
-        self.calls.append(("button", label, key))
+    def success(self, text):
+        self.calls.append(("success", text))
+
+    def file_uploader(self, label, *, type, key):
+        self.calls.append(
+            ("file_uploader", label, tuple(type), key)
+        )
+        return self.uploaded_file
+
+    def selectbox(
+        self,
+        label,
+        *,
+        options,
+        index,
+        format_func,
+        key,
+    ):
+        self.calls.append(
+            (
+                "selectbox",
+                label,
+                tuple(options),
+                index,
+                key,
+            )
+        )
+        return self.selected_source_role
+
+    def table(self, rows):
+        self.calls.append(("table", rows))
+
+    def button(self, label, *, key, type=None):
+        self.calls.append(("button", label, key, type))
         return key in self.clicked_keys
 
     def rerun(self):
         self.rerun_count += 1
+
+
+class FakeUploadedFile:
+    def __init__(self, name, content):
+        self.name = name
+        self._content = content
+        self.size = len(content)
+
+    def getvalue(self):
+        return self._content
+
+
+class FakeIngestionService:
+    def __init__(
+        self,
+        *,
+        sources=(),
+        issues=(),
+        register_error=None,
+    ):
+        self.sources = tuple(sources)
+        self.issues = tuple(issues)
+        self.register_error = register_error
+        self.register_calls = []
+        self.inventory_calls = []
+
+    def register_uploaded_source(
+        self,
+        project_id,
+        *,
+        original_filename,
+        content,
+        source_role,
+    ):
+        self.register_calls.append(
+            (
+                project_id,
+                original_filename,
+                content,
+                source_role,
+            )
+        )
+        if self.register_error is not None:
+            raise self.register_error
+        result = SimpleNamespace(
+            project_id=project_id,
+            source_id="SRC-000001",
+            source_role=source_role,
+            original_filename=original_filename,
+            media_type="text/plain",
+            size_bytes=len(content),
+            sha256="a" * 64,
+            registered_at="2026-07-27T12:00:00Z",
+        )
+        self.sources = (*self.sources, result)
+        return result
+
+    def list_registered_sources(self, project_id):
+        self.inventory_calls.append(project_id)
+        return SimpleNamespace(
+            project_id=project_id,
+            sources=self.sources,
+            issues=self.issues,
+        )
 
 
 class FakeWorkspace:
@@ -208,10 +322,12 @@ def test_valid_ingestion_entry_shows_project_and_returns_to_dashboard():
     st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
     st.session_state[SESSION_PROJECT_ID] = "123456"
     workspace = FakeWorkspace()
+    ingestion_service = FakeIngestionService()
 
     render_project_bound_ingestion_entry(
         st,
         workspace=workspace,
+        ingestion_service=ingestion_service,
         navigation=read_navigation_state(st.session_state),
     )
 
@@ -224,3 +340,182 @@ def test_valid_ingestion_entry_shows_project_and_returns_to_dashboard():
     assert st.session_state[SESSION_APP_VIEW] == APP_VIEW_DASHBOARD
     assert st.session_state[SESSION_PROJECT_ID] == "123456"
     assert st.rerun_count == 1
+
+
+def test_source_registration_uses_selected_project_and_role():
+    uploaded = FakeUploadedFile(
+        "requirements.txt",
+        b"The system shall preserve traceability.",
+    )
+    st = FakeStreamlit(
+        clicked_keys={"turing_generator.register_source"},
+        uploaded_file=uploaded,
+        selected_source_role="context_only",
+    )
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    workspace = FakeWorkspace()
+    ingestion_service = FakeIngestionService()
+
+    render_project_bound_ingestion_entry(
+        st,
+        workspace=workspace,
+        ingestion_service=ingestion_service,
+        navigation=read_navigation_state(st.session_state),
+    )
+
+    assert ingestion_service.register_calls == [
+        (
+            "123456",
+            "requirements.txt",
+            b"The system shall preserve traceability.",
+            "context_only",
+        )
+    ]
+    assert (
+        st.session_state[SESSION_SELECTED_ENTITY_ID]
+        == "SRC-000001"
+    )
+    assert any(call[0] == "success" for call in st.calls)
+    assert any(call[0] == "table" for call in st.calls)
+
+
+def test_source_registration_uploader_accepts_pdf():
+    st = FakeStreamlit()
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    workspace = FakeWorkspace()
+    ingestion_service = FakeIngestionService()
+
+    render_project_bound_ingestion_entry(
+        st,
+        workspace=workspace,
+        ingestion_service=ingestion_service,
+        navigation=read_navigation_state(st.session_state),
+    )
+
+    uploader_calls = [
+        call
+        for call in st.calls
+        if call[0] == "file_uploader"
+    ]
+
+    assert len(uploader_calls) == 1
+    assert uploader_calls[0][2] == (
+        "md",
+        "txt",
+        "json",
+        "csv",
+        "pdf",
+    )
+
+
+def test_source_registration_does_not_rewrite_active_view_widget(
+    monkeypatch,
+):
+    uploaded = FakeUploadedFile(
+        "requirements.txt",
+        b"The system shall preserve traceability.",
+    )
+    st = FakeStreamlit(
+        clicked_keys={"turing_generator.register_source"},
+        uploaded_file=uploaded,
+    )
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    ingestion_service = FakeIngestionService()
+
+    def reject_navigation_rewrite(*args, **kwargs):
+        raise AssertionError(
+            "Source registration must not rewrite the active-view widget."
+        )
+
+    monkeypatch.setattr(
+        "app.turing_generator_ui.select_app_view",
+        reject_navigation_rewrite,
+    )
+
+    render_project_source_registration(
+        st,
+        ingestion_service=ingestion_service,
+        navigation=read_navigation_state(st.session_state),
+    )
+
+    assert st.session_state[SESSION_APP_VIEW] == APP_VIEW_INGESTION
+    assert (
+        st.session_state[SESSION_SELECTED_ENTITY_ID]
+        == "SRC-000001"
+    )
+
+
+def test_duplicate_source_registration_surfaces_safe_message():
+    uploaded = FakeUploadedFile("duplicate.txt", b"duplicate")
+    st = FakeStreamlit(
+        clicked_keys={"turing_generator.register_source"},
+        uploaded_file=uploaded,
+    )
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    workspace = FakeWorkspace()
+    ingestion_service = FakeIngestionService(
+        register_error=DuplicateSourceContentError(
+            "private path details"
+        )
+    )
+
+    render_project_bound_ingestion_entry(
+        st,
+        workspace=workspace,
+        ingestion_service=ingestion_service,
+        navigation=read_navigation_state(st.session_state),
+    )
+
+    errors = [
+        call[1]
+        for call in st.calls
+        if call[0] == "error"
+    ]
+    assert errors == [
+        "This exact Source content is already registered "
+        "in the selected Project."
+    ]
+    assert "private path details" not in errors[0]
+
+
+def test_registered_source_inventory_contains_no_paths():
+    source = SimpleNamespace(
+        project_id="123456",
+        source_id="SRC-000004",
+        source_role="engineering_source",
+        original_filename="system.json",
+        media_type="application/json",
+        size_bytes=128,
+        sha256="b" * 64,
+        registered_at="2026-07-27T12:00:00Z",
+    )
+    st = FakeStreamlit()
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    workspace = FakeWorkspace()
+    ingestion_service = FakeIngestionService(
+        sources=(source,),
+    )
+
+    render_project_bound_ingestion_entry(
+        st,
+        workspace=workspace,
+        ingestion_service=ingestion_service,
+        navigation=read_navigation_state(st.session_state),
+    )
+
+    tables = [
+        call[1]
+        for call in st.calls
+        if call[0] == "table"
+    ]
+    assert len(tables) == 1
+    assert tables[0][0]["Source ID"] == "SRC-000004"
+    assert "path" not in {
+        key.lower()
+        for key in tables[0][0]
+    }
