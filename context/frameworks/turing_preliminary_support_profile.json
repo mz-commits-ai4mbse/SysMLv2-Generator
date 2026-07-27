@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "TURING_PRELIMINARY_SUPPORT_PROFILE",
+  "profile_version": "1.0.0",
+  "name": "Turing Preliminary Model Support Profile",
+  "status": "active",
+  "framework_template_id": "TURING_RFLP_FRAMEWORK",
+  "framework_template_version": "1.0.0",
+  "support_targets": [
+    {
+      "support_target_id": "SUPPORT_STAKEHOLDER_MODEL",
+      "name": "Stakeholder Model",
+      "support_target_type": "model",
+      "order": 1,
+      "required_framework_node_ids": [
+        "FW_STAKEHOLDER_STAKEHOLDERS",
+        "FW_STAKEHOLDER_USER_NEEDS",
+        "FW_STAKEHOLDER_STAKEHOLDER_REQUIREMENTS",
+        "FW_STAKEHOLDER_USE_CASES"
+      ],
+      "required_support_target_ids": []
+    },
+    {
+      "support_target_id": "SUPPORT_SYSTEM_MODEL",
+      "name": "System Model",
+      "support_target_type": "model",
+      "order": 2,
+      "required_framework_node_ids": [
+        "FW_SYSTEM_REQUIREMENTS",
+        "FW_SYSTEM_FUNCTIONAL",
+        "FW_SYSTEM_LOGICAL",
+        "FW_SYSTEM_PHYSICAL"
+      ],
+      "required_support_target_ids": [
+        "SUPPORT_STAKEHOLDER_MODEL"
+      ]
+    },
+    {
+      "support_target_id": "SUPPORT_SUBSYSTEM_MODEL",
+      "name": "Subsystem Model",
+      "support_target_type": "submodel",
+      "order": 3,
+      "required_framework_node_ids": [
+        "FW_SUBSYSTEM_REQUIREMENTS",
+        "FW_SUBSYSTEM_FUNCTIONAL",
+        "FW_SUBSYSTEM_LOGICAL",
+        "FW_SUBSYSTEM_PHYSICAL"
+      ],
+      "required_support_target_ids": [
+        "SUPPORT_SYSTEM_MODEL"
+      ]
+    }
+  ]
+}
