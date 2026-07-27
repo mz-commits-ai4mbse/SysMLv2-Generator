@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+import app.project_dashboard_ui as dashboard_ui
 from app.project_dashboard_ui import (
     render_project_creation,
     render_project_dashboard_ui,
+    render_project_selector,
     request_streamlit_rerun,
 )
 from modules.project_dashboard.types import DashboardProjectSelection
@@ -64,6 +66,10 @@ class FakeStreamlit:
     def success(self, text):
         self.calls.append(("success", text))
 
+    def expander(self, label, *, expanded=False):
+        self.calls.append(("expander", label, expanded))
+        return _Context()
+
     def form(self, key, *, clear_on_submit=False):
         self.calls.append(("form", key, clear_on_submit))
         return _Context()
@@ -75,6 +81,30 @@ class FakeStreamlit:
     def text_area(self, label, **kwargs):
         self.calls.append(("text_area", label, kwargs))
         return self.description
+
+    def selectbox(
+        self,
+        label,
+        *,
+        options,
+        index,
+        format_func,
+        key,
+    ):
+        self.calls.append(
+            (
+                "selectbox",
+                label,
+                tuple(options),
+                index,
+                key,
+            )
+        )
+        if key in self.session_state:
+            return self.session_state[key]
+        selected = options[index]
+        self.session_state[key] = selected
+        return selected
 
     def form_submit_button(self, label, **kwargs):
         self.calls.append(("form_submit_button", label, kwargs))
@@ -107,6 +137,14 @@ class EmptyDashboardService:
         return DashboardProjectSelection(projects=(), issues=())
 
 
+class ExistingDashboardService:
+    def list_projects(self):
+        return DashboardProjectSelection(
+            projects=(object(),),
+            issues=(),
+        )
+
+
 def _call_names(st):
     return tuple(call[0] for call in st.calls)
 
@@ -121,6 +159,22 @@ def test_project_creation_form_does_not_write_before_submission():
     assert workspace.calls == []
     assert st.rerun_count == 0
     assert "form" in _call_names(st)
+
+
+def test_additional_project_creation_is_collapsed_and_available():
+    st = FakeStreamlit(submitted=False)
+    workspace = FakeWorkspace()
+
+    result = render_project_creation(
+        st,
+        workspace,
+        first_project=False,
+    )
+
+    assert result is None
+    assert workspace.calls == []
+    assert ("expander", "Create new project", False) in st.calls
+    assert "form_submit_button" in _call_names(st)
 
 
 def test_project_creation_normalizes_input_and_selects_created_project():
@@ -138,9 +192,41 @@ def test_project_creation_normalizes_input_and_selects_created_project():
         ("Apollo Migration", "Initial engineering workspace.")
     ]
     assert st.session_state["project_dashboard.project_id"] == "654321"
+    assert (
+        st.session_state["project_dashboard.pending_project_id"]
+        == "654321"
+    )
     assert st.session_state["project_dashboard.active_view"] == "overview"
     assert st.rerun_count == 1
     assert any(call[0] == "success" for call in st.calls)
+
+
+def test_project_selector_opens_newly_created_project_after_rerun():
+    st = FakeStreamlit()
+    st.session_state["project_dashboard.project_id"] = "123456"
+    st.session_state["project_dashboard.project_selector"] = "123456"
+    st.session_state["project_dashboard.pending_project_id"] = "654321"
+
+    selection = DashboardProjectSelection(
+        projects=(
+            SimpleNamespace(
+                project_id="123456",
+                label="Existing Project · 123456",
+            ),
+            SimpleNamespace(
+                project_id="654321",
+                label="New Project · 654321",
+            ),
+        ),
+        issues=(),
+    )
+
+    selected = render_project_selector(st, selection)
+
+    assert selected == "654321"
+    assert st.session_state["project_dashboard.project_id"] == "654321"
+    assert st.session_state["project_dashboard.project_selector"] == "654321"
+    assert "project_dashboard.pending_project_id" not in st.session_state
 
 
 def test_project_creation_requires_nonempty_display_name():
@@ -260,6 +346,48 @@ def test_empty_dashboard_renders_bootstrap_and_creates_first_project(tmp_path):
         call[0] == "info" and "Create the first project" in call[1]
         for call in st.calls
     )
+
+
+def test_existing_dashboard_always_invokes_additional_project_creation(
+    tmp_path,
+    monkeypatch,
+):
+    st = FakeStreamlit(submitted=False)
+    workspace = FakeWorkspace()
+    creation_modes = []
+
+    monkeypatch.setattr(
+        dashboard_ui,
+        "render_project_selector",
+        lambda streamlit, selection: "123456",
+    )
+    monkeypatch.setattr(
+        dashboard_ui,
+        "render_project_creation",
+        lambda streamlit, current_workspace, *, first_project=True: (
+            creation_modes.append(first_project)
+        ),
+    )
+    monkeypatch.setattr(
+        dashboard_ui,
+        "render_view_selector",
+        lambda streamlit: "unsupported",
+    )
+    monkeypatch.setattr(
+        dashboard_ui,
+        "render_document_viewer",
+        lambda *args, **kwargs: None,
+    )
+
+    render_project_dashboard_ui(
+        tmp_path,
+        service=ExistingDashboardService(),
+        viewer=object(),
+        streamlit_module=st,
+        project_workspace=workspace,
+    )
+
+    assert creation_modes == [False]
 
 
 def test_empty_dashboard_does_not_create_without_explicit_submission(tmp_path):

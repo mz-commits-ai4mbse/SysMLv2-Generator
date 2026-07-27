@@ -14,6 +14,8 @@ Amendments
 
 2026-07-27 – First-Project Workspace Bootstrap
 
+2026-07-27 – Project Creation Availability with Existing Workspaces
+
 2026-07-27 – Phase-P P9 Project-bound Ingestion Integration Boundary
 
 Context
@@ -99,7 +101,10 @@ The UI shall not reimplement business rules already owned by P2-P6.
 
 The five Project Dashboard views shall provide navigation and presentation only.
 
-The application shell may expose one constrained P2 Project Workspace bootstrap action when no valid Project Workspace exists. This bootstrap exception creates the project boundary required before the read-only dashboard can operate.
+The application shell may expose one constrained P2 Project Workspace creation
+action. It is presented prominently when no valid Project Workspace exists and
+remains available as a secondary action when existing Project Workspaces can be
+selected.
 
 P7 shall not:
 
@@ -122,17 +127,19 @@ The existing Team Agentic Ingestion UI remains separate and unchanged during P7.
 Any adaptation that binds ingestion to a Project Workspace belongs to P9 and
 shall be governed by a separate architecture decision.
 
-The only P7 write exception is the first-project bootstrap action. It shall:
+The only P7 write exception is the Project Workspace creation action. It shall:
 
 - call the existing P2 `ProjectWorkspace.create_project` contract
 - require a human-readable display name
 - allow an optional description
 - generate the six-digit Project ID through P2
 - pin the accepted Framework Template through the P2 Project Manifest
+- remain available after one or more valid Project Workspaces exist
+- create a new Project Workspace without modifying an existing one
 - create no Sources, Processing Runs, semantic artifacts or review decisions
-- become unavailable after at least one valid Project Workspace exists
 
-After successful bootstrap, every Project Dashboard view remains read-only.
+After successful Project Workspace creation, every Project Dashboard view remains
+read-only.
 
 Beginning with P9, the application shell may expose project-bound navigation
 from the dashboard to a separately governed ingestion execution view and back.
@@ -490,13 +497,18 @@ UI event handlers may:
 - request project-bound navigation to or from a P9 execution view
 
 Dashboard-view event handlers shall not mutate P2-P6 project artifacts. The
-first-project bootstrap remains the sole P7 write exception. Any P9 execution
-action is owned by the separately governed P9 integration layer, not by the
-dashboard view or presenter.
+constrained Project Workspace creation action remains the sole P7 write
+exception. Any P9 execution action is owned by the separately governed P9
+integration layer, not by the dashboard view or presenter.
 
-## Project Selection and First-Project Bootstrap
+## Project Selection and Project Creation
 
-When no valid Project Workspace exists, the application shall present a prominent first-project form instead of a terminal empty state.
+When no valid Project Workspace exists, the application shall present a prominent
+first-project form instead of a terminal empty state.
+
+When one or more valid Project Workspaces exist, the same creation capability
+shall remain available as a secondary, collapsed action alongside the
+deterministic project selector.
 
 The form shall contain:
 
@@ -928,7 +940,7 @@ Acceptance Criteria
 
 ADR-014 is satisfied when:
 
-1. the five dashboard views are read-only and the only write action is the constrained first-project P2 bootstrap
+1. the five dashboard views are read-only and the only write action is constrained P2 Project Workspace creation
 2. P2-P6 remain the sole domain authorities
 3. every traceable displayed value can expose Evidence References
 4. one Evidence Reference opens directly
@@ -944,8 +956,9 @@ ADR-014 is satisfied when:
 14. core dashboard behavior is testable without Streamlit
 15. the complete repository regression remains green
 16. a fresh repository can create its first Project Workspace without a manually entered Project ID
-17. successful bootstrap selects the new project and opens the Overview
-18. beginning with P9, the application shell may navigate to a separately governed execution view while dashboard views remain read-only
-19. P9 navigation carries a valid selected Project ID and no unrestricted filesystem path
-20. returning from P9 regenerates the dashboard snapshot from P2-P6 authorities
-21. ADR-014 does not authorize P9 Source registration, Processing Run creation or artifact publication
+17. an additional Project Workspace can be created while existing Project Workspaces remain selectable
+18. successful Project Workspace creation selects the new project and opens the Overview
+19. beginning with P9, the application shell may navigate to a separately governed execution view while dashboard views remain read-only
+20. P9 navigation carries a valid selected Project ID and no unrestricted filesystem path
+21. returning from P9 regenerates the dashboard snapshot from P2-P6 authorities
+22. ADR-014 does not authorize P9 Source registration, Processing Run creation or artifact publication

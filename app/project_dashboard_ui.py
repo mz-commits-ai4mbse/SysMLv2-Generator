@@ -6,6 +6,7 @@ all rendering contracts can be tested without starting a Streamlit server.
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
@@ -37,6 +38,8 @@ _SESSION_PROJECT_ID = "project_dashboard.project_id"
 _SESSION_ACTIVE_VIEW = "project_dashboard.active_view"
 _SESSION_OPEN_REFERENCE = "project_dashboard.open_reference"
 _SESSION_PROJECT_CHANGE_TOKEN = "project_dashboard.project_change_token"
+_SESSION_PROJECT_SELECTOR = "project_dashboard.project_selector"
+_SESSION_PENDING_PROJECT_ID = "project_dashboard.pending_project_id"
 
 _VIEW_OPTIONS = (
     ("overview", "Overview"),
@@ -127,10 +130,19 @@ def render_project_dashboard_ui(
             "No valid Project Workspace is currently available. "
             "Create the first project to begin."
         )
-        render_project_creation(st, workspace)
+        render_project_creation(
+            st,
+            workspace,
+            first_project=True,
+        )
         return
 
     selected_project_id = render_project_selector(st, selection)
+    render_project_creation(
+        st,
+        workspace,
+        first_project=False,
+    )
     active_view = render_view_selector(st)
 
     try:
@@ -187,33 +199,44 @@ def render_project_dashboard_ui(
 def render_project_creation(
     st: Any,
     workspace: ProjectWorkspace,
+    *,
+    first_project: bool = True,
 ) -> str | None:
-    """Render the constrained P2 Project Workspace bootstrap action."""
+    """Render the constrained P2 Project Workspace creation action."""
 
-    st.subheader("Create first project")
-    st.caption(
-        "This creates only the Project Workspace. Dashboard views remain "
-        "read-only, and the six-digit Project ID is generated automatically."
-    )
+    if first_project:
+        st.subheader("Create first project")
+        creation_context = nullcontext()
+    else:
+        creation_context = st.expander(
+            "Create new project",
+            expanded=False,
+        )
 
-    with st.form(
-        "project_dashboard.create_project",
-        clear_on_submit=False,
-    ):
-        display_name = st.text_input(
-            "Project name",
-            max_chars=120,
-            help="Human-readable name shown in the project selector.",
+    with creation_context:
+        st.caption(
+            "This creates only a Project Workspace. Dashboard views remain "
+            "read-only, and the six-digit Project ID is generated automatically."
         )
-        description = st.text_area(
-            "Description (optional)",
-            max_chars=2000,
-            help="Short project context. This can remain empty.",
-        )
-        submitted = st.form_submit_button(
-            "Create project",
-            type="primary",
-        )
+
+        with st.form(
+            "project_dashboard.create_project",
+            clear_on_submit=False,
+        ):
+            display_name = st.text_input(
+                "Project name",
+                max_chars=120,
+                help="Human-readable name shown in the project selector.",
+            )
+            description = st.text_area(
+                "Description (optional)",
+                max_chars=2000,
+                help="Short project context. This can remain empty.",
+            )
+            submitted = st.form_submit_button(
+                "Create project",
+                type="primary",
+            )
 
     if not submitted:
         return None
@@ -249,6 +272,7 @@ def render_project_creation(
         return None
 
     st.session_state[_SESSION_PROJECT_ID] = manifest.project_id
+    st.session_state[_SESSION_PENDING_PROJECT_ID] = manifest.project_id
     st.session_state[_SESSION_ACTIVE_VIEW] = "overview"
     st.session_state.pop(_SESSION_OPEN_REFERENCE, None)
     st.success(
@@ -279,21 +303,29 @@ def render_project_selector(
 ) -> str:
     """Render deterministic project selection and preserve context."""
 
-    project_id = choose_project_id(
-        selection.projects,
-        st.session_state.get(_SESSION_PROJECT_ID),
-    )
     project_by_id = {
         project.project_id: project
         for project in selection.projects
     }
+    pending_project_id = st.session_state.pop(
+        _SESSION_PENDING_PROJECT_ID,
+        None,
+    )
+    if pending_project_id in project_by_id:
+        st.session_state[_SESSION_PROJECT_ID] = pending_project_id
+        st.session_state[_SESSION_PROJECT_SELECTOR] = pending_project_id
+
+    project_id = choose_project_id(
+        selection.projects,
+        st.session_state.get(_SESSION_PROJECT_ID),
+    )
     options = tuple(project_by_id)
     selected = st.selectbox(
         "Project",
         options=options,
         index=options.index(project_id),
         format_func=lambda item: project_by_id[item].label,
-        key="project_dashboard.project_selector",
+        key=_SESSION_PROJECT_SELECTOR,
     )
     previous = st.session_state.get(_SESSION_PROJECT_ID)
     st.session_state[_SESSION_PROJECT_ID] = selected
