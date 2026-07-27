@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from modules.project_processing import ProcessingArtifactReference
+
 
 @dataclass(frozen=True, slots=True)
 class ProjectBoundSourceSummary:
@@ -51,3 +53,25 @@ class ProjectBoundIngestionWorkResult:
     projection_result: str | None
     phase_f_run_id: str | None
     failure_reason: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class ProjectBoundIngestionResult:
+    """Safe final project-bound execution and publication result."""
+
+    project_id: str
+    source_id: str
+    source_projection_id: str | None
+    processing_run_id: str
+    attempt_id: str
+    run_state: str
+    processing_stage: str
+    dry_run: bool
+    projection_result: str | None
+    phase_f_run_id: str | None
+    artifact_references: tuple[
+        ProcessingArtifactReference,
+        ...
+    ] = ()
+    failure_reason: str | None = None
+    recovery_required: bool = False

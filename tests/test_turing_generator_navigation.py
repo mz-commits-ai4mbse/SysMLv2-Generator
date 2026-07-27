@@ -12,9 +12,11 @@ from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
     SESSION_APP_VIEW,
+    SESSION_PENDING_NAVIGATION,
     SESSION_PROJECT_ID,
     SESSION_SELECTED_ENTITY_ID,
     ApplicationNavigationState,
+    apply_pending_app_view,
     normalize_app_view,
     read_navigation_state,
     select_app_view,
@@ -337,9 +339,15 @@ def test_valid_ingestion_entry_shows_project_and_returns_to_dashboard():
         and "Example Project · 123456" in call[1]
         for call in st.calls
     )
-    assert st.session_state[SESSION_APP_VIEW] == APP_VIEW_DASHBOARD
-    assert st.session_state[SESSION_PROJECT_ID] == "123456"
+    assert st.session_state[SESSION_APP_VIEW] == APP_VIEW_INGESTION
+    assert SESSION_PENDING_NAVIGATION in st.session_state
     assert st.rerun_count == 1
+
+    state = apply_pending_app_view(st.session_state)
+
+    assert state.active_view == APP_VIEW_DASHBOARD
+    assert state.project_id == "123456"
+    assert st.session_state[SESSION_PROJECT_ID] == "123456"
 
 
 def test_source_registration_uses_selected_project_and_role():
@@ -432,7 +440,7 @@ def test_source_registration_does_not_rewrite_active_view_widget(
         )
 
     monkeypatch.setattr(
-        "app.turing_generator_ui.select_app_view",
+        "app.turing_generator_ui.queue_app_view",
         reject_navigation_rewrite,
     )
 

@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import hashlib
 from typing import Iterable
 
@@ -11,7 +11,11 @@ from modules.project_coverage import ProjectCoverageService
 from modules.human_review.repository import HumanReviewRepository
 from modules.human_review.types import HumanReviewScanResult
 from modules.project_coverage.types import ProjectCoverageAssessment
-from modules.project_processing import ProjectProcessingSummaryService
+from modules.project_processing import (
+    ProcessingArtifactReference,
+    ProjectProcessingRepository,
+    ProjectProcessingSummaryService,
+)
 from modules.project_sources import ProjectSourceRegistry
 from modules.project_sources.types import SourceIssue, SourceManifest, SourceScanResult
 from modules.project_processing.types import ProjectProcessingSummary
@@ -84,6 +88,7 @@ class ProjectDashboardService:
         workspace: object | None = None,
         source_registry: object | None = None,
         processing_summary_service: object | None = None,
+        processing_repository: object | None = None,
         coverage_service: object | None = None,
         human_review_repository: object | None = None,
     ) -> None:
@@ -103,6 +108,11 @@ class ProjectDashboardService:
             ProjectProcessingSummaryService(root=self.root)
             if processing_summary_service is None
             else processing_summary_service
+        )
+        self.processing_repository = (
+            ProjectProcessingRepository(root=self.root)
+            if processing_repository is None
+            else processing_repository
         )
         self.human_review_repository = (
             HumanReviewRepository(root=self.root)
@@ -1457,6 +1467,12 @@ class ProjectDashboardService:
                     evidence_role="direct",
                 )
             )
+            references.extend(
+                self._current_run_published_artifact_evidence(
+                    source,
+                    summary,
+                )
+            )
         for run_id in getattr(summary, "superseded_run_ids", ()):
             references.append(
                 self._run_manifest_reference(
@@ -1467,6 +1483,100 @@ class ProjectDashboardService:
                 )
             )
         return tuple(references)
+
+    def _current_run_published_artifact_evidence(
+        self,
+        source: SourceManifest,
+        summary: object,
+    ) -> tuple[EvidenceReference, ...]:
+        """Return validated P5 publication references for the current Attempt."""
+
+        current_run_id = getattr(
+            summary,
+            "current_processing_run_id",
+            None,
+        )
+        latest_attempt_id = getattr(
+            summary,
+            "latest_attempt_id",
+            None,
+        )
+        if current_run_id is None or latest_attempt_id is None:
+            return ()
+
+        try:
+            history = self.processing_repository.load_run(
+                source.project_id,
+                current_run_id,
+            )
+        except Exception:
+            # The dashboard remains fail-closed. A pending review without a
+            # validated report is rendered explicitly by the UI.
+            return ()
+
+        publication_event = next(
+            (
+                event
+                for event in reversed(history.events)
+                if event.event_type == "artifact_published"
+                and event.attempt_id == latest_attempt_id
+            ),
+            None,
+        )
+        if publication_event is None:
+            return ()
+
+        return tuple(
+            self._processing_artifact_evidence_reference(
+                source,
+                reference,
+            )
+            for reference in publication_event.artifact_references
+        )
+
+    def _processing_artifact_evidence_reference(
+        self,
+        source: SourceManifest,
+        reference: ProcessingArtifactReference,
+    ) -> EvidenceReference:
+        reference_type = {
+            "review_reports": "ingestion_review_report",
+            "run_summaries": "ingestion_run_summary",
+            "consensus_reports": "ingestion_consensus_report",
+            "agent_outputs": "ingestion_agent_output",
+        }.get(
+            reference.artifact_type,
+            "processing_artifact",
+        )
+        relationship = {
+            "review_reports": "requires_human_review",
+            "run_summaries": "summarizes_ingestion_run",
+            "consensus_reports": "supports_review_with_consensus",
+            "agent_outputs": "supports_review_with_agent_output",
+        }.get(
+            reference.artifact_type,
+            "supports_processing_traceability",
+        )
+        evidence_role = (
+            "direct"
+            if reference.artifact_type == "review_reports"
+            else "contextual"
+        )
+
+        return EvidenceReference(
+            project_id=source.project_id,
+            reference_type=reference_type,
+            reference_id=reference.artifact_id,
+            display_label=_processing_artifact_display_label(reference),
+            repository_relative_path=reference.repository_relative_path,
+            content_fingerprint=reference.content_fingerprint,
+            media_type=_processing_artifact_media_type(
+                reference.repository_relative_path
+            ),
+            source_role=source.source_role,
+            relationship=relationship,
+            evidence_role=evidence_role,
+        )
 
     def _source_manifest_reference_from_manifest(
         self,
@@ -2075,6 +2185,64 @@ class ProjectDashboardService:
             f"{attention} require attention"
         )
 
+
+
+def _processing_artifact_display_label(
+    reference: ProcessingArtifactReference,
+) -> str:
+    path = PurePosixPath(reference.repository_relative_path)
+    suffix_label = {
+        ".md": "Markdown",
+        ".json": "JSON",
+        ".txt": "Text",
+        ".csv": "CSV",
+        ".tsv": "TSV",
+        ".pdf": "PDF",
+    }.get(path.suffix.lower(), path.suffix.lstrip(".").upper())
+
+    if reference.artifact_type == "review_reports":
+        return "Ingestion Review Report"
+    if reference.artifact_type == "run_summaries":
+        return f"Run Summary · {suffix_label}"
+
+    stage = _processing_artifact_stage_label(path)
+    filename = _humanize_artifact_name(path.stem)
+    if reference.artifact_type == "consensus_reports":
+        return f"Consensus Report · {stage} · {suffix_label}"
+    if reference.artifact_type == "agent_outputs":
+        return f"Agent Output · {stage} · {filename}"
+    return f"Processing Artifact · {filename}"
+
+
+def _processing_artifact_stage_label(path: PurePosixPath) -> str:
+    parts = path.parts
+    for index, part in enumerate(parts):
+        if part.startswith("ATT-") and index + 1 < len(parts) - 1:
+            return _humanize_artifact_name(parts[index + 1])
+    return "Agentic ingestion"
+
+
+def _humanize_artifact_name(value: str) -> str:
+    parts = [part for part in value.replace("-", "_").split("_") if part]
+    if parts and parts[0].isdigit():
+        parts = parts[1:]
+    if not parts:
+        return "Artifact"
+    return " ".join(part.capitalize() for part in parts)
+
+
+def _processing_artifact_media_type(path: str) -> str:
+    return {
+        ".md": "text/markdown",
+        ".json": "application/json",
+        ".txt": "text/plain",
+        ".csv": "text/csv",
+        ".tsv": "text/tab-separated-values",
+        ".pdf": "application/pdf",
+    }.get(
+        PurePosixPath(path).suffix.lower(),
+        "application/octet-stream",
+    )
 
 def _require_project_id(project_id: object) -> str:
     if not is_valid_project_id(project_id):

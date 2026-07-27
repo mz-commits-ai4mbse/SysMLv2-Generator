@@ -14,6 +14,7 @@ from modules.ingestion.team_agentic_pipeline import (
 from modules.project_processing import (
     ProjectProcessingRepository,
     create_processing_event,
+    derive_processing_run_state,
     create_processing_run_manifest,
     create_semantic_reference_version,
 )
@@ -35,13 +36,18 @@ from .configuration import (
     validate_ingestion_configuration,
     workflow_profile_for_source_role,
 )
+from .publisher import ProjectIngestionPublisher
 from .errors import (
     ProjectIngestionExecutionError,
     ProjectIngestionInputError,
+    ProjectIngestionOutputValidationError,
     ProjectIngestionPathError,
+    ProjectIngestionPublicationError,
+    ProjectIngestionRecoveryRequiredError,
     ProjectIngestionTemporaryFileError,
 )
 from .types import (
+    ProjectBoundIngestionResult,
     ProjectBoundIngestionWorkResult,
     ProjectBoundSourceInventory,
     ProjectBoundSourceIssue,
@@ -72,6 +78,7 @@ class ProjectBoundIngestionService:
         processing_repository: (
             ProjectProcessingRepository | None
         ) = None,
+        publisher: ProjectIngestionPublisher | None = None,
         project_workspace: ProjectWorkspace | None = None,
         pipeline_runner: Callable[..., Any] = (
             run_team_agentic_ingestion
@@ -95,6 +102,15 @@ class ProjectBoundIngestionService:
             ProjectProcessingRepository(root=self.root)
             if processing_repository is None
             else processing_repository
+        )
+        self._publisher = (
+            ProjectIngestionPublisher(
+                root=self.root,
+                repository_root=self.repository_root,
+                processing_repository=self._processing,
+            )
+            if publisher is None
+            else publisher
         )
         self._workspace = (
             ProjectWorkspace(root=self.root)
@@ -412,6 +428,266 @@ class ProjectBoundIngestionService:
             ),
             phase_f_run_id=phase_f_run_id,
             failure_reason=None,
+        )
+
+    def execute_registered_source(
+        self,
+        project_id: str,
+        source_id: str,
+        *,
+        configuration: ProjectIngestionConfiguration,
+        api_key: str | None = None,
+    ) -> ProjectBoundIngestionResult:
+        """Execute, publish and request Human Review for one Source."""
+
+        self._require_no_current_run(project_id, source_id)
+
+        work = self.execute_registered_source_to_work(
+            project_id,
+            source_id,
+            configuration=configuration,
+            api_key=api_key,
+        )
+
+        if work.run_state != "running":
+            return self._final_result_from_work(work)
+
+        try:
+            artifact_references = (
+                self._publisher.publish_attempt_outputs(
+                    project_id,
+                    work.processing_run_id,
+                    work.attempt_id,
+                )
+            )
+        except ProjectIngestionOutputValidationError:
+            return self._finalize_work_failure(
+                work,
+                reason_code="ingestion_output_validation_failed",
+            )
+        except ProjectIngestionRecoveryRequiredError:
+            return self._finalize_work_recovery(
+                work,
+                reason_code="artifact_publication_recovery_required",
+            )
+        except ProjectIngestionPublicationError:
+            return self._finalize_work_failure(
+                work,
+                reason_code="artifact_publication_failed",
+            )
+
+        history = self._processing.load_run(
+            project_id,
+            work.processing_run_id,
+        )
+        latest = history.events[-1]
+        published_event = create_processing_event(
+            project_id=project_id,
+            processing_run_id=work.processing_run_id,
+            event_id=f"EVT-{latest.event_sequence + 1:06d}",
+            event_sequence=latest.event_sequence + 1,
+            previous_state=latest.next_state,
+            next_state="running",
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            event_type="artifact_published",
+            attempt_id=work.attempt_id,
+            reason_code="agentic_ingestion_artifacts_published",
+            artifact_references=artifact_references,
+            timestamp=self._current_utc_timestamp(),
+            previous_event_fingerprint=latest.event_fingerprint,
+        )
+
+        try:
+            history = self._processing.append_event(
+                published_event
+            )
+        except Exception:
+            return self._finalize_work_recovery(
+                work,
+                reason_code=(
+                    "artifact_publication_event_recovery_required"
+                ),
+                artifact_references=artifact_references,
+            )
+
+        latest = history.events[-1]
+        review_event = create_processing_event(
+            project_id=project_id,
+            processing_run_id=work.processing_run_id,
+            event_id=f"EVT-{latest.event_sequence + 1:06d}",
+            event_sequence=latest.event_sequence + 1,
+            previous_state=latest.next_state,
+            next_state="awaiting_review",
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            event_type="review_requested",
+            attempt_id=work.attempt_id,
+            reason_code="agentic_ingestion_review_requested",
+            artifact_references=(),
+            timestamp=self._current_utc_timestamp(),
+            previous_event_fingerprint=latest.event_fingerprint,
+        )
+
+        try:
+            self._processing.append_event(review_event)
+        except Exception:
+            return self._finalize_work_recovery(
+                work,
+                reason_code="review_request_recovery_required",
+                artifact_references=artifact_references,
+            )
+
+        return ProjectBoundIngestionResult(
+            project_id=work.project_id,
+            source_id=work.source_id,
+            source_projection_id=work.source_projection_id,
+            processing_run_id=work.processing_run_id,
+            attempt_id=work.attempt_id,
+            run_state="awaiting_review",
+            processing_stage=work.processing_stage,
+            dry_run=work.dry_run,
+            projection_result=work.projection_result,
+            phase_f_run_id=work.phase_f_run_id,
+            artifact_references=artifact_references,
+            failure_reason=None,
+            recovery_required=False,
+        )
+
+    def _require_no_current_run(
+        self,
+        project_id: str,
+        source_id: str,
+    ) -> None:
+        scan = self._processing.scan_project(project_id)
+        blocking_codes = tuple(
+            issue.code
+            for issue in scan.issues
+            if issue.issue_level == "blocking"
+        )
+
+        if blocking_codes:
+            raise ProjectIngestionExecutionError(
+                "Project Processing contains blocking issues."
+            )
+
+        for history in scan.run_histories:
+            if history.manifest.source_id != source_id:
+                continue
+
+            state = derive_processing_run_state(history)
+            if state.run_state != "superseded":
+                raise ProjectIngestionExecutionError(
+                    "The selected Source already has a current "
+                    "Processing Run. Retry or successor handling "
+                    "is required instead of creating another Run."
+                )
+
+    def _final_result_from_work(
+        self,
+        work: ProjectBoundIngestionWorkResult,
+    ) -> ProjectBoundIngestionResult:
+        return ProjectBoundIngestionResult(
+            project_id=work.project_id,
+            source_id=work.source_id,
+            source_projection_id=work.source_projection_id,
+            processing_run_id=work.processing_run_id,
+            attempt_id=work.attempt_id,
+            run_state=work.run_state,
+            processing_stage=work.processing_stage,
+            dry_run=work.dry_run,
+            projection_result=work.projection_result,
+            phase_f_run_id=work.phase_f_run_id,
+            artifact_references=(),
+            failure_reason=work.failure_reason,
+            recovery_required=False,
+        )
+
+    def _finalize_work_failure(
+        self,
+        work: ProjectBoundIngestionWorkResult,
+        *,
+        reason_code: str,
+    ) -> ProjectBoundIngestionResult:
+        history = self._processing.load_run(
+            work.project_id,
+            work.processing_run_id,
+        )
+        latest = history.events[-1]
+        event = create_processing_event(
+            project_id=work.project_id,
+            processing_run_id=work.processing_run_id,
+            event_id=f"EVT-{latest.event_sequence + 1:06d}",
+            event_sequence=latest.event_sequence + 1,
+            previous_state=latest.next_state,
+            next_state="failed",
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            event_type="run_failed",
+            attempt_id=work.attempt_id,
+            reason_code=reason_code,
+            artifact_references=(),
+            timestamp=self._current_utc_timestamp(),
+            previous_event_fingerprint=latest.event_fingerprint,
+        )
+        self._processing.append_event(event)
+
+        return ProjectBoundIngestionResult(
+            project_id=work.project_id,
+            source_id=work.source_id,
+            source_projection_id=work.source_projection_id,
+            processing_run_id=work.processing_run_id,
+            attempt_id=work.attempt_id,
+            run_state="failed",
+            processing_stage=work.processing_stage,
+            dry_run=work.dry_run,
+            projection_result=work.projection_result,
+            phase_f_run_id=work.phase_f_run_id,
+            artifact_references=(),
+            failure_reason=reason_code,
+            recovery_required=False,
+        )
+
+    def _finalize_work_recovery(
+        self,
+        work: ProjectBoundIngestionWorkResult,
+        *,
+        reason_code: str,
+        artifact_references: tuple = (),
+    ) -> ProjectBoundIngestionResult:
+        history = self._processing.load_run(
+            work.project_id,
+            work.processing_run_id,
+        )
+        latest = history.events[-1]
+        event = create_processing_event(
+            project_id=work.project_id,
+            processing_run_id=work.processing_run_id,
+            event_id=f"EVT-{latest.event_sequence + 1:06d}",
+            event_sequence=latest.event_sequence + 1,
+            previous_state=latest.next_state,
+            next_state="blocked",
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            event_type="recovery_required",
+            attempt_id=work.attempt_id,
+            reason_code=reason_code,
+            artifact_references=(),
+            timestamp=self._current_utc_timestamp(),
+            previous_event_fingerprint=latest.event_fingerprint,
+        )
+        self._processing.append_event(event)
+
+        return ProjectBoundIngestionResult(
+            project_id=work.project_id,
+            source_id=work.source_id,
+            source_projection_id=work.source_projection_id,
+            processing_run_id=work.processing_run_id,
+            attempt_id=work.attempt_id,
+            run_state="blocked",
+            processing_stage=work.processing_stage,
+            dry_run=work.dry_run,
+            projection_result=work.projection_result,
+            phase_f_run_id=work.phase_f_run_id,
+            artifact_references=artifact_references,
+            failure_reason=reason_code,
+            recovery_required=True,
         )
 
     def _fail_execution(

@@ -23,3 +23,15 @@ class ProjectIngestionExecutionError(ProjectIngestionError):
 
 class ProjectIngestionPathError(ProjectIngestionError):
     """Raised when a project-bound execution path is unsafe."""
+
+
+class ProjectIngestionOutputValidationError(ProjectIngestionError):
+    """Raised before publication when required work output is invalid."""
+
+
+class ProjectIngestionPublicationError(ProjectIngestionError):
+    """Raised when validated output cannot begin publication."""
+
+
+class ProjectIngestionRecoveryRequiredError(ProjectIngestionError):
+    """Raised after publication creates partial final state."""

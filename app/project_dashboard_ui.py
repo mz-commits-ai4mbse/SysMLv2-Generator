@@ -41,6 +41,9 @@ from modules.project_workspace.errors import ProjectWorkspaceError
 _SESSION_PROJECT_ID = SESSION_PROJECT_ID
 _SESSION_ACTIVE_VIEW = SESSION_DASHBOARD_VIEW
 _SESSION_OPEN_REFERENCE = "project_dashboard.open_reference"
+_SESSION_INLINE_REVIEW_REFERENCE = (
+    "project_dashboard.inline_review_reference"
+)
 _SESSION_PROJECT_CHANGE_TOKEN = "project_dashboard.project_change_token"
 _SESSION_PROJECT_SELECTOR = "project_dashboard.project_selector"
 _SESSION_PENDING_PROJECT_ID = "project_dashboard.pending_project_id"
@@ -72,6 +75,17 @@ class EvidenceControl:
     label: str
     detail: str
     reference: EvidenceReference
+
+
+@dataclass(frozen=True, slots=True)
+class SourceEvidenceSections:
+    """Human-oriented grouping of one Source row's evidence."""
+
+    review_reports: tuple[EvidenceReference, ...]
+    run_summaries: tuple[EvidenceReference, ...]
+    consensus_reports: tuple[EvidenceReference, ...]
+    agent_outputs: tuple[EvidenceReference, ...]
+    technical_evidence: tuple[EvidenceReference, ...]
 
 
 def render_project_dashboard_ui(
@@ -340,20 +354,22 @@ def render_project_selector(
 
 
 def render_view_selector(st: Any) -> str:
-    """Render the stable dashboard section selector."""
+    """Render the stable dashboard section selector without duplicate defaults."""
 
     valid_ids = tuple(view_id for view_id, _ in _VIEW_OPTIONS)
     current = normalize_active_view(
         st.session_state.get(_SESSION_ACTIVE_VIEW)
     )
     labels = dict(_VIEW_OPTIONS)
+    widget_key = "project_dashboard.view_selector"
+    if st.session_state.get(widget_key) not in valid_ids:
+        st.session_state[widget_key] = current
     selected = st.radio(
         "Dashboard view",
         options=valid_ids,
-        index=valid_ids.index(current),
         format_func=lambda item: labels[item],
         horizontal=True,
-        key="project_dashboard.view_selector",
+        key=widget_key,
     )
     st.session_state[_SESSION_ACTIVE_VIEW] = selected
     return selected
@@ -513,9 +529,10 @@ def render_sources_processing(
                     "Failure issues: "
                     + ", ".join(row.failure_issue_codes)
                 )
-            render_evidence_navigation(
+            render_source_evidence_sections(
                 st,
-                row.evidence,
+                row,
+                viewer,
                 key_prefix=f"source_{row.source_id}",
             )
 
@@ -891,6 +908,227 @@ def render_issue_views(
             key_prefix=f"{key_prefix}_{index}_{issue.issue_code}",
         )
 
+
+
+def source_evidence_sections(
+    navigation: EvidenceNavigation,
+) -> SourceEvidenceSections:
+    """Partition P9 review artifacts from supporting and technical evidence."""
+
+    groups: dict[str, list[EvidenceReference]] = {
+        "review_reports": [],
+        "run_summaries": [],
+        "consensus_reports": [],
+        "agent_outputs": [],
+        "technical_evidence": [],
+    }
+    mapping = {
+        "ingestion_review_report": "review_reports",
+        "ingestion_run_summary": "run_summaries",
+        "ingestion_consensus_report": "consensus_reports",
+        "ingestion_agent_output": "agent_outputs",
+    }
+    for reference in navigation.references:
+        group = mapping.get(
+            reference.reference_type,
+            "technical_evidence",
+        )
+        groups[group].append(reference)
+
+    return SourceEvidenceSections(
+        review_reports=tuple(groups["review_reports"]),
+        run_summaries=tuple(groups["run_summaries"]),
+        consensus_reports=tuple(groups["consensus_reports"]),
+        agent_outputs=tuple(groups["agent_outputs"]),
+        technical_evidence=tuple(groups["technical_evidence"]),
+    )
+
+
+def render_source_evidence_sections(
+    st: Any,
+    row: Any,
+    viewer: DashboardDocumentViewer,
+    *,
+    key_prefix: str,
+) -> None:
+    """Render the review target first and supporting evidence by purpose."""
+
+    sections = source_evidence_sections(row.evidence)
+
+    if row.pending_review:
+        with st.container(border=True):
+            st.markdown("### Review required")
+            st.write(
+                "Review the Phase-F Ingestion Review Report. It is the "
+                "primary Human-in-the-Loop artifact for this Processing Run."
+            )
+            if len(sections.review_reports) == 1:
+                review_reference = sections.review_reports[0]
+                columns = st.columns((4, 1))
+                with columns[0]:
+                    st.markdown("**Ingestion Review Report**")
+                    st.caption(
+                        "Consolidated findings, gaps, risks and review "
+                        "questions from Team Agentic Ingestion."
+                    )
+                with columns[1]:
+                    if st.button(
+                        "Open review report",
+                        key=safe_widget_key(
+                            key_prefix,
+                            "primary_review",
+                            review_reference.reference_id,
+                        ),
+                    ):
+                        st.session_state[
+                            _SESSION_INLINE_REVIEW_REFERENCE
+                        ] = review_reference
+                render_inline_review_report(
+                    st,
+                    viewer,
+                    review_reference,
+                    key_prefix=key_prefix,
+                )
+            elif not sections.review_reports:
+                st.error(
+                    "The Run is awaiting review, but no validated Ingestion "
+                    "Review Report is linked to the current publication event."
+                )
+            else:
+                st.error(
+                    "The current publication event contains multiple primary "
+                    "review reports. Review navigation is blocked until the "
+                    "ambiguity is resolved."
+                )
+
+    supporting_count = (
+        len(sections.run_summaries)
+        + len(sections.consensus_reports)
+        + len(sections.agent_outputs)
+    )
+    if supporting_count:
+        with st.expander(
+            f"Supporting evidence ({supporting_count})",
+            expanded=False,
+        ):
+            st.caption(
+                "Use these artifacts to inspect how the review report was "
+                "produced. They are supporting evidence, not the primary "
+                "review target."
+            )
+            render_reference_group(
+                st,
+                "Run summaries",
+                sections.run_summaries,
+                key_prefix=f"{key_prefix}_summaries",
+            )
+            render_reference_group(
+                st,
+                "Consensus reports",
+                sections.consensus_reports,
+                key_prefix=f"{key_prefix}_consensus",
+            )
+            render_reference_group(
+                st,
+                "Agent outputs",
+                sections.agent_outputs,
+                key_prefix=f"{key_prefix}_agents",
+            )
+
+    if sections.technical_evidence:
+        with st.expander(
+            f"Technical evidence ({len(sections.technical_evidence)})",
+            expanded=False,
+        ):
+            st.caption(
+                "Immutable Source and Processing manifests used for identity, "
+                "integrity and traceability."
+            )
+            render_reference_rows(
+                st,
+                sections.technical_evidence,
+                key_prefix=f"{key_prefix}_technical",
+            )
+
+
+def render_inline_review_report(
+    st: Any,
+    viewer: DashboardDocumentViewer,
+    reference: EvidenceReference,
+    *,
+    key_prefix: str,
+) -> None:
+    selected = st.session_state.get(
+        _SESSION_INLINE_REVIEW_REFERENCE
+    )
+    if selected != reference:
+        return
+
+    heading = st.columns((5, 1))
+    with heading[0]:
+        st.markdown("#### Ingestion Review Report")
+    with heading[1]:
+        if st.button(
+            "Close",
+            key=safe_widget_key(key_prefix, "close_primary_review"),
+        ):
+            st.session_state.pop(
+                _SESSION_INLINE_REVIEW_REFERENCE,
+                None,
+            )
+            return
+
+    try:
+        preview = viewer.open(reference)
+    except ProjectDashboardError:
+        st.error("The Ingestion Review Report could not be opened safely.")
+        return
+    except Exception:
+        st.error("The Ingestion Review Report is unavailable.")
+        return
+
+    render_document_preview(st, preview)
+
+
+def render_reference_group(
+    st: Any,
+    label: str,
+    references: Sequence[EvidenceReference],
+    *,
+    key_prefix: str,
+) -> None:
+    if not references:
+        return
+    st.markdown(f"**{escape(label)} ({len(references)})**")
+    render_reference_rows(
+        st,
+        references,
+        key_prefix=key_prefix,
+    )
+
+
+def render_reference_rows(
+    st: Any,
+    references: Sequence[EvidenceReference],
+    *,
+    key_prefix: str,
+) -> None:
+    for reference in references:
+        columns = st.columns((5, 1))
+        with columns[0]:
+            st.markdown(f"**{escape(reference.display_label)}**")
+            st.caption(evidence_reference_detail(reference))
+        with columns[1]:
+            if st.button(
+                "Open",
+                key=safe_widget_key(
+                    key_prefix,
+                    reference.reference_type,
+                    reference.reference_id,
+                    reference.repository_relative_path,
+                ),
+            ):
+                st.session_state[_SESSION_OPEN_REFERENCE] = reference
 
 def render_evidence_navigation(
     st: Any,

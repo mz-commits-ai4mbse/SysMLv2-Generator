@@ -16,11 +16,16 @@ from .errors import (
     ProjectIngestionError,
     ProjectIngestionExecutionError,
     ProjectIngestionInputError,
+    ProjectIngestionOutputValidationError,
     ProjectIngestionPathError,
+    ProjectIngestionPublicationError,
+    ProjectIngestionRecoveryRequiredError,
     ProjectIngestionTemporaryFileError,
 )
+from .publisher import ProjectIngestionPublisher
 from .service import ProjectBoundIngestionService
 from .types import (
+    ProjectBoundIngestionResult,
     ProjectBoundIngestionWorkResult,
     ProjectBoundSourceInventory,
     ProjectBoundSourceIssue,
@@ -33,6 +38,7 @@ __all__ = [
     "DEFAULT_RECIPE_ID",
     "DEFAULT_SEMANTIC_REFERENCE_VERSIONS",
     "PIPELINE_CONFIGURATION_VERSION",
+    "ProjectBoundIngestionResult",
     "ProjectBoundIngestionService",
     "ProjectBoundIngestionWorkResult",
     "ProjectBoundSourceInventory",
@@ -43,7 +49,11 @@ __all__ = [
     "ProjectIngestionError",
     "ProjectIngestionExecutionError",
     "ProjectIngestionInputError",
+    "ProjectIngestionOutputValidationError",
     "ProjectIngestionPathError",
+    "ProjectIngestionPublicationError",
+    "ProjectIngestionPublisher",
+    "ProjectIngestionRecoveryRequiredError",
     "ProjectIngestionTemporaryFileError",
     "calculate_ingestion_configuration_fingerprint",
     "validate_ingestion_configuration",
