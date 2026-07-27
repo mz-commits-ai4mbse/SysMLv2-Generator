@@ -38,7 +38,7 @@ _APP_VIEW_LABELS = {
     APP_VIEW_INGESTION: "Agentic Ingestion",
 }
 
-_P9_UPLOAD_TYPES = ("md", "txt", "json", "csv", "pdf")
+_P9_UPLOAD_TYPES = ("md", "txt", "json", "csv", "tsv", "pdf")
 _SOURCE_ROLE_OPTIONS = (
     ENGINEERING_SOURCE_ROLE,
     CONTEXT_ONLY_SOURCE_ROLE,
@@ -72,7 +72,8 @@ def render_turing_generator_ui(
     )
     source_service = (
         ProjectBoundIngestionService(
-            root=root / "data" / "projects"
+            root=root / "data" / "projects",
+            repository_root=root,
         )
         if ingestion_service is None
         else ingestion_service
@@ -215,7 +216,7 @@ def render_project_source_registration(
 
     st.subheader("1. Register Source")
     st.caption(
-        "Supported Source containers: Markdown, text, JSON, CSV and PDF. "
+        "Supported Source containers: Markdown, text, JSON, CSV, TSV and PDF. "
         "PDF processing is limited to machine-readable text layers; "
         "OCR and image-only content remain outside the MVP."
     )

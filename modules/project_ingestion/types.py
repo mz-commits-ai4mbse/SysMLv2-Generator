@@ -34,3 +34,20 @@ class ProjectBoundSourceInventory:
     project_id: str
     sources: tuple[ProjectBoundSourceSummary, ...] = ()
     issues: tuple[ProjectBoundSourceIssue, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class ProjectBoundIngestionWorkResult:
+    """Safe result of execution into non-authoritative Run work."""
+
+    project_id: str
+    source_id: str
+    source_projection_id: str | None
+    processing_run_id: str
+    attempt_id: str
+    run_state: str
+    processing_stage: str
+    dry_run: bool
+    projection_result: str | None
+    phase_f_run_id: str | None
+    failure_reason: str | None = None

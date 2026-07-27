@@ -11,3 +11,15 @@ class ProjectIngestionInputError(ProjectIngestionError):
 
 class ProjectIngestionTemporaryFileError(ProjectIngestionError):
     """Raised when temporary upload material cannot be prepared."""
+
+
+class ProjectIngestionConfigurationError(ProjectIngestionError):
+    """Raised when material execution configuration is invalid."""
+
+
+class ProjectIngestionExecutionError(ProjectIngestionError):
+    """Raised when a Processing Run cannot be executed safely."""
+
+
+class ProjectIngestionPathError(ProjectIngestionError):
+    """Raised when a project-bound execution path is unsafe."""

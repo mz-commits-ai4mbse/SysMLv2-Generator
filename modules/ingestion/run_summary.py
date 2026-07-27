@@ -31,22 +31,35 @@ def build_run_summary(
     team_execution_mode: str,
     agent_results: list[AgentRunResult],
     consensus_reports: list[dict[str, Any]],
+    repository_root: Path | None = None,
 ) -> dict[str, Any]:
     """Build a structured run summary dictionary."""
 
     return {
         "task_id": task_id,
         "recipe_id": recipe_id,
-        "raw_input_path": str(raw_input_path),
-        "report_output_path": str(report_output_path),
+        "raw_input_path": _display_path(
+            raw_input_path,
+            repository_root,
+        ),
+        "report_output_path": _display_path(
+            report_output_path,
+            repository_root,
+        ),
         "run_id": run_id,
-        "run_dir": str(run_dir),
+        "run_dir": _display_path(
+            run_dir,
+            repository_root,
+        ),
         "provider": provider,
         "model": model,
         "team_execution_mode": team_execution_mode,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "agent_results": [
-            serialize_agent_result(result)
+            serialize_agent_result(
+                result,
+                repository_root=repository_root,
+            )
             for result in agent_results
         ],
         "consensus_reports": [
@@ -56,7 +69,11 @@ def build_run_summary(
     }
 
 
-def serialize_agent_result(result: AgentRunResult) -> dict[str, Any]:
+def serialize_agent_result(
+    result: AgentRunResult,
+    *,
+    repository_root: Path | None = None,
+) -> dict[str, Any]:
     """Serialize one agent result for the run summary."""
 
     return {
@@ -67,7 +84,10 @@ def serialize_agent_result(result: AgentRunResult) -> dict[str, Any]:
         "model": result.model,
         "response_id": result.response_id,
         "status": result.status,
-        "output_path": str(result.output_path),
+        "output_path": _display_path(
+            result.output_path,
+            repository_root,
+        ),
         "usage": result.usage,
     }
 
@@ -83,6 +103,27 @@ def serialize_consensus_report(report: dict[str, Any]) -> dict[str, Any]:
         "total_agents": report.get("total_agents"),
         "summary": report.get("summary", {}),
     }
+
+
+def _display_path(
+    path: Path,
+    repository_root: Path | None,
+) -> str:
+    """Render repository-owned paths without machine prefixes."""
+
+    candidate = Path(path)
+
+    if repository_root is None:
+        return str(candidate)
+
+    try:
+        return str(
+            candidate.resolve().relative_to(
+                Path(repository_root).resolve()
+            )
+        )
+    except ValueError:
+        return str(candidate)
 
 
 def write_run_summary_json(
@@ -184,6 +225,7 @@ def write_run_summaries(
     team_execution_mode: str,
     agent_results: list[AgentRunResult],
     consensus_reports: list[dict[str, Any]],
+    repository_root: Path | None = None,
 ) -> dict[str, Any]:
     """Build and write JSON and Markdown run summaries."""
 
@@ -199,6 +241,7 @@ def write_run_summaries(
         team_execution_mode=team_execution_mode,
         agent_results=agent_results,
         consensus_reports=consensus_reports,
+        repository_root=repository_root,
     )
 
     write_run_summary_json(

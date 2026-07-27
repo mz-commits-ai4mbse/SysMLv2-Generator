@@ -21,6 +21,8 @@ EVENTS_DIRECTORY_NAME = "events"
 ARTIFACTS_DIRECTORY_NAME = "artifacts"
 AGENT_OUTPUTS_DIRECTORY_NAME = "agent_outputs"
 CONSENSUS_REPORTS_DIRECTORY_NAME = "consensus_reports"
+REVIEW_REPORTS_DIRECTORY_NAME = "review_reports"
+RUN_SUMMARIES_DIRECTORY_NAME = "run_summaries"
 WORK_DIRECTORY_NAME = "work"
 PROCESSING_DECISIONS_DIRECTORY_NAME = "processing_decisions"
 
@@ -28,6 +30,8 @@ PROCESSING_ARTIFACT_KINDS = frozenset(
     {
         AGENT_OUTPUTS_DIRECTORY_NAME,
         CONSENSUS_REPORTS_DIRECTORY_NAME,
+        REVIEW_REPORTS_DIRECTORY_NAME,
+        RUN_SUMMARIES_DIRECTORY_NAME,
     }
 )
 
@@ -138,9 +142,12 @@ def attempt_artifact_path(
     """Return one stage- and attempt-specific artifact directory."""
 
     if artifact_kind not in PROCESSING_ARTIFACT_KINDS:
+        allowed = ", ".join(
+            sorted(PROCESSING_ARTIFACT_KINDS)
+        )
         raise ProcessingValidationError(
-            "artifact_kind must be agent_outputs or "
-            "consensus_reports."
+            "artifact_kind is not supported. "
+            f"Expected one of: {allowed}."
         )
 
     if processing_stage not in PROCESSING_STAGES:

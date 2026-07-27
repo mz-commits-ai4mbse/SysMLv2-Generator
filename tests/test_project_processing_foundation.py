@@ -408,6 +408,7 @@ def test_processing_vocabularies_are_closed() -> None:
 
     assert PROCESSING_STAGES == frozenset(
         {
+            "agentic_ingestion",
             "source_projection",
             "semantic_extraction",
             "semantic_consensus",

@@ -406,6 +406,7 @@ def test_source_registration_uploader_accepts_pdf():
         "txt",
         "json",
         "csv",
+        "tsv",
         "pdf",
     )
 

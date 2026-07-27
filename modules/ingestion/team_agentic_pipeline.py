@@ -66,6 +66,7 @@ def run_team_agentic_ingestion(
     runs_per_member: int = 1,
     max_members_per_team: int | None = 1,
     dry_run: bool = False,
+    execution_root: Path | None = None,
 ) -> TeamAgenticIngestionResult:
     """Run the modular team-based agentic ingestion pipeline.
 
@@ -73,11 +74,26 @@ def run_team_agentic_ingestion(
     Set max_members_per_team=None to run all configured team members.
     """
 
+    project_root = Path(project_root).resolve()
+    resolved_raw_input_path = _resolve_pipeline_path(
+        project_root,
+        raw_input_path,
+    )
+    resolved_report_output_path = _resolve_pipeline_path(
+        project_root,
+        report_output_path,
+    )
+
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    run_dir = project_root / "data" / "team_runs" / task_id / run_id
+    run_dir = _resolve_pipeline_run_directory(
+        project_root=project_root,
+        task_id=task_id,
+        run_id=run_id,
+        execution_root=execution_root,
+    )
     run_dir.mkdir(parents=True, exist_ok=True)
 
-    raw_text = raw_input_path.read_text(encoding="utf-8")
+    raw_text = resolved_raw_input_path.read_text(encoding="utf-8")
 
     recipe_text = read_optional_file(
         project_root / "recipes" / "ingestion" / "create_ingestion_artifact.recipe.md"
@@ -110,7 +126,7 @@ def run_team_agentic_ingestion(
         input_text=build_initial_interpretation_input(
             task_id=task_id,
             recipe_id=recipe_id,
-            raw_input_path=raw_input_path,
+            raw_input_path=resolved_raw_input_path,
             raw_text=raw_text,
             recipe_text=recipe_text,
             global_principles_text=global_principles_text,
@@ -133,7 +149,7 @@ def run_team_agentic_ingestion(
         task_instructions=get_evidence_classifier_task_instructions(),
         input_text=build_evidence_classification_input(
             task_id=task_id,
-            raw_input_path=raw_input_path,
+            raw_input_path=resolved_raw_input_path,
             raw_text=raw_text,
             interpretation_results=interpretation_results,
             interpretation_consensus=interpretation_consensus,
@@ -158,7 +174,7 @@ def run_team_agentic_ingestion(
         ),
         input_text=build_derivation_assessment_input(
             task_id=task_id,
-            raw_input_path=raw_input_path,
+            raw_input_path=resolved_raw_input_path,
             raw_text=raw_text,
             evidence_results=evidence_results,
             evidence_consensus=evidence_consensus,
@@ -182,7 +198,7 @@ def run_team_agentic_ingestion(
         task_instructions=get_completeness_checker_task_instructions(),
         input_text=build_completeness_review_input(
             task_id=task_id,
-            raw_input_path=raw_input_path,
+            raw_input_path=resolved_raw_input_path,
             raw_text=raw_text,
             interpretation_results=interpretation_results,
             evidence_results=evidence_results,
@@ -204,10 +220,10 @@ def run_team_agentic_ingestion(
     write_ingestion_review_report(
         task_id=task_id,
         recipe_id=recipe_id,
-        raw_input_path=raw_input_path,
+        raw_input_path=resolved_raw_input_path,
         run_id=run_id,
         run_dir=run_dir,
-        report_output_path=report_output_path,
+        report_output_path=resolved_report_output_path,
         derivation_results=derivation_results,
         completeness_results=completeness_results,
         consensus_reports=consensus_reports,
@@ -217,8 +233,8 @@ def run_team_agentic_ingestion(
     run_summary = write_run_summaries(
         task_id=task_id,
         recipe_id=recipe_id,
-        raw_input_path=raw_input_path,
-        report_output_path=report_output_path,
+        raw_input_path=resolved_raw_input_path,
+        report_output_path=resolved_report_output_path,
         run_id=run_id,
         run_dir=run_dir,
         provider=provider,
@@ -226,17 +242,74 @@ def run_team_agentic_ingestion(
         team_execution_mode=team_execution_mode,
         agent_results=all_agent_results,
         consensus_reports=consensus_reports,
+        repository_root=project_root,
     )
 
     return TeamAgenticIngestionResult(
         task_id=task_id,
         run_id=run_id,
         run_dir=run_dir,
-        report_path=report_output_path,
+        report_path=resolved_report_output_path,
         agent_results=all_agent_results,
         consensus_reports=consensus_reports,
         run_summary=run_summary,
     )
+
+
+def _resolve_pipeline_path(
+    project_root: Path,
+    path: Path,
+) -> Path:
+    """Resolve one absolute or repository-relative pipeline path."""
+
+    candidate = Path(path)
+    if not candidate.is_absolute():
+        candidate = project_root / candidate
+
+    return candidate.resolve()
+
+
+def _resolve_pipeline_run_directory(
+    *,
+    project_root: Path,
+    task_id: str,
+    run_id: str,
+    execution_root: Path | None,
+) -> Path:
+    """Resolve default Phase-F or explicit project-bound execution."""
+
+    if execution_root is None:
+        return (
+            project_root
+            / "data"
+            / "team_runs"
+            / task_id
+            / run_id
+        )
+
+    resolved = _resolve_pipeline_path(
+        project_root,
+        execution_root,
+    )
+
+    try:
+        resolved.relative_to(project_root)
+    except ValueError as exc:
+        raise ValueError(
+            "execution_root must remain inside project_root."
+        ) from exc
+
+    if resolved.is_symlink():
+        raise ValueError(
+            "Symbolic-link execution roots are rejected."
+        )
+
+    if resolved.exists() and not resolved.is_dir():
+        raise ValueError(
+            "execution_root must be a directory path."
+        )
+
+    return resolved
 
 
 def run_stage_with_consensus(

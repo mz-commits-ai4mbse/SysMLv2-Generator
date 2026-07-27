@@ -20,6 +20,7 @@ PROCESSING_RUN_STATES = frozenset(
 
 PROCESSING_STAGES = frozenset(
     {
+        "agentic_ingestion",
         "source_projection",
         "semantic_extraction",
         "semantic_consensus",
