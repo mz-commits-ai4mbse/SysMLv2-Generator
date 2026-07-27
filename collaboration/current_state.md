@@ -25,52 +25,54 @@ Current Branch
 
 Verified Implementation Commit
 
-`0c8ba428e7e6469e410b541c114d7a5a9474321c`
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
 
 Architecture Version
 
-1.0
+1.1
 
 Knowledge Base Version
 
-1.3
+1.4
 
 Implementation Version
 
-0.7
+0.8
 
 Current Roadmap Version
 
-1.3
+1.4
 
 Current Development Phase
 
-P – Project Workspace
+G – Approved Input Promotion
 
 Current Status
 
-P1–P4 Completed — P5 Next
+Phase P Completed — Phase G Next
 
 Last SSOT Update
 
-2026-07-24
+2026-07-27
 
 ---
 
 # Current Objective
 
-Continue the project-oriented processing architecture around the completed
-agentic ingestion pipeline.
+Begin Phase G architecture definition after the completed Phase P project
+workspace and project-bound ingestion baseline.
 
-P1 through P4 established the framework, project workspace, source registry
-and semantic information-processing foundation.
+Phase P is technically closed. It established project identity, Source
+registration, deterministic Source Projection, semantic artifact repositories,
+Processing Runs, Preliminary Coverage, the Project Dashboard and project-bound
+Team Agentic Ingestion.
 
-The immediate focus is:
+The next focus is:
 
-P5 — Processing State and Artifact Organization
+Phase G — Approved Input Promotion
 
-Phase P remains active. Approved Input Promotion, model candidates, model
-generation and SysML v2 code generation remain assigned to later phases.
+Phase G shall separate reviewed engineering knowledge from raw Source material,
+agent outputs, consensus artifacts and pending review reports.
 
 ---
 
@@ -78,25 +80,30 @@ generation and SysML v2 code generation remain assigned to later phases.
 
 Priority 1
 
-Define the P5 processing-state model and artifact-organization boundaries
-before implementation depends on them.
+Define the Approved Input Promotion architecture before implementation depends
+on it.
 
 Priority 2
 
-Integrate the completed project, source, projection, semantic, review and
-mapping artifacts into explicit project processing states without weakening
-their existing traceability or authority boundaries.
+Preserve the mandatory Human-in-the-Loop boundary. A P9 run ending in
+`awaiting_review` requests review; it does not create approved engineering
+knowledge.
 
 Priority 3
 
-Continue through P6 coverage, P7 dashboard and P8 phase review before leaving
-Phase P.
+Define exactly which reviewed P4/P9 artifacts may become Approved Input and how
+their source, review and fingerprint traceability is preserved.
 
 Priority 4
 
-Preserve the mandatory Human-in-the-Loop boundary. Agent consensus, confidence
-or low variance shall never independently authorize publication or model
-generation.
+Keep Preliminary Coverage and Approved Generation Readiness separate. Phase P
+may show preliminary support; approved readiness begins only after approved
+engineering input exists.
+
+Priority 5
+
+Prepare thesis-oriented architecture documentation without mixing it into the
+runtime feature overview.
 
 ---
 
@@ -161,11 +168,8 @@ Implemented capabilities include:
 
 P3 architecture is documented in:
 
-`collaboration/decisions/ADR-010-project-source-registry-architecture.md`
-
-The textual processing boundary is documented in:
-
-`collaboration/decisions/ADR-009-textual-source-processing-boundary.md`
+- `collaboration/decisions/ADR-009-textual-source-processing-boundary.md`
+- `collaboration/decisions/ADR-010-project-source-registry-architecture.md`
 
 P3 implementation is verified through:
 
@@ -174,11 +178,11 @@ P3 implementation is verified through:
 Implemented capabilities include:
 
 - mandatory project assignment for every source
-- project-local six-digit source identifiers
-- immutable source manifests
+- project-local source identifiers
+- immutable Source Manifests
 - exact content hashes and source metadata
 - `engineering_source` and `context_only` roles
-- duplicate-content rejection
+- duplicate-content rejection within a project
 - safe source persistence and deterministic scans
 - strict separation of project identity and source identity
 
@@ -195,7 +199,6 @@ P4 is complete and verified at:
 Verification:
 
 - complete automated test suite: 2594 passed
-- staged implementation scope: 111 files
 - own-source diff validation: passed
 - pinned external ontology integrity validation: passed
 - branch synchronization: `HEAD == origin/main`
@@ -221,6 +224,173 @@ Implemented P4 capabilities include:
 - deterministic, auditable token budgeting
 - fail-closed behavior when required context cannot fit
 
+## P5 — Processing State and Artifact Organization
+
+P5 architecture is documented in:
+
+`collaboration/decisions/ADR-012-processing-state-and-artifact-organization.md`
+
+P5 implementation was completed through:
+
+`9a9ef8bd7c08c354c638d4b0e072e308e7c02516`
+
+Verification:
+
+- P5 processing lifecycle and aggregation tests: 528 passed
+- complete automated test suite after P5: 3122 passed
+- branch synchronization: `HEAD == origin/main`
+
+Implemented P5 capabilities include:
+
+- immutable Processing Run Manifests
+- immutable Processing Event Manifests
+- immutable Processing Decision Manifests
+- event-chain validation and current-state reconstruction
+- source-bound Processing Runs
+- attempt identifiers
+- run work directories and run-owned artifact directories
+- retry, supersession, invalidation and recovery diagnostics
+- Source-level and Project-level Processing aggregation
+- fail-closed state and issue reporting
+
+## P6 — Preliminary Coverage and Potential Model Support
+
+P6 architecture is documented in:
+
+`collaboration/decisions/ADR-013-preliminary-coverage-and-potential-model-support.md`
+
+P6 implementation was completed through:
+
+`f921b216d66ee359dea7cf116cfea03acb1e3510`
+
+Verification:
+
+- P6 coverage test suite: 307 passed
+- complete automated test suite after P6: 3429 passed
+
+Implemented P6 capabilities include:
+
+- deterministic Preliminary Coverage assessment
+- explicit support profile
+- project-local coverage evidence collection
+- separation of covered, uncovered and attention-required framework nodes
+- candidate support assessment for future model scopes
+- strict separation between Preliminary Coverage and Approved Generation
+  Readiness
+- recognition that Phase P cannot approve generation readiness
+
+## P7 — Project Dashboard
+
+P7 architecture is documented in:
+
+`collaboration/decisions/ADR-014-project-dashboard-architecture.md`
+
+P7 implementation was completed through:
+
+`d8a3bc9bb55a4b7ab0fa6e999b74b8541bf224b6`
+
+P7 project-creation fixes were completed through:
+
+`fe0fd24`
+
+Verification:
+
+- P7 dashboard tests after project-creation fix: 319 passed
+- complete automated test suite after P7 fix: 3749 passed
+
+Implemented P7 capabilities include:
+
+- common read-only Project Dashboard
+- Overview, Sources & Processing, Coverage & Support, Attention & Review and
+  Traceability views
+- Project selection and first-project bootstrap
+- project creation from the dashboard shell
+- evidence navigation with safe repository-relative references
+- document preview for JSON, Markdown, text, table and metadata evidence
+- status color limited to status semantics
+- dashboard boundary kept free of execution logic
+
+## P8 — Tests and Integration Readiness Review
+
+P8 was used as the P1–P7 integration readiness checkpoint before P9.
+
+P8 confirmed that:
+
+- P1–P7 authorities could support project-bound ingestion without a parallel
+  architecture
+- the existing dashboard needed a navigation seam but not execution ownership
+- project-bound ingestion required a separate P9 architecture decision
+- the accepted dashboard boundary remained read-only except for constrained
+  Project Workspace creation
+
+## P9 — Project-bound Agentic Ingestion Integration
+
+P9 architecture is documented in:
+
+`collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md`
+
+P9 implementation was completed through:
+
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+
+Important P9 commits include:
+
+- `e7f2a0ec3cb5d9bea150d9fd69eb61b5d79dc6e3` — P9 architecture decision
+- `c8f852218c9260248e1a1285d6df89d963d8c695` — common application navigation
+- `9b664da72fc6d33c03c209e6f7b5ea81091a19c7` — project-bound source registration
+- `bd9ee157ab5fd6454138bfef11ed5bdbb355bc29` — Processing Run bridge
+- `26acace4d7ba2849b33c5e0dacedf838f83c7705` — full ingestion workflow,
+  publication, Execution UI and review navigation
+
+Verification:
+
+- complete automated test suite after P9: 3808 passed
+- manual P9 acceptance audit: PASS
+- branch synchronization: `HEAD == origin/main`
+
+Implemented P9 capabilities include:
+
+- common Turing Generator application shell
+- validated navigation between Project Dashboard and Agentic Ingestion
+- project-bound Source upload and registration
+- support for Markdown, text, JSON, CSV, TSV and PDF text-layer source
+  containers
+- deterministic Source Projection before Phase F execution
+- P5 Processing Run creation for selected project and source
+- `agentic_ingestion` Processing Stage
+- Phase F execution inside the P5 run-owned work directory
+- validation of generated work outputs before publication
+- immutable publication of run-owned artifacts
+- `ProcessingArtifactReference` values for published artifacts
+- `artifact_published` and `review_requested` events
+- final successful run state `awaiting_review`
+- Execution UI with dry-run default and explicit live-run handling
+- Dashboard return to Sources & Processing
+- prominent Ingestion Review Report navigation for pending review
+
+Manual P9 acceptance evidence:
+
+- demo project: `458990`
+- failed negative source: `SRC-000001` / `RUN-000001`
+- successful dry-run source: `SRC-000002` / `RUN-000002`
+- successful run state: `awaiting_review`
+- successful event sequence:
+  - `run_created`
+  - `stage_started`
+  - `artifact_published`
+  - `review_requested`
+- published artifacts:
+  - 4 `agent_outputs`
+  - 8 `consensus_reports`
+  - 1 `review_reports`
+  - 2 `run_summaries`
+- total published artifact references: 15
+- all published artifact fingerprints verified
+- no API-key fields persisted
+
+The manual demo data under `data/projects/` is local test evidence and is not an
+authoritative committed implementation artifact.
+
 ---
 
 # Current Architecture Baseline
@@ -244,9 +414,11 @@ The committed repository is authoritative for implementation reality.
 The Collaboration Knowledge Base is authoritative for roadmap, coordination,
 accepted decisions and working rules.
 
+Implementation evidence does not silently create normative requirements.
+
 ## Accepted Framework
 
-The framework contains:
+The implemented Phase P framework contains:
 
 - Stakeholder Level
   - Stakeholders
@@ -267,6 +439,30 @@ The framework contains:
 Apollo 11 remains a non-normative reference. Its CoSMA framework, package
 layout, engineering content and identifiers were not transferred.
 
+## Modular Repository Architecture
+
+The Turing Generator uses a modular, artifact-oriented architecture.
+
+Important configuration and knowledge artifacts are maintained as explicit
+repository files, especially JSON and Markdown files. Examples include:
+
+- project principles and scope context
+- framework templates
+- support profiles
+- ontology registries
+- core vocabulary
+- recipes
+- agent definitions
+- task definitions
+- source manifests
+- processing manifests and events
+- review reports and run summaries
+
+This makes the implementation portable: a different domain can reuse the same
+project, source, processing, dashboard, review and publication infrastructure
+while replacing domain-specific framework templates, support profiles, recipes,
+agents, vocabularies and validation rules.
+
 ## Source-processing Boundary
 
 The supported MVP engineering-processing boundary is textual information.
@@ -281,36 +477,40 @@ outside the MVP.
 Supporting additional non-textual engineering media requires a separate,
 explicit architecture and validation decision.
 
-## Semantic Authority
+## Processing and Publication Boundary
 
-The semantic authority hierarchy is:
+Processing Runs are operational processing evidence.
 
-1. authoritative project engineering knowledge in CATIA
-2. explicitly accepted project terminology decisions
-3. Turing Core Vocabulary
-4. curated external reference concepts from registered ontology snapshots
+A successful P9 execution:
 
-BFO and IOF are reference systems. They do not override project engineering
-authority and are not loaded completely into prompts.
+- validates Source Projection
+- executes Phase F
+- publishes immutable run-owned artifacts
+- requests Human Review
+- reaches `awaiting_review`
 
-External ontology mappings remain explicit, reviewable candidates until
-accepted.
+It does not:
+
+- create Approved Input
+- create approved engineering knowledge
+- satisfy Approved Generation Readiness
+- generate model candidates
+- generate SysML v2
+
+Published run-owned artifacts are authoritative evidence for what a Processing
+Run produced. They are not authoritative engineering knowledge until later
+review and promotion phases accept them.
 
 ## Human Review Boundary
 
 Multi-agent agreement, confidence level and variance are evidence for review,
 not publication authority.
 
-Every publication target requires an explicit Human Review Decision.
+Every engineering publication or promotion target requires an explicit Human
+Review Decision.
 
-Quick confirmation is permitted only for eligible, reference-valid targets.
-The user shall always retain the option to enter detailed review.
-
-Medium or low confidence, disagreement, ambiguity, conflict, invalid
-references and incomplete agent runs require detailed review.
-
-Only an exact `confirm` decision bound to the current target-content and
-validation fingerprints may pass a publication gate.
+P9 requests review through `review_requested`. Phase G must define how reviewed
+P9 and P4 evidence becomes Approved Input.
 
 ## Token-budget Boundary
 
@@ -341,27 +541,35 @@ auditable.
 | P2 | Project Manifest and Workspace Structure | Completed |
 | P3 | Source Registry and mandatory Project Assignment | Completed |
 | P4 | Framework-mapped heterogeneous Information Units | Completed |
-| P5 | Processing State and Artifact Organization | Next |
-| P6 | Coverage and Preliminary Readiness Engine | Planned |
-| P7 | Project Dashboard | Planned |
-| P8 | Tests and Phase Review | Planned |
+| P5 | Processing State and Artifact Organization | Completed |
+| P6 | Preliminary Coverage and Potential Model Support | Completed |
+| P7 | Project Dashboard | Completed |
+| P8 | Tests and Integration Readiness Review | Completed |
+| P9 | Project-bound Agentic Ingestion Integration | Completed |
+
+Phase P is complete after this SSOT update has been committed and pushed.
 
 ---
 
 # Not Yet Implemented
 
-- unified project processing-state model
-- consolidated artifact organization across the P1–P4 repositories
-- framework coverage and preliminary readiness calculation
-- Project Dashboard
 - Approved Input Promotion
-- Model Candidate Layer
+- Human Review workflow for promoting P9 review-report outcomes into Approved
+  Input
+- model candidate layer
 - model generation
 - SysML v2 code generation
 - validation and export
 - CATIA synchronization
 - systematic requirements reconciliation against accepted architecture
   decisions
+- project editing after creation
+- project deletion including all assigned data
+- refined dashboard actions for non-primary evidence beyond the P9 review
+  workflow
+- retry and successor UI for existing source runs
+- operational performance measurements for full live LLM team execution
+- OCR, technical drawing interpretation and unrestricted multimodal extraction
 
 ---
 
@@ -369,12 +577,17 @@ auditable.
 
 ## Active
 
-- P1–P4 artifacts are individually persisted but not yet unified through a
-  project-wide processing-state model.
+- Phase P does not yet create Approved Input.
+- P9 successful executions end in `awaiting_review`; they still require Phase G
+  promotion before they become accepted engineering input.
+- The authoritative CATIA model does not yet contain requirements for every
+  accepted and implemented capability introduced through architecture decisions.
 - Full-team LLM execution still requires operational performance and token
   measurements beyond deterministic budgeting.
-- The authoritative CATIA model does not yet contain requirements for every
-  accepted and planned capability introduced through architecture decisions.
+- Project editing, project deletion and recovery operator workflows remain
+  planned refinements.
+- Local demo data under `data/projects/` is useful test evidence but not a
+  committed authoritative artifact.
 
 ## Controlled by Design
 
@@ -388,6 +601,26 @@ auditable.
 - required prompt context cannot be silently truncated
 - external ontology snapshots are pinned and integrity-checked
 - CATIA remains authoritative for engineering knowledge
+- P9 published artifacts are run evidence, not Approved Input
+
+---
+
+# Planned Thesis Development Plan
+
+A thesis-only Development Plan shall be documented after the complete
+implementation path is clearer.
+
+Purpose:
+
+- document the lettered development phases used in this project
+- preserve why phases were introduced, split or extended
+- explain how future architecture decisions are captured
+- stay separate from the feature overview, which shall describe the current
+  implemented and planned feature state
+- support the thesis, not the intermediate presentation
+
+This Development Plan is not a runtime feature and shall not replace the
+roadmap.
 
 ---
 
@@ -424,17 +657,19 @@ automatically normative and shall not silently create requirements.
 
 # Next Milestone
 
-P5 — Processing State and Artifact Organization
+Phase G — Approved Input Promotion
 
 Before implementation:
 
-- inspect the committed P1–P4 artifact repositories
-- define canonical processing states and allowed transitions
-- define project-level aggregation without duplicating artifact authority
-- define failure, retry, supersession and reopening behavior
-- preserve exact project, source, projection, information-unit and review
-  traceability
-- discuss alternatives and consequences
+- inspect P4 Human Review and publication gate contracts
+- inspect P5 Processing Run and Processing Decision contracts
+- inspect P9 review-report publication and `awaiting_review` state
+- define Approved Input identity and storage
+- define promotion eligibility
+- define how review decisions bind to exact target-content and fingerprint
+  evidence
+- define revocation, supersession and invalidation behavior
+- preserve project, source, run, artifact and review traceability
 - record the accepted architecture before implementation depends on it
 
 ---
@@ -460,13 +695,12 @@ its repository-relative path before proposing a change.
 A complete SSOT UPDATE is normally performed after completion of a major
 roadmap phase.
 
-This update is an explicitly requested intermediate synchronization after P4
-because P4 introduced a substantial semantic architecture baseline and a new
-handover is required.
+This update is the Phase P completion synchronization. It supersedes the earlier
+P4 intermediate handover and establishes Phase G as the next active phase.
 
-The next regular SSOT UPDATE remains due after P8 and completion of Phase P,
-unless the project owner explicitly requests an earlier update or a critical
-handover need arises.
+The next regular SSOT UPDATE is due after completion of the next major roadmap
+phase, unless the project owner explicitly requests an earlier update or a
+critical handover need arises.
 
 ---
 
@@ -478,6 +712,6 @@ handover need arises.
 - Model Registry: `model_registry.json`
 - Handover: `handovers/current_chat_handover.md`
 - Framework Template: `../context/frameworks/turing_rflp_framework.json`
+- Support Profile: `../context/frameworks/turing_preliminary_support_profile.json`
 - Ontology Registry: `../context/semantics/ontology_registry.json`
-- Turing Core Vocabulary:
-  `../context/semantics/turing_core_vocabulary.json`
+- Turing Core Vocabulary: `../context/semantics/turing_core_vocabulary.json`

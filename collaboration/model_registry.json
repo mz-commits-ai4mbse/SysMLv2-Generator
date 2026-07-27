@@ -1,6 +1,6 @@
 {
-  "version": "1.3",
-  "last_updated": "2026-07-24",
+  "version": "1.4",
+  "last_updated": "2026-07-27",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -19,10 +19,11 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "0c8ba428e7e6469e410b541c114d7a5a9474321c",
+      "verified_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 2594,
+        "complete_automated_test_count": 3808,
+        "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
         "remote_synchronization": "HEAD_equals_origin_main"
@@ -41,15 +42,14 @@
       ]
     },
     "derived_artifacts": {
-      "status": "non_authoritative",
+      "status": "non_authoritative_unless_published_as_run_evidence",
       "examples": [
-        "Generated Reports",
-        "Generated Markdown",
+        "Unpublished Work Artifacts",
         "Temporary Summaries",
         "Chat History",
-        "Unreviewed Agent Results",
-        "Consensus Results",
-        "Coverage Indications"
+        "Unreviewed Agent Results outside run-owned publication",
+        "Consensus Results as approval authority",
+        "Coverage Indications as approved readiness"
       ]
     }
   },
@@ -329,9 +329,17 @@
       "Decision Rationale and Consequences",
       "Decision-to-Requirement Traceability",
       "Decision-to-Implementation Traceability",
-      "Literature and Standard References"
+      "Literature and Standard References",
+      "Lettered Development Plan",
+      "Phase Evolution and Phase Boundary Rationale"
     ],
-    "depends_on_phase": "N"
+    "depends_on_phase": "N",
+    "development_plan": {
+      "status": "planned",
+      "purpose": "Document the lettered development phases for the thesis.",
+      "separate_from_feature_overview": true,
+      "intended_for_intermediate_presentation": false
+    }
   },
   "rules": [
     "CATIA is always authoritative for engineering knowledge.",
@@ -350,6 +358,133 @@
     "Implementation evidence shall not silently create normative requirements.",
     "Phase N shall reconcile accepted architecture decisions with the authoritative engineering model.",
     "Phase Q shall document every accepted architecture decision.",
-    "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
-  ]
+    "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified.",
+    "Published P9 run artifacts are Processing evidence, not Approved Input.",
+    "A P9 run ending in awaiting_review requests Human Review but does not approve engineering knowledge.",
+    "Phase G shall define Approved Input Promotion before implementation begins.",
+    "The thesis Development Plan shall remain separate from the runtime feature overview."
+  ],
+  "phase_p": {
+    "status": "completed",
+    "completion_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+    "completion_date": "2026-07-27",
+    "complete_automated_test_count": 3808,
+    "steps": {
+      "P1": "completed",
+      "P2": "completed",
+      "P3": "completed",
+      "P4": "completed",
+      "P5": "completed",
+      "P6": "completed",
+      "P7": "completed",
+      "P8": "completed",
+      "P9": "completed"
+    }
+  },
+  "project_processing": {
+    "status": "implemented_verified",
+    "implementation_phase": "P5",
+    "architecture_decision": "collaboration/decisions/ADR-012-processing-state-and-artifact-organization.md",
+    "verified_commit": "9a9ef8bd7c08c354c638d4b0e072e308e7c02516",
+    "state_authority": "immutable_processing_event_history",
+    "current_state_storage_allowed": false,
+    "supports": [
+      "Processing Run Manifests",
+      "Processing Event Manifests",
+      "Processing Decision Manifests",
+      "attempt identifiers",
+      "run-owned work directories",
+      "run-owned artifacts",
+      "retry",
+      "supersession",
+      "invalidation",
+      "recovery diagnostics",
+      "source aggregation",
+      "project aggregation"
+    ]
+  },
+  "project_coverage": {
+    "status": "implemented_verified",
+    "implementation_phase": "P6",
+    "architecture_decision": "collaboration/decisions/ADR-013-preliminary-coverage-and-potential-model-support.md",
+    "verified_commit": "f921b216d66ee359dea7cf116cfea03acb1e3510",
+    "preliminary_coverage_available": true,
+    "approved_generation_readiness_available": false,
+    "approved_generation_readiness_available_from_phase": "G",
+    "support_profile_path": "context/frameworks/turing_preliminary_support_profile.json"
+  },
+  "project_dashboard": {
+    "status": "implemented_verified",
+    "implementation_phase": "P7",
+    "architecture_decision": "collaboration/decisions/ADR-014-project-dashboard-architecture.md",
+    "verified_commit": "d8a3bc9bb55a4b7ab0fa6e999b74b8541bf224b6",
+    "project_creation_fix_commit": "fe0fd24",
+    "views": [
+      "overview",
+      "sources_processing",
+      "coverage_support",
+      "attention_review",
+      "traceability"
+    ],
+    "execution_logic_allowed": false,
+    "write_exceptions": [
+      "constrained_project_workspace_creation"
+    ]
+  },
+  "project_ingestion": {
+    "status": "implemented_verified",
+    "implementation_phase": "P9",
+    "architecture_decision": "collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md",
+    "verified_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+    "stage": "agentic_ingestion",
+    "successful_terminal_state": "awaiting_review",
+    "approved_input_created": false,
+    "published_artifact_types": [
+      "agent_outputs",
+      "consensus_reports",
+      "review_reports",
+      "run_summaries"
+    ],
+    "supported_source_containers": [
+      "markdown",
+      "text",
+      "json",
+      "csv",
+      "tsv",
+      "pdf_text_layer"
+    ],
+    "manual_acceptance_audit": {
+      "status": "passed",
+      "demo_project_id": "458990",
+      "negative_run": {
+        "source_id": "SRC-000001",
+        "processing_run_id": "RUN-000001",
+        "state": "failed",
+        "reason_code": "source_normalization_failed",
+        "artifact_count": 0
+      },
+      "successful_run": {
+        "source_id": "SRC-000002",
+        "processing_run_id": "RUN-000002",
+        "attempt_id": "ATT-000001",
+        "state": "awaiting_review",
+        "artifact_count": 15,
+        "artifact_type_counts": {
+          "agent_outputs": 4,
+          "consensus_reports": 8,
+          "review_reports": 1,
+          "run_summaries": 2
+        }
+      },
+      "artifact_fingerprints_verified": true,
+      "api_key_fields_persisted": false
+    }
+  },
+  "approved_input_promotion": {
+    "status": "next",
+    "implementation_phase": "G",
+    "purpose": "Promote exactly reviewed engineering information into Approved Input while preserving source, run, artifact and review traceability.",
+    "implementation_started": false,
+    "architecture_acceptance_required_before_implementation": true
+  }
 }

@@ -26,35 +26,39 @@ Branch
 
 Verified Implementation Commit
 
-`0c8ba428e7e6469e410b541c114d7a5a9474321c`
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
 
 Current Phase
 
-P – Project Workspace
+G – Approved Input Promotion
 
 Current Status
 
-P1–P4 Completed — P5 Next
+Phase P Completed — Phase G Next
 
 Architecture Version
 
-1.0
+1.1
 
 Knowledge Base Version
 
-1.3
+1.4
 
 Implementation Version
 
-0.7
+0.8
 
 Roadmap Version
 
-1.3
+1.4
 
 Last SSOT Update
 
-2026-07-24
+2026-07-27
+
+Complete Automated Test Baseline
+
+3808 passed
 
 ---
 
@@ -69,7 +73,7 @@ Read the Collaboration Knowledge Base in this order:
 5. `collaboration/decisions/`
 6. `collaboration/change_log.md`
 
-Then inspect the committed implementation relevant to P5.
+Then inspect the committed implementation relevant to Phase G.
 
 Do not use previous chat history as a source of truth.
 
@@ -79,7 +83,7 @@ Do not begin implementation before presenting the verified baseline summary.
 
 # Required Baseline Summary
 
-Before proposing P5 implementation, summarize:
+Before proposing Phase G implementation, summarize:
 
 - current roadmap phase
 - completed implementation
@@ -87,7 +91,7 @@ Before proposing P5 implementation, summarize:
 - verified implementation commit
 - automated test baseline
 - next implementation step
-- unresolved architecture decisions relevant to P5
+- unresolved architecture decisions relevant to Approved Input Promotion
 
 The summary shall be based on the committed repository and Collaboration
 Knowledge Base.
@@ -97,8 +101,7 @@ Knowledge Base.
 # Source Authority
 
 1. The CATIA SysML v2 model is authoritative for engineering knowledge.
-2. The committed GitHub repository is authoritative for implementation
-   reality.
+2. The committed GitHub repository is authoritative for implementation reality.
 3. The Collaboration Knowledge Base is authoritative for roadmap, status,
    accepted decisions and working rules.
 4. Chat history and generated temporary artifacts are non-authoritative.
@@ -137,26 +140,7 @@ Repository changes are:
 
 The AI assistant acts as an implementation guide.
 
-Unless the project owner requests a grouped change, modifications shall be
-presented one file at a time.
-
 Broad staging commands shall not be used in a mixed working tree.
-
----
-
-# SSOT Update Cadence
-
-P4 introduced a substantial semantic architecture baseline. Therefore, the
-project owner explicitly requested this intermediate SSOT UPDATE and a fresh
-handover.
-
-The next regular SSOT UPDATE remains due after P8 and completion of Phase P.
-
-An earlier update requires:
-
-- an explicit project-owner request
-- a substantial new architecture baseline
-- or a critical handover need
 
 ---
 
@@ -179,103 +163,46 @@ Completed capabilities include:
 - artifact browser
 - Dry Run and LLM execution paths
 
-## P1 — Framework Template Definition
+## Phase P — Project Workspace and Project-bound Ingestion
 
-Verified at:
+Phase P is complete.
 
-`82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
+Final verification commit:
 
-Completed capabilities include:
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
 
-- versioned framework template
-- 3 framework levels
-- 12 mapping targets
-- stable framework identifiers
-- deterministic validation
-- reviewed Apollo 11 structural reference
+Complete automated test baseline:
 
-Apollo 11 remains non-normative.
+3808 passed
 
-## P2 — Project Manifest and Workspace Structure
+Completed steps:
 
-Architecture:
+| Step | Deliverable | Status |
+|---|---|---|
+| P1 | Framework Template Definition | Completed |
+| P2 | Project Manifest and Workspace Structure | Completed |
+| P3 | Source Registry and mandatory Project Assignment | Completed |
+| P4 | Framework-mapped heterogeneous Information Units | Completed |
+| P5 | Processing State and Artifact Organization | Completed |
+| P6 | Preliminary Coverage and Potential Model Support | Completed |
+| P7 | Project Dashboard | Completed |
+| P8 | Tests and Integration Readiness Review | Completed |
+| P9 | Project-bound Agentic Ingestion Integration | Completed |
 
-`collaboration/decisions/ADR-005-project-workspace-architecture.md`
+Important architecture decisions:
 
-Implementation verified through:
-
-`36184a2d90db349555ac3bd64ccd5c27ecb68cec`
-
-Completed capabilities include:
-
-- six-digit project identity
-- distinct project display name
-- strict Project Manifest
-- project creation, loading and scanning
-- safe persistence and reopening
-- project isolation
-
-## P3 — Project Source Registry
-
-Architecture:
-
-- `collaboration/decisions/ADR-009-textual-source-processing-boundary.md`
-- `collaboration/decisions/ADR-010-project-source-registry-architecture.md`
-
-Implementation verified through:
-
-`55cc4f104082ecfef70b3dcdeb8f28406ed95105`
-
-Completed capabilities include:
-
-- mandatory project assignment
-- separate project and source identities
-- immutable Source Manifests
-- source-role boundaries
-- duplicate-content rejection
-- safe source persistence
-
-## P4 — Framework-mapped Heterogeneous Information Units
-
-Architecture:
-
-`collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md`
-
-Implementation verified at:
-
-`0c8ba428e7e6469e410b541c114d7a5a9474321c`
-
-Verification:
-
-- complete automated test suite: 2594 passed
-- own-source diff validation: passed
-- pinned ontology integrity validation: passed
-- `HEAD == origin/main`
-
-Completed capabilities include:
-
-- deterministic source projection
-- text, Markdown, JSON, CSV, TSV and PDF text-layer adapters
-- source-projection manifests and repositories
-- pinned BFO 2020 and IOF Core 202602 reference snapshots
-- ontology registry
-- deterministic reference-concept index with 236 concepts
-- Turing Core Vocabulary
-- project glossary and terminology decisions
-- immutable, source-traceable Information Units
-- semantic extraction candidate contracts
-- multi-agent semantic consensus and variance
-- terminology-mapping candidates
-- framework-assignment candidates
-- reference validation
-- immutable Human Review Decisions
-- exact publication gates
-- deterministic token budgeting
-- fail-closed required-context handling
+- P2: `collaboration/decisions/ADR-005-project-workspace-architecture.md`
+- P3: `collaboration/decisions/ADR-009-textual-source-processing-boundary.md`
+- P3: `collaboration/decisions/ADR-010-project-source-registry-architecture.md`
+- P4: `collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md`
+- P5: `collaboration/decisions/ADR-012-processing-state-and-artifact-organization.md`
+- P6: `collaboration/decisions/ADR-013-preliminary-coverage-and-potential-model-support.md`
+- P7: `collaboration/decisions/ADR-014-project-dashboard-architecture.md`
+- P9: `collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md`
 
 ---
 
-# Accepted Framework
+# Accepted Phase P Framework
 
 The implemented framework is:
 
@@ -299,15 +226,19 @@ Additional framework templates remain post-MVP scope.
 
 ---
 
-# Accepted P4 Boundaries
+# Accepted Boundaries
 
 ## Textual Processing
 
-The MVP semantic-processing boundary is textual.
+The MVP processing boundary is textual.
 
 Supported:
 
 - native text
+- Markdown
+- JSON
+- CSV
+- TSV
 - deterministic textual projections
 - PDF text layers
 
@@ -320,195 +251,136 @@ Outside MVP:
 
 Text projection shall not perform semantic or ontology interpretation.
 
-## Semantic Authority
+## Project and Source Authority
 
-The hierarchy is:
+Every Source is assigned to exactly one Project.
 
-1. authoritative project engineering knowledge
-2. accepted project terminology
-3. Turing Core Vocabulary
-4. curated external reference concepts
+Project identity and Source identity remain separate.
 
-BFO and IOF are references. They shall not override project authority.
+Registered Sources are immutable and content hash-bound.
 
-External mappings remain candidates until reviewed.
+Duplicate Source content within the same Project is rejected.
 
-## Multi-agent Consensus
+## Processing Authority
+
+Processing Runs are event-history based.
+
+Current state is reconstructed from immutable Processing Events.
+
+A successful P9 execution ends in:
+
+```text
+run_state = awaiting_review
+processing_stage = agentic_ingestion
+```
+
+This requests review but does not approve engineering knowledge.
+
+## Published Artifact Boundary
+
+P9 publishes immutable run-owned artifacts:
+
+- agent outputs
+- consensus reports
+- review reports
+- run summaries
+
+Published run-owned artifacts are authoritative evidence for what the run
+produced. They are not Approved Input.
+
+## Human Review Boundary
 
 Consensus, confidence and variance are review evidence.
 
-They are not publication authority.
+They are not publication or promotion authority.
 
-High confidence, unanimous agreement or low variance shall not bypass Human
-Review.
+Every engineering publication or promotion target requires an explicit Human
+Review Decision.
 
-## Human Review
+## Preliminary Coverage Boundary
 
-Every publication requires an explicit Human Review Decision.
+Phase P Preliminary Coverage may use candidate evidence and must remain
+clearly separate from Approved Generation Readiness.
 
-Quick confirmation shall preserve the option for detailed review.
-
-Only an exact `confirm` decision bound to the current target-content and
-reference-validation fingerprints may pass the publication gate.
-
-## Token Budget
-
-Prompts use deterministic relevant context slices.
-
-The system shall not automatically load:
-
-- the complete codebase
-- complete ontology snapshots
-- unrelated project artifacts
-
-Required context is loaded completely or the LLM invocation is blocked.
-
-Required context shall never be silently truncated.
+Approved Generation Readiness is unavailable during Phase P and depends on
+later approved engineering input.
 
 ---
 
-# Current Phase P Work Breakdown
+# P9 Manual Acceptance Evidence
 
-| Step | Deliverable | Status |
-|---|---|---|
-| P1 | Framework Template Definition | Completed |
-| P2 | Project Manifest and Workspace Structure | Completed |
-| P3 | Source Registry and mandatory Project Assignment | Completed |
-| P4 | Framework-mapped heterogeneous Information Units | Completed |
-| P5 | Processing State and Artifact Organization | Next |
-| P6 | Coverage and Preliminary Readiness Engine | Planned |
-| P7 | Project Dashboard | Planned |
-| P8 | Tests and Phase Review | Planned |
+Local demo project:
 
----
+`458990`
 
-# P5 Architecture Boundary
+Negative case:
 
-P5 shall organize the existing P1–P4 artifacts without replacing their
-individual authority.
+- `SRC-000001`
+- `RUN-000001`
+- state: `failed`
+- reason: `source_normalization_failed`
+- events: 3
+- artifacts: 0
 
-P5 shall define:
+Successful dry-run case:
 
-- canonical processing states
-- allowed state transitions
-- project-level processing aggregation
-- artifact organization
-- failure behavior
-- retry behavior
-- supersession behavior
-- reopening behavior
-- incomplete and blocked states
-- traceability across transitions
+- `SRC-000002`
+- `RUN-000002`
+- attempt: `ATT-000001`
+- state: `awaiting_review`
+- events: 4
+- artifacts: 15
 
-P5 shall not:
+Published artifact counts:
 
-- duplicate existing manifests as a new authority
-- weaken project isolation
-- mutate immutable source or semantic artifacts
-- treat consensus as approval
-- perform Approved Input Promotion
-- generate model candidates
-- generate SysML v2
+- 4 `agent_outputs`
+- 8 `consensus_reports`
+- 1 `review_reports`
+- 2 `run_summaries`
 
-Before P5 implementation:
-
-1. inspect the committed P1–P4 repositories and public APIs
-2. identify artifact lifecycle states already represented
-3. propose architecture alternatives
-4. discuss consequences and failure modes
-5. obtain explicit project-owner acceptance
-6. document the decision in an ADR if required
-7. implement only after acceptance
+The manual demo data under `data/projects/` is local test evidence and is not a
+committed authoritative implementation artifact.
 
 ---
 
-# Planned Phase N Work Package
+# Current Known Limitations
 
-Phase N includes:
-
-Architecture-to-Requirements Reconciliation
-
-Purpose:
-
-Accepted architecture decisions and implemented and planned capabilities
-contain features that are not yet completely represented by requirements in
-the authoritative model.
-
-The work package shall:
-
-- inventory all accepted architecture decisions
-- map them to existing model elements
-- identify missing, outdated and conflicting requirements
-- create traceable requirement and model-change candidates
-- preserve the accepted derivation chain
-- distinguish requirements from implementation details
-- require Human Review before CATIA changes
-
-Implementation is evidence. It does not automatically create normative
-requirements.
-
----
-
-# Planned Phase Q
-
-Phase Q — Thesis Architecture Documentation
-
-Phase Q follows Phase N and documents:
-
-- every architecture decision from Phases A–P
-- every later accepted architecture decision
-- alternatives, rationale and consequences
-- requirement and implementation traceability
-- BFO and IOF selection and justification
-- semantic and Human Review architecture
-- deterministic token budgeting
-- literature and standard sources
+- Phase G Approved Input Promotion is not implemented.
+- P9 `awaiting_review` is not Approved Input.
+- No model candidates are generated.
+- No SysML v2 code is generated.
+- CATIA synchronization is not implemented.
+- Project editing and project deletion are not implemented.
+- Retry and successor handling exist in core P5/P9 boundaries but require
+  further operator UI and workflow refinement.
+- Full live LLM-team performance and cost measurements remain open.
+- OCR and multimodal engineering extraction are outside the MVP.
 
 ---
 
 # Next Implementation Step
 
-Start the P5 architecture discussion.
+Begin Phase G architecture discussion.
 
 The first discussion shall resolve:
 
-1. whether processing state is an event history, a current-state projection or
-   a combination
-2. which existing artifacts are state evidence
-3. which transitions require Human Review
-4. how retry and supersession preserve history
-5. how the project aggregates source-level states
-6. how P5 avoids pulling Phase G approval forward
+1. Approved Input identity and storage
+2. eligible promotion sources from P4 and P9
+3. required Human Review Decision target types
+4. fingerprint binding for promoted content
+5. promotion, rejection, revocation and supersession behavior
+6. relationship between Approved Input and later model candidates
+7. how Phase G avoids generating models or SysML v2 prematurely
 
-Do not start P5 implementation before the architecture has been explicitly
+Do not start Phase G implementation before the architecture has been explicitly
 accepted.
 
 ---
 
-# Starting Prompt for the Next Chat
+# Planned Thesis Development Plan
 
-Continue the Turing Generator in repository
-`mz-commits-ai4mbse/SysMLv2-Generator`, branch `main`.
+A thesis-only Development Plan shall later document the lettered development
+phases used in this project.
 
-Use GitHub repositories passively. Do not commit, push or directly modify
-repository content.
-
-Begin by reading the complete Collaboration Knowledge Base and verifying the
-committed implementation baseline.
-
-Summarize:
-
-- current roadmap phase
-- completed implementation
-- architecture version
-- verified implementation commit
-- test baseline
-- next implementation step
-
-Do not use previous chat history as a source of truth.
-
-Then begin the P5 architecture discussion for Processing State and Artifact
-Organization.
-
-Do not start P5 implementation before the proposed architecture has been
-explicitly accepted.
+It shall remain separate from the feature overview and is not intended for the
+intermediate presentation.

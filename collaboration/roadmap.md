@@ -21,35 +21,39 @@ have been successfully completed.
 
 Architecture Version
 
-1.0
+1.1
 
 Knowledge Base Version
 
-1.3
+1.4
 
 Implementation Version
 
-0.7
+0.8
 
 Roadmap Version
 
-1.3
+1.4
 
 Last SSOT Update
 
-2026-07-24
+2026-07-27
 
 Current Phase
 
-**P – Project Workspace**
+**G – Approved Input Promotion**
 
 Current Status
 
-P1–P4 Completed — P5 Next
+Phase P Completed — Phase G Next
 
 Verified Implementation Commit
 
-`0c8ba428e7e6469e410b541c114d7a5a9474321c`
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+
+Complete Automated Test Baseline
+
+3808 passed
 
 ---
 
@@ -57,8 +61,7 @@ Verified Implementation Commit
 
 ## Objective
 
-Provide a functional user interface for the complete agentic ingestion
-workflow.
+Provide a functional user interface for the complete agentic ingestion workflow.
 
 ## Deliverables
 
@@ -88,7 +91,7 @@ Verified in:
 
 ---
 
-# Phase P – Project Workspace
+# Phase P – Project Workspace and Project-bound Ingestion
 
 ## Objective
 
@@ -96,11 +99,12 @@ Introduce project-oriented processing around the completed Phase F ingestion
 pipeline.
 
 Multiple individually ingested sources shall produce heterogeneous, traceable
-information units that can later support framework-specific SubModels.
+information units and project-bound Processing Runs that can later support
+Approved Input Promotion and framework-specific SubModels.
 
 ## Framework Template
 
-The initial project framework is:
+The Phase P project framework is:
 
 - Stakeholder Level
   - Stakeholders
@@ -138,10 +142,11 @@ Additional framework templates remain a post-MVP extension.
 | P2 | Project Manifest and Workspace Structure | Completed |
 | P3 | Source Registry and mandatory Project Assignment | Completed |
 | P4 | Framework-mapped heterogeneous Information Units | Completed |
-| P5 | Processing State and Artifact Organization | Next |
-| P6 | Coverage and Preliminary Readiness Engine | Planned |
-| P7 | Project Dashboard | Planned |
-| P8 | Tests and Phase Review | Planned |
+| P5 | Processing State and Artifact Organization | Completed |
+| P6 | Preliminary Coverage and Potential Model Support | Completed |
+| P7 | Project Dashboard | Completed |
+| P8 | Tests and Integration Readiness Review | Completed |
+| P9 | Project-bound Agentic Ingestion Integration | Completed |
 
 ## P1 Completion
 
@@ -232,72 +237,131 @@ Implemented deliverables:
 - deterministic token budgeting
 - fail-closed required-context handling
 
-## Data and Review Boundaries
+## P5 Completion
 
-- Every source is assigned to exactly one project.
-- Project identity and source identity remain separate.
-- One source may yield multiple source-traceable Information Units.
-- One Information Unit may map to multiple valid framework nodes.
-- Context-only sources shall not create engineering Information Units.
-- Context-only sources shall not satisfy coverage or readiness.
-- Multi-agent consensus and confidence remain review evidence.
-- No consensus result may bypass Human Review.
-- Publication requires an exact human confirmation.
-- Required LLM context shall not be silently truncated.
+P5 architecture is documented in:
 
-## Dashboard Scope
+`collaboration/decisions/ADR-012-processing-state-and-artifact-organization.md`
 
-The Project Dashboard shall provide:
+P5 implementation is verified through:
 
-- project metadata
-- source inventory and processing state
-- graphical framework coverage
-- preliminary indication of potentially supported models and SubModels
-- separate approved readiness
-- disabled controls for future Project-wide Model and selected SubModel
-  generation until their responsible phases
+`9a9ef8bd7c08c354c638d4b0e072e308e7c02516`
 
-Phase P does not generate models.
+Implemented deliverables:
 
-## Exit Criteria
+- Processing Run, Event and Decision manifests
+- event-history based current-state reconstruction
+- run work and artifact directories
+- retry, supersession, invalidation and recovery behavior
+- Source and Project Processing aggregation
+- fail-closed issue reporting
+
+## P6 Completion
+
+P6 architecture is documented in:
+
+`collaboration/decisions/ADR-013-preliminary-coverage-and-potential-model-support.md`
+
+P6 implementation is verified through:
+
+`f921b216d66ee359dea7cf116cfea03acb1e3510`
+
+Implemented deliverables:
+
+- deterministic Preliminary Coverage assessment
+- potential model-support assessment
+- support profile
+- source and framework evidence binding
+- explicit attention and missing-coverage states
+- Approved Generation Readiness remains unavailable in Phase P
+
+## P7 Completion
+
+P7 architecture is documented in:
+
+`collaboration/decisions/ADR-014-project-dashboard-architecture.md`
+
+P7 implementation is verified through:
+
+`d8a3bc9bb55a4b7ab0fa6e999b74b8541bf224b6`
+
+P7 project-creation fixes were completed through:
+
+`fe0fd24`
+
+Implemented deliverables:
+
+- Project Dashboard
+- project selection and constrained project creation
+- Sources & Processing view
+- Coverage & Support view
+- Attention & Review view
+- Traceability view
+- evidence navigation and document preview
+- read-only dashboard boundary
+
+## P8 Completion
+
+P8 confirmed P1–P7 integration readiness and the need for a separate P9
+project-bound ingestion integration boundary.
+
+Implemented deliverables:
+
+- integration readiness review
+- dashboard execution-boundary clarification
+- confirmation that no parallel project or processing architecture was needed
+- P9 added as the project-bound ingestion integration step
+
+## P9 Completion
+
+P9 architecture is documented in:
+
+`collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md`
+
+P9 implementation is verified through:
+
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+
+Implemented deliverables:
+
+- common Turing Generator application shell
+- project-bound Source upload and registration
+- Source Projection before Phase F execution
+- P5 Processing Run bridge
+- `agentic_ingestion` Processing Stage
+- project-bound Phase F execution root
+- work-output validation
+- immutable publication of run-owned artifacts
+- `ProcessingArtifactReference` generation
+- `artifact_published` and `review_requested` event sequence
+- final state `awaiting_review`
+- Execution UI
+- Dashboard return and review-report navigation
+
+Verification:
+
+- complete automated test suite: 3808 passed
+- manual P9 acceptance audit: PASS
+- `HEAD == origin/main`
+
+## Phase P Exit Criteria
 
 - a project can be created, persisted and reopened
 - multiple sources can be assigned and processed independently
-- every artifact remains traceable to its project and source
+- every artifact remains traceable to project and source
 - project source registry and processing state persist
 - semantic candidates and decisions remain project-isolated
 - preliminary coverage is distinct from approved readiness
 - cross-project data mixing is prevented
 - Human Review gates cannot be bypassed
 - Project Dashboard shows the accepted Phase P information
+- project-bound ingestion reaches `awaiting_review`
 - automated tests and UI smoke tests pass
-- P8 phase review and SSOT UPDATE are complete
+- SSOT UPDATE complete
 
 ## Status
 
-In Progress — P1–P4 Completed, P5 Next
-
-## Next Step
-
-P5 — Processing State and Artifact Organization
-
-P5 shall define:
-
-- canonical project processing states
-- allowed state transitions
-- artifact organization across the P1–P4 repositories
-- failure and retry behavior
-- supersession behavior
-- reopening behavior
-- project-level aggregation without duplicating artifact authority
-- explicit traceability across state transitions
-
-The P5 architecture shall be discussed and accepted before implementation
-depends on it.
-
-Depends on:
-
-Phase F — Satisfied
+Completed
 
 ---
 
@@ -305,29 +369,46 @@ Phase F — Satisfied
 
 ## Objective
 
-Separate reviewed engineering knowledge from raw and candidate ingestion
-results.
+Separate reviewed engineering knowledge from raw Source material, unreviewed
+agent outputs, consensus reports and pending review reports.
+
+Phase G shall define how accepted Human Review Decisions promote eligible
+P4/P9 evidence into Approved Input.
 
 ## Deliverables
 
-- approved engineering-information state
+- Approved Input identity and repository
 - promotion workflow using persisted Human Review Decisions
-- Approved Input repository
-- promotion traceability
-- revocation and supersession behavior
+- promotion traceability to Source, Run, Artifact and Review Decision
+- eligibility rules for reviewed Information Units and P9 review outcomes
+- revocation, invalidation and supersession behavior
+- clear separation from Preliminary Coverage and P9 run evidence
 
 ## Exit Criteria
 
 - only exactly confirmed engineering information can become Approved Input
-- promotion remains traceable to source, candidate and review decision
+- every promotion remains traceable to source, candidate, run artifact and
+  review decision
+- Approved Input can be used by later model-candidate phases
+- unreviewed P9 artifacts cannot be treated as approved engineering knowledge
 
 ## Status
 
-Planned
+Next
 
 Depends on:
 
-Phase P
+Phase P — Satisfied
+
+## First Architecture Questions
+
+1. What is the minimal Approved Input object?
+2. Which P4 and P9 artifacts are eligible promotion sources?
+3. Which Human Review Decision target types are required?
+4. How are content fingerprints, run fingerprints and review fingerprints bound?
+5. How are rejected, superseded and invalidated promotions represented?
+6. How does Approved Input support later model-candidate generation without
+   generating models in Phase G?
 
 ---
 
@@ -468,8 +549,7 @@ Phase K
 ## Objective
 
 Replace the temporary SYSIDE shadow model with the authoritative CATIA Magic
-model and reconcile the engineering model with the accepted system
-architecture.
+model and reconcile the engineering model with the accepted system architecture.
 
 ## Work Package N1 — Shadow-model Migration
 
@@ -518,8 +598,6 @@ Rules:
 - every accepted architecture decision is mapped to model coverage
 - missing requirements have been resolved or explicitly deferred
 - every accepted model addition has derivation and source traceability
-- implementation and authoritative requirements are reconciled without
-  silently converting implementation details into requirements
 
 ## Status
 
@@ -527,7 +605,7 @@ Planned
 
 Depends on:
 
-Phase L
+Phase L and project-owner decision
 
 ---
 
@@ -535,35 +613,24 @@ Phase L
 
 ## Objective
 
-Document and justify the complete Turing Generator architecture for the
-written thesis.
-
-Phase Q is intentionally placed after Phase N so that the documentation uses
-the reconciled authoritative engineering model.
+Document the architecture and development rationale for the thesis.
 
 ## Deliverables
 
-- thesis-ready documentation of every architecture decision from Phases A–P
-- documentation of every architecture decision accepted after Phase P
+- architecture decision inventory
+- phase and development-plan documentation
 - decision context, alternatives, rationale and consequences
-- mapping from architecture decisions to requirements and implementation
-- explanation and justification of BFO 2020 as top-level reference
-- explanation and justification of IOF Core as industrial reference
-- explanation of the project-specific glossary and Turing Core Vocabulary
-- explanation of semantic authority and ontology boundaries
-- explanation of multi-agent consensus, variance and Human Review
-- explanation of deterministic token budgeting
-- source-backed literature and standard references
-- thesis figures and architecture views
-- open limitations and future-work boundaries
+- requirement and implementation traceability
+- BFO and IOF selection and justification
+- semantic and Human Review architecture
+- deterministic token budgeting
+- literature and standard sources
 
-## Exit Criteria
+## Development Plan Note
 
-- all accepted architecture decisions are represented in the thesis
-- all claims that require literature or standards are supported by sources
-- architecture, authoritative requirements and committed implementation are
-  consistent
-- known deviations and deferred decisions are explicit
+A thesis-only Development Plan shall document the lettered development phases
+used in the project. It shall remain separate from the feature overview and is
+not intended for the intermediate presentation.
 
 ## Status
 
@@ -571,121 +638,4 @@ Planned
 
 Depends on:
 
-Phase N
-
----
-
-# Phase M – Evaluation
-
-## Objective
-
-Evaluate the completed MVP against the original project objectives.
-
-## Deliverables
-
-- feature release matrix
-- Stakeholder Requirement coverage
-- comparison with the Kickoff presentation
-- integration of professor feedback
-- MVP evaluation report
-
-## Exit Criteria
-
-- MVP formally evaluated
-- remaining gaps documented
-- roadmap for future work established
-
-## Status
-
-Planned
-
-Depends on:
-
-Phase Q
-
----
-
-# Phase O – Thesis and Demonstration Completion
-
-## Objective
-
-Prepare the final research prototype, demonstration and thesis submission.
-
-## Deliverables
-
-- final thesis figures
-- demonstration material
-- repository cleanup
-- documentation review
-- final presentation
-- submission-ready thesis
-
-## Exit Criteria
-
-- prototype ready for submission
-- demonstration ready
-- thesis complete
-
-## Status
-
-Planned
-
-Depends on:
-
-Phase M
-
----
-
-# Development Workflow
-
-Every phase follows the same engineering process:
-
-Implementation
-
-↓
-
-Testing
-
-↓
-
-Review
-
-↓
-
-SSOT UPDATE
-
-↓
-
-Start Next Phase
-
----
-
-# SSOT Update Cadence
-
-A complete SSOT UPDATE is normally performed after completion of a major
-roadmap phase.
-
-This update is an explicitly requested intermediate synchronization after P4
-because P4 introduced a substantial semantic architecture baseline and a new
-handover is required.
-
-The next regular complete SSOT UPDATE remains due after P8 and completion of
-Phase P unless the project owner explicitly requests an earlier update or a
-critical handover need arises.
-
----
-
-# Change Management
-
-Roadmap changes require:
-
-- explicit discussion
-- explicit agreement by the project owner
-- an SSOT UPDATE
-- repository commit, push and verification
-
-Ideas and future options shall not be recorded as committed roadmap scope until
-they have been explicitly accepted.
-
-Roadmap changes become effective only after the Collaboration Knowledge Base
-has been updated, committed, pushed and verified.
+Phase N and project-owner decision

@@ -1,5 +1,143 @@
 # Change Log
 
+## 2026-07-27 — Phase P Completion and Project-bound Ingestion Integration
+
+Versions after this update:
+
+- Architecture Version: 1.1
+- Knowledge Base Version: 1.4
+- Implementation Version: 0.8
+- Roadmap Version: 1.4
+
+Verified implementation baseline:
+
+- Repository: `mz-commits-ai4mbse/SysMLv2-Generator`
+- Branch: `main`
+- Commit: `26acace4d7ba2849b33c5e0dacedf838f83c7705`
+- Complete automated test suite: 3808 passed
+- Manual P9 acceptance audit: PASS
+- Remote synchronization: `HEAD == origin/main`
+
+Current Phase P status:
+
+- P1 — Framework Template Definition: Completed
+- P2 — Project Manifest and Workspace Structure: Completed
+- P3 — Source Registry and mandatory Project Assignment: Completed
+- P4 — Framework-mapped heterogeneous Information Units: Completed
+- P5 — Processing State and Artifact Organization: Completed
+- P6 — Preliminary Coverage and Potential Model Support: Completed
+- P7 — Project Dashboard: Completed
+- P8 — Tests and Integration Readiness Review: Completed
+- P9 — Project-bound Agentic Ingestion Integration: Completed
+
+Completed P5 implementation:
+
+- ADR-012 documented Processing State and Artifact Organization.
+- Processing Run, Event and Decision Manifests were implemented.
+- Processing Run state is reconstructed from immutable event history.
+- Run-owned work and artifact organization was implemented.
+- Retry, supersession, invalidation and recovery diagnostics were implemented.
+- Source-level and Project-level Processing aggregation was implemented.
+- P5 completion was verified at
+  `9a9ef8bd7c08c354c638d4b0e072e308e7c02516`.
+
+Completed P6 implementation:
+
+- ADR-013 documented Preliminary Coverage and Potential Model Support.
+- Deterministic Preliminary Coverage assessment was implemented.
+- Potential support assessment and support-profile handling were implemented.
+- Approved Generation Readiness remains unavailable during Phase P.
+- P6 completion was verified at
+  `f921b216d66ee359dea7cf116cfea03acb1e3510`.
+
+Completed P7 implementation:
+
+- ADR-014 documented the Project Dashboard architecture.
+- The dashboard provides Overview, Sources & Processing, Coverage & Support,
+  Attention & Review and Traceability views.
+- Project selection and constrained Project Workspace creation were implemented.
+- Evidence navigation and safe document preview were implemented.
+- The dashboard boundary remains read-only except for constrained project
+  creation.
+- P7 implementation was verified at
+  `d8a3bc9bb55a4b7ab0fa6e999b74b8541bf224b6`.
+- Project-creation fixes were completed at `fe0fd24`.
+
+Completed P8 review:
+
+- P8 confirmed P1–P7 integration readiness.
+- P8 established that project-bound ingestion required a separate P9 boundary.
+- P8 did not introduce a parallel project or processing architecture.
+
+Completed P9 implementation:
+
+- ADR-015 documented Project-bound Agentic Ingestion Integration.
+- The common Turing Generator application shell was implemented.
+- Project-bound Source upload and registration were implemented.
+- Text, Markdown, JSON, CSV, TSV and PDF text-layer Source containers are
+  supported.
+- Registered Sources are projected before Phase F execution.
+- A P5 Processing Run and Attempt are created for the selected Source.
+- Phase F executes inside a project-bound P5 work directory.
+- Work outputs are validated before publication.
+- Published artifacts receive immutable `ProcessingArtifactReference` values.
+- `artifact_published` and `review_requested` events are appended.
+- Successful project-bound ingestion ends in `awaiting_review`.
+- The Execution UI and Dashboard return workflow were implemented.
+- The Dashboard now highlights the Phase-F Ingestion Review Report as the
+  primary review target.
+- P9 implementation was completed at
+  `26acace4d7ba2849b33c5e0dacedf838f83c7705`.
+
+Manual P9 acceptance evidence:
+
+- Demo project: `458990`
+- Negative case: `SRC-000001` / `RUN-000001`
+  - state: `failed`
+  - reason: `source_normalization_failed`
+  - events: 3
+  - artifacts: 0
+- Successful dry-run case: `SRC-000002` / `RUN-000002`
+  - state: `awaiting_review`
+  - events: 4
+  - artifacts: 15
+  - artifact counts: 4 agent outputs, 8 consensus reports, 1 review report,
+    2 run summaries
+- All published artifact fingerprints were verified.
+- No API-key fields were persisted.
+- A failed Source does not block a different Source in the same Project.
+
+Accepted boundaries after Phase P:
+
+- P9 `awaiting_review` is not Approved Input.
+- Published run-owned artifacts are Processing evidence, not approved
+  engineering knowledge.
+- Consensus, confidence and variance remain review evidence only.
+- Preliminary Coverage remains separate from Approved Generation Readiness.
+- Phase G is responsible for Approved Input Promotion.
+- Model candidates, model generation and SysML v2 code generation remain later
+  phases.
+
+Roadmap changes:
+
+- Phase P is complete after this SSOT update is committed and pushed.
+- Phase G — Approved Input Promotion is the next active phase.
+- Phase Q now explicitly includes a thesis-only Development Plan documenting
+  the lettered development phases. This plan remains separate from the feature
+  overview and is not intended for the intermediate presentation.
+
+Next implementation step:
+
+- Begin Phase G architecture discussion.
+- Define Approved Input identity and storage.
+- Define eligible promotion sources from P4 and P9.
+- Define required Human Review Decision target types.
+- Define fingerprint binding, promotion, revocation, invalidation and
+  supersession behavior.
+- Do not begin Phase G implementation before the architecture is explicitly
+  accepted.
+
+---
 ## 2026-07-24 — P4 Semantic Architecture Completion
 
 Versions after this update:
