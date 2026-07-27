@@ -29,13 +29,17 @@ from modules.project_dashboard.types import (
     EvidenceReference,
     ProjectOverviewView,
 )
+from app.turing_generator_navigation import (
+    SESSION_DASHBOARD_VIEW,
+    SESSION_PROJECT_ID,
+)
 from modules.project_dashboard.viewer import DashboardDocumentViewer
 from modules.project_workspace import ProjectWorkspace
 from modules.project_workspace.errors import ProjectWorkspaceError
 
 
-_SESSION_PROJECT_ID = "project_dashboard.project_id"
-_SESSION_ACTIVE_VIEW = "project_dashboard.active_view"
+_SESSION_PROJECT_ID = SESSION_PROJECT_ID
+_SESSION_ACTIVE_VIEW = SESSION_DASHBOARD_VIEW
 _SESSION_OPEN_REFERENCE = "project_dashboard.open_reference"
 _SESSION_PROJECT_CHANGE_TOKEN = "project_dashboard.project_change_token"
 _SESSION_PROJECT_SELECTOR = "project_dashboard.project_selector"
