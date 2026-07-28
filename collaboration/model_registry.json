@@ -1,6 +1,6 @@
 {
-  "version": "1.4",
-  "last_updated": "2026-07-27",
+  "version": "1.5",
+  "last_updated": "2026-07-28",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -61,7 +61,8 @@
     "usage_rule": "Use only when required engineering information is not yet available in CATIA.",
     "conflict_rule": "The shadow model shall never override or contradict CATIA.",
     "phase_n_migration_required": true,
-    "phase_n_requirements_reconciliation_required": true
+    "post_phase_p_requirements_reconciliation_required": true,
+    "phase_n_final_reconciliation_required": true
   },
   "project_framework": {
     "template_id": "TURING_RFLP_FRAMEWORK",
@@ -304,20 +305,20 @@
     }
   },
   "phase_n_model_reconciliation": {
-    "status": "planned",
-    "work_package_id": "N2",
-    "name": "Architecture-to-Requirements Reconciliation",
-    "purpose": "Reconcile accepted architecture decisions and implemented and planned capabilities with the authoritative engineering model.",
+    "status": "planned_later",
+    "name": "CATIA Shadow-model Migration and Final Reconciliation",
+    "first_requirements_reconciliation_pass_moved_to": "post_phase_p_reconciliation_gate",
+    "purpose": "Migrate the temporary shadow model and perform final whole-system reconciliation after later implementation phases.",
+    "required_outputs": [
+      "Shadow-model Migration",
+      "Final Requirement Coverage Matrix",
+      "Final Accepted CATIA Model Updates",
+      "Decision-to-Requirement Traceability",
+      "CATIA-only Maintained Model Authority"
+    ],
     "implementation_is_automatic_requirement_authority": false,
     "human_review_required": true,
-    "catia_update_requires_explicit_acceptance": true,
-    "required_outputs": [
-      "Architecture Decision Inventory",
-      "Requirement Coverage Matrix",
-      "Requirement and Model Change Candidates",
-      "Accepted CATIA Model Updates",
-      "Decision-to-Requirement Traceability"
-    ]
+    "catia_update_requires_explicit_acceptance": true
   },
   "phase_q_thesis_documentation": {
     "status": "planned",
@@ -356,13 +357,17 @@
     "Required LLM context shall never be silently truncated.",
     "External ontology systems are references and shall not override project engineering authority.",
     "Implementation evidence shall not silently create normative requirements.",
-    "Phase N shall reconcile accepted architecture decisions with the authoritative engineering model.",
+    "The Post-Phase-P Reconciliation Gate shall perform the first Architecture-to-Requirements Reconciliation against CATIA.",
     "Phase Q shall document every accepted architecture decision.",
     "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified.",
     "Published P9 run artifacts are Processing evidence, not Approved Input.",
     "A P9 run ending in awaiting_review requests Human Review but does not approve engineering knowledge.",
-    "Phase G shall define Approved Input Promotion before implementation begins.",
-    "The thesis Development Plan shall remain separate from the runtime feature overview."
+    "Phase G remains planned but shall not begin before completion of the Post-Phase-P Reconciliation Gate and explicit next-phase selection.",
+    "The thesis Development Plan shall remain separate from the runtime feature overview.",
+    "The completed Phase F/P prototype baseline shall be preserved for presentation during the Post-Phase-P Reconciliation Gate.",
+    "Every relevant Phase F/P capability shall be mapped to CATIA requirements or explicitly marked as missing, outdated or conflicting.",
+    "The Feature and Requirement Coverage Matrix shall distinguish implemented capability status from authoritative requirement coverage.",
+    "Phase N shall retain Shadow-model Migration and final whole-system reconciliation after later implementation phases."
   ],
   "phase_p": {
     "status": "completed",
@@ -481,10 +486,67 @@
     }
   },
   "approved_input_promotion": {
-    "status": "next",
+    "status": "planned_after_post_phase_p_reconciliation",
     "implementation_phase": "G",
     "purpose": "Promote exactly reviewed engineering information into Approved Input while preserving source, run, artifact and review traceability.",
     "implementation_started": false,
-    "architecture_acceptance_required_before_implementation": true
+    "architecture_acceptance_required_before_implementation": true,
+    "blocked_by": "post_phase_p_reconciliation_gate",
+    "is_immediate_next_activity": false
+  },
+  "current_coordination_state": {
+    "stage": "post_phase_p_reconciliation_gate",
+    "status": "phase_p_completed_prototype_presentation_and_catia_reconciliation_next",
+    "phase_g_is_immediate_next": false,
+    "new_feature_implementation_blocked_until_gate_completion": true,
+    "verified_implementation_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+    "complete_automated_test_count": 3808,
+    "correction_supersedes_sequencing_from_commit": "40f521c375750ae2d25c86f4b225441bab7c59b3"
+  },
+  "post_phase_p_reconciliation_gate": {
+    "status": "active",
+    "purpose": "Preserve and present the Phase F/P prototype, reconcile implementation capabilities with the authoritative CATIA model, and create the Feature and Requirement Coverage Matrix before further feature implementation.",
+    "prototype_baseline": {
+      "implementation_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+      "complete_automated_test_count": 3808,
+      "manual_p9_acceptance_audit": "passed"
+    },
+    "deliverables": [
+      "Prototype Presentation Baseline",
+      "Phase F and P Capability Inventory",
+      "Architecture Decision Inventory",
+      "Capability-to-CATIA Mapping",
+      "Requirement and Model Change Candidates",
+      "Accepted CATIA Model Updates",
+      "Feature and Requirement Coverage Matrix",
+      "Explicit Next-phase Decision"
+    ],
+    "feature_matrix_columns": [
+      "Capability / Feature",
+      "CATIA Requirement ID",
+      "Implementation Status",
+      "Test / Evidence",
+      "ADR / Architecture Decision",
+      "Presentation Readiness",
+      "Remaining Roadmap / Open Work"
+    ],
+    "implementation_status_values": [
+      "implemented_and_verified",
+      "partially_implemented",
+      "architecture_only",
+      "planned",
+      "not_planned_for_mvp"
+    ],
+    "requirement_coverage_values": [
+      "covered",
+      "partially_covered",
+      "missing",
+      "outdated",
+      "conflicting"
+    ],
+    "catia_is_authoritative": true,
+    "implementation_is_automatic_requirement_authority": false,
+    "catia_update_requires_explicit_acceptance": true,
+    "phase_g_blocked_until_gate_completion": true
   }
 }

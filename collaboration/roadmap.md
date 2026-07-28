@@ -25,7 +25,7 @@ Architecture Version
 
 Knowledge Base Version
 
-1.4
+1.5
 
 Implementation Version
 
@@ -33,19 +33,19 @@ Implementation Version
 
 Roadmap Version
 
-1.4
+1.5
 
 Last SSOT Update
 
-2026-07-27
+2026-07-28
 
 Current Phase
 
-**G – Approved Input Promotion**
+**Post-Phase-P Reconciliation Gate**
 
 Current Status
 
-Phase P Completed — Phase G Next
+Phase P Completed — Prototype Presentation and CATIA Reconciliation Next
 
 Verified Implementation Commit
 
@@ -365,6 +365,88 @@ Completed
 
 ---
 
+# Post-Phase-P Reconciliation Gate
+
+## Purpose
+
+Create a deliberate cut after the completed prototype before further feature
+implementation.
+
+The gate preserves the presentation baseline and reconciles the implementation
+reality from Phases F and P with the authoritative CATIA SysML v2 model.
+
+## Deliverables
+
+- stable prototype presentation baseline
+- complete inventory of Phase F/P capabilities and accepted ADRs
+- mapping of each capability to CATIA requirements, use cases and model elements
+- identified missing, outdated, incomplete and conflicting requirements
+- traceable requirement and model-change candidates
+- Human Review of every proposed CATIA change
+- accepted CATIA requirement and model updates
+- Feature and Requirement Coverage Matrix
+- explicit decision on the next implementation phase
+
+## Feature and Requirement Coverage Matrix
+
+Required columns:
+
+| Column | Required content |
+|---|---|
+| Capability / Feature | Stable capability name |
+| CATIA Requirement ID | Existing or proposed requirement reference |
+| Implementation Status | Implemented, partial, architecture-only or planned |
+| Test / Evidence | Test, commit, artifact or manual evidence |
+| ADR | Accepted architecture-decision reference |
+| Presentation Readiness | Ready, limited or not demonstrable |
+| Remaining Roadmap | Missing implementation or later phase |
+
+Implementation status values:
+
+- `implemented_and_verified`
+- `partially_implemented`
+- `architecture_only`
+- `planned`
+- `not_planned_for_mvp`
+
+Requirement coverage values:
+
+- `covered`
+- `partially_covered`
+- `missing`
+- `outdated`
+- `conflicting`
+
+## Rules
+
+- implementation reality is evidence, not automatic normative authority
+- no requirement is created silently from code
+- CATIA remains authoritative
+- every proposed CATIA change requires Human Review
+- existing identifiers and accepted semantics are preserved unless a reviewed
+  change requires otherwise
+- no new feature phase begins before explicit gate closure
+
+## Exit Criteria
+
+- prototype presentation baseline is stable
+- every relevant Phase F/P capability is inventoried
+- every capability has CATIA coverage or an explicit coverage gap
+- requirement and model-change candidates have been reviewed
+- accepted CATIA changes have been applied
+- Feature and Requirement Coverage Matrix is complete
+- next implementation phase is explicitly selected
+
+## Status
+
+Active
+
+Depends on:
+
+Phase P — Satisfied
+
+---
+
 # Phase G – Approved Input Promotion
 
 ## Objective
@@ -394,11 +476,11 @@ P4/P9 evidence into Approved Input.
 
 ## Status
 
-Next
+Planned after the Post-Phase-P Reconciliation Gate
 
 Depends on:
 
-Phase P — Satisfied
+Post-Phase-P Reconciliation Gate
 
 ## First Architecture Questions
 
@@ -410,7 +492,9 @@ Phase P — Satisfied
 6. How does Approved Input support later model-candidate generation without
    generating models in Phase G?
 
----
+Phase G is not automatically the next implementation activity. Its start
+requires completion of the reconciliation gate and an explicit project-owner
+decision.
 
 # Phase H – Model Candidate Layer
 
@@ -544,12 +628,13 @@ Phase K
 
 ---
 
-# Phase N – CATIA Migration and Model Reconciliation
+# Phase N – CATIA Shadow-model Migration and Final Reconciliation
 
 ## Objective
 
 Replace the temporary SYSIDE shadow model with the authoritative CATIA Magic
-model and reconcile the engineering model with the accepted system architecture.
+model and perform the final whole-system reconciliation after the later
+implementation phases.
 
 ## Work Package N1 — Shadow-model Migration
 
@@ -560,43 +645,36 @@ Deliverables:
 - updated model registry
 - removal of duplicated maintained model authority
 
-## Work Package N2 — Architecture-to-Requirements Reconciliation
+## Work Package N2 — Final Architecture-to-Requirements Reconciliation
 
-Purpose:
+The first reconciliation pass for Phases F and P is performed earlier in the
+Post-Phase-P Reconciliation Gate.
 
-The accepted architecture decisions and the implemented and planned system
-capabilities contain features that are not yet completely represented by
-requirements in the authoritative engineering model.
+Phase N performs the final reconciliation for architecture decisions and
+capabilities introduced or changed after that gate.
 
 Deliverables:
 
-- complete inventory of accepted architecture decisions
-- mapping from decisions and capabilities to existing model elements
-- Requirement Coverage Matrix
-- identified missing, outdated and conflicting requirements
-- traceable requirement and model-change candidates
-- classification of stakeholder need, requirement, design constraint and
-  implementation detail
-- Human Review of every proposed model change
-- accepted additions to Stakeholder Requirements, Use Cases, System
-  Requirements and downstream model elements
-- traceability from accepted model elements to architecture-decision and
-  implementation evidence
+- final architecture-decision inventory
+- final mapping from decisions and capabilities to authoritative model elements
+- updated Requirement Coverage Matrix
+- resolution or explicit deferral of remaining requirement gaps
+- traceability from accepted CATIA elements to decision and implementation
+  evidence
+- confirmation that CATIA is the only maintained engineering model
 
 Rules:
 
 - implementation reality is evidence, not automatic normative authority
-- no requirement is created silently from existing code
+- no requirement is created silently from code
+- CATIA changes require explicit Human Review
 - the accepted derivation chain remains mandatory
-- CATIA is updated only after explicit Human Review
-- existing IDs and accepted model semantics are preserved unless a reviewed
-  change requires otherwise
 
 ## Exit Criteria
 
 - CATIA Magic is the only maintained engineering model
 - every accepted architecture decision is mapped to model coverage
-- missing requirements have been resolved or explicitly deferred
+- remaining missing requirements are resolved or explicitly deferred
 - every accepted model addition has derivation and source traceability
 
 ## Status
@@ -606,8 +684,6 @@ Planned
 Depends on:
 
 Phase L and project-owner decision
-
----
 
 # Phase Q – Thesis Architecture Documentation
 

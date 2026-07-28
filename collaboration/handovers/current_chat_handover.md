@@ -30,11 +30,11 @@ Verified Implementation Commit
 
 Current Phase
 
-G – Approved Input Promotion
+Post-Phase-P Reconciliation Gate
 
 Current Status
 
-Phase P Completed — Phase G Next
+Phase P Completed — Prototype Presentation and CATIA Reconciliation Next
 
 Architecture Version
 
@@ -42,7 +42,7 @@ Architecture Version
 
 Knowledge Base Version
 
-1.4
+1.5
 
 Implementation Version
 
@@ -50,11 +50,11 @@ Implementation Version
 
 Roadmap Version
 
-1.4
+1.5
 
 Last SSOT Update
 
-2026-07-27
+2026-07-28
 
 Complete Automated Test Baseline
 
@@ -73,30 +73,36 @@ Read the Collaboration Knowledge Base in this order:
 5. `collaboration/decisions/`
 6. `collaboration/change_log.md`
 
-Then inspect the committed implementation relevant to Phase G.
+Then inspect:
+
+- the committed Phase F/P implementation baseline
+- the authoritative CATIA SysML v2 requirements and use cases
+- the accepted ADRs from Phases F and P
+- the presentation-ready prototype evidence
 
 Do not use previous chat history as a source of truth.
 
-Do not begin implementation before presenting the verified baseline summary.
+Do not begin Phase G or another new feature phase.
 
----
+Begin with the Post-Phase-P Reconciliation Gate and present the verified
+baseline before proposing CATIA changes.
 
 # Required Baseline Summary
 
-Before proposing Phase G implementation, summarize:
+Before beginning reconciliation, summarize:
 
-- current roadmap phase
-- completed implementation
-- architecture version
+- completed Phase F/P implementation
 - verified implementation commit
-- automated test baseline
-- next implementation step
-- unresolved architecture decisions relevant to Approved Input Promotion
+- automated and manual test baseline
+- presentation-ready prototype scope
+- accepted architecture decisions
+- authoritative CATIA model status
+- known requirement coverage gaps
+- planned Feature and Requirement Coverage Matrix
+- rule that implementation evidence does not automatically create requirements
 
-The summary shall be based on the committed repository and Collaboration
-Knowledge Base.
-
----
+The summary shall be based on the committed repository, Collaboration Knowledge
+Base and authoritative CATIA model.
 
 # Source Authority
 
@@ -199,6 +205,38 @@ Important architecture decisions:
 - P6: `collaboration/decisions/ADR-013-preliminary-coverage-and-potential-model-support.md`
 - P7: `collaboration/decisions/ADR-014-project-dashboard-architecture.md`
 - P9: `collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md`
+
+---
+
+# Post-Phase-P Reconciliation Gate
+
+This is the immediate work package after Phase P.
+
+Execution order:
+
+```text
+Prototype baseline and presentation
+→ Phase F/P capability inventory
+→ map capabilities and ADRs to CATIA
+→ identify missing, outdated or conflicting requirements
+→ review requirement and model-change candidates
+→ update CATIA after explicit acceptance
+→ create Feature and Requirement Coverage Matrix
+→ select the next implementation phase
+```
+
+Required Feature and Requirement Coverage Matrix columns:
+
+- Capability / Feature
+- CATIA Requirement ID
+- Implementation Status
+- Test / Evidence
+- ADR / Architecture Decision
+- Presentation Readiness
+- Remaining Roadmap / Open Work
+
+No Phase G architecture or implementation shall begin before the gate is
+complete and the project owner explicitly selects the next phase.
 
 ---
 
@@ -345,37 +383,40 @@ committed authoritative implementation artifact.
 
 # Current Known Limitations
 
-- Phase G Approved Input Promotion is not implemented.
+- The authoritative CATIA model does not yet represent every capability and
+  architecture decision implemented in Phases F and P.
+- The Feature and Requirement Coverage Matrix has not yet been created.
+- Requirement and model-change candidates still require Human Review.
+- Phase G Approved Input Promotion is planned but is not the immediate next
+  activity.
 - P9 `awaiting_review` is not Approved Input.
 - No model candidates are generated.
 - No SysML v2 code is generated.
-- CATIA synchronization is not implemented.
+- CATIA shadow-model migration is not implemented.
 - Project editing and project deletion are not implemented.
 - Retry and successor handling exist in core P5/P9 boundaries but require
   further operator UI and workflow refinement.
 - Full live LLM-team performance and cost measurements remain open.
 - OCR and multimodal engineering extraction are outside the MVP.
 
----
-
 # Next Implementation Step
 
-Begin Phase G architecture discussion.
+Begin the Post-Phase-P Reconciliation Gate.
 
-The first discussion shall resolve:
+The first work block shall:
 
-1. Approved Input identity and storage
-2. eligible promotion sources from P4 and P9
-3. required Human Review Decision target types
-4. fingerprint binding for promoted content
-5. promotion, rejection, revocation and supersession behavior
-6. relationship between Approved Input and later model candidates
-7. how Phase G avoids generating models or SysML v2 prematurely
+1. freeze and summarize the presentation baseline
+2. create the Phase F/P capability inventory
+3. inspect the CATIA requirements and use cases
+4. create the first capability-to-requirement mapping
+5. classify coverage as covered, partial, missing, outdated or conflicting
+6. produce reviewed requirement and model-change candidates
+7. define and populate the Feature and Requirement Coverage Matrix
 
-Do not start Phase G implementation before the architecture has been explicitly
-accepted.
+Do not begin Phase G implementation.
 
----
+Do not update CATIA from implementation evidence automatically. Every proposed
+change requires explicit review and acceptance.
 
 # Planned Thesis Development Plan
 

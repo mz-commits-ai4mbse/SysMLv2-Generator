@@ -1,5 +1,64 @@
 # Change Log
 
+## 2026-07-28 — Post-Phase-P Reconciliation Gate Correction
+
+Versions after this correction:
+
+- Architecture Version: 1.1
+- Knowledge Base Version: 1.5
+- Implementation Version: 0.8
+- Roadmap Version: 1.5
+
+Implementation baseline remains unchanged:
+
+- Repository: `mz-commits-ai4mbse/SysMLv2-Generator`
+- Branch: `main`
+- Verified implementation commit: `26acace4d7ba2849b33c5e0dacedf838f83c7705`
+- Complete automated test suite: 3808 passed
+- Manual P9 acceptance audit: PASS
+
+Correction:
+
+- The SSOT update committed at `40f521c375750ae2d25c86f4b225441bab7c59b3` correctly recorded
+  Phase P completion but incorrectly identified Phase G as the immediate next
+  activity.
+- The previously agreed cut after Phase P is restored.
+- The immediate work package is the Post-Phase-P Reconciliation Gate.
+- Phase G remains planned and is blocked until the gate is complete and the
+  project owner explicitly selects the next implementation phase.
+
+Immediate gate scope:
+
+1. preserve and present the Phase F/P prototype baseline
+2. inventory implemented capabilities and accepted architecture decisions
+3. reconcile them with the authoritative CATIA requirements, use cases and
+   model elements
+4. identify missing, outdated, incomplete and conflicting requirements
+5. review and apply accepted CATIA changes
+6. create the Feature and Requirement Coverage Matrix
+7. select the next implementation phase explicitly
+
+Feature and Requirement Coverage Matrix:
+
+- Capability / Feature
+- CATIA Requirement ID
+- Implementation Status
+- Test / Evidence
+- ADR / Architecture Decision
+- Presentation Readiness
+- Remaining Roadmap / Open Work
+
+Accepted rules:
+
+- implementation is evidence, not automatic normative authority
+- CATIA remains authoritative
+- no CATIA requirement is created or changed without explicit Human Review
+- the first Architecture-to-Requirements Reconciliation pass occurs now
+- Phase N retains Shadow-model Migration and final whole-system reconciliation
+- no Phase G implementation begins before gate closure
+
+---
+
 ## 2026-07-27 — Phase P Completion and Project-bound Ingestion Integration
 
 Versions after this update:

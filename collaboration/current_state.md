@@ -33,7 +33,7 @@ Architecture Version
 
 Knowledge Base Version
 
-1.4
+1.5
 
 Implementation Version
 
@@ -41,71 +41,88 @@ Implementation Version
 
 Current Roadmap Version
 
-1.4
+1.5
 
 Current Development Phase
 
-G – Approved Input Promotion
+Post-Phase-P Reconciliation Gate
 
 Current Status
 
-Phase P Completed — Phase G Next
+Phase P Completed — Prototype Presentation and CATIA Reconciliation Next
 
 Last SSOT Update
 
-2026-07-27
+2026-07-28
 
 ---
 
 # Current Objective
 
-Begin Phase G architecture definition after the completed Phase P project
-workspace and project-bound ingestion baseline.
+Hold the implementation baseline after the completed Phase P prototype and
+perform the previously agreed Post-Phase-P Reconciliation Gate before any new
+feature phase begins.
 
-Phase P is technically closed. It established project identity, Source
-registration, deterministic Source Projection, semantic artifact repositories,
-Processing Runs, Preliminary Coverage, the Project Dashboard and project-bound
-Team Agentic Ingestion.
+The gate has four connected objectives:
 
-The next focus is:
+1. present and preserve the current prototype baseline
+2. inventory the capabilities implemented in Phases F and P
+3. reconcile those capabilities and accepted architecture decisions with the
+   authoritative CATIA SysML v2 model
+4. create a Feature and Requirement Coverage Matrix that shows what is already
+   implemented and what remains on the roadmap
 
-Phase G — Approved Input Promotion
-
-Phase G shall separate reviewed engineering knowledge from raw Source material,
-agent outputs, consensus artifacts and pending review reports.
-
----
+Phase G — Approved Input Promotion remains planned, but it is not the immediate
+next activity and shall not begin until this gate is complete and the next phase
+has been explicitly confirmed.
 
 # Current Engineering Priorities
 
 Priority 1
 
-Define the Approved Input Promotion architecture before implementation depends
-on it.
+Freeze the demonstrable Phase F/P prototype baseline at:
+
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+
+with 3808 passing automated tests and the completed P9 manual acceptance audit.
 
 Priority 2
 
-Preserve the mandatory Human-in-the-Loop boundary. A P9 run ending in
-`awaiting_review` requests review; it does not create approved engineering
-knowledge.
+Present the prototype without mixing presentation preparation with new runtime
+feature implementation.
 
 Priority 3
 
-Define exactly which reviewed P4/P9 artifacts may become Approved Input and how
-their source, review and fingerprint traceability is preserved.
+Create a complete capability inventory for Phase F and P, including accepted
+architecture decisions, implementation modules, tests and manual evidence.
 
 Priority 4
 
-Keep Preliminary Coverage and Approved Generation Readiness separate. Phase P
-may show preliminary support; approved readiness begins only after approved
-engineering input exists.
+Map every relevant capability to existing CATIA Stakeholder Requirements,
+System Requirements, Use Cases and downstream model elements. Identify missing,
+outdated, incomplete and conflicting model coverage.
 
 Priority 5
 
-Prepare thesis-oriented architecture documentation without mixing it into the
-runtime feature overview.
+Review every proposed requirement or model change with the project owner and
+update CATIA only after explicit acceptance.
 
----
+Priority 6
+
+Create the Feature and Requirement Coverage Matrix with at least:
+
+- Capability / Feature
+- CATIA Requirement ID
+- Implementation Status
+- Test / Evidence
+- ADR / Architecture Decision
+- Presentation Readiness
+- Remaining Roadmap / Open Work
+
+Priority 7
+
+Decide the next implementation phase only after the reconciliation gate is
+complete. Phase G remains planned but is not automatically next.
 
 # Verified Implementation Baseline
 
@@ -509,8 +526,9 @@ not publication authority.
 Every engineering publication or promotion target requires an explicit Human
 Review Decision.
 
-P9 requests review through `review_requested`. Phase G must define how reviewed
-P9 and P4 evidence becomes Approved Input.
+P9 requests review through `review_requested`. A later Approved Input Promotion
+phase must define how reviewed P9 and P4 evidence becomes Approved Input.
+That future phase is blocked until the Post-Phase-P Reconciliation Gate is complete.
 
 ## Token-budget Boundary
 
@@ -547,7 +565,7 @@ auditable.
 | P8 | Tests and Integration Readiness Review | Completed |
 | P9 | Project-bound Agentic Ingestion Integration | Completed |
 
-Phase P is complete after this SSOT update has been committed and pushed.
+Phase P is complete.
 
 ---
 
@@ -561,8 +579,6 @@ Phase P is complete after this SSOT update has been committed and pushed.
 - SysML v2 code generation
 - validation and export
 - CATIA synchronization
-- systematic requirements reconciliation against accepted architecture
-  decisions
 - project editing after creation
 - project deletion including all assigned data
 - refined dashboard actions for non-primary evidence beyond the P9 review
@@ -578,8 +594,8 @@ Phase P is complete after this SSOT update has been committed and pushed.
 ## Active
 
 - Phase P does not yet create Approved Input.
-- P9 successful executions end in `awaiting_review`; they still require Phase G
-  promotion before they become accepted engineering input.
+- P9 successful executions end in `awaiting_review`; a later Approved Input
+  Promotion phase is still required before they become accepted engineering input.
 - The authoritative CATIA model does not yet contain requirements for every
   accepted and implemented capability introduced through architecture decisions.
 - Full-team LLM execution still requires operational performance and token
@@ -624,55 +640,126 @@ roadmap.
 
 ---
 
-# Planned Phase N Model Reconciliation
+# Post-Phase-P Reconciliation Gate
 
-Phase N shall include a dedicated work package:
+This gate is the immediate work package after Phase P. It is a deliberate cut
+between the demonstrable prototype and further implementation.
 
-Architecture-to-Requirements Reconciliation
+## Gate Scope
 
-Purpose:
+### 1. Prototype Presentation Baseline
 
-Reconcile the authoritative engineering model with all accepted architecture
-decisions and the implemented and planned system capabilities.
+- preserve the completed Phase F/P prototype for presentation
+- use commit `26acace4d7ba2849b33c5e0dacedf838f83c7705`
+- retain the 3808-test baseline and P9 manual acceptance evidence
+- do not begin a new feature phase while the gate is active unless explicitly
+  authorized
 
-The work package shall:
+### 2. Capability and Architecture Inventory
 
-1. inventory all accepted architecture decisions from the complete project
-   history
-2. map each decision and capability to existing Stakeholder Requirements,
-   System Requirements, Use Cases and downstream model elements
-3. identify uncovered or outdated requirements
-4. create traceable requirement and model-change candidates
-5. distinguish stakeholder need, requirement, design constraint and
+Create a complete inventory of:
+
+- implemented Phase F and P capabilities
+- accepted ADRs
+- relevant modules and persistent artifacts
+- automated tests and manual evidence
+- planned but not yet implemented capabilities
+
+### 3. Architecture-to-Requirements Reconciliation
+
+For every relevant capability and accepted architecture decision:
+
+1. map it to existing CATIA Stakeholder Requirements, System Requirements, Use
+   Cases and downstream model elements
+2. identify missing, outdated, incomplete or conflicting requirements
+3. create traceable requirement and model-change candidates
+4. distinguish stakeholder need, requirement, design constraint and
    implementation detail
-6. review every candidate with the project owner
-7. update CATIA only after explicit acceptance
-8. record traceability from accepted model elements back to their decision and
-   implementation evidence
+5. review every candidate with the project owner
+6. update CATIA only after explicit acceptance
+7. preserve existing IDs and accepted semantics unless an accepted change
+   requires otherwise
 
-The implemented system is evidence for the reconciliation. It is not
-automatically normative and shall not silently create requirements.
+Implementation reality is evidence for this reconciliation. It is not automatic
+normative authority and shall not silently create requirements.
+
+### 4. Feature and Requirement Coverage Matrix
+
+The matrix shall show at least:
+
+| Column | Purpose |
+|---|---|
+| Capability / Feature | Stable capability name |
+| CATIA Requirement ID | Existing or proposed authoritative requirement link |
+| Implementation Status | Implemented, partial, architecture-only or planned |
+| Test / Evidence | Automated test, commit, artifact or manual evidence |
+| ADR | Accepted architecture-decision link |
+| Presentation Readiness | Ready, limited or not demonstrable |
+| Remaining Roadmap | Missing implementation or later phase |
+
+Recommended implementation status values:
+
+- `implemented_and_verified`
+- `partially_implemented`
+- `architecture_only`
+- `planned`
+- `not_planned_for_mvp`
+
+Recommended requirement coverage values:
+
+- `covered`
+- `partially_covered`
+- `missing`
+- `outdated`
+- `conflicting`
+
+## Gate Exit Criteria
+
+- the current prototype has been presented or declared presentation-ready
+- every relevant Phase F/P capability is inventoried
+- every capability is mapped to CATIA coverage or explicitly marked as missing,
+  outdated or conflicting
+- requirement and model-change candidates have been reviewed
+- accepted CATIA updates have been applied
+- the Feature and Requirement Coverage Matrix is complete
+- the next implementation phase has been explicitly selected
 
 ---
+
+# Remaining Phase N Model Reconciliation
+
+Phase N remains planned for the later Shadow-model Migration and final
+whole-system reconciliation.
+
+Its remaining scope includes:
+
+- migration of the temporary SYSIDE shadow model
+- final synchronization with CATIA
+- removal of duplicated maintained model authority
+- final reconciliation of requirements introduced or changed after the
+  Post-Phase-P Gate
+- confirmation that CATIA is the only maintained engineering model
+
+The first Architecture-to-Requirements Reconciliation pass is no longer deferred
+to Phase N. It is performed now in the Post-Phase-P Reconciliation Gate.
 
 # Next Milestone
 
-Phase G — Approved Input Promotion
+Post-Phase-P Reconciliation Gate
 
-Before implementation:
+Execution order:
 
-- inspect P4 Human Review and publication gate contracts
-- inspect P5 Processing Run and Processing Decision contracts
-- inspect P9 review-report publication and `awaiting_review` state
-- define Approved Input identity and storage
-- define promotion eligibility
-- define how review decisions bind to exact target-content and fingerprint
-  evidence
-- define revocation, supersession and invalidation behavior
-- preserve project, source, run, artifact and review traceability
-- record the accepted architecture before implementation depends on it
+```text
+Prototype baseline and presentation
+→ Phase F/P capability inventory
+→ CATIA requirement and model reconciliation
+→ reviewed CATIA updates
+→ Feature and Requirement Coverage Matrix
+→ explicit next-phase decision
+```
 
----
+No Phase G architecture or implementation shall begin before this gate is
+complete and the project owner explicitly selects it as the next phase.
 
 # Repository Collaboration Workflow
 
@@ -693,16 +780,19 @@ its repository-relative path before proposing a change.
 # SSOT Update Cadence
 
 A complete SSOT UPDATE is normally performed after completion of a major
-roadmap phase.
+roadmap phase or when a coordination error must be corrected.
 
-This update is the Phase P completion synchronization. It supersedes the earlier
-P4 intermediate handover and establishes Phase G as the next active phase.
+The 2026-07-27 Phase P completion update correctly recorded the completed
+implementation baseline but incorrectly stated that Phase G was immediately
+next.
 
-The next regular SSOT UPDATE is due after completion of the next major roadmap
-phase, unless the project owner explicitly requests an earlier update or a
-critical handover need arises.
+This correction restores the previously agreed Post-Phase-P Reconciliation
+Gate. It supersedes only the incorrect next-step sequencing. The Phase F/P
+implementation evidence and Phase P completion remain valid.
 
----
+The next regular SSOT UPDATE is due after the reconciliation gate is complete,
+unless the project owner explicitly requests an earlier update or a critical
+handover need arises.
 
 # Reference Documents
 
