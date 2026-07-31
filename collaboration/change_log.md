@@ -1,5 +1,206 @@
 # Change Log
 
+## 2026-07-31 — Post-Phase-P Reconciliation Completion and Prototype Acceleration
+
+Versions after this update:
+
+- Architecture Version: 1.2
+- Knowledge Base Version: 1.6
+- Implementation Version: 0.8
+- Roadmap Version: 1.6
+
+Verified implementation baseline remains unchanged:
+
+- Repository: `mz-commits-ai4mbse/SysMLv2-Generator`
+- Branch: `main`
+- Verified implementation commit: `26acace4d7ba2849b33c5e0dacedf838f83c7705`
+- Complete automated test suite: 3808 passed
+- Manual P9 acceptance audit: PASS
+
+The implementation version remains `0.8` because this update records completed
+presentation, modeling, reconciliation and roadmap decisions rather than new
+committed runtime implementation.
+
+Post-Phase-P Reconciliation Gate completion:
+
+- The Phase F/P prototype was presented.
+- The verified prototype baseline was preserved.
+- Implemented Phase F/P capabilities and accepted architecture decisions were
+  inventoried.
+- The first Architecture-to-Requirements Reconciliation against the
+  authoritative CATIA SysML v2 model was completed.
+- Accepted CATIA System Requirements, System Design Constraints, System
+  Functions and Logical Architecture were established.
+- The Feature and Requirement Coverage Matrix was completed.
+- Phase G — Approved Input Promotion was explicitly selected as the next
+  implementation phase.
+- The Post-Phase-P Reconciliation Gate is closed.
+
+Accepted CATIA System-level baseline:
+
+- 39 Stakeholder Requirements
+- 102 System Requirements
+- 30 active System Design Constraints
+- 12 System Functions
+- 8 Logical Components
+- System Function interaction network
+- Logical interconnection view
+- 39 of 39 Stakeholder Requirements covered through System Functions
+
+The accepted derivation chain is:
+
+```text
+Stakeholder Requirements
+→ System Requirements
+→ System Functions
+→ Logical Components
+→ implementation evidence
+```
+
+The System Requirement topic packages are navigation and documentation
+structures.
+
+They are not:
+
+- Logical Component allocations
+- subsystem boundaries
+- implementation proof
+- a replacement for the accepted derivation chain
+
+System Physical Architecture and all Subsystem R/F/L/P levels remain deferred.
+
+Phase N scope brought forward:
+
+The following parts of the previously planned Phase N scope were completed
+during the Post-Phase-P Reconciliation Gate:
+
+- first Architecture-to-Requirements Reconciliation
+- accepted System Requirement update
+- accepted System Function modeling
+- accepted System Logical Architecture modeling
+- initial Feature and Requirement Coverage baseline
+
+Phase N remains planned and retains:
+
+- migration of the temporary SYSIDE shadow model
+- final reconciliation after Phases G through L
+- removal of duplicated maintained model authority
+- final CATIA synchronization
+- confirmation that CATIA is the only maintained engineering model
+
+Executable prototype target:
+
+- Target date: 2026-08-14
+- Critical path: Phase G through Phase L
+
+Accepted end-to-end path:
+
+```text
+Source
+→ Processing Run
+→ Human Review
+→ Approved Input
+→ Model Candidates
+→ Internal Engineering Model
+→ SysML v2 Generation
+→ Validation
+→ Versioned Output Package
+```
+
+The accepted implementation order is:
+
+```text
+Phase G — Approved Input Promotion
+→ Phase H — Model Candidate Layer
+→ Phase I — Model Generation Agent
+→ Phase J — SysML v2 Code Generator
+→ Phase K — Validation Layer
+→ Phase L — Output Writer
+```
+
+Phase G activation:
+
+- Phase G is now the active phase.
+- The Post-Phase-P Reconciliation Gate no longer blocks implementation.
+- Phase G architecture still requires explicit acceptance before implementation.
+- Phase G shall create the authoritative bridge from reviewed processing
+  evidence to Approved Input.
+- Unreviewed P9 artifacts remain processing evidence and cannot become Approved
+  Input without an exact Human Review Decision and valid fingerprints.
+- Phase G shall not generate model candidates or SysML v2.
+
+Accepted model-relationship feedback for Phase H:
+
+- Model relationships shall be generated and reviewed as explicit engineering
+  candidates.
+- Relationship types whose meanings are often used inconsistently or
+  near-synonymously shall remain distinguishable.
+- Relevant concepts include dependency, allocation, flow, refinement-related
+  relationships, derivation-related relationships and framework-specific
+  relationships.
+- Relationship candidates shall include priority, prioritization rationale,
+  semantic intent, supporting evidence and comparability impact.
+- Automated prioritization remains advisory.
+- Human Review shall authorize the accepted relationship choice.
+- A versioned Model Structure and Comparability Profile shall support
+  consistent structures across related products, product variants,
+  independently generated models and repeated generation runs.
+
+Accepted post-prototype portability evaluation:
+
+- Phase R — Task Profile Portability Evaluation was added after Phase Q.
+- Phase R shall test whether the reusable Turing Generator core can be adapted
+  quickly by replacing a bounded set of task-specific JSON, Markdown, recipe,
+  agent, validation and output-contract artifacts.
+- The alternate task is Requirements Quality and Completeness Analysis.
+- The task shall assess formulation rules, completeness, atomicity, ambiguity,
+  contradictions, missing information and proposed changes or additions.
+- Proposed requirement changes remain subject to Human Review.
+- A Task Profile Replacement Manifest shall distinguish unchanged core,
+  adapted artifacts, replaced artifacts, dependencies, validation and code
+  changes.
+- The portability claim shall be evaluated using measured implementation
+  evidence.
+
+Accepted low-priority project recommendation feature:
+
+- Phase S — Project Affinity Recommendation was added after Phase R.
+- Phase S is explicitly low priority.
+- Before persistent Source registration, the system may recommend existing
+  Projects that appear suitable for newly selected data.
+- Recommendations remain advisory.
+- The user confirms or overrides the recommendation.
+- No automatic Project assignment is permitted.
+- No permanent unassigned Source pool is introduced.
+- Every persisted Source remains assigned to exactly one Project.
+
+Working-rule updates:
+
+- Approved Input authority and promotion boundaries were added.
+- Relationship semantics and model-comparability rules were added.
+- Task Profile Portability rules were added.
+- Project Affinity Recommendation boundaries were added.
+- The 2026-08-14 prototype delivery target was recorded.
+- Schedule pressure shall not weaken Human Review, traceability, project
+  isolation, deterministic validation, publication gates or model consistency.
+
+Immediate next activity:
+
+```text
+Phase G architecture discussion
+→ explicit project-owner acceptance
+→ Phase G ADR
+→ implementation
+→ tests
+→ manual review
+→ completion decision
+```
+
+No Phase H implementation begins before Phase G provides a stable Approved
+Input contract.
+
+---
+
 ## 2026-07-28 — Post-Phase-P Reconciliation Gate Correction
 
 Versions after this correction:

@@ -2,14 +2,20 @@
 
 ## Purpose
 
-This document defines the mandatory engineering rules for developing the
-Turing Generator.
+This document defines the mandatory engineering and collaboration rules for
+developing the Turing Generator.
 
 These rules are binding for all future development work, regardless of whether
 implementation is performed by a human developer or an AI assistant.
 
-The goal is to ensure architectural consistency, reproducibility and
-traceability throughout the project.
+The goal is to ensure:
+
+- architectural consistency
+- reproducibility
+- traceability
+- explicit Human Review authority
+- safe reuse of the modular system core
+- controlled progress toward the executable prototype
 
 ---
 
@@ -31,9 +37,12 @@ The shadow model shall never override or contradict CATIA.
 
 Local uncommitted changes are not authoritative implementation state.
 
-No architecture decision becomes accepted project knowledge until it has been
-documented in an Architecture Decision Record and transferred into the
-Collaboration Knowledge Base through the SSOT process.
+No architecture decision becomes accepted project knowledge until it has been:
+
+- discussed
+- explicitly accepted by the project owner
+- documented in an Architecture Decision Record where required
+- transferred into the Collaboration Knowledge Base through the SSOT process
 
 ---
 
@@ -43,7 +52,7 @@ The project strictly separates the problem space from the solution space.
 
 ## Problem Space
 
-Maintained in the authoritative SysML v2 model.
+Maintained in the authoritative CATIA SysML v2 model.
 
 Includes:
 
@@ -52,7 +61,9 @@ Includes:
 - Stakeholder Requirements
 - Use Cases
 - System Requirements
-- System Architecture
+- System Functions
+- Logical Architecture
+- System Design Constraints
 - Model Relationships
 
 ## Solution Space
@@ -64,26 +75,35 @@ Includes:
 - Agent Teams
 - Recipes
 - Memory Artifacts
-- Consensus Mechanisms
 - Semantic Processing
 - Persistence
+- Human Review
 - UI
+- Model Candidates
 - Model Generation
+- SysML v2 Generation
 - Validation
 - Reports
+- Output Packages
 
 Repository implementation shall not silently redefine authoritative
 requirements.
+
+Implementation evidence may trigger reconciliation work.
+
+It shall not automatically create or change normative engineering knowledge.
 
 ---
 
 # 3. Single Responsibility
 
-Every module, agent and processing stage shall have exactly one clearly defined
-responsibility.
+Every module, agent, recipe and processing stage shall have exactly one clearly
+defined responsibility.
 
 Whenever a component starts solving multiple independent problems, it shall be
-split into separate modules.
+split into separate modules or explicit subcomponents.
+
+Shared utilities shall not become hidden orchestration layers.
 
 ---
 
@@ -91,14 +111,26 @@ split into separate modules.
 
 The pipeline consists of independent processing stages.
 
-A stage may communicate only through explicitly defined, validated artifacts.
+A stage may communicate only through explicitly defined and validated artifacts.
 
 Direct access to previous agent conversations or undeclared intermediate state
 is forbidden unless explicitly required by an accepted architecture decision.
 
+Every stage shall define:
+
+- input contract
+- output contract
+- validation behavior
+- failure behavior
+- traceability behavior
+- authority of its output
+
+No stage may silently upgrade a non-authoritative artifact into authoritative
+engineering knowledge.
+
 ---
 
-# 5. Memory-Based Communication
+# 5. Memory-based Communication
 
 Agent teams communicate through versioned Memory Artifacts.
 
@@ -107,11 +139,21 @@ The complete conversation history of previous agents shall not be forwarded.
 Only the relevant, traceable and budgeted context required by the next stage
 may be provided.
 
+Memory Artifacts shall preserve:
+
+- source references
+- processing provenance
+- agent identity or role
+- applicable context selection
+- confidence or disagreement evidence where relevant
+- validation status
+
 ---
 
 # 6. Human in the Loop
 
-The system shall never silently invent or authorize engineering information.
+The system shall never silently invent, approve or authorize engineering
+information.
 
 Whenever insufficient evidence exists:
 
@@ -121,16 +163,23 @@ Whenever insufficient evidence exists:
 - conflicts shall remain explicit
 - Human Review shall be requested
 
-Multi-agent agreement, confidence and low variance are review evidence. They
-are not publication authority.
+Multi-agent agreement, confidence and low variance are review evidence.
 
-Every publication target requires an explicit persisted Human Review Decision.
+They are not publication or promotion authority.
+
+Every publication, promotion or authoritative selection target requires an
+explicit persisted Human Review Decision.
 
 The reviewer shall always retain the option to enter detailed review, including
 when quick confirmation is offered.
 
-Only an exact `confirm` decision bound to the current target-content and
-reference-validation fingerprints may pass a publication gate.
+Only an exact `confirm` decision bound to the current target content and all
+required validation fingerprints may pass a gate.
+
+A stale decision shall not authorize a changed target.
+
+Automated prioritization or recommendation shall remain advisory until accepted
+by the responsible human reviewer.
 
 ---
 
@@ -138,24 +187,33 @@ reference-validation fingerprints may pass a publication gate.
 
 Every generated artifact shall be explainable.
 
-Every engineering statement shall be traceable to:
+Every engineering statement shall be traceable, where applicable, to:
 
-- its project
-- its source
+- its Project
+- its Source
 - its source location
-- the relevant source projection
+- the relevant Source Projection
 - its extraction or derivation provenance
+- the relevant Processing Run
 - applicable semantic and framework mappings
-- its Human Review Decision where required
+- candidate and prioritization evidence
+- its Human Review Decision
+- the resulting Approved Input
+- generated model elements and relationships
+- validation findings
+- published output artifacts
 
-Traceability shall not be reconstructed from filenames or chat history.
+Traceability shall not be reconstructed from filenames, directory names or chat
+history.
+
+Traceability references shall use explicit identifiers and validated manifests.
 
 ---
 
 # 8. Deterministic Components
 
-Whenever deterministic processing is sufficient, deterministic
-implementations shall be preferred over LLM calls.
+Whenever deterministic processing is sufficient, deterministic implementations
+shall be preferred over LLM calls.
 
 Examples include:
 
@@ -169,8 +227,15 @@ Examples include:
 - persistence
 - hashing
 - prompt-context selection
+- state reconstruction
+- relationship-profile evaluation
+- artifact packaging
 
-LLMs shall be used only where semantic interpretation or reasoning is required.
+LLMs shall be used only where semantic interpretation, synthesis or engineering
+reasoning is required.
+
+LLM output shall remain subject to deterministic validation and Human Review
+where authority is affected.
 
 ---
 
@@ -182,7 +247,7 @@ Every accepted architecture change requires:
 
 - discussion
 - explicit agreement by the project owner
-- documentation in an Architecture Decision Record
+- documentation in an Architecture Decision Record where required
 - local review
 - commit and push by the project owner
 
@@ -206,10 +271,16 @@ The Collaboration Knowledge Base documents:
 - working rules
 - source authority
 - project handovers
-- change history
+- project change history
+- completed reconciliation milestones
+- deferred work
 
-It shall reference authoritative model elements rather than duplicating
+It shall reference authoritative CATIA model elements rather than duplicating
 engineering-model content whenever possible.
+
+Feature matrices, temporary reports and presentation artifacts remain
+supporting evidence unless explicitly registered as authoritative project
+artifacts.
 
 ---
 
@@ -217,29 +288,26 @@ engineering-model content whenever possible.
 
 Each major development phase follows:
 
-Implementation
-
-↓
-
-Testing
-
-↓
-
-Review
-
-↓
-
-SSOT UPDATE
-
-↓
-
-Next Development Phase
+```text
+Architecture discussion
+→ explicit acceptance
+→ ADR where required
+→ implementation
+→ testing
+→ review
+→ SSOT UPDATE or accepted milestone synchronization
+→ next development phase
+```
 
 Internal work steps may proceed without a complete SSOT UPDATE when:
 
 - their architecture is already accepted or documented in an ADR
 - their implementation is tested and committed
 - no critical handover would become unreliable
+- no authority boundary is changed implicitly
+
+No later phase may depend on an undefined or unreviewed public contract from an
+earlier phase.
 
 ---
 
@@ -254,9 +322,16 @@ When consecutive work steps modify the same file and can be safely implemented
 and reviewed together, they should be grouped to avoid unnecessary replacement
 cycles.
 
-Intermediate increments remain appropriate when they establish an independently
-testable contract, reduce implementation risk or enable meaningful Human
-Review.
+Intermediate increments remain appropriate when they:
+
+- establish an independently testable contract
+- reduce implementation risk
+- preserve a stable handover point
+- enable meaningful Human Review
+- prevent later destructive refactoring
+
+Refactoring shall preserve public contracts unless a reviewed architecture
+change explicitly replaces them.
 
 ---
 
@@ -270,6 +345,13 @@ public contract.
 Each folder shall represent a clearly identifiable architectural
 responsibility.
 
+The reusable system core and task-specific configuration shall remain
+distinguishable.
+
+Task-specific knowledge shall not be hard-coded into shared infrastructure when
+it can be represented through validated configuration, recipes, profiles or
+agent definitions.
+
 ---
 
 # 14. Current Development Roadmap
@@ -280,6 +362,23 @@ The official roadmap is maintained in:
 
 This file defines working rules and shall not independently redefine roadmap
 status.
+
+The current executable prototype critical path is:
+
+```text
+Phase G
+→ Phase H
+→ Phase I
+→ Phase J
+→ Phase K
+→ Phase L
+```
+
+The target date for the complete executable prototype is:
+
+`2026-08-14`
+
+Phase status, dates and ordering shall be taken from the roadmap.
 
 ---
 
@@ -292,6 +391,10 @@ Changes to this document require:
 - SSOT UPDATE
 
 before becoming valid.
+
+A roadmap decision does not automatically change a working rule.
+
+A working-rule change shall be stated explicitly.
 
 ---
 
@@ -307,7 +410,7 @@ An SSOT UPDATE shall:
 
 1. review the completed work
 2. identify accepted decisions
-3. ignore rejected ideas and brainstorming results
+3. ignore rejected ideas and unaccepted brainstorming results
 4. verify the committed implementation status
 5. check whether the roadmap changed
 6. identify affected Collaboration Knowledge Base documents
@@ -333,21 +436,22 @@ For every Collaboration file, exactly one outcome shall be produced:
 A regular SSOT UPDATE is performed after completion of a complete major roadmap
 phase.
 
-Internal work steps within a phase do not normally require their own full SSOT
-UPDATE.
-
 An earlier SSOT UPDATE may be performed when:
 
 - explicitly requested by the project owner
 - a substantial architecture baseline has been completed
+- a presentation or external review creates accepted project feedback
 - chat or handover performance would make continuation unreliable
 - a critical handover is required
 
-For the current Phase P:
+Current synchronization status:
 
-- P1–P4 are completed and synchronized through the 2026-07-24 update
-- P5–P8 remain
-- the next regular SSOT UPDATE remains due after P8
+- Phase F is completed and synchronized
+- Phase P is completed and synchronized
+- the Post-Phase-P Reconciliation Gate is completed and synchronized
+- Phase G is the active phase
+- the next update is due after a major implementation milestone or critical
+  handover need
 
 ## Repository Synchronization
 
@@ -359,17 +463,18 @@ After the push, the repository shall be checked to verify:
 - the Collaboration Knowledge Base reflects committed implementation
 - referenced commits exist
 - obsolete implementation descriptions were removed
+- version numbers are consistent
 - `HEAD` and `origin/main` are synchronized
 
 ---
 
 # 17. Project Sources and Information Roles
 
-Every ingested source shall be assigned to exactly one project.
+Every persisted Source shall be assigned to exactly one Project.
 
-A permanent unassigned source pool is not permitted.
+A permanent unassigned Source pool is not permitted.
 
-Project identity and source identity shall remain separate.
+Project identity and Source identity shall remain separate.
 
 ## Engineering Source
 
@@ -377,13 +482,13 @@ An `engineering_source` may:
 
 - create source-traceable engineering Information Units
 - create terminology and framework-mapping candidates
-- contribute to clearly marked preliminary coverage
+- contribute to clearly marked Preliminary Coverage
 - contribute to later generation only after the responsible review and
   promotion gates
 
 ## Context-only Source
 
-A `context_only` source may explain product context, terminology or
+A `context_only` Source may explain product context, terminology or
 interpretation.
 
 It shall not:
@@ -396,11 +501,15 @@ It shall not:
 
 ## Coverage and Readiness
 
-Preliminary coverage may describe what unreviewed engineering information
-appears to support, but it shall always be labelled as preliminary.
+Preliminary Coverage may describe what unreviewed engineering information
+appears to support.
 
-Approved readiness is separate and shall be calculated only from
-human-approved engineering information.
+It shall always be labelled as preliminary.
+
+Approved Generation Readiness is separate.
+
+It shall be calculated only from eligible Approved Input and applicable
+reviewed evidence.
 
 No UI state, report, confidence or consensus result may silently promote
 unreviewed information.
@@ -443,8 +552,8 @@ All repository changes shall be:
 Unless the project owner explicitly requests a grouped change, modifications
 shall be presented one file at a time.
 
-Broad staging commands such as `git add .` or `git add -A` shall not be
-proposed for a mixed working tree.
+Broad staging commands such as `git add .` or `git add -A` shall not be proposed
+for a mixed working tree.
 
 External repositories remain non-authoritative unless their role and authority
 are explicitly registered.
@@ -460,11 +569,11 @@ The MVP semantic-processing boundary is textual information.
 
 Permitted inputs include:
 
-- native textual sources
+- native textual Sources
 - deterministic textual projections
 - PDF files with extractable text layers
 
-The following remain outside the MVP:
+The following remain outside the executable prototype:
 
 - OCR
 - image-only PDF interpretation
@@ -474,8 +583,9 @@ The following remain outside the MVP:
 Support for additional media requires its own accepted architecture,
 validation and Human Review design.
 
-Deterministic text projection shall preserve content and source location. It
-shall not perform semantic normalization or ontology interpretation.
+Deterministic text projection shall preserve content and source location.
+
+It shall not perform semantic normalization or ontology interpretation.
 
 ---
 
@@ -494,12 +604,15 @@ They shall not override project engineering authority.
 
 External ontology mappings are explicit candidates until reviewed.
 
-Live ontology queries, automatic ontology updates and unrestricted runtime
-graph traversal are not permitted in the MVP.
+Live ontology queries, automatic ontology updates and unrestricted runtime graph
+traversal are not permitted in the MVP.
 
 Complete ontology snapshots shall not be loaded into prompts.
 
 Project glossary changes shall not be performed automatically.
+
+The same normalized term shall not silently represent multiple accepted
+meanings within the same project context.
 
 ---
 
@@ -508,8 +621,9 @@ Project glossary changes shall not be performed automatically.
 Semantic confidence shall be based on explicit agent-result agreement and
 disagreement evidence, including variance where applicable.
 
-Agent personalities may contribute independent perspectives but shall not
-receive publication authority.
+Agent personalities may contribute independent perspectives.
+
+They shall not receive publication or promotion authority.
 
 The system shall preserve:
 
@@ -552,25 +666,37 @@ Selected and omitted references shall remain auditable.
 
 # 23. Architecture-to-Requirements Reconciliation
 
-Phase N shall reconcile all accepted architecture decisions and implemented
-and planned capabilities with the authoritative engineering model.
+The first Architecture-to-Requirements Reconciliation was completed during the
+Post-Phase-P Reconciliation Gate.
 
-The reconciliation shall:
+That reconciliation established the accepted System-level baseline:
 
-- inventory all accepted architecture decisions
-- map decisions and capabilities to model elements
+- System Requirements
+- System Design Constraints
+- System Functions
+- Logical Components
+- feature and requirement coverage
+
+Phase N retains the final reconciliation after Phases G through L.
+
+The final reconciliation shall:
+
+- inventory architecture decisions introduced after the first reconciliation
+- map decisions and capabilities to authoritative CATIA elements
 - identify missing, outdated and conflicting requirements
 - create traceable requirement and model-change candidates
 - distinguish stakeholder need, requirement, design constraint and
   implementation detail
 - preserve the accepted derivation chain
 - require Human Review before CATIA changes
+- confirm CATIA as the only maintained engineering model
 
-Implementation is evidence for reconciliation. It is not automatic requirement
-authority.
+Implementation is evidence for reconciliation.
 
-No existing feature shall silently become a normative requirement merely
-because it has already been implemented.
+It is not automatic requirement authority.
+
+No implemented feature shall silently become a normative requirement merely
+because it exists in code.
 
 ---
 
@@ -578,16 +704,222 @@ because it has already been implemented.
 
 Phase Q shall document:
 
-- every architecture decision from Phases A–P
-- every architecture decision accepted after Phase P
+- the complete development-phase sequence
+- every architecture decision from earlier and later phases
 - decision context and alternatives
 - rationale and consequences
 - requirement and implementation traceability
-- relevant literature, standards and ontology sources
+- semantic and ontology architecture
+- Human Review architecture
+- Approved Input architecture
+- model-candidate architecture
+- relationship prioritization and model comparability
+- SysML v2 generation and validation
+- portability evaluation
+- relevant literature and standards
 - limitations and deferred work
 
 The thesis documentation shall be based on the reconciled authoritative model
 after Phase N.
 
 Architecture decisions shall remain documented even when their implementation
-is later superseded, with status and consequences made explicit.
+is later superseded.
+
+Their status and consequences shall remain explicit.
+
+---
+
+# 25. Approved Input Authority
+
+Approved Input is the only eligible authoritative engineering input for later
+model-candidate generation.
+
+Run-owned P9 artifacts, candidate Information Units, consensus reports and
+review reports are not Approved Input.
+
+An artifact may become Approved Input only when:
+
+- its source and project references are valid
+- its content fingerprint matches the reviewed target
+- all required validation fingerprints match
+- an eligible Human Review Decision confirms the exact target
+- the promotion operation succeeds through the accepted Phase G contract
+
+Approved Input shall preserve traceability to:
+
+- Project
+- Source
+- Source Projection
+- Information Unit or run-owned artifact
+- Processing Run where applicable
+- Human Review Decision
+- validation evidence
+- promotion record
+
+Revoked, invalidated or superseded Approved Input shall not remain eligible for
+new model-candidate generation.
+
+Phase G shall not generate model candidates or SysML v2.
+
+---
+
+# 26. Model Relationship Semantics and Comparability
+
+Model relationships shall be treated as explicit engineering decisions.
+
+The system shall not silently collapse distinct relationship semantics into a
+generic link.
+
+Relevant relationship concepts include:
+
+- dependency
+- allocation
+- flow
+- refinement-related relationships
+- derivation-related relationships
+- framework-specific relationships
+
+Where multiple relationship types appear plausible or are used
+near-synonymously, the system shall preserve alternatives and provide:
+
+- candidate relationship type
+- source and target
+- semantic intent
+- supporting evidence
+- priority
+- prioritization rationale
+- comparability impact
+- profile-conformance result
+- Human Review status
+
+A versioned Model Structure and Comparability Profile shall define:
+
+- preferred model structure
+- canonical relationship choices
+- required comparison anchors
+- allowed structural variation
+- prioritization criteria
+- permitted exceptions
+- review requirements for deviations
+
+Relationship prioritization remains advisory.
+
+Human Review shall authorize the accepted relationship choice and any accepted
+exception.
+
+The purpose is to support meaningful comparison between:
+
+- related products
+- product variants
+- independently generated models
+- repeated generation runs
+
+Validation shall report inconsistent or unsupported relationship semantics.
+
+---
+
+# 27. Task Profile Portability
+
+The system shall distinguish reusable core infrastructure from task-specific
+engineering configuration.
+
+Reusable core candidates include:
+
+- Project Workspace
+- Source Registry
+- Processing Runs
+- artifact persistence
+- Human Review
+- evidence and traceability
+- dashboard
+- agent execution
+- publication gates
+
+Task-specific candidates include:
+
+- project context files
+- framework templates
+- support profiles
+- semantic vocabularies
+- agent profiles
+- recipes
+- task definitions
+- validation rules
+- output contracts
+- review criteria
+
+Phase R shall evaluate portability through a Task Profile Replacement Manifest.
+
+The manifest shall identify for every relevant artifact:
+
+- path
+- role
+- core or task-specific classification
+- unchanged, adapted or replaced status
+- dependencies
+- required validation
+- required code changes
+- reused and new tests
+
+The alternate evaluation task is Requirements Quality and Completeness
+Analysis.
+
+The portability claim shall be evaluated using measured implementation evidence.
+
+It shall not be asserted solely from architectural intention.
+
+---
+
+# 28. Project Affinity Recommendation
+
+Project Affinity Recommendation is a low-priority post-Phase-R capability.
+
+Before persistent Source registration, the system may temporarily analyze
+selected data and recommend Projects that appear suitable.
+
+The recommendation may consider:
+
+- project description
+- framework template
+- existing Sources
+- accepted project vocabulary
+- framework coverage
+- semantic similarity
+
+The recommendation shall:
+
+- remain advisory
+- provide a ranked result
+- provide a rationale or evidence summary
+- allow explicit user confirmation or override
+- avoid persistent Source registration before Project selection
+
+The system shall not assign a Project automatically.
+
+The feature shall not introduce a permanent unassigned Source pool.
+
+Every persisted Source shall remain assigned to exactly one Project.
+
+---
+
+# 29. Prototype Delivery Integrity
+
+The executable prototype target is 2026-08-14.
+
+Schedule pressure shall not justify weakening:
+
+- Human Review authority
+- traceability
+- project isolation
+- deterministic validation
+- publication gates
+- model consistency
+- explicit artifact contracts
+
+When scope reduction is necessary, non-critical refinements shall be deferred
+before core integrity controls are weakened.
+
+Deferred refinements shall be documented explicitly.
+
+A phase may be declared complete only when its accepted exit criteria have been
+met or explicitly revised by the project owner.

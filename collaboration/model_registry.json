@@ -1,6 +1,6 @@
 {
-  "version": "1.5",
-  "last_updated": "2026-07-28",
+  "version": "1.6",
+  "last_updated": "2026-07-31",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -11,6 +11,9 @@
         "Stakeholder Requirements",
         "Use Cases",
         "System Requirements",
+        "System Design Constraints",
+        "System Functions",
+        "Logical Architecture",
         "System Architecture",
         "Model Relationships"
       ]
@@ -36,22 +39,63 @@
         "Current Project State",
         "Development Roadmap",
         "Working Rules",
+        "Model Registry",
         "Accepted Architecture Decisions",
         "Project Handovers",
         "Project Change Log"
       ]
     },
     "derived_artifacts": {
-      "status": "non_authoritative_unless_published_as_run_evidence",
+      "status": "non_authoritative_unless_explicitly_registered_or_published_as_run_evidence",
       "examples": [
         "Unpublished Work Artifacts",
         "Temporary Summaries",
         "Chat History",
+        "Presentation Artifacts",
+        "Feature Matrices outside CATIA",
         "Unreviewed Agent Results outside run-owned publication",
         "Consensus Results as approval authority",
         "Coverage Indications as approved readiness"
       ]
     }
+  },
+  "verified_versions": {
+    "architecture_version": "1.2",
+    "knowledge_base_version": "1.6",
+    "implementation_version": "0.8",
+    "roadmap_version": "1.6"
+  },
+  "prototype_target": {
+    "target_date": "2026-08-14",
+    "scope": "complete_executable_end_to_end_prototype",
+    "critical_path": [
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L"
+    ],
+    "accepted_flow": [
+      "Source",
+      "Processing Run",
+      "Human Review",
+      "Approved Input",
+      "Model Candidates",
+      "Internal Engineering Model",
+      "SysML v2 Generation",
+      "Validation",
+      "Versioned Output Package"
+    ],
+    "integrity_controls_not_to_be_weakened": [
+      "Human Review Authority",
+      "Traceability",
+      "Project Isolation",
+      "Deterministic Validation",
+      "Publication Gates",
+      "Model Consistency",
+      "Explicit Artifact Contracts"
+    ]
   },
   "shadow_model": {
     "location": "model/",
@@ -60,9 +104,32 @@
     "valid_until_phase": "N",
     "usage_rule": "Use only when required engineering information is not yet available in CATIA.",
     "conflict_rule": "The shadow model shall never override or contradict CATIA.",
+    "first_requirements_reconciliation_completed": true,
+    "first_requirements_reconciliation_phase": "post_phase_p_reconciliation_gate",
     "phase_n_migration_required": true,
-    "post_phase_p_requirements_reconciliation_required": true,
     "phase_n_final_reconciliation_required": true
+  },
+  "accepted_catia_system_baseline": {
+    "status": "accepted_authoritative",
+    "accepted_date": "2026-07-31",
+    "stakeholder_requirement_count": 39,
+    "system_requirement_count": 102,
+    "active_system_design_constraint_count": 30,
+    "system_function_count": 12,
+    "logical_component_count": 8,
+    "stakeholder_requirements_covered_by_system_functions": 39,
+    "system_function_interaction_network_available": true,
+    "logical_interconnection_view_available": true,
+    "physical_architecture_status": "deferred",
+    "subsystem_rflp_status": "deferred",
+    "accepted_derivation_chain": [
+      "Stakeholder Requirements",
+      "System Requirements",
+      "System Functions",
+      "Logical Components",
+      "Implementation Evidence"
+    ],
+    "grouping_rule": "Requirement topic packages are for navigation and documentation only; they are not Logical Component allocations or subsystem boundaries."
   },
   "project_framework": {
     "template_id": "TURING_RFLP_FRAMEWORK",
@@ -115,7 +182,7 @@
       ],
       "context_only_mapping_allowed": false
     },
-    "future_extension_rule": "Additional framework templates are a post-MVP extension."
+    "future_extension_rule": "Additional framework templates remain post-prototype extension scope."
   },
   "project_workspace": {
     "status": "implemented_verified",
@@ -141,12 +208,14 @@
       "format": "SRC-six_digit_numeric",
       "separate_from_project_id": true
     },
+    "persistent_assignment_rule": "Every persisted Source shall be assigned to exactly one Project.",
+    "permanent_unassigned_source_pool_allowed": false,
     "source_roles": {
       "engineering_source": {
         "may_create_engineering_information_units": true,
         "may_create_framework_assignments": true,
         "may_contribute_to_preliminary_coverage": true,
-        "may_contribute_to_generation_after_human_approval": true
+        "may_contribute_to_generation_after_human_approval_and_promotion": true
       },
       "context_only": {
         "may_support_system_context_and_interpretation": true,
@@ -157,7 +226,7 @@
       }
     },
     "processing_boundary": {
-      "mvp_information_boundary": "textual",
+      "prototype_information_boundary": "textual",
       "native_text_supported": true,
       "deterministic_text_projection_supported": true,
       "pdf_text_layer_supported": true,
@@ -273,7 +342,8 @@
     "automatic_publication_allowed": false,
     "exact_target_content_fingerprint_required": true,
     "exact_reference_validation_fingerprint_required": true,
-    "quick_confirmation_preserves_detailed_review_option": true
+    "quick_confirmation_preserves_detailed_review_option": true,
+    "future_target_types_require_phase_specific_architecture": true
   },
   "token_budget": {
     "status": "implemented_verified",
@@ -286,105 +356,6 @@
     "complete_ontology_prompt_loading_allowed": false,
     "selection_is_deterministic": true,
     "selected_and_omitted_references_are_auditable": true
-  },
-  "assessment_boundary": {
-    "preliminary_coverage": {
-      "available_in_phase_p": true,
-      "requires_human_approval": false,
-      "eligible_source_roles": [
-        "engineering_source"
-      ]
-    },
-    "approved_readiness": {
-      "available_in_phase_p": false,
-      "available_from_phase": "G",
-      "requires_human_approval": true,
-      "eligible_source_roles": [
-        "engineering_source"
-      ]
-    }
-  },
-  "phase_n_model_reconciliation": {
-    "status": "planned_later",
-    "name": "CATIA Shadow-model Migration and Final Reconciliation",
-    "first_requirements_reconciliation_pass_moved_to": "post_phase_p_reconciliation_gate",
-    "purpose": "Migrate the temporary shadow model and perform final whole-system reconciliation after later implementation phases.",
-    "required_outputs": [
-      "Shadow-model Migration",
-      "Final Requirement Coverage Matrix",
-      "Final Accepted CATIA Model Updates",
-      "Decision-to-Requirement Traceability",
-      "CATIA-only Maintained Model Authority"
-    ],
-    "implementation_is_automatic_requirement_authority": false,
-    "human_review_required": true,
-    "catia_update_requires_explicit_acceptance": true
-  },
-  "phase_q_thesis_documentation": {
-    "status": "planned",
-    "name": "Thesis Architecture Documentation",
-    "scope": [
-      "All Architecture Decisions from Phases A through P",
-      "All Architecture Decisions accepted after Phase P",
-      "Decision Context and Alternatives",
-      "Decision Rationale and Consequences",
-      "Decision-to-Requirement Traceability",
-      "Decision-to-Implementation Traceability",
-      "Literature and Standard References",
-      "Lettered Development Plan",
-      "Phase Evolution and Phase Boundary Rationale"
-    ],
-    "depends_on_phase": "N",
-    "development_plan": {
-      "status": "planned",
-      "purpose": "Document the lettered development phases for the thesis.",
-      "separate_from_feature_overview": true,
-      "intended_for_intermediate_presentation": false
-    }
-  },
-  "rules": [
-    "CATIA is always authoritative for engineering knowledge.",
-    "The temporary shadow model may supplement CATIA only when required information is unavailable in CATIA.",
-    "Committed repository content is authoritative for implementation state.",
-    "Local uncommitted changes are not authoritative implementation state.",
-    "Every ingested source shall be assigned to exactly one project.",
-    "Project identity and source identity shall remain separate.",
-    "Framework assignments shall reference valid mapping-target node IDs.",
-    "Unknown framework or ontology reference IDs shall be rejected.",
-    "Context-only sources shall not create engineering evidence.",
-    "Consensus, confidence and variance shall not authorize publication.",
-    "Every publication target shall require an exact Human Review Decision.",
-    "Required LLM context shall never be silently truncated.",
-    "External ontology systems are references and shall not override project engineering authority.",
-    "Implementation evidence shall not silently create normative requirements.",
-    "The Post-Phase-P Reconciliation Gate shall perform the first Architecture-to-Requirements Reconciliation against CATIA.",
-    "Phase Q shall document every accepted architecture decision.",
-    "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified.",
-    "Published P9 run artifacts are Processing evidence, not Approved Input.",
-    "A P9 run ending in awaiting_review requests Human Review but does not approve engineering knowledge.",
-    "Phase G remains planned but shall not begin before completion of the Post-Phase-P Reconciliation Gate and explicit next-phase selection.",
-    "The thesis Development Plan shall remain separate from the runtime feature overview.",
-    "The completed Phase F/P prototype baseline shall be preserved for presentation during the Post-Phase-P Reconciliation Gate.",
-    "Every relevant Phase F/P capability shall be mapped to CATIA requirements or explicitly marked as missing, outdated or conflicting.",
-    "The Feature and Requirement Coverage Matrix shall distinguish implemented capability status from authoritative requirement coverage.",
-    "Phase N shall retain Shadow-model Migration and final whole-system reconciliation after later implementation phases."
-  ],
-  "phase_p": {
-    "status": "completed",
-    "completion_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
-    "completion_date": "2026-07-27",
-    "complete_automated_test_count": 3808,
-    "steps": {
-      "P1": "completed",
-      "P2": "completed",
-      "P3": "completed",
-      "P4": "completed",
-      "P5": "completed",
-      "P6": "completed",
-      "P7": "completed",
-      "P8": "completed",
-      "P9": "completed"
-    }
   },
   "project_processing": {
     "status": "implemented_verified",
@@ -408,6 +379,25 @@
       "project aggregation"
     ]
   },
+  "assessment_boundary": {
+    "preliminary_coverage": {
+      "available": true,
+      "implementation_phase": "P6",
+      "requires_human_approval": false,
+      "eligible_source_roles": [
+        "engineering_source"
+      ]
+    },
+    "approved_generation_readiness": {
+      "available": false,
+      "earliest_possible_phase": "G",
+      "requires_approved_input": true,
+      "requires_human_approval": true,
+      "eligible_source_roles": [
+        "engineering_source"
+      ]
+    }
+  },
   "project_coverage": {
     "status": "implemented_verified",
     "implementation_phase": "P6",
@@ -415,7 +405,6 @@
     "verified_commit": "f921b216d66ee359dea7cf116cfea03acb1e3510",
     "preliminary_coverage_available": true,
     "approved_generation_readiness_available": false,
-    "approved_generation_readiness_available_from_phase": "G",
     "support_profile_path": "context/frameworks/turing_preliminary_support_profile.json"
   },
   "project_dashboard": {
@@ -485,68 +474,346 @@
       "api_key_fields_persisted": false
     }
   },
-  "approved_input_promotion": {
-    "status": "planned_after_post_phase_p_reconciliation",
-    "implementation_phase": "G",
-    "purpose": "Promote exactly reviewed engineering information into Approved Input while preserving source, run, artifact and review traceability.",
-    "implementation_started": false,
-    "architecture_acceptance_required_before_implementation": true,
-    "blocked_by": "post_phase_p_reconciliation_gate",
-    "is_immediate_next_activity": false
-  },
-  "current_coordination_state": {
-    "stage": "post_phase_p_reconciliation_gate",
-    "status": "phase_p_completed_prototype_presentation_and_catia_reconciliation_next",
-    "phase_g_is_immediate_next": false,
-    "new_feature_implementation_blocked_until_gate_completion": true,
-    "verified_implementation_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+  "phase_p": {
+    "status": "completed",
+    "completion_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+    "completion_date": "2026-07-27",
     "complete_automated_test_count": 3808,
-    "correction_supersedes_sequencing_from_commit": "40f521c375750ae2d25c86f4b225441bab7c59b3"
+    "steps": {
+      "P1": "completed",
+      "P2": "completed",
+      "P3": "completed",
+      "P4": "completed",
+      "P5": "completed",
+      "P6": "completed",
+      "P7": "completed",
+      "P8": "completed",
+      "P9": "completed"
+    }
   },
   "post_phase_p_reconciliation_gate": {
-    "status": "active",
-    "purpose": "Preserve and present the Phase F/P prototype, reconcile implementation capabilities with the authoritative CATIA model, and create the Feature and Requirement Coverage Matrix before further feature implementation.",
+    "status": "completed",
+    "completion_date": "2026-07-31",
+    "purpose": "Present and preserve the Phase F/P prototype, reconcile implementation capabilities with the authoritative CATIA model, establish the first System-level baseline and select the next implementation phase.",
     "prototype_baseline": {
       "implementation_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
       "complete_automated_test_count": 3808,
       "manual_p9_acceptance_audit": "passed"
     },
-    "deliverables": [
-      "Prototype Presentation Baseline",
+    "completed_deliverables": [
+      "Prototype Presentation",
       "Phase F and P Capability Inventory",
       "Architecture Decision Inventory",
-      "Capability-to-CATIA Mapping",
-      "Requirement and Model Change Candidates",
-      "Accepted CATIA Model Updates",
+      "First Architecture-to-Requirements Reconciliation",
+      "Accepted CATIA System Requirement Baseline",
+      "Accepted CATIA System Design Constraint Baseline",
+      "Accepted CATIA System Function Baseline",
+      "Accepted CATIA System Logical Architecture Baseline",
       "Feature and Requirement Coverage Matrix",
-      "Explicit Next-phase Decision"
+      "Explicit Selection of Phase G"
     ],
-    "feature_matrix_columns": [
-      "Capability / Feature",
-      "CATIA Requirement ID",
-      "Implementation Status",
-      "Test / Evidence",
-      "ADR / Architecture Decision",
-      "Presentation Readiness",
-      "Remaining Roadmap / Open Work"
+    "phase_n_scope_completed_early": [
+      "First Architecture-to-Requirements Reconciliation",
+      "System Requirement Update",
+      "System Function Modeling",
+      "System Logical Architecture Modeling",
+      "Initial Feature and Requirement Coverage Baseline"
     ],
-    "implementation_status_values": [
-      "implemented_and_verified",
-      "partially_implemented",
-      "architecture_only",
-      "planned",
-      "not_planned_for_mvp"
+    "phase_n_scope_remaining": [
+      "SYSIDE Shadow-model Migration",
+      "Final Reconciliation after Phases G through L",
+      "Removal of Duplicated Maintained Model Authority",
+      "Final CATIA Synchronization",
+      "Confirmation of CATIA-only Maintained Model Authority"
     ],
-    "requirement_coverage_values": [
-      "covered",
-      "partially_covered",
-      "missing",
-      "outdated",
-      "conflicting"
-    ],
+    "feature_matrix": {
+      "orientation": "system_function",
+      "system_requirement_visibility": "hidden_in_presentation_view",
+      "stakeholder_requirement_coverage_visible": true,
+      "stakeholder_requirement_coverage_count": 39,
+      "stakeholder_requirement_total_count": 39,
+      "implementation_status_values": [
+        "implemented_and_verified",
+        "partially_implemented",
+        "architecture_only",
+        "planned",
+        "not_planned_for_mvp"
+      ],
+      "requirement_coverage_values": [
+        "covered",
+        "partially_covered",
+        "missing",
+        "outdated",
+        "conflicting"
+      ]
+    },
     "catia_is_authoritative": true,
     "implementation_is_automatic_requirement_authority": false,
     "catia_update_requires_explicit_acceptance": true,
-    "phase_g_blocked_until_gate_completion": true
-  }
+    "phase_g_blocked_until_gate_completion": false
+  },
+  "approved_input_promotion": {
+    "status": "active_architecture_discussion_next",
+    "implementation_phase": "G",
+    "purpose": "Promote exactly reviewed engineering information into Approved Input while preserving Project, Source, Run, Artifact, validation and Human Review traceability.",
+    "implementation_started": false,
+    "architecture_accepted": false,
+    "architecture_acceptance_required_before_implementation": true,
+    "blocked_by": null,
+    "is_immediate_next_activity": true,
+    "shall_generate_model_candidates": false,
+    "shall_generate_sysml_v2": false,
+    "required_contracts": [
+      "Approved Input Identity",
+      "Approved Input Manifest",
+      "Approved Input Repository",
+      "Promotion Eligibility",
+      "Promotion Service API",
+      "Stable Phase H Read Contract",
+      "Invalidation, Revocation and Supersession Behavior"
+    ],
+    "mandatory_authority_rules": [
+      "Unreviewed artifacts cannot become Approved Input.",
+      "Consensus cannot authorize promotion.",
+      "Confidence cannot authorize promotion.",
+      "Stale Human Review Decisions cannot authorize promotion.",
+      "Fingerprint mismatch blocks promotion."
+    ]
+  },
+  "model_candidate_layer": {
+    "status": "planned",
+    "implementation_phase": "H",
+    "depends_on_phase": "G",
+    "architecture_accepted": false,
+    "shall_generate_sysml_v2": false,
+    "relationship_prioritization_required": true,
+    "human_review_required": true,
+    "relationship_concepts_in_scope": [
+      "dependency",
+      "allocation",
+      "flow",
+      "refinement_related",
+      "derivation_related",
+      "framework_specific"
+    ],
+    "required_candidate_evidence": [
+      "source_element",
+      "target_element",
+      "relationship_semantic_intent",
+      "supporting_evidence",
+      "priority",
+      "prioritization_rationale",
+      "comparability_impact",
+      "profile_conformance",
+      "human_review_status"
+    ],
+    "comparability_profile": {
+      "status": "planned",
+      "name": "Model Structure and Comparability Profile",
+      "versioned": true,
+      "purpose": "Support consistent model structures across related products, product variants, independently generated models and repeated generation runs.",
+      "shall_define": [
+        "Preferred Model Structure",
+        "Canonical Relationship Choices",
+        "Required Comparison Anchors",
+        "Allowed Structural Variation",
+        "Prioritization Criteria",
+        "Permitted Exceptions",
+        "Review Requirements for Deviations"
+      ]
+    }
+  },
+  "model_generation": {
+    "status": "planned",
+    "implementation_phase": "I",
+    "depends_on_phase": "H",
+    "purpose": "Assemble reviewed model candidates into an internal engineering model."
+  },
+  "sysml_v2_generation": {
+    "status": "planned",
+    "implementation_phase": "J",
+    "depends_on_phase": "I",
+    "purpose": "Generate versioned SysML v2 textual notation from the internal engineering model."
+  },
+  "validation_layer": {
+    "status": "planned",
+    "implementation_phase": "K",
+    "depends_on_phase": "J",
+    "required_validation_scopes": [
+      "syntax",
+      "target_notation",
+      "target_artifact_structure",
+      "model_structure",
+      "relationship_consistency",
+      "relationship_semantics",
+      "constraints",
+      "traceability",
+      "comparability_profile",
+      "larger_context_compatibility_where_available"
+    ],
+    "failed_validation_blocks_publication": true
+  },
+  "output_writer": {
+    "status": "planned",
+    "implementation_phase": "L",
+    "depends_on_phase": "K",
+    "purpose": "Publish a complete versioned and fingerprinted output package.",
+    "required_outputs": [
+      "SysML v2 Output Files",
+      "Validation Report",
+      "Generation Summary",
+      "Traceability Package",
+      "Export Metadata",
+      "Artifact Fingerprints"
+    ]
+  },
+  "phase_n_model_reconciliation": {
+    "status": "planned_after_phase_l",
+    "name": "CATIA Shadow-model Migration and Final Reconciliation",
+    "first_requirements_reconciliation_pass_completed_in": "post_phase_p_reconciliation_gate",
+    "purpose": "Migrate remaining shadow-model information and perform final whole-system reconciliation after the executable prototype.",
+    "required_outputs": [
+      "Shadow-model Migration",
+      "Final Requirement Coverage Matrix",
+      "Final Accepted CATIA Model Updates",
+      "Decision-to-Requirement Traceability",
+      "CATIA-only Maintained Model Authority"
+    ],
+    "implementation_is_automatic_requirement_authority": false,
+    "human_review_required": true,
+    "catia_update_requires_explicit_acceptance": true
+  },
+  "phase_q_thesis_documentation": {
+    "status": "planned_after_phase_n",
+    "name": "Thesis Architecture Documentation",
+    "depends_on_phase": "N",
+    "scope": [
+      "Development Phase Documentation",
+      "All Accepted Architecture Decisions",
+      "Decision Context and Alternatives",
+      "Decision Rationale and Consequences",
+      "Decision-to-Requirement Traceability",
+      "Decision-to-Implementation Traceability",
+      "Semantic and Ontology Architecture",
+      "Human Review Architecture",
+      "Approved Input Architecture",
+      "Model Candidate Architecture",
+      "Relationship Prioritization",
+      "Model Comparability",
+      "SysML v2 Generation and Validation",
+      "Limitations and Deferred Work",
+      "Literature and Standard References",
+      "Thesis-only Development Plan"
+    ]
+  },
+  "phase_r_task_profile_portability": {
+    "status": "planned_after_phase_q",
+    "name": "Task Profile Portability Evaluation",
+    "depends_on_phase": "Q",
+    "purpose": "Evaluate whether the reusable core can be adapted quickly to a different engineering task by replacing a bounded set of task-specific artifacts.",
+    "alternate_test_task": "Requirements Quality and Completeness Analysis",
+    "reusable_core_candidates": [
+      "Project Workspace",
+      "Source Registry",
+      "Processing Runs",
+      "Artifact Persistence",
+      "Human Review",
+      "Evidence and Traceability",
+      "Dashboard",
+      "Agent Execution",
+      "Publication Gates"
+    ],
+    "task_specific_artifact_patterns": [
+      "context/project/*.json",
+      "context/frameworks/*.json",
+      "context/semantics/*.json",
+      "agents/*.md",
+      "recipes/**/*.recipe.md",
+      "tasks/*.md",
+      "validation rules",
+      "output contracts",
+      "review criteria"
+    ],
+    "replacement_manifest_required": true,
+    "evaluation_measures": [
+      "Changed File Count",
+      "Share of Unchanged Core Modules",
+      "Implementation Time",
+      "Reused Tests",
+      "New Validation Rules",
+      "Required Code Changes",
+      "Achieved Functional Coverage",
+      "Limitations of the Reuse Claim"
+    ],
+    "alternate_task_checks": [
+      "Standard or Rule-set Conformance",
+      "Completeness",
+      "Atomicity",
+      "Ambiguity",
+      "Requirement Contradictions",
+      "Missing Information",
+      "Proposed Corrections",
+      "Proposed Additions",
+      "Human Review"
+    ]
+  },
+  "phase_s_project_affinity_recommendation": {
+    "status": "planned_after_phase_r_low_priority",
+    "name": "Project Affinity Recommendation",
+    "depends_on_phase": "R",
+    "priority": "low",
+    "purpose": "Recommend fitting existing Projects for newly selected data before persistent Source registration.",
+    "recommendation_inputs": [
+      "Project Description",
+      "Framework Template",
+      "Existing Sources",
+      "Accepted Project Vocabulary",
+      "Framework Coverage",
+      "Semantic Similarity"
+    ],
+    "automatic_project_assignment_allowed": false,
+    "user_confirmation_or_override_required": true,
+    "persistent_registration_before_project_selection_allowed": false,
+    "permanent_unassigned_source_pool_allowed": false
+  },
+  "current_coordination_state": {
+    "stage": "phase_g_approved_input_promotion",
+    "status": "post_phase_p_reconciliation_completed_phase_g_selected",
+    "phase_g_is_immediate_next": true,
+    "new_feature_implementation_blocked_until_gate_completion": false,
+    "phase_g_architecture_acceptance_required_before_implementation": true,
+    "verified_implementation_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+    "complete_automated_test_count": 3808,
+    "prototype_target_date": "2026-08-14"
+  },
+  "rules": [
+    "CATIA is always authoritative for engineering knowledge.",
+    "The temporary shadow model may supplement CATIA only when required information is unavailable in CATIA.",
+    "Committed repository content is authoritative for implementation state.",
+    "Local uncommitted changes are not authoritative implementation state.",
+    "Every persisted Source shall be assigned to exactly one Project.",
+    "Project identity and Source identity shall remain separate.",
+    "Framework assignments shall reference valid mapping-target node IDs.",
+    "Unknown framework or ontology reference IDs shall be rejected.",
+    "Context-only Sources shall not create engineering evidence.",
+    "Consensus, confidence and variance shall not authorize publication or promotion.",
+    "Every publication, promotion or authoritative selection target shall require an exact Human Review Decision.",
+    "Required LLM context shall never be silently truncated.",
+    "External ontology systems are references and shall not override project engineering authority.",
+    "Implementation evidence shall not silently create normative requirements.",
+    "The first Architecture-to-Requirements Reconciliation was completed during the Post-Phase-P Reconciliation Gate.",
+    "Phase N shall perform final reconciliation after Phases G through L.",
+    "Published P9 run artifacts are processing evidence, not Approved Input.",
+    "A P9 run ending in awaiting_review requests Human Review but does not approve engineering knowledge.",
+    "Only eligible, exactly reviewed and fingerprint-bound evidence may become Approved Input.",
+    "Phase G shall not generate model candidates or SysML v2.",
+    "Relationship prioritization shall remain advisory until Human Review.",
+    "Distinct relationship semantics shall not be silently collapsed into a generic link.",
+    "Model comparability shall be assessed against a versioned profile.",
+    "Task-profile portability shall be evaluated using measured implementation evidence.",
+    "Project Affinity Recommendation shall remain advisory and low priority.",
+    "The executable prototype target is 2026-08-14.",
+    "Schedule pressure shall not weaken Human Review, traceability, project isolation, validation or publication gates.",
+    "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
+  ]
 }

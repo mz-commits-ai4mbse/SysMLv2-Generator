@@ -2,10 +2,14 @@
 
 ## Purpose
 
-This document describes the current committed implementation reality of the
-Turing Generator. It is updated during every `SSOT UPDATE` and shall not
-redefine engineering knowledge contained in the authoritative CATIA SysML v2
-model.
+This document describes the current accepted project status, the committed
+implementation reality and the active development objective of the Turing
+Generator.
+
+It is updated during every `SSOT UPDATE`.
+
+It shall not redefine engineering knowledge contained in the authoritative
+CATIA SysML v2 model.
 
 ---
 
@@ -29,11 +33,11 @@ Verified Implementation Commit
 
 Architecture Version
 
-1.1
+1.2
 
 Knowledge Base Version
 
-1.5
+1.6
 
 Implementation Version
 
@@ -41,88 +45,162 @@ Implementation Version
 
 Current Roadmap Version
 
-1.5
+1.6
 
 Current Development Phase
 
-Post-Phase-P Reconciliation Gate
+Phase G — Approved Input Promotion
 
 Current Status
 
-Phase P Completed — Prototype Presentation and CATIA Reconciliation Next
+Post-Phase-P Reconciliation Gate Completed — Phase G Selected
+
+End-to-End Prototype Target
+
+2026-08-14
 
 Last SSOT Update
 
-2026-07-28
+2026-07-31
 
 ---
 
 # Current Objective
 
-Hold the implementation baseline after the completed Phase P prototype and
-perform the previously agreed Post-Phase-P Reconciliation Gate before any new
-feature phase begins.
+Complete the executable end-to-end Turing Generator prototype no later than
+2026-08-14.
 
-The gate has four connected objectives:
+The accepted prototype path is:
 
-1. present and preserve the current prototype baseline
-2. inventory the capabilities implemented in Phases F and P
-3. reconcile those capabilities and accepted architecture decisions with the
-   authoritative CATIA SysML v2 model
-4. create a Feature and Requirement Coverage Matrix that shows what is already
-   implemented and what remains on the roadmap
+```text
+Source
+→ Processing Run
+→ Human Review
+→ Approved Input
+→ Model Candidates
+→ Internal Engineering Model
+→ SysML v2 Generation
+→ Validation
+→ Versioned Output Package
+```
 
-Phase G — Approved Input Promotion remains planned, but it is not the immediate
-next activity and shall not begin until this gate is complete and the next phase
-has been explicitly confirmed.
+The required implementation phases are:
+
+```text
+Phase G — Approved Input Promotion
+→ Phase H — Model Candidate Layer
+→ Phase I — Model Generation Agent
+→ Phase J — SysML v2 Code Generator
+→ Phase K — Validation Layer
+→ Phase L — Output Writer
+```
+
+Phase N and Phase Q follow after the executable prototype:
+
+```text
+Phase N — CATIA Shadow-model Migration and Final Reconciliation
+→ Phase Q — Thesis Architecture Documentation
+```
+
+Post-prototype portability evaluation and low-priority enhancements follow
+after Phase Q:
+
+```text
+Phase R — Task Profile Portability Evaluation
+→ Phase S — Project Affinity Recommendation
+```
+
+---
 
 # Current Engineering Priorities
 
 Priority 1
 
-Freeze the demonstrable Phase F/P prototype baseline at:
+Begin Phase G architecture definition and implementation immediately.
 
-`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+Phase G shall establish the exact boundary between:
 
-with 3808 passing automated tests and the completed P9 manual acceptance audit.
+- raw Sources
+- run-owned processing evidence
+- Human Review Decisions
+- Approved Input
+- later model-candidate generation
 
 Priority 2
 
-Present the prototype without mixing presentation preparation with new runtime
-feature implementation.
+Complete Phases G through L by 2026-08-14 without weakening:
+
+- Human Review authority
+- project isolation
+- source and artifact traceability
+- deterministic validation
+- immutable published evidence
+- CATIA engineering authority
 
 Priority 3
 
-Create a complete capability inventory for Phase F and P, including accepted
-architecture decisions, implementation modules, tests and manual evidence.
+Preserve the verified Phase F/P prototype baseline at:
+
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+
+with:
+
+- 3808 passing automated tests
+- completed P9 manual acceptance audit
+- successful project-bound ingestion ending in `awaiting_review`
 
 Priority 4
 
-Map every relevant capability to existing CATIA Stakeholder Requirements,
-System Requirements, Use Cases and downstream model elements. Identify missing,
-outdated, incomplete and conflicting model coverage.
+Implement Phase H so that model relationship candidates are not treated as an
+undifferentiated set.
+
+The system shall support:
+
+- explicit relationship candidates
+- relationship type and semantic intent
+- relationship priority
+- prioritization rationale
+- structural-comparability impact
+- Human Review before acceptance
+
+The prioritization shall address relationships whose intended meanings are
+often used inconsistently or near-synonymously in source material or modeling
+practice, including:
+
+- dependency
+- allocation
+- flow
+- refinement-related relationships
+- derivation-related relationships
+- other framework-specific relationship concepts
+
+The objective is not merely to select plausible links.
+
+The objective is to support comparable model structures across related
+products, product variants and independently generated models.
 
 Priority 5
 
-Review every proposed requirement or model change with the project owner and
-update CATIA only after explicit acceptance.
+Maintain complete feature, requirement and implementation traceability while
+the prototype is completed.
+
+The authoritative CATIA model remains the source of engineering requirements.
+
+The committed repository remains the source of implementation reality.
 
 Priority 6
 
-Create the Feature and Requirement Coverage Matrix with at least:
+Defer the following work until after the executable prototype unless required
+to remove a blocker:
 
-- Capability / Feature
-- CATIA Requirement ID
-- Implementation Status
-- Test / Evidence
-- ADR / Architecture Decision
-- Presentation Readiness
-- Remaining Roadmap / Open Work
+- Phase N final CATIA migration and reconciliation
+- Phase Q thesis architecture documentation
+- Phase R portability evaluation
+- Phase S project-affinity recommendation
+- project editing and deletion refinements
+- OCR and unrestricted multimodal extraction
 
-Priority 7
-
-Decide the next implementation phase only after the reconciliation gate is
-complete. Phase G remains planned but is not automatically next.
+---
 
 # Verified Implementation Baseline
 
@@ -143,270 +221,330 @@ Implemented capabilities include:
 - Dry Run and LLM execution paths
 - report, run-summary, consensus, agent-output and artifact browsing
 
-## P1 — Framework Template Definition
+## Phase P — Project Workspace and Project-bound Ingestion
 
-P1 is complete and verified at:
+Phase P is complete.
+
+Final implementation verification commit:
+
+`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+
+Complete automated test baseline:
+
+3808 passed
+
+Manual P9 acceptance audit:
+
+PASS
+
+Completed steps:
+
+| Step | Deliverable | Status |
+|---|---|---|
+| P1 | Framework Template Definition | Completed |
+| P2 | Project Manifest and Workspace Structure | Completed |
+| P3 | Source Registry and mandatory Project Assignment | Completed |
+| P4 | Framework-mapped heterogeneous Information Units | Completed |
+| P5 | Processing State and Artifact Organization | Completed |
+| P6 | Preliminary Coverage and Potential Model Support | Completed |
+| P7 | Project Dashboard | Completed |
+| P8 | Tests and Integration Readiness Review | Completed |
+| P9 | Project-bound Agentic Ingestion Integration | Completed |
+
+### P1 — Framework Template Definition
+
+Verified at:
 
 `82b5cbbe9bedac77a4b02928a596ea8fbdacc873`
 
 Implemented capabilities include:
 
-- reviewed non-normative Apollo 11 structural reference
-- explicit accepted and rejected reference patterns
-- versioned framework template `TURING_RFLP_FRAMEWORK`
-- stable identifiers for 3 framework levels and 12 mapping targets
+- versioned `TURING_RFLP_FRAMEWORK`
+- 3 framework levels and 12 mapping targets
+- stable framework identifiers
 - zero-to-many framework assignments
-- rejection of unknown framework targets
+- rejection of unknown mapping targets
 - exclusion of `context_only` sources from framework mapping
 - deterministic framework-template validation
 
-## P2 — Project Manifest and Workspace Structure
+### P2 — Project Manifest and Workspace Structure
 
-P2 architecture is documented in:
+Architecture decision:
 
 `collaboration/decisions/ADR-005-project-workspace-architecture.md`
 
-P2 implementation is verified through:
+Verified through:
 
 `36184a2d90db349555ac3bd64ccd5c27ecb68cec`
 
 Implemented capabilities include:
 
 - six-digit project identities
+- separation of project identity and display name
 - project display-name uniqueness
-- explicit separation of internal project ID and display name
-- immutable framework-template reference
 - strict Project Manifest validation
 - project creation, loading, scanning and isolation
 - safe project paths and symlink rejection
 - deterministic project reopening
 
-## P3 — Project Source Registry
+### P3 — Project Source Registry
 
-P3 architecture is documented in:
+Architecture decisions:
 
 - `collaboration/decisions/ADR-009-textual-source-processing-boundary.md`
 - `collaboration/decisions/ADR-010-project-source-registry-architecture.md`
 
-P3 implementation is verified through:
+Verified through:
 
 `55cc4f104082ecfef70b3dcdeb8f28406ed95105`
 
 Implemented capabilities include:
 
-- mandatory project assignment for every source
-- project-local source identifiers
+- mandatory project assignment for every persisted Source
+- project-local Source identifiers
 - immutable Source Manifests
-- exact content hashes and source metadata
+- source content hashes and metadata
 - `engineering_source` and `context_only` roles
 - duplicate-content rejection within a project
-- safe source persistence and deterministic scans
-- strict separation of project identity and source identity
+- safe project-local source persistence
+- strict separation of project and Source identity
 
-## P4 — Framework-mapped Heterogeneous Information Units
+### P4 — Framework-mapped Heterogeneous Information Units
 
-P4 semantic architecture is documented in:
+Architecture decision:
 
 `collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md`
 
-P4 is complete and verified at:
+Verified at:
 
 `0c8ba428e7e6469e410b541c114d7a5a9474321c`
 
-Verification:
+Implemented capabilities include:
 
-- complete automated test suite: 2594 passed
-- own-source diff validation: passed
-- pinned external ontology integrity validation: passed
-- branch synchronization: `HEAD == origin/main`
-
-Implemented P4 capabilities include:
-
-- deterministic source projections for text, Markdown, JSON, CSV, TSV and PDF
-  text layers
-- strict projection manifests, locators and project-local repositories
-- pinned BFO 2020 and IOF Core 202602 ontology snapshots
-- explicit ontology registry and deterministic derived reference-concept index
-- 236 indexed external reference concepts
-- Turing Core Vocabulary with explicit authority boundaries
-- project-specific glossary candidates and terminology decisions
-- immutable, source-traceable Information Units
+- deterministic projections for text, Markdown, JSON, CSV, TSV and PDF text layers
+- projection manifests and source locators
+- pinned BFO 2020 and IOF Core 202602 reference snapshots
+- ontology registry and deterministic reference-concept index
+- Turing Core Vocabulary
+- project glossary candidates and terminology decisions
+- immutable source-traceable Information Units
 - semantic extraction candidate contracts
-- multi-agent semantic consensus with explicit disagreement and variance
-- terminology-mapping candidates with reference validation
-- framework-assignment candidates with reference validation
+- multi-agent semantic consensus, disagreement and variance
+- terminology-mapping candidates
+- framework-assignment candidates
 - immutable Human Review Decisions
 - exact target-content and validation-fingerprint binding
-- project-local review persistence and publication gates
-- deterministic, auditable token budgeting
-- fail-closed behavior when required context cannot fit
+- deterministic token budgeting
+- fail-closed required-context handling
 
-## P5 — Processing State and Artifact Organization
+### P5 — Processing State and Artifact Organization
 
-P5 architecture is documented in:
+Architecture decision:
 
 `collaboration/decisions/ADR-012-processing-state-and-artifact-organization.md`
 
-P5 implementation was completed through:
+Verified through:
 
 `9a9ef8bd7c08c354c638d4b0e072e308e7c02516`
 
-Verification:
-
-- P5 processing lifecycle and aggregation tests: 528 passed
-- complete automated test suite after P5: 3122 passed
-- branch synchronization: `HEAD == origin/main`
-
-Implemented P5 capabilities include:
+Implemented capabilities include:
 
 - immutable Processing Run Manifests
 - immutable Processing Event Manifests
 - immutable Processing Decision Manifests
-- event-chain validation and current-state reconstruction
+- event-chain validation
+- current-state reconstruction
 - source-bound Processing Runs
 - attempt identifiers
-- run work directories and run-owned artifact directories
+- run work and artifact directories
 - retry, supersession, invalidation and recovery diagnostics
-- Source-level and Project-level Processing aggregation
-- fail-closed state and issue reporting
+- Source-level and Project-level aggregation
+- fail-closed state reporting
 
-## P6 — Preliminary Coverage and Potential Model Support
+### P6 — Preliminary Coverage and Potential Model Support
 
-P6 architecture is documented in:
+Architecture decision:
 
 `collaboration/decisions/ADR-013-preliminary-coverage-and-potential-model-support.md`
 
-P6 implementation was completed through:
+Verified through:
 
 `f921b216d66ee359dea7cf116cfea03acb1e3510`
 
-Verification:
-
-- P6 coverage test suite: 307 passed
-- complete automated test suite after P6: 3429 passed
-
-Implemented P6 capabilities include:
+Implemented capabilities include:
 
 - deterministic Preliminary Coverage assessment
 - explicit support profile
-- project-local coverage evidence collection
-- separation of covered, uncovered and attention-required framework nodes
-- candidate support assessment for future model scopes
-- strict separation between Preliminary Coverage and Approved Generation
-  Readiness
-- recognition that Phase P cannot approve generation readiness
+- project-local coverage evidence
+- covered, uncovered and attention-required states
+- potential support assessment for future model scopes
+- strict separation of Preliminary Coverage and Approved Generation Readiness
 
-## P7 — Project Dashboard
+### P7 — Project Dashboard
 
-P7 architecture is documented in:
+Architecture decision:
 
 `collaboration/decisions/ADR-014-project-dashboard-architecture.md`
 
-P7 implementation was completed through:
+Verified through:
 
 `d8a3bc9bb55a4b7ab0fa6e999b74b8541bf224b6`
 
-P7 project-creation fixes were completed through:
+Project-creation fixes:
 
 `fe0fd24`
 
-Verification:
+Implemented capabilities include:
 
-- P7 dashboard tests after project-creation fix: 319 passed
-- complete automated test suite after P7 fix: 3749 passed
+- common Project Dashboard
+- Overview view
+- Sources & Processing view
+- Coverage & Support view
+- Attention & Review view
+- Traceability view
+- project selection and constrained project creation
+- evidence navigation
+- safe document preview
+- read-only dashboard boundary except for constrained project creation
 
-Implemented P7 capabilities include:
+### P8 — Tests and Integration Readiness Review
 
-- common read-only Project Dashboard
-- Overview, Sources & Processing, Coverage & Support, Attention & Review and
-  Traceability views
-- Project selection and first-project bootstrap
-- project creation from the dashboard shell
-- evidence navigation with safe repository-relative references
-- document preview for JSON, Markdown, text, table and metadata evidence
-- status color limited to status semantics
-- dashboard boundary kept free of execution logic
+P8 confirmed:
 
-## P8 — Tests and Integration Readiness Review
+- P1–P7 integration readiness
+- no need for a parallel project or processing architecture
+- need for a separate P9 project-bound ingestion integration boundary
+- preservation of dashboard execution boundaries
 
-P8 was used as the P1–P7 integration readiness checkpoint before P9.
+### P9 — Project-bound Agentic Ingestion Integration
 
-P8 confirmed that:
-
-- P1–P7 authorities could support project-bound ingestion without a parallel
-  architecture
-- the existing dashboard needed a navigation seam but not execution ownership
-- project-bound ingestion required a separate P9 architecture decision
-- the accepted dashboard boundary remained read-only except for constrained
-  Project Workspace creation
-
-## P9 — Project-bound Agentic Ingestion Integration
-
-P9 architecture is documented in:
+Architecture decision:
 
 `collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md`
 
-P9 implementation was completed through:
+Verified through:
 
 `26acace4d7ba2849b33c5e0dacedf838f83c7705`
 
-Important P9 commits include:
-
-- `e7f2a0ec3cb5d9bea150d9fd69eb61b5d79dc6e3` — P9 architecture decision
-- `c8f852218c9260248e1a1285d6df89d963d8c695` — common application navigation
-- `9b664da72fc6d33c03c209e6f7b5ea81091a19c7` — project-bound source registration
-- `bd9ee157ab5fd6454138bfef11ed5bdbb355bc29` — Processing Run bridge
-- `26acace4d7ba2849b33c5e0dacedf838f83c7705` — full ingestion workflow,
-  publication, Execution UI and review navigation
-
-Verification:
-
-- complete automated test suite after P9: 3808 passed
-- manual P9 acceptance audit: PASS
-- branch synchronization: `HEAD == origin/main`
-
-Implemented P9 capabilities include:
+Implemented capabilities include:
 
 - common Turing Generator application shell
-- validated navigation between Project Dashboard and Agentic Ingestion
 - project-bound Source upload and registration
-- support for Markdown, text, JSON, CSV, TSV and PDF text-layer source
-  containers
-- deterministic Source Projection before Phase F execution
-- P5 Processing Run creation for selected project and source
+- Source Projection before Phase F execution
+- P5 Processing Run creation
 - `agentic_ingestion` Processing Stage
-- Phase F execution inside the P5 run-owned work directory
-- validation of generated work outputs before publication
+- execution inside a run-owned work directory
+- validation before publication
 - immutable publication of run-owned artifacts
-- `ProcessingArtifactReference` values for published artifacts
+- `ProcessingArtifactReference` generation
 - `artifact_published` and `review_requested` events
-- final successful run state `awaiting_review`
-- Execution UI with dry-run default and explicit live-run handling
-- Dashboard return to Sources & Processing
-- prominent Ingestion Review Report navigation for pending review
+- successful final state `awaiting_review`
+- Execution UI
+- Dashboard return and review-report navigation
 
-Manual P9 acceptance evidence:
+Manual acceptance evidence includes:
 
-- demo project: `458990`
-- failed negative source: `SRC-000001` / `RUN-000001`
-- successful dry-run source: `SRC-000002` / `RUN-000002`
-- successful run state: `awaiting_review`
-- successful event sequence:
-  - `run_created`
-  - `stage_started`
-  - `artifact_published`
-  - `review_requested`
-- published artifacts:
-  - 4 `agent_outputs`
-  - 8 `consensus_reports`
-  - 1 `review_reports`
-  - 2 `run_summaries`
-- total published artifact references: 15
+- negative processing case ending in `failed`
+- successful dry-run case ending in `awaiting_review`
+- 15 published artifact references
 - all published artifact fingerprints verified
 - no API-key fields persisted
 
-The manual demo data under `data/projects/` is local test evidence and is not an
-authoritative committed implementation artifact.
+Local demo data under `data/projects/` remains non-authoritative test evidence.
+
+---
+
+# Post-Phase-P Reconciliation Gate
+
+## Status
+
+Completed on 2026-07-31.
+
+## Completed Deliverables
+
+The completed gate includes:
+
+- presentation of the Phase F/P prototype
+- preservation of the verified implementation baseline
+- inventory of implemented Phase F/P capabilities
+- review of accepted architecture decisions
+- first Architecture-to-Requirements Reconciliation against CATIA
+- accepted CATIA System Requirements baseline
+- accepted CATIA System Design Constraint baseline
+- accepted System Function baseline
+- accepted System Logical Architecture baseline
+- feature and requirement coverage analysis
+- explicit selection of Phase G as the next implementation phase
+
+## Accepted CATIA System Baseline
+
+The authoritative CATIA model now contains the accepted System-level baseline:
+
+- 39 Stakeholder Requirements
+- 102 System Requirements
+- 30 active System Design Constraints
+- 12 System Functions
+- 8 Logical Components
+- System Function interaction network
+- Logical interconnection view
+- complete Stakeholder Requirement coverage through System Functions
+
+The 102 System Requirements are grouped into topical packages for navigation
+and documentation only.
+
+The grouping shall not be interpreted as:
+
+- pre-allocation to Logical Components
+- subsystem boundaries
+- proof of implementation
+- a replacement for the accepted derivation chain
+
+The accepted derivation chain remains:
+
+```text
+Stakeholder Requirements
+→ System Requirements
+→ System Functions
+→ Logical Components
+→ implementation evidence
+```
+
+System Physical Architecture and Subsystem R/F/L/P remain deferred.
+
+## Feature and Requirement Coverage
+
+The completed reconciliation confirms:
+
+- all 39 Stakeholder Requirements are covered by at least one System Function
+- every System Requirement has one primary System Function allocation
+- implementation status remains distinct from requirement coverage
+- current runtime implementation is strongest in ingestion, processing,
+  evidence, traceability and status presentation
+- architecture derivation, model validation and SysML v2 generation remain the
+  primary open prototype capabilities
+
+## Phase N Scope Brought Forward
+
+The Post-Phase-P Reconciliation Gate performed part of the originally planned
+Phase N scope early.
+
+Completed early:
+
+- first Architecture-to-Requirements Reconciliation
+- accepted System Requirement update
+- accepted System Function modeling
+- accepted System Logical Architecture modeling
+- initial feature and requirement coverage baseline
+
+Still retained in Phase N:
+
+- migration of the temporary SYSIDE shadow model
+- removal of duplicated maintained model authority
+- final reconciliation after Phases G–L
+- final synchronization with CATIA
+- confirmation that CATIA is the only maintained engineering model
+
+Phase N is therefore not complete.
 
 ---
 
@@ -414,28 +552,23 @@ authoritative committed implementation artifact.
 
 ## Engineering Authority
 
-The CATIA SysML v2 model remains authoritative for:
+The authority hierarchy is:
 
-- stakeholders
-- user needs
-- stakeholder requirements
-- use cases
-- system architecture
-- model relationships
+1. CATIA SysML v2 model for engineering knowledge
+2. committed repository for implementation reality
+3. Collaboration Knowledge Base for roadmap, coordination and accepted decisions
+4. chat history and temporary generated artifacts
 
-The temporary SYSIDE shadow model may supplement missing information until
-Phase N. It shall never override or contradict CATIA.
+The temporary SYSIDE shadow model may supplement missing CATIA information
+until Phase N.
 
-The committed repository is authoritative for implementation reality.
+It shall never override or contradict CATIA.
 
-The Collaboration Knowledge Base is authoritative for roadmap, coordination,
-accepted decisions and working rules.
-
-Implementation evidence does not silently create normative requirements.
+Implementation evidence shall not silently create normative requirements.
 
 ## Accepted Framework
 
-The implemented Phase P framework contains:
+The implemented framework contains:
 
 - Stakeholder Level
   - Stakeholders
@@ -453,50 +586,59 @@ The implemented Phase P framework contains:
   - Logical
   - Physical
 
-Apollo 11 remains a non-normative reference. Its CoSMA framework, package
-layout, engineering content and identifiers were not transferred.
+Apollo 11 remains a non-normative structuring reference.
 
-## Modular Repository Architecture
+Its engineering content, CoSMA framework and package layout were not
+transferred.
 
-The Turing Generator uses a modular, artifact-oriented architecture.
+## Modular Artifact-oriented Architecture
 
-Important configuration and knowledge artifacts are maintained as explicit
-repository files, especially JSON and Markdown files. Examples include:
+The Turing Generator uses a modular, recipe-driven and artifact-oriented
+architecture.
 
-- project principles and scope context
+Important explicit artifacts include:
+
+- project principles
+- project scope context
 - framework templates
 - support profiles
 - ontology registries
-- core vocabulary
+- vocabularies
 - recipes
-- agent definitions
+- agent profiles
 - task definitions
 - source manifests
-- processing manifests and events
-- review reports and run summaries
+- processing manifests
+- events and decisions
+- review reports
+- run summaries
+- generated output artifacts
 
-This makes the implementation portable: a different domain can reuse the same
-project, source, processing, dashboard, review and publication infrastructure
-while replacing domain-specific framework templates, support profiles, recipes,
-agents, vocabularies and validation rules.
+The core infrastructure is intended to remain reusable while task-specific
+profiles and artifacts are exchanged.
 
 ## Source-processing Boundary
 
-The supported MVP engineering-processing boundary is textual information.
+The MVP processing boundary remains textual information.
 
-Native textual files and deterministic text projections may enter semantic
-processing.
+Supported:
 
-PDF processing is limited to extractable text layers. OCR, image understanding,
-technical-drawing interpretation and unrestricted multimodal extraction remain
-outside the MVP.
+- text
+- Markdown
+- JSON
+- CSV
+- TSV
+- deterministic textual projections
+- PDF text layers
 
-Supporting additional non-textual engineering media requires a separate,
-explicit architecture and validation decision.
+Outside the MVP:
+
+- OCR
+- image-only document interpretation
+- technical-drawing interpretation
+- unrestricted multimodal engineering extraction
 
 ## Processing and Publication Boundary
-
-Processing Runs are operational processing evidence.
 
 A successful P9 execution:
 
@@ -514,78 +656,292 @@ It does not:
 - generate model candidates
 - generate SysML v2
 
-Published run-owned artifacts are authoritative evidence for what a Processing
-Run produced. They are not authoritative engineering knowledge until later
-review and promotion phases accept them.
+Published run-owned artifacts are authoritative evidence for what the run
+produced.
+
+They are not authoritative engineering knowledge until an accepted promotion
+workflow approves them.
 
 ## Human Review Boundary
 
-Multi-agent agreement, confidence level and variance are evidence for review,
-not publication authority.
+Consensus, confidence and variance are review evidence.
 
-Every engineering publication or promotion target requires an explicit Human
-Review Decision.
+They are not approval or publication authority.
 
-P9 requests review through `review_requested`. A later Approved Input Promotion
-phase must define how reviewed P9 and P4 evidence becomes Approved Input.
-That future phase is blocked until the Post-Phase-P Reconciliation Gate is complete.
+Every promotion or engineering-publication target requires an explicit
+persisted Human Review Decision bound to the current target content and
+applicable validation fingerprints.
 
-## Token-budget Boundary
+## Model Comparability Boundary
 
-LLM prompts shall use deterministic relevant context slices.
+Model comparability is an explicit target for Phase H and Phase K.
 
-The system shall not automatically load:
+Related models, including product variants, shall be generated using a
+consistent structural profile so that meaningful comparison remains possible.
 
-- the complete codebase
-- complete ontology snapshots
-- unrelated project artifacts
+The profile shall address:
 
-System instructions, output capacity and a safety margin are reserved before
-context allocation.
+- preferred model-element structure
+- preferred relationship semantics
+- canonical relationship choices
+- required comparison anchors
+- allowed structural variation
+- relationship prioritization criteria
+- reviewable exceptions
 
-Required context is either included completely or the LLM call is blocked.
-Required context shall never be silently truncated.
+Automated prioritization remains advisory.
 
-Optional context is selected deterministically and every omission remains
-auditable.
+Human Review shall authorize accepted relationship candidates and exceptions.
 
 ---
 
-# Phase P Work Breakdown
+# Active Phase G — Approved Input Promotion
 
-| Step | Deliverable | Status |
-|---|---|---|
-| P1 | Framework Template Definition | Completed |
-| P2 | Project Manifest and Workspace Structure | Completed |
-| P3 | Source Registry and mandatory Project Assignment | Completed |
-| P4 | Framework-mapped heterogeneous Information Units | Completed |
-| P5 | Processing State and Artifact Organization | Completed |
-| P6 | Preliminary Coverage and Potential Model Support | Completed |
-| P7 | Project Dashboard | Completed |
-| P8 | Tests and Integration Readiness Review | Completed |
-| P9 | Project-bound Agentic Ingestion Integration | Completed |
+## Objective
 
-Phase P is complete.
+Create the authoritative bridge from reviewed processing evidence to Approved
+Input.
+
+## Required Outputs
+
+- Approved Input identity
+- Approved Input manifest
+- Approved Input repository
+- promotion eligibility rules
+- promotion workflow
+- exact Human Review Decision binding
+- traceability to Project, Source, Run, Artifact and Decision
+- rejection behavior
+- invalidation behavior
+- revocation behavior
+- supersession behavior
+- public read API for later model-candidate generation
+
+## Mandatory Boundaries
+
+- unreviewed P9 artifacts cannot become Approved Input
+- consensus cannot authorize promotion
+- confidence cannot authorize promotion
+- a stale review decision cannot authorize promotion
+- Approved Input shall not yet generate model candidates
+- preliminary coverage shall not be treated as Approved Generation Readiness
+
+## Immediate Architecture Questions
+
+1. What is the minimal Approved Input object?
+2. Which P4 and P9 artifacts are eligible promotion sources?
+3. Which Human Review Decision target types are required?
+4. How are source, artifact, run and validation fingerprints bound?
+5. How are rejected, superseded, invalidated and revoked promotions represented?
+6. How does Approved Input expose stable inputs to Phase H?
+7. Which promotion operations belong in the UI and which remain core APIs?
+
+---
+
+# Planned Prototype Phases
+
+## Phase H — Model Candidate Layer
+
+Phase H shall create traceable model-element and relationship candidates from
+Approved Input without generating SysML v2 code.
+
+In addition to model-element candidates, Phase H shall implement:
+
+- relationship candidates
+- canonical relationship semantics
+- relationship priority
+- prioritization rationale
+- comparability impact
+- structural-profile conformance
+- Human Review of selected relationships
+- explicit handling of alternative or near-synonymous relationship concepts
+
+The accepted relationship set shall support comparable structures across
+related models and product variants.
+
+## Phase I — Model Generation Agent
+
+Phase I shall assemble reviewed candidates into an internal engineering model.
+
+It shall preserve:
+
+- source traceability
+- Approved Input traceability
+- candidate traceability
+- relationship decisions
+- structural-profile references
+- Human Review Decisions
+
+## Phase J — SysML v2 Code Generator
+
+Phase J shall generate valid SysML v2 textual notation from the internal model.
+
+The generator shall target the accepted versioned notation and artifact
+structure profiles.
+
+## Phase K — Validation Layer
+
+Phase K shall validate:
+
+- syntax
+- target-notation conformance
+- target-artifact structure
+- model structure
+- relationship consistency
+- relationship semantic consistency
+- constraint conformance
+- traceability
+- comparability-profile conformance
+- larger-context compatibility where available
+
+## Phase L — Output Writer
+
+Phase L shall publish:
+
+- versioned SysML v2 output files
+- validation reports
+- traceability artifacts
+- generation summaries
+- export metadata
+- a complete versioned output package
+
+---
+
+# Post-prototype Phases
+
+## Phase N — CATIA Shadow-model Migration and Final Reconciliation
+
+Phase N retains:
+
+- SYSIDE shadow-model migration
+- final synchronization with CATIA
+- removal of duplicated maintained model authority
+- final reconciliation after Phases G–L
+- final requirement and architecture coverage
+- confirmation of CATIA-only maintained model authority
+
+## Phase Q — Thesis Architecture Documentation
+
+Phase Q shall document:
+
+- development phases
+- architecture decisions
+- alternatives and rationale
+- consequences
+- requirement traceability
+- implementation traceability
+- ontology and semantic architecture
+- Human Review architecture
+- validation architecture
+- model-comparability approach
+- limitations and deferred work
+
+## Phase R — Task Profile Portability Evaluation
+
+Phase R shall evaluate the thesis that the core Turing Generator architecture
+can be adapted quickly to a different engineering task by replacing a bounded
+set of task-specific artifacts.
+
+The reusable core is expected to include:
+
+- Project Workspace
+- Source Registry
+- Processing Runs
+- artifact persistence
+- Human Review
+- evidence and traceability
+- dashboard
+- agent execution
+- publication gates
+
+The evaluation shall produce a Task Profile Replacement Manifest that records:
+
+- artifact path
+- artifact role
+- core or task-specific classification
+- unchanged, adapted or replaced status
+- dependencies
+- required validation
+- required code changes
+
+The initial alternate task shall be Requirements Quality and Completeness
+Analysis.
+
+It shall assess:
+
+- requirement formulation against an explicitly selected standard or rule set
+- requirement completeness
+- requirement atomicity
+- ambiguity
+- contradictions between requirements
+- missing information
+- proposed corrections
+- proposed additions
+- Human Review of proposed changes
+
+The evaluation shall measure:
+
+- number of changed files
+- share of unchanged core modules
+- implementation time
+- reused tests
+- new validation rules
+- required code changes
+- achieved functional coverage
+
+## Phase S — Project Affinity Recommendation
+
+Phase S is a low-priority post-Phase-R enhancement.
+
+When a user selects new data for upload, the system may analyze the data before
+persistent Source registration and recommend existing projects that appear to
+fit.
+
+The recommendation may consider:
+
+- project description
+- framework template
+- existing Sources
+- accepted project vocabulary
+- framework coverage
+- semantic similarity
+
+The result shall be a ranked recommendation.
+
+It shall not automatically assign or persist the Source.
+
+The user shall confirm or override the project selection before registration.
+
+This preserves the accepted rule that every persisted Source belongs to exactly
+one Project and that no permanent unassigned Source pool exists.
 
 ---
 
 # Not Yet Implemented
 
+The following capabilities are not yet implemented:
+
 - Approved Input Promotion
-- Human Review workflow for promoting P9 review-report outcomes into Approved
-  Input
+- Approved Input repository and API
+- end-to-end review-to-promotion workflow
 - model candidate layer
-- model generation
+- relationship candidate prioritization
+- canonical relationship-selection profile
+- model comparability profile
+- internal model generation
 - SysML v2 code generation
-- validation and export
+- generated-model validation
+- versioned export package
 - CATIA synchronization
+- final shadow-model migration
+- task-profile portability evaluation
+- alternate Requirements Quality and Completeness task
+- project-affinity recommendation
 - project editing after creation
-- project deletion including all assigned data
-- refined dashboard actions for non-primary evidence beyond the P9 review
-  workflow
-- retry and successor UI for existing source runs
-- operational performance measurements for full live LLM team execution
-- OCR, technical drawing interpretation and unrestricted multimodal extraction
+- project deletion including assigned data
+- refined retry and successor UI
+- operational live-team performance measurements
+- OCR and unrestricted multimodal extraction
 
 ---
 
@@ -593,173 +949,59 @@ Phase P is complete.
 
 ## Active
 
-- Phase P does not yet create Approved Input.
-- P9 successful executions end in `awaiting_review`; a later Approved Input
-  Promotion phase is still required before they become accepted engineering input.
-- The authoritative CATIA model does not yet contain requirements for every
-  accepted and implemented capability introduced through architecture decisions.
-- Full-team LLM execution still requires operational performance and token
-  measurements beyond deterministic budgeting.
-- Project editing, project deletion and recovery operator workflows remain
-  planned refinements.
-- Local demo data under `data/projects/` is useful test evidence but not a
-  committed authoritative artifact.
+- the end-to-end prototype schedule is compressed to 2026-08-14
+- Phase G architecture is not yet accepted
+- P9 ends in `awaiting_review`, not Approved Input
+- no model candidates are generated
+- no internal engineering model is generated
+- no SysML v2 code is generated
+- no generated-model validation or export exists
+- final relationship semantics and comparability rules are not yet defined
+- full live-team performance and cost measurements remain open
+- project editing and deletion remain open
+- local demo data remains non-authoritative
 
 ## Controlled by Design
 
-- projects and sources use separate identities
-- source and artifact content is hash-bound
+- project and Source identities remain separate
+- every persisted Source belongs to one Project
+- Source and artifact content is hash-bound
 - cross-project mixing is rejected
 - unknown framework and ontology references are rejected
-- context-only sources cannot create engineering evidence
-- semantic candidates remain non-authoritative until human review
-- consensus and confidence cannot bypass human approval
+- `context_only` Sources cannot create engineering evidence
+- candidates remain non-authoritative until Human Review
+- consensus and confidence cannot bypass Human Review
 - required prompt context cannot be silently truncated
-- external ontology snapshots are pinned and integrity-checked
+- ontology snapshots are pinned and integrity-checked
 - CATIA remains authoritative for engineering knowledge
-- P9 published artifacts are run evidence, not Approved Input
+- P9 artifacts remain processing evidence until promotion
+- relationship prioritization will remain advisory until Human Review
+- project-affinity recommendations will remain advisory until user confirmation
 
 ---
-
-# Planned Thesis Development Plan
-
-A thesis-only Development Plan shall be documented after the complete
-implementation path is clearer.
-
-Purpose:
-
-- document the lettered development phases used in this project
-- preserve why phases were introduced, split or extended
-- explain how future architecture decisions are captured
-- stay separate from the feature overview, which shall describe the current
-  implemented and planned feature state
-- support the thesis, not the intermediate presentation
-
-This Development Plan is not a runtime feature and shall not replace the
-roadmap.
-
----
-
-# Post-Phase-P Reconciliation Gate
-
-This gate is the immediate work package after Phase P. It is a deliberate cut
-between the demonstrable prototype and further implementation.
-
-## Gate Scope
-
-### 1. Prototype Presentation Baseline
-
-- preserve the completed Phase F/P prototype for presentation
-- use commit `26acace4d7ba2849b33c5e0dacedf838f83c7705`
-- retain the 3808-test baseline and P9 manual acceptance evidence
-- do not begin a new feature phase while the gate is active unless explicitly
-  authorized
-
-### 2. Capability and Architecture Inventory
-
-Create a complete inventory of:
-
-- implemented Phase F and P capabilities
-- accepted ADRs
-- relevant modules and persistent artifacts
-- automated tests and manual evidence
-- planned but not yet implemented capabilities
-
-### 3. Architecture-to-Requirements Reconciliation
-
-For every relevant capability and accepted architecture decision:
-
-1. map it to existing CATIA Stakeholder Requirements, System Requirements, Use
-   Cases and downstream model elements
-2. identify missing, outdated, incomplete or conflicting requirements
-3. create traceable requirement and model-change candidates
-4. distinguish stakeholder need, requirement, design constraint and
-   implementation detail
-5. review every candidate with the project owner
-6. update CATIA only after explicit acceptance
-7. preserve existing IDs and accepted semantics unless an accepted change
-   requires otherwise
-
-Implementation reality is evidence for this reconciliation. It is not automatic
-normative authority and shall not silently create requirements.
-
-### 4. Feature and Requirement Coverage Matrix
-
-The matrix shall show at least:
-
-| Column | Purpose |
-|---|---|
-| Capability / Feature | Stable capability name |
-| CATIA Requirement ID | Existing or proposed authoritative requirement link |
-| Implementation Status | Implemented, partial, architecture-only or planned |
-| Test / Evidence | Automated test, commit, artifact or manual evidence |
-| ADR | Accepted architecture-decision link |
-| Presentation Readiness | Ready, limited or not demonstrable |
-| Remaining Roadmap | Missing implementation or later phase |
-
-Recommended implementation status values:
-
-- `implemented_and_verified`
-- `partially_implemented`
-- `architecture_only`
-- `planned`
-- `not_planned_for_mvp`
-
-Recommended requirement coverage values:
-
-- `covered`
-- `partially_covered`
-- `missing`
-- `outdated`
-- `conflicting`
-
-## Gate Exit Criteria
-
-- the current prototype has been presented or declared presentation-ready
-- every relevant Phase F/P capability is inventoried
-- every capability is mapped to CATIA coverage or explicitly marked as missing,
-  outdated or conflicting
-- requirement and model-change candidates have been reviewed
-- accepted CATIA updates have been applied
-- the Feature and Requirement Coverage Matrix is complete
-- the next implementation phase has been explicitly selected
-
----
-
-# Remaining Phase N Model Reconciliation
-
-Phase N remains planned for the later Shadow-model Migration and final
-whole-system reconciliation.
-
-Its remaining scope includes:
-
-- migration of the temporary SYSIDE shadow model
-- final synchronization with CATIA
-- removal of duplicated maintained model authority
-- final reconciliation of requirements introduced or changed after the
-  Post-Phase-P Gate
-- confirmation that CATIA is the only maintained engineering model
-
-The first Architecture-to-Requirements Reconciliation pass is no longer deferred
-to Phase N. It is performed now in the Post-Phase-P Reconciliation Gate.
 
 # Next Milestone
 
-Post-Phase-P Reconciliation Gate
+Phase G — Approved Input Promotion
 
 Execution order:
 
 ```text
-Prototype baseline and presentation
-→ Phase F/P capability inventory
-→ CATIA requirement and model reconciliation
-→ reviewed CATIA updates
-→ Feature and Requirement Coverage Matrix
-→ explicit next-phase decision
+Phase G architecture discussion
+→ explicit architecture acceptance
+→ ADR
+→ implementation
+→ tests
+→ review
+→ Phase G completion decision
 ```
 
-No Phase G architecture or implementation shall begin before this gate is
-complete and the project owner explicitly selects it as the next phase.
+The immediate next work item is the Phase G architecture contract.
+
+No Phase H implementation shall begin until Phase G provides a stable,
+reviewed Approved Input contract.
+
+---
 
 # Repository Collaboration Workflow
 
@@ -773,26 +1015,29 @@ Repository changes are applied, reviewed, committed and pushed locally by the
 project owner.
 
 AI assistants act as implementation guides and identify every affected file by
-its repository-relative path before proposing a change.
+repository-relative path before proposing a change.
+
+Broad staging commands shall not be used in a mixed working tree.
 
 ---
 
 # SSOT Update Cadence
 
-A complete SSOT UPDATE is normally performed after completion of a major
-roadmap phase or when a coordination error must be corrected.
+This update closes the Post-Phase-P Reconciliation Gate and activates Phase G.
 
-The 2026-07-27 Phase P completion update correctly recorded the completed
-implementation baseline but incorrectly stated that Phase G was immediately
-next.
+The implementation baseline remains unchanged because this update records:
 
-This correction restores the previously agreed Post-Phase-P Reconciliation
-Gate. It supersedes only the incorrect next-step sequencing. The Phase F/P
-implementation evidence and Phase P completion remain valid.
+- completed presentation and reconciliation work
+- accepted CATIA System Architecture
+- completed coverage analysis
+- selected next implementation phase
+- updated roadmap scope
+- accepted post-presentation feedback
 
-The next regular SSOT UPDATE is due after the reconciliation gate is complete,
-unless the project owner explicitly requests an earlier update or a critical
-handover need arises.
+The next SSOT update is due after a major implementation milestone or when a
+critical handover requires synchronization.
+
+---
 
 # Reference Documents
 
@@ -800,6 +1045,7 @@ handover need arises.
 - Working Rules: `working_rules.md`
 - Architecture Decisions: `decisions/`
 - Model Registry: `model_registry.json`
+- Change Log: `change_log.md`
 - Handover: `handovers/current_chat_handover.md`
 - Framework Template: `../context/frameworks/turing_rflp_framework.json`
 - Support Profile: `../context/frameworks/turing_preliminary_support_profile.json`
