@@ -22,23 +22,23 @@ have been completed.
 
 Architecture Version
 
-1.2
+1.3
 
 Knowledge Base Version
 
-1.6
+1.7
 
 Implementation Version
 
-0.8
+0.9
 
 Roadmap Version
 
-1.6
+1.7
 
 Last SSOT Update
 
-2026-07-31
+2026-08-03
 
 Current Phase
 
@@ -46,15 +46,15 @@ Current Phase
 
 Current Status
 
-Post-Phase-P Reconciliation Gate Completed — Phase G Selected
+Phase G Active — G1 and G2 Completed, G3 Next
 
 Verified Implementation Commit
 
-`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+`c61841789ed08b383e4cfc244d31f559125e6edb`
 
 Complete Automated Test Baseline
 
-3808 passed
+4206 passed
 
 Manual P9 Acceptance Audit
 
@@ -490,25 +490,123 @@ Phase P — Satisfied
 Create the authoritative bridge from reviewed processing evidence to Approved
 Input.
 
-Phase G shall define how eligible P4 and P9 evidence becomes approved
-engineering input through exact Human Review Decisions.
+Phase G defines how eligible P4 and P9 evidence becomes approved engineering
+input through exact Human Review Decisions.
 
-## Deliverables
+## Architecture Decision
+
+`collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md`
+
+Status:
+
+Accepted
+
+## Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| G1 | Human Review Workspace and Approved Input architecture | Completed |
+| G2 | Review Workspace foundations | Completed |
+| G3 | P4/P9 evidence adapters and Review Item construction | Next |
+| G4 | Review editing, finalization and reopening | Planned |
+| G5 | Approved Input promotion and lifecycle | Planned |
+| G6 | Human Review and promotion UI | Planned |
+| G7 | Integration, audit and end-to-end regression | Planned |
+
+## G1 Completion
+
+G1 established:
+
+- granular Review Item and Approved Input identities
+- explicit authority separation between processing evidence, draft review,
+  finalized review and Approved Input
+- eligible P4/P9 evidence boundaries
+- exact Review Target architecture
+- fingerprint-bound decisions and materialized selections
+- append-only Review Revisions
+- finalized-version immutability
+- Approved Input lifecycle architecture
+- stable Approved Input boundary for Phase H
+- project-local persistence boundaries
+- review and promotion responsibilities of SF_007 and LC_05
+
+Development-plan checkboxes completed by G1:
+
+```text
+[x] Approved-Input-Granularität / Identität
+[x] P4/P9-Quellen + Review Targets
+[x] Fingerprints, Lifecycle, Phase-H-Vertrag
+```
+
+## G2 Completion
+
+Verified implementation commit:
+
+`c61841789ed08b383e4cfc244d31f559125e6edb`
+
+Implemented deliverables:
+
+- Review Workspace error hierarchy
+- RVD, RVV, RVR, RIT and SRA identifiers
+- immutable Review Workspace types
+- strict manifests and deterministic fingerprints
+- canonical project-local paths
+- atomic Review Workspace creation
+- strict load operations
+- append-only Review Revisions
+- immutable Scoped Review Actions
+- exact item-fingerprint materialization
+- project-local identifier allocation without gap reuse
+- deterministic scanning and recovery diagnostics
+- unsafe-path and symlink rejection
+- project-isolated repository behavior
+- stable public Review Workspace API
+
+Verification:
+
+- focused G2 suite: 398 passed
+- complete automated suite: 4206 passed
+- local implementation synchronized with `origin/main`
+
+The Review Workspace portions of the Domain work are implemented. The Domain
+checkboxes remain open until AIN/AIE, the Approved Input repository, the Phase H
+read contract and complete promotion validation are implemented.
+
+## G3 Objective
+
+Create deterministic adapters that construct Review Documents and Review Items
+from eligible P4 and P9 evidence.
+
+G3 shall cover:
+
+- P4 semantic and Information Unit evidence
+- P9 run-owned Agent Outputs, Consensus Reports and Review Reports
+- exact Project, Source, Run, Attempt and Artifact references
+- stable subject keys
+- proposal and evidence references
+- original report locators
+- element, relationship and open-question separation
+- deterministic fingerprints
+- adapter validation and diagnostics
+
+G3 shall not finalize reviews or create Approved Input.
+
+## Remaining Deliverables
 
 - Approved Input identity
 - Approved Input manifest
 - Approved Input repository
 - promotion eligibility rules
 - promotion service or application API
-- exact Human Review Decision binding
+- exact finalization and Human Review Decision binding
 - traceability to Project, Source, Run, Artifact and Decision
-- promotion status and diagnostics
 - rejection behavior
 - invalidation behavior
 - revocation behavior
 - supersession behavior
 - stable read contract for Phase H
-- focused UI workflow where required
+- focused Human Review and promotion UI
+- end-to-end integration and manual acceptance
 
 ## Mandatory Boundaries
 
@@ -517,6 +615,7 @@ engineering input through exact Human Review Decisions.
 - confidence cannot authorize promotion
 - stale review decisions cannot authorize promotion
 - fingerprint mismatch blocks promotion
+- original processing evidence remains immutable
 - Approved Input remains separate from Preliminary Coverage
 - Phase G shall not generate model candidates
 - Phase G shall not generate SysML v2
@@ -531,25 +630,15 @@ engineering input through exact Human Review Decisions.
 - unreviewed P9 evidence cannot be treated as approved engineering knowledge
 - automated tests pass
 - manual review workflow is accepted
+- SSOT is synchronized with the verified implementation
 
 ## Status
 
-Active — Architecture Discussion Next
+Active — G1 and G2 Completed, G3 Next
 
 Depends on:
 
 Post-Phase-P Reconciliation Gate — Satisfied
-
-## First Architecture Questions
-
-1. What is the minimal Approved Input object?
-2. Which P4 and P9 artifacts are eligible promotion sources?
-3. Which Human Review Decision target types are required?
-4. How are content, source, artifact, run and validation fingerprints bound?
-5. How are rejected, invalidated, revoked and superseded promotions represented?
-6. Which object is the stable Phase H input?
-7. Which promotion operations belong in the core API and which belong in the UI?
-
 ---
 
 # Phase H — Model Candidate Layer

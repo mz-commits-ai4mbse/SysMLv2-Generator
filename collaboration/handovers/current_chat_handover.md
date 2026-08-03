@@ -30,27 +30,27 @@ Branch
 
 Verified Implementation Commit
 
-`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+`c61841789ed08b383e4cfc244d31f559125e6edb`
 
 Architecture Version
 
-1.2
+1.3
 
 Knowledge Base Version
 
-1.6
+1.7
 
 Implementation Version
 
-0.8
+0.9
 
 Roadmap Version
 
-1.6
+1.7
 
 Last SSOT Update
 
-2026-07-31
+2026-08-03
 
 Current Phase
 
@@ -58,11 +58,11 @@ Phase G — Approved Input Promotion
 
 Current Status
 
-Post-Phase-P Reconciliation Gate Completed — Phase G Selected
+Phase G Active — G1 and G2 Completed, G3 Next
 
 Complete Automated Test Baseline
 
-3808 passed
+4206 passed
 
 Manual P9 Acceptance Audit
 
@@ -88,6 +88,8 @@ Read the Collaboration Knowledge Base in this order:
 Then inspect:
 
 - the committed Phase F/P implementation baseline
+- ADR-016
+- the committed G2 Review Workspace implementation
 - the active Phase G roadmap section
 - existing Human Review contracts
 - P4 and P9 evidence and publication contracts
@@ -96,8 +98,10 @@ Then inspect:
 
 Do not use previous chat history as a source of truth.
 
-Do not begin implementation before the Phase G architecture contract has been
-discussed and explicitly accepted.
+Phase G architecture is accepted in ADR-016.
+
+Begin from G3. Do not skip ahead to review finalization, Approved Input
+promotion or Phase H.
 
 ---
 
@@ -176,21 +180,20 @@ It shall not be modified unless a later accepted public-package API requires it.
 
 ---
 
-# Completed SSOT Files in the Current Update
+# SSOT Files in the Current Update
 
-The following files have been updated locally during the current SSOT process:
+The following files are synchronized for the G2 completion milestone:
 
 - `collaboration/current_state.md`
 - `collaboration/roadmap.md`
-- `collaboration/working_rules.md`
 - `collaboration/model_registry.json`
 - `collaboration/change_log.md`
-
-The final handover file is:
-
 - `collaboration/handovers/current_chat_handover.md`
 
-Before committing, validate all six files together.
+`collaboration/working_rules.md` remains unchanged because the applicable
+authority and promotion boundaries are already accepted in ADR-016.
+
+Before committing, validate all five updated files together.
 
 ---
 
@@ -422,59 +425,127 @@ weakened.
 
 # Active Phase G — Approved Input Promotion
 
-## Objective
+## Current Status
 
-Create the authoritative bridge from reviewed processing evidence to Approved
-Input.
+```text
+G1 — Completed
+G2 — Completed and verified
+G3 — Next
+G4–G7 — Planned
+```
 
-## Mandatory Boundaries
+Verified implementation commit:
 
-- unreviewed artifacts cannot become Approved Input
-- consensus cannot authorize promotion
-- confidence cannot authorize promotion
-- stale Human Review Decisions cannot authorize promotion
-- fingerprint mismatch blocks promotion
-- Preliminary Coverage remains separate from Approved Generation Readiness
-- Phase G shall not generate model candidates
-- Phase G shall not generate SysML v2
+`c61841789ed08b383e4cfc244d31f559125e6edb`
 
-## Required Contracts
+Verification:
 
-Phase G shall define:
+```text
+Focused G2 suite: 398 passed
+Complete automated suite: 4206 passed
+HEAD equals origin/main
+```
 
-- Approved Input identity
-- Approved Input manifest
-- Approved Input repository
-- promotion eligibility
-- promotion service or application API
-- exact Human Review Decision binding
-- traceability to Project, Source, Run, Artifact and Decision
-- rejection behavior
-- invalidation behavior
-- revocation behavior
-- supersession behavior
-- stable read contract for Phase H
-- focused UI workflow where required
+## Accepted Architecture
 
-## First Architecture Questions
+Architecture decision:
 
-The next chat shall begin by resolving these questions:
+`collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md`
 
-1. What is the minimal Approved Input object?
-2. Which P4 and P9 artifacts are eligible promotion sources?
-3. Which Human Review Decision target types are required?
-4. How are content, Source, Artifact, Run and validation fingerprints bound?
-5. How are rejected, invalidated, revoked and superseded promotions represented?
-6. Which object becomes the stable input contract for Phase H?
-7. Which promotion operations belong in the core API?
-8. Which operations belong in the UI?
-9. Does one Approved Input represent one approved statement, one reviewed
-   Information Unit, one reviewed artifact section or an aggregate?
-10. How is eligibility recalculated after upstream invalidation or supersession?
+The accepted authority chain is:
 
-No Phase G implementation begins before the architecture is explicitly
-accepted and documented in an ADR.
+```text
+Original Source
+→ Agent and Consensus Evidence
+→ Original Review Report
+→ Draft Review Version
+→ Finalized Reviewed Document Version
+→ Approved Input
+```
 
+The following Architecture checkboxes are complete:
+
+```text
+[x] Approved-Input-Granularität / Identität
+[x] P4/P9-Quellen + Review Targets
+[x] Fingerprints, Lifecycle, Phase-H-Vertrag
+```
+
+## Completed G2 Implementation
+
+The committed Review Workspace provides:
+
+- RVD, RVV, RVR, RIT and SRA identities
+- immutable domain types
+- strict manifests and deterministic fingerprints
+- canonical project-local paths
+- atomic workspace creation
+- append-only revisions
+- immutable Scoped Review Actions
+- exact item-fingerprint materialization
+- strict loading
+- project-local identifier allocation
+- deterministic scanning
+- recovery diagnostics
+- symlink and unsafe-path rejection
+- project isolation
+- public package exports
+
+G2 does not provide:
+
+- AIN or AIE domain objects
+- P4/P9 adapter construction
+- review finalization
+- reopen behavior
+- Approved Input promotion
+- invalidation, revocation or supersession
+- Review or promotion UI
+
+## Next Work Package — G3
+
+G3 shall implement deterministic P4/P9 evidence adapters and Review Item
+construction.
+
+Begin by inspecting:
+
+- P4 Information Unit manifests
+- semantic extraction candidates
+- terminology-mapping candidates
+- Framework Assignment Candidates
+- immutable P4 Human Review Decisions
+- P9 Processing Artifact References
+- run-owned Agent Outputs
+- Consensus Reports
+- Review Reports
+- Run Summaries
+- existing original-report locator conventions
+
+G3 shall define and implement:
+
+- evidence eligibility for Review Workspace creation
+- exact evidence-reference validation
+- Review Document construction
+- stable Review Item construction
+- proposal grouping by stable subject
+- element, relationship and open-question separation
+- original report locators
+- source and consensus evidence references
+- deterministic adapter diagnostics
+- focused tests
+
+G3 shall preserve original evidence unchanged.
+
+G3 shall not finalize review versions or create Approved Input.
+
+## Development-plan Position
+
+The Architecture section is complete.
+
+The Domain, Promotion and Completion checkboxes remain open until their complete
+Approved Input and end-to-end scope is implemented.
+
+No Phase H implementation begins before Phase G provides a finalized and stable
+Approved Input read contract.
 ---
 
 # Planned Phase H — Model Candidate Layer

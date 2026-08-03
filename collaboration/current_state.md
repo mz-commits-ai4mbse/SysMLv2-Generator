@@ -29,23 +29,23 @@ Current Branch
 
 Verified Implementation Commit
 
-`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+`c61841789ed08b383e4cfc244d31f559125e6edb`
 
 Architecture Version
 
-1.2
+1.3
 
 Knowledge Base Version
 
-1.6
+1.7
 
 Implementation Version
 
-0.8
+0.9
 
 Current Roadmap Version
 
-1.6
+1.7
 
 Current Development Phase
 
@@ -53,7 +53,11 @@ Phase G — Approved Input Promotion
 
 Current Status
 
-Post-Phase-P Reconciliation Gate Completed — Phase G Selected
+Phase G Active — G1 and G2 Completed, G3 Next
+
+Complete Automated Test Baseline
+
+4206 passed
 
 End-to-End Prototype Target
 
@@ -61,7 +65,7 @@ End-to-End Prototype Target
 
 Last SSOT Update
 
-2026-07-31
+2026-08-03
 
 ---
 
@@ -116,7 +120,7 @@ Phase R — Task Profile Portability Evaluation
 
 Priority 1
 
-Begin Phase G architecture definition and implementation immediately.
+Continue Phase G with G3 — P4/P9 Evidence Adapters and Review Item Construction.
 
 Phase G shall establish the exact boundary between:
 
@@ -697,45 +701,189 @@ Human Review shall authorize accepted relationship candidates and exceptions.
 
 # Active Phase G — Approved Input Promotion
 
-## Objective
+## Status
 
-Create the authoritative bridge from reviewed processing evidence to Approved
-Input.
+Phase G remains active.
 
-## Required Outputs
+Completed:
 
-- Approved Input identity
-- Approved Input manifest
-- Approved Input repository
-- promotion eligibility rules
-- promotion workflow
-- exact Human Review Decision binding
-- traceability to Project, Source, Run, Artifact and Decision
-- rejection behavior
-- invalidation behavior
-- revocation behavior
-- supersession behavior
-- public read API for later model-candidate generation
+- G1 — Human Review Workspace and Approved Input architecture
+- G2 — Review Workspace foundations
+
+Next:
+
+- G3 — P4/P9 Evidence Adapters and Review Item Construction
+
+Phase G as a whole is not complete.
+
+## Accepted Architecture
+
+Architecture decision:
+
+`collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md`
+
+ADR-016 defines the authority chain:
+
+```text
+Processing Evidence
+→ Human Review Workspace
+→ Finalized Reviewed Document
+→ Approved Input
+```
+
+The following architecture topics are complete:
+
+- Approved Input granularity and identity
+- eligible P4/P9 source boundaries and Review Target architecture
+- fingerprint binding
+- lifecycle architecture
+- stable Phase H read boundary
+
+## Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| G1 | Human Review Workspace and Approved Input architecture | Completed |
+| G2 | Review Workspace foundations | Completed |
+| G3 | P4/P9 evidence adapters and Review Item construction | Next |
+| G4 | Review editing, finalization and reopening | Planned |
+| G5 | Approved Input promotion and lifecycle | Planned |
+| G6 | Human Review and promotion UI | Planned |
+| G7 | Integration, audit and end-to-end regression | Planned |
+
+## G2 Verified Implementation
+
+Verified implementation commit:
+
+`c61841789ed08b383e4cfc244d31f559125e6edb`
+
+Implemented Review Workspace identities:
+
+```text
+RVD  Review Document
+RVV  Review Document Version
+RVR  Review Revision
+RIT  Review Item
+SRA  Scoped Review Action
+```
+
+Implemented capabilities include:
+
+- Review Workspace error hierarchy
+- project-local sequential identifiers without reuse
+- immutable Review Workspace domain types
+- strict Review Document, Version, Item, Revision and Scoped Action manifests
+- deterministic serialization and self-excluding SHA-256 fingerprints
+- canonical project-local persistence paths
+- atomic initial Review Workspace creation
+- strict document, version, revision and action loading
+- append-only Review Revisions
+- immutable Scoped Review Action persistence
+- exact Review Item fingerprint materialization
+- project-local ID allocation that reserves interrupted temporary identities
+- deterministic project scanning
+- recovery diagnostics
+- symlink and unsafe-path rejection
+- project-isolated persistence and reads
+- public Review Workspace package API
+
+Verification:
+
+```text
+Focused G2 test suite: 398 passed
+Complete automated test suite: 4206 passed
+Local HEAD equals origin/main
+```
+
+## Current Development Objective
+
+G3 shall create deterministic adapters from eligible P4 and P9 evidence into
+Review Documents and Review Items.
+
+G3 shall preserve:
+
+- exact Project, Source, Processing Run and Artifact references
+- original immutable processing evidence
+- agent proposal and consensus evidence
+- original Review Report locators
+- stable Review Item identities
+- element, relationship and open-question separation
+- deterministic content fingerprints
+- explicit adapter diagnostics
+
+G3 shall not yet:
+
+- finalize a reviewed document
+- create Approved Input
+- implement Approved Input lifecycle events
+- generate model candidates
+- generate SysML v2
+
+## Development-plan Position
+
+The following Architecture checkboxes are complete:
+
+```text
+[x] Approved-Input-Granularität / Identität
+[x] P4/P9-Quellen + Review Targets
+[x] Fingerprints, Lifecycle, Phase-H-Vertrag
+```
+
+The Review Workspace portions of the Domain work are implemented, but the
+three Domain checkboxes remain open until the complete Approved Input domain is
+available.
+
+Still open:
+
+```text
+Domain
+[ ] IDs, Typen, Manifest
+[ ] Repository + Read Contract
+[ ] Validation + Fehlerhierarchie
+
+Promotion
+[ ] Eligibility aus P4/P9
+[ ] Decision-/Fingerprint-Bindung
+[ ] promote / invalidate / revoke / supersede
+
+Abschluss
+[ ] Vollständige Traceability
+[ ] Review-/Promotion-UI
+[ ] Tests + Manual Acceptance
+```
+
+## Remaining Domain and Promotion Work
+
+The following Phase G domain objects and behaviors remain open:
+
+```text
+AIN  Approved Input
+AIE  Approved Input Event
+```
+
+Remaining work includes:
+
+- complete Approved Input IDs, types and manifests
+- Approved Input repository and Phase H read contract
+- complete promotion validation and lifecycle errors
+- P4/P9 promotion eligibility
+- final Human Review Decision and fingerprint binding
+- promote, invalidate, revoke and supersede operations
+- complete end-to-end traceability
+- Review and promotion UI
+- manual acceptance of the complete Phase G workflow
 
 ## Mandatory Boundaries
 
 - unreviewed P9 artifacts cannot become Approved Input
 - consensus cannot authorize promotion
 - confidence cannot authorize promotion
-- a stale review decision cannot authorize promotion
-- Approved Input shall not yet generate model candidates
-- preliminary coverage shall not be treated as Approved Generation Readiness
-
-## Immediate Architecture Questions
-
-1. What is the minimal Approved Input object?
-2. Which P4 and P9 artifacts are eligible promotion sources?
-3. Which Human Review Decision target types are required?
-4. How are source, artifact, run and validation fingerprints bound?
-5. How are rejected, superseded, invalidated and revoked promotions represented?
-6. How does Approved Input expose stable inputs to Phase H?
-7. Which promotion operations belong in the UI and which remain core APIs?
-
+- stale Human Review Decisions cannot authorize promotion
+- fingerprint mismatch blocks promotion
+- original processing artifacts remain immutable
+- Preliminary Coverage remains separate from Approved Generation Readiness
+- Phase G shall not generate model candidates
+- Phase G shall not generate SysML v2
 ---
 
 # Planned Prototype Phases

@@ -1,5 +1,96 @@
 # Change Log
 
+## 2026-08-03 — Phase G G1/G2 Completion and G3 Transition
+
+Versions after this update:
+
+- Architecture Version: 1.3
+- Knowledge Base Version: 1.7
+- Implementation Version: 0.9
+- Roadmap Version: 1.7
+
+Verified implementation:
+
+- Repository: `mz-commits-ai4mbse/SysMLv2-Generator`
+- Branch: `main`
+- Verified implementation commit:
+  `c61841789ed08b383e4cfc244d31f559125e6edb`
+- Focused G2 test suite: 398 passed
+- Complete automated test suite: 4206 passed
+- Remote synchronization: `HEAD == origin/main`
+
+G1 completion:
+
+- ADR-016 was accepted.
+- The Human Review Workspace and Approved Input authority chain was defined.
+- Approved Input granularity and identity were defined.
+- Eligible P4/P9 evidence and Review Target boundaries were defined.
+- Fingerprint binding and lifecycle architecture were defined.
+- The stable Approved Input boundary for Phase H was defined.
+- G1 is complete.
+
+G2 completion:
+
+- Review Workspace error and validation contracts were implemented.
+- RVD, RVV, RVR, RIT and SRA identities were implemented.
+- Immutable Review Workspace domain types were implemented.
+- Strict document, version, item, revision and action manifests were
+  implemented.
+- Deterministic serialization and fingerprints were implemented.
+- Project-local paths and persistence were implemented.
+- Atomic initial workspace creation was implemented.
+- Append-only revisions were implemented.
+- Immutable Scoped Review Actions and exact item-fingerprint materialization
+  were implemented.
+- Project-local identifier allocation without reuse was implemented.
+- Deterministic scanning, recovery diagnostics and unsafe-path protection were
+  implemented.
+- G2 is complete.
+
+Development-plan status:
+
+```text
+Architektur
+[x] Approved-Input-Granularität / Identität
+[x] P4/P9-Quellen + Review Targets
+[x] Fingerprints, Lifecycle, Phase-H-Vertrag
+
+Domain
+[ ] IDs, Typen, Manifest
+[ ] Repository + Read Contract
+[ ] Validation + Fehlerhierarchie
+
+Promotion
+[ ] Eligibility aus P4/P9
+[ ] Decision-/Fingerprint-Bindung
+[ ] promote / invalidate / revoke / supersede
+
+Abschluss
+[ ] Vollständige Traceability
+[ ] Review-/Promotion-UI
+[ ] Tests + Manual Acceptance
+```
+
+The Review Workspace portions of the Domain items are implemented, but the
+checkboxes remain open until the Approved Input domain and promotion lifecycle
+are complete.
+
+Immediate next activity:
+
+```text
+G3 — P4/P9 Evidence Adapters and Review Item Construction
+→ tests
+→ review
+→ G3 completion decision
+```
+
+Phase G remains active.
+
+No Approved Input is created by G2.
+
+
+---
+
 ## 2026-07-31 — Post-Phase-P Reconciliation Completion and Prototype Acceleration
 
 Versions after this update:

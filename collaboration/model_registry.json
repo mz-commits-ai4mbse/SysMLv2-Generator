@@ -1,6 +1,6 @@
 {
-  "version": "1.6",
-  "last_updated": "2026-07-31",
+  "version": "1.7",
+  "last_updated": "2026-08-03",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -22,14 +22,16 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "26acace4d7ba2849b33c5e0dacedf838f83c7705",
+      "verified_commit": "c61841789ed08b383e4cfc244d31f559125e6edb",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 3808,
+        "complete_automated_test_count": 4206,
         "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
-        "remote_synchronization": "HEAD_equals_origin_main"
+        "remote_synchronization": "HEAD_equals_origin_main",
+        "g2_focused_test_count": 398,
+        "g2_review_workspace_tests": "passed"
       }
     },
     "collaboration": {
@@ -60,10 +62,10 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.2",
-    "knowledge_base_version": "1.6",
-    "implementation_version": "0.8",
-    "roadmap_version": "1.6"
+    "architecture_version": "1.3",
+    "knowledge_base_version": "1.7",
+    "implementation_version": "0.9",
+    "roadmap_version": "1.7"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
@@ -815,5 +817,120 @@
     "The executable prototype target is 2026-08-14.",
     "Schedule pressure shall not weaken Human Review, traceability, project isolation, validation or publication gates.",
     "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
-  ]
+  ],
+  "human_review_workspace": {
+    "status": "implemented_verified",
+    "implementation_phase": "G2",
+    "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
+    "verified_commit": "c61841789ed08b383e4cfc244d31f559125e6edb",
+    "verification": {
+      "focused_test_count": 398,
+      "complete_automated_test_count": 4206,
+      "remote_synchronization": "HEAD_equals_origin_main"
+    },
+    "identifiers": {
+      "review_document": "RVD-six_digit_numeric",
+      "review_document_version": "RVV-six_digit_numeric",
+      "review_revision": "RVR-six_digit_numeric",
+      "review_item": "RIT-six_digit_numeric",
+      "scoped_review_action": "SRA-six_digit_numeric",
+      "allocation_rule": "project_local_sequential_immutable_never_reused"
+    },
+    "manifests": [
+      "Review Document Manifest",
+      "Review Document Version Manifest",
+      "Review Item Manifest",
+      "Review Revision Manifest",
+      "Scoped Review Action Manifest"
+    ],
+    "persistence": {
+      "project_isolated": true,
+      "initial_creation": "atomic",
+      "revision_model": "append_only",
+      "mutable_current_file_allowed": false,
+      "scoped_actions_immutable": true,
+      "exact_item_fingerprint_materialization": true,
+      "symlinks_allowed": false,
+      "unsafe_path_escape_allowed": false,
+      "temporary_identities_reserve_ids": true,
+      "deterministic_scan_available": true,
+      "recovery_diagnostics_available": true
+    },
+    "not_yet_implemented": [
+      "P4/P9 Evidence Adapters",
+      "Review Item Construction from Processing Evidence",
+      "Review Finalization",
+      "Review Reopening",
+      "Approved Input Identity AIN",
+      "Approved Input Event Identity AIE",
+      "Approved Input Repository",
+      "Promotion Eligibility",
+      "Promotion Lifecycle",
+      "Review and Promotion UI"
+    ]
+  },
+  "phase_g": {
+    "status": "active",
+    "architecture_status": "accepted",
+    "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
+    "completed_steps": [
+      "G1",
+      "G2"
+    ],
+    "current_step": "G3",
+    "next_activity": "P4/P9 Evidence Adapters and Review Item Construction",
+    "work_breakdown": {
+      "G1": {
+        "name": "Human Review Workspace and Approved Input Architecture",
+        "status": "completed"
+      },
+      "G2": {
+        "name": "Review Workspace Foundations",
+        "status": "completed_verified",
+        "verified_commit": "c61841789ed08b383e4cfc244d31f559125e6edb"
+      },
+      "G3": {
+        "name": "P4/P9 Evidence Adapters and Review Item Construction",
+        "status": "next"
+      },
+      "G4": {
+        "name": "Review Editing, Finalization and Reopening",
+        "status": "planned"
+      },
+      "G5": {
+        "name": "Approved Input Promotion and Lifecycle",
+        "status": "planned"
+      },
+      "G6": {
+        "name": "Human Review and Promotion UI",
+        "status": "planned"
+      },
+      "G7": {
+        "name": "Integration, Audit and End-to-End Regression",
+        "status": "planned"
+      }
+    },
+    "development_plan": {
+      "architecture": {
+        "approved_input_granularity_identity": "completed",
+        "p4_p9_sources_review_targets": "completed",
+        "fingerprints_lifecycle_phase_h_contract": "completed"
+      },
+      "domain": {
+        "ids_types_manifests": "in_progress",
+        "repository_read_contract": "not_started",
+        "validation_error_hierarchy": "in_progress"
+      },
+      "promotion": {
+        "eligibility_from_p4_p9": "not_started",
+        "decision_fingerprint_binding": "not_started",
+        "lifecycle_operations": "not_started"
+      },
+      "completion": {
+        "complete_traceability": "not_started",
+        "review_promotion_ui": "not_started",
+        "tests_manual_acceptance": "not_started"
+      }
+    }
+  }
 }
