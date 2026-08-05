@@ -1,6 +1,6 @@
 {
-  "version": "1.7",
-  "last_updated": "2026-08-03",
+  "version": "1.8",
+  "last_updated": "2026-08-05",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -22,16 +22,22 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "c61841789ed08b383e4cfc244d31f559125e6edb",
+      "verified_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 4206,
+        "complete_automated_test_count": 4463,
         "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
         "remote_synchronization": "HEAD_equals_origin_main",
         "g2_focused_test_count": 398,
-        "g2_review_workspace_tests": "passed"
+        "g2_review_workspace_tests": "passed",
+        "g3_implementation_commit": "53bf6046b931af7c7b5189cd78822fd7cf7d51ef",
+        "g4_1_implementation_commit": "4cedfb10f81e08a3bbea7cdb2fee5d9a1235ddd5",
+        "g4_1_focused_test_count": 314,
+        "g4_2_a_to_c_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
+        "g4_2_a_to_c_focused_test_count": 208,
+        "g4_2_a_to_c_complete_automated_test_count": 4463
       }
     },
     "collaboration": {
@@ -63,15 +69,16 @@
   },
   "verified_versions": {
     "architecture_version": "1.3",
-    "knowledge_base_version": "1.7",
-    "implementation_version": "0.9",
-    "roadmap_version": "1.7"
+    "knowledge_base_version": "1.8",
+    "implementation_version": "0.10",
+    "roadmap_version": "1.8"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
     "scope": "complete_executable_end_to_end_prototype",
     "critical_path": [
       "G",
+      "Zwischenstandspräsentation",
       "H",
       "I",
       "J",
@@ -333,7 +340,8 @@
     "target_types": [
       "information_unit_publication",
       "terminology_mapping_candidate",
-      "framework_assignment_candidate"
+      "framework_assignment_candidate",
+      "review_document_finalization"
     ],
     "decisions": [
       "confirm",
@@ -555,31 +563,46 @@
     "phase_g_blocked_until_gate_completion": false
   },
   "approved_input_promotion": {
-    "status": "active_architecture_discussion_next",
+    "status": "active",
     "implementation_phase": "G",
     "purpose": "Promote exactly reviewed engineering information into Approved Input while preserving Project, Source, Run, Artifact, validation and Human Review traceability.",
-    "implementation_started": false,
-    "architecture_accepted": false,
-    "architecture_acceptance_required_before_implementation": true,
+    "architecture_accepted": true,
+    "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
+    "implementation_started": true,
+    "completed_steps": [
+      "G1",
+      "G2",
+      "G3",
+      "G4.1",
+      "G4.2a",
+      "G4.2b",
+      "G4.2c"
+    ],
+    "active_step": "G4.2d",
     "blocked_by": null,
-    "is_immediate_next_activity": true,
     "shall_generate_model_candidates": false,
     "shall_generate_sysml_v2": false,
     "required_contracts": [
+      "Finalized Artifact Set Consistency",
+      "Atomic Finalized Artifact Persistence",
+      "Finalized Artifact Load Scan and Recovery",
+      "Review Reopening",
       "Approved Input Identity",
       "Approved Input Manifest",
       "Approved Input Repository",
       "Promotion Eligibility",
       "Promotion Service API",
       "Stable Phase H Read Contract",
-      "Invalidation, Revocation and Supersession Behavior"
+      "Invalidation Revocation and Supersession"
     ],
     "mandatory_authority_rules": [
       "Unreviewed artifacts cannot become Approved Input.",
+      "P4-only evidence cannot create a Review Document.",
       "Consensus cannot authorize promotion.",
       "Confidence cannot authorize promotion.",
-      "Stale Human Review Decisions cannot authorize promotion.",
-      "Fingerprint mismatch blocks promotion."
+      "Stale Human Review Decisions cannot authorize changed targets.",
+      "Fingerprint mismatch blocks finalization and promotion.",
+      "Finalized review artifacts must remain mutually consistent."
     ]
   },
   "model_candidate_layer": {
@@ -871,66 +894,151 @@
   },
   "phase_g": {
     "status": "active",
-    "architecture_status": "accepted",
-    "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
     "completed_steps": [
       "G1",
-      "G2"
+      "G2",
+      "G3",
+      "G4.1",
+      "G4.2a",
+      "G4.2b",
+      "G4.2c"
     ],
-    "current_step": "G3",
-    "next_activity": "P4/P9 Evidence Adapters and Review Item Construction",
-    "work_breakdown": {
-      "G1": {
-        "name": "Human Review Workspace and Approved Input Architecture",
-        "status": "completed"
+    "active_step": "G4.2d",
+    "verified_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
+    "complete_automated_test_count": 4463,
+    "next_milestone_after_completion": "Zwischenstandspräsentation"
+  },
+  "review_workspace": {
+    "status": "implemented_active_extension",
+    "implementation_phase": "G",
+    "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
+    "verified_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
+    "completed_steps": [
+      "G2 Review Workspace foundations",
+      "G3 P4/P9 evidence adapters and Review Item construction",
+      "G4.1 finalization validation and authorization",
+      "G4.2a Finalized Reviewed Document manifest",
+      "G4.2b Effective Review Decision Set",
+      "G4.2c deterministic Reviewed Report renderer"
+    ],
+    "next_step": "G4.2d cross-artifact consistency and fingerprint binding",
+    "identifiers": [
+      "RVD",
+      "RVV",
+      "RVR",
+      "RIT",
+      "SRA"
+    ],
+    "finalized_artifacts": {
+      "reviewed_document": {
+        "filename": "reviewed_document.json",
+        "contract_status": "implemented_verified"
       },
-      "G2": {
-        "name": "Review Workspace Foundations",
-        "status": "completed_verified",
-        "verified_commit": "c61841789ed08b383e4cfc244d31f559125e6edb"
+      "effective_decisions": {
+        "filename": "effective_decisions.json",
+        "contract_status": "implemented_verified"
       },
-      "G3": {
-        "name": "P4/P9 Evidence Adapters and Review Item Construction",
-        "status": "next"
+      "reviewed_report": {
+        "filename": "reviewed_report.md",
+        "contract_status": "implemented_verified"
       },
-      "G4": {
-        "name": "Review Editing, Finalization and Reopening",
-        "status": "planned"
+      "artifact_set_consistency": {
+        "status": "next",
+        "implementation_step": "G4.2d"
       },
-      "G5": {
-        "name": "Approved Input Promotion and Lifecycle",
-        "status": "planned"
+      "atomic_persistence": {
+        "status": "planned",
+        "implementation_step": "G4.2e"
       },
-      "G6": {
-        "name": "Human Review and Promotion UI",
-        "status": "planned"
-      },
-      "G7": {
-        "name": "Integration, Audit and End-to-End Regression",
-        "status": "planned"
+      "load_scan_recovery": {
+        "status": "planned",
+        "implementation_step": "G4.2f"
       }
     },
-    "development_plan": {
-      "architecture": {
-        "approved_input_granularity_identity": "completed",
-        "p4_p9_sources_review_targets": "completed",
-        "fingerprints_lifecycle_phase_h_contract": "completed"
-      },
-      "domain": {
-        "ids_types_manifests": "in_progress",
-        "repository_read_contract": "not_started",
-        "validation_error_hierarchy": "in_progress"
-      },
-      "promotion": {
-        "eligibility_from_p4_p9": "not_started",
-        "decision_fingerprint_binding": "not_started",
-        "lifecycle_operations": "not_started"
-      },
-      "completion": {
-        "complete_traceability": "not_started",
-        "review_promotion_ui": "not_started",
-        "tests_manual_acceptance": "not_started"
-      }
-    }
+    "complete_automated_test_count": 4463
+  },
+  "intermediate_status_presentation": {
+    "name": "Zwischenstandspräsentation",
+    "status": "planned_after_phase_g",
+    "position": {
+      "after": "G",
+      "before": "H"
+    },
+    "audience": "supervising_professor",
+    "required_content": [
+      "Completed Development Phases",
+      "Accepted Architecture Decisions",
+      "Executable Workflow through Approved Input",
+      "Automated Test Evidence",
+      "Traceability Evidence",
+      "CATIA Architecture Coverage",
+      "Phase G Model Element Change Candidates",
+      "Open Risks and Limitations",
+      "Planned Phases H through L"
+    ],
+    "exit_criteria": [
+      "Presentation Completed",
+      "Professor Feedback Documented",
+      "Architecture Effects Evaluated",
+      "Roadmap Effects Evaluated",
+      "Required Decisions Recorded",
+      "Model Element Change Candidate Inventory Reviewed",
+      "SSOT Synchronized before Phase H"
+    ]
+  },
+  "model_element_change_candidates": {
+    "status": "mandatory_cross_phase_practice",
+    "purpose": "Prevent complete reverse engineering of implementation-derived engineering and architecture concepts during Phase N.",
+    "engineering_authority": "CATIA remains authoritative; candidates are not accepted model changes.",
+    "accepted_sequence": [
+      "Implementation Observation",
+      "Model Element Change Candidate",
+      "Engineering Review",
+      "Explicit Acceptance",
+      "CATIA Model Update"
+    ],
+    "candidate_element_types": [
+      "Stakeholder Requirement",
+      "System Requirement",
+      "System Design Constraint",
+      "System Function",
+      "Logical Component",
+      "Logical Relationship",
+      "Allocation",
+      "Physical Architecture Element",
+      "Subsystem Requirement",
+      "Subsystem Function",
+      "Subsystem Logical Architecture Element",
+      "Subsystem Physical Architecture Element"
+    ],
+    "required_candidate_fields": [
+      "Originating Implementation Phase",
+      "Affected Model Area",
+      "Proposed Element Type",
+      "Engineering Rationale",
+      "Implementation Evidence",
+      "Known Relationships",
+      "Review Status",
+      "CATIA Transfer Status"
+    ],
+    "retrospective_inventory": {
+      "status": "required_pending",
+      "scope": [
+        "G1",
+        "G2",
+        "G3",
+        "G4.1",
+        "G4.2a",
+        "G4.2b",
+        "G4.2c"
+      ],
+      "due": "before_or_during_Zwischenstandspräsentation"
+    },
+    "continuous_tracking": {
+      "status": "mandatory",
+      "starts_with": "G4.2d",
+      "phase_completion_check_required": true
+    },
+    "phase_n_usage": "Use reviewed candidates as explicit input to final Architecture-to-Requirements Reconciliation instead of relying on full retrospective reverse engineering."
   }
 }

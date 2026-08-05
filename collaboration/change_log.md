@@ -1,5 +1,132 @@
 # Change Log
 
+## 2026-08-05 — G3 and G4.1–G4.2c Completion Checkpoint
+
+Versions after this update:
+
+- Architecture Version: 1.3
+- Knowledge Base Version: 1.8
+- Implementation Version: 0.10
+- Roadmap Version: 1.8
+
+Verified implementation:
+
+- Repository: `mz-commits-ai4mbse/SysMLv2-Generator`
+- Branch: `main`
+- Verified implementation commit:
+  `782b75a94f7008de9b08fc9724480f0786e6af01`
+- Complete automated test suite: 4463 passed
+- Remote synchronization: `HEAD == origin/main`
+
+G3 completion:
+
+- P4 and P9 evidence adapters were implemented.
+- Structured proposal and evidence references were implemented.
+- Stable Review Item construction was implemented.
+- Deterministic Review Document assembly was implemented.
+- Element, relationship and open-question separation was implemented.
+- Exact Project, Source, Run, Attempt and Artifact traceability was preserved.
+- Heuristic P4/P9 evidence merging was prohibited.
+- P4-only Review Document construction was prohibited.
+
+G3 implementation commit:
+
+`53bf6046b931af7c7b5189cd78822fd7cf7d51ef`
+
+G4.1 completion:
+
+- deterministic finalization eligibility was implemented
+- open and unresolved Review Items block finalization
+- exact Review Version, Revision and validation binding was implemented
+- Human Review target type `review_document_finalization` was implemented
+- exact persisted confirmation was implemented
+- stale decisions and fingerprint mismatches block finalization
+- atomic finalized-version transition was implemented
+
+G4.1 implementation commit:
+
+`4cedfb10f81e08a3bbea7cdb2fee5d9a1235ddd5`
+
+Verification:
+
+```text
+Focused G4.1 suite: 314 passed
+Complete automated suite: 4402 passed
+```
+
+G4.2a–G4.2c completion:
+
+- immutable `reviewed_document.json` contract implemented
+- immutable `effective_decisions.json` contract implemented
+- deterministic `reviewed_report.md` renderer implemented
+- exact cross-source identity and fingerprint binding implemented
+- deterministic serialization implemented
+- public APIs implemented
+
+Implementation commit:
+
+`782b75a94f7008de9b08fc9724480f0786e6af01`
+
+Verification:
+
+```text
+Focused G4.2a–G4.2c suite: 208 passed
+Complete automated suite: 4463 passed
+```
+
+G4 remains active.
+
+Immediate next activity:
+
+```text
+G4.2d — cross-artifact consistency and fingerprint binding
+```
+
+Roadmap addition:
+
+```text
+Phase G
+→ Zwischenstandspräsentation
+→ Phase H
+```
+
+The Zwischenstandspräsentation shall:
+
+- demonstrate the workflow through Approved Input
+- present current architecture and test evidence
+- capture professor feedback
+- review open risks and limitations
+- review the retrospective Phase-G Model Element Change Candidate inventory
+- synchronize the SSOT before Phase H
+
+Model Element Change Candidate discipline:
+
+- G1 through G4.2c require retrospective examination.
+- Beginning with G4.2d, candidates shall be recorded continuously.
+- Candidate scope includes requirements, constraints, functions, Logical
+  Components, relationships, allocations and possible Subsystem Architecture.
+- Candidates are not accepted CATIA model changes.
+- CATIA remains the authoritative engineering model.
+- Phase N shall use the reviewed candidate inventory instead of relying on
+  complete reverse engineering of Phases G through L.
+
+Development-plan status:
+
+```text
+Architektur
+[x] Approved-Input-Granularität / Identität
+[x] P4/P9-Quellen + Review Targets
+[x] Fingerprints, Lifecycle, Phase-H-Vertrag
+
+Promotion
+[x] Decision-/Fingerprint-Bindung
+```
+
+The complete Approved Input domain, promotion lifecycle, UI and end-to-end
+acceptance remain open.
+
+---
+
 ## 2026-08-03 — Phase G G1/G2 Completion and G3 Transition
 
 Versions after this update:

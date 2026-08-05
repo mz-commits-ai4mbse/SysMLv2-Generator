@@ -26,19 +26,19 @@ Architecture Version
 
 Knowledge Base Version
 
-1.7
+1.8
 
 Implementation Version
 
-0.9
+0.10
 
 Roadmap Version
 
-1.7
+1.8
 
 Last SSOT Update
 
-2026-08-03
+2026-08-05
 
 Current Phase
 
@@ -46,15 +46,15 @@ Current Phase
 
 Current Status
 
-Phase G Active — G1 and G2 Completed, G3 Next
+Phase G Active — G1 through G3 Completed; G4 Active; G4.1 and G4.2a–G4.2c Completed; G4.2d Next
 
 Verified Implementation Commit
 
-`c61841789ed08b383e4cfc244d31f559125e6edb`
+`782b75a94f7008de9b08fc9724480f0786e6af01`
 
 Complete Automated Test Baseline
 
-4206 passed
+4463 passed
 
 Manual P9 Acceptance Audit
 
@@ -86,6 +86,7 @@ The critical implementation phases are:
 
 ```text
 Phase G
+→ Zwischenstandspräsentation
 → Phase H
 → Phase I
 → Phase J
@@ -507,138 +508,231 @@ Accepted
 |---|---|---|
 | G1 | Human Review Workspace and Approved Input architecture | Completed |
 | G2 | Review Workspace foundations | Completed |
-| G3 | P4/P9 evidence adapters and Review Item construction | Next |
-| G4 | Review editing, finalization and reopening | Planned |
+| G3 | P4/P9 evidence adapters and Review Item construction | Completed |
+| G4 | Review editing, finalization and reopening | Active |
 | G5 | Approved Input promotion and lifecycle | Planned |
 | G6 | Human Review and promotion UI | Planned |
 | G7 | Integration, audit and end-to-end regression | Planned |
 
-## G1 Completion
+## G4 Breakdown
 
-G1 established:
+| Step | Deliverable | Status |
+|---|---|---|
+| G4.1 | Finalization validation and Human Review authorization | Completed |
+| G4.2a | Immutable `reviewed_document.json` contract | Completed |
+| G4.2b | Immutable `effective_decisions.json` contract | Completed |
+| G4.2c | Deterministic `reviewed_report.md` renderer | Completed |
+| G4.2d | Cross-artifact consistency and fingerprint binding | Next |
+| G4.2e | Atomic persistence under `finalized/` | Planned |
+| G4.2f | Load, scan and recovery | Planned |
+| G4.3 | Reopening finalized Review Versions | Planned |
+| G4.4 | Integration and complete regression | Planned |
 
-- granular Review Item and Approved Input identities
-- explicit authority separation between processing evidence, draft review,
-  finalized review and Approved Input
-- eligible P4/P9 evidence boundaries
-- exact Review Target architecture
-- fingerprint-bound decisions and materialized selections
-- append-only Review Revisions
-- finalized-version immutability
-- Approved Input lifecycle architecture
-- stable Approved Input boundary for Phase H
-- project-local persistence boundaries
-- review and promotion responsibilities of SF_007 and LC_05
+## Verified Implementation
 
-Development-plan checkboxes completed by G1:
+### G2
 
-```text
-[x] Approved-Input-Granularität / Identität
-[x] P4/P9-Quellen + Review Targets
-[x] Fingerprints, Lifecycle, Phase-H-Vertrag
-```
-
-## G2 Completion
-
-Verified implementation commit:
+Commit:
 
 `c61841789ed08b383e4cfc244d31f559125e6edb`
 
-Implemented deliverables:
+Verification:
 
-- Review Workspace error hierarchy
-- RVD, RVV, RVR, RIT and SRA identifiers
-- immutable Review Workspace types
-- strict manifests and deterministic fingerprints
-- canonical project-local paths
-- atomic Review Workspace creation
-- strict load operations
-- append-only Review Revisions
-- immutable Scoped Review Actions
-- exact item-fingerprint materialization
-- project-local identifier allocation without gap reuse
-- deterministic scanning and recovery diagnostics
-- unsafe-path and symlink rejection
-- project-isolated repository behavior
-- stable public Review Workspace API
+```text
+Focused G2 suite: 398 passed
+Complete automated suite: 4206 passed
+```
+
+### G3
+
+Commit:
+
+`53bf6046b931af7c7b5189cd78822fd7cf7d51ef`
+
+Implemented:
+
+- eligible P4/P9 evidence selection
+- structured proposal and evidence references
+- stable Review Item construction
+- deterministic Review Document assembly
+- element, relationship and open-question separation
+- exact source, run, attempt and artifact traceability
+
+### G4.1
+
+Commit:
+
+`4cedfb10f81e08a3bbea7cdb2fee5d9a1235ddd5`
+
+Implemented:
+
+- finalization eligibility assessment
+- exact revision and validation binding
+- Human Review finalization authorization
+- stale-decision rejection
+- atomic finalized-version transition
 
 Verification:
 
-- focused G2 suite: 398 passed
-- complete automated suite: 4206 passed
-- local implementation synchronized with `origin/main`
+```text
+Focused G4.1 suite: 314 passed
+Complete automated suite: 4402 passed
+```
 
-The Review Workspace portions of the Domain work are implemented. The Domain
-checkboxes remain open until AIN/AIE, the Approved Input repository, the Phase H
-read contract and complete promotion validation are implemented.
+### G4.2a–G4.2c
 
-## G3 Objective
+Commit:
 
-Create deterministic adapters that construct Review Documents and Review Items
-from eligible P4 and P9 evidence.
+`782b75a94f7008de9b08fc9724480f0786e6af01`
 
-G3 shall cover:
+Implemented:
 
-- P4 semantic and Information Unit evidence
-- P9 run-owned Agent Outputs, Consensus Reports and Review Reports
-- exact Project, Source, Run, Attempt and Artifact references
-- stable subject keys
-- proposal and evidence references
-- original report locators
-- element, relationship and open-question separation
-- deterministic fingerprints
-- adapter validation and diagnostics
+- immutable Finalized Reviewed Document manifest
+- immutable Effective Review Decision Set
+- deterministic Reviewed Report renderer
+- exact decision, revision and validation binding
+- deterministic serialization and fingerprints
+- public package APIs
 
-G3 shall not finalize reviews or create Approved Input.
+Verification:
+
+```text
+Focused G4.2a–G4.2c suite: 208 passed
+Complete automated suite: 4463 passed
+HEAD equals origin/main
+```
+
+## Immediate Next Activity
+
+```text
+G4.2d — cross-artifact consistency and fingerprint binding
+```
+
+The three finalized artifacts shall be validated as one exact immutable set:
+
+```text
+reviewed_document.json
+effective_decisions.json
+reviewed_report.md
+```
 
 ## Remaining Deliverables
 
-- Approved Input identity
-- Approved Input manifest
+- finalized artifact-set consistency contract
+- atomic finalized-artifact persistence
+- finalized-artifact loading, scanning and recovery
+- controlled reopening
+- Approved Input identity and manifest
 - Approved Input repository
-- promotion eligibility rules
-- promotion service or application API
-- exact finalization and Human Review Decision binding
-- traceability to Project, Source, Run, Artifact and Decision
-- rejection behavior
-- invalidation behavior
-- revocation behavior
-- supersession behavior
-- stable read contract for Phase H
-- focused Human Review and promotion UI
-- end-to-end integration and manual acceptance
+- promotion eligibility
+- promotion service
+- invalidation, revocation and supersession
+- stable Phase H read contract
+- focused Review and promotion UI
+- complete end-to-end integration and manual acceptance
 
 ## Mandatory Boundaries
 
 - unreviewed artifacts cannot become Approved Input
+- P4-only evidence cannot create a Review Document
 - consensus cannot authorize promotion
 - confidence cannot authorize promotion
-- stale review decisions cannot authorize promotion
-- fingerprint mismatch blocks promotion
+- stale decisions cannot authorize changed targets
+- fingerprint mismatch blocks finalization and promotion
 - original processing evidence remains immutable
-- Approved Input remains separate from Preliminary Coverage
+- finalized artifacts must remain mutually consistent
 - Phase G shall not generate model candidates
 - Phase G shall not generate SysML v2
 
+---
+
+# Cross-phase Model Element Change Candidate Discipline
+
+## Objective
+
+Prevent Phase N from having to reverse-engineer all engineering and architecture
+concepts that emerged during implementation.
+
+## Retrospective Scope
+
+The first inventory shall examine all completed Phase-G work from G1 through
+G4.2c.
+
+It shall identify newly introduced or materially refined:
+
+- requirements
+- constraints
+- functions
+- Logical Components
+- logical relationships and allocations
+- possible subsystem boundaries
+- Subsystem Requirements
+- Subsystem Functions
+- Subsystem Logical or Physical Architecture elements
+
+## Ongoing Scope
+
+Beginning with G4.2d, each implementation phase shall continuously record Model
+Element Change Candidates.
+
+Each phase-completion review shall explicitly determine whether implementation
+created or materially refined engineering model content.
+
+## Authority Boundary
+
+A candidate is not an accepted CATIA model change.
+
+The sequence remains:
+
+```text
+Implementation observation
+→ Model Element Change Candidate
+→ engineering review
+→ explicit acceptance
+→ CATIA model update
+```
+
+The candidate inventory becomes a formal input to the
+Zwischenstandspräsentation and Phase N.
+
+---
+
+# Zwischenstandspräsentation
+
+## Position
+
+After Phase G and before Phase H.
+
+## Objective
+
+Present the complete implemented workflow through Approved Input to the
+supervising professor and establish a reviewed transition into model-candidate
+generation.
+
+## Deliverables
+
+- presentation of completed phases and decisions
+- executable demonstration through Approved Input
+- current test and traceability evidence
+- current CATIA architecture coverage
+- retrospective Phase-G Model Element Change Candidate inventory
+- open risks, limits and technical debt
+- planned Phases H through L
+- documented professor feedback
+
 ## Exit Criteria
 
-- only exactly confirmed engineering information can become Approved Input
-- every promotion is traceable to Project, Source, Run, Artifact and Decision
-- stale or mismatched decisions fail closed
-- rejected, invalidated, revoked and superseded states are explicit
-- Approved Input can be consumed through a stable contract by Phase H
-- unreviewed P9 evidence cannot be treated as approved engineering knowledge
-- automated tests pass
-- manual review workflow is accepted
-- SSOT is synchronized with the verified implementation
+- presentation performed
+- feedback documented
+- architecture and roadmap effects evaluated
+- required decisions recorded
+- retrospective candidate inventory reviewed
+- SSOT synchronized before Phase H
 
-## Status
+Status:
 
-Active — G1 and G2 Completed, G3 Next
+Planned after Phase G
 
-Depends on:
-
-Post-Phase-P Reconciliation Gate — Satisfied
 ---
 
 # Phase H — Model Candidate Layer
