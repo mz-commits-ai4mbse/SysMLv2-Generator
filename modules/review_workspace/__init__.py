@@ -172,12 +172,110 @@ from .paths import (
     scoped_review_actions_path,
 )
 
+from .evidence_adapter import (
+    AGENTIC_INGESTION_STAGE,
+    P9_REVIEW_ARTIFACT_TYPES,
+    P9ReviewEvidenceSet,
+    select_p9_review_evidence_set,
+)
+
+from .p4_evidence_adapter import (
+    P4ReviewEvidenceRecord,
+    P4ReviewEvidenceSet,
+    select_p4_review_evidence_set,
+)
+
+from .p4_evidence_reference_adapter import (
+    P4_FRAMEWORK_ASSIGNMENT_EVIDENCE_ROLE,
+    P4_HUMAN_REVIEW_EVIDENCE_ROLE,
+    P4_INFORMATION_UNIT_EVIDENCE_ROLE,
+    P4_TERMINOLOGY_MAPPING_EVIDENCE_ROLE,
+    P4InformationUnitEvidenceReferences,
+    P4StructuredEvidenceReferenceSet,
+    construct_p4_evidence_references,
+)
+
+from .p4_review_item_builder import (
+    P4_OPEN_QUESTION_INFORMATION_TYPES,
+    P4InitialReviewItemSet,
+    construct_initial_p4_review_items,
+    create_p4_information_unit_stable_subject_key,
+)
+
+from .p9_proposal_adapter import (
+    P9ElementProposal,
+    P9RelationshipProposal,
+    P9SourceAssignment,
+    P9StructuredProposalSet,
+    adapt_p9_agent_proposals,
+    create_element_stable_subject_key,
+    create_relationship_stable_subject_key,
+)
+
+from .p9_evidence_reference_adapter import (
+    CONSENSUS_EVIDENCE_ROLE,
+    SOURCE_EVIDENCE_ROLE,
+    P9StructuredEvidenceSet,
+    P9SubjectEvidence,
+    construct_p9_evidence_references,
+)
+
+from .p9_review_item_builder import (
+    DEFAULT_TARGET_NOTATION_PROFILE_ID,
+    DEFAULT_TARGET_NOTATION_PROFILE_VERSION,
+    P9InitialReviewItemSet,
+    construct_initial_p9_review_items,
+)
+
+from .review_document_assembly import (
+    InitialReviewDocumentAssembly,
+    ReviewDocumentEligibilityAssessment,
+    assemble_initial_review_document,
+)
+
 from .repository import (
     DEFAULT_PROJECTS_ROOT,
     ReviewWorkspaceRepository,
 )
 
 __all__ = [
+    "AGENTIC_INGESTION_STAGE",
+    "P9_REVIEW_ARTIFACT_TYPES",
+    "P9ReviewEvidenceSet",
+    "select_p9_review_evidence_set",
+    "P4ReviewEvidenceRecord",
+    "P4ReviewEvidenceSet",
+    "select_p4_review_evidence_set",
+    "P4_FRAMEWORK_ASSIGNMENT_EVIDENCE_ROLE",
+    "P4_HUMAN_REVIEW_EVIDENCE_ROLE",
+    "P4_INFORMATION_UNIT_EVIDENCE_ROLE",
+    "P4_TERMINOLOGY_MAPPING_EVIDENCE_ROLE",
+    "P4InformationUnitEvidenceReferences",
+    "P4StructuredEvidenceReferenceSet",
+    "construct_p4_evidence_references",
+    "P4_OPEN_QUESTION_INFORMATION_TYPES",
+    "P4InitialReviewItemSet",
+    "construct_initial_p4_review_items",
+    "create_p4_information_unit_stable_subject_key",
+    "P9ElementProposal",
+    "P9RelationshipProposal",
+    "P9SourceAssignment",
+    "P9StructuredProposalSet",
+    "adapt_p9_agent_proposals",
+    "create_element_stable_subject_key",
+    "create_relationship_stable_subject_key",
+    "CONSENSUS_EVIDENCE_ROLE",
+    "SOURCE_EVIDENCE_ROLE",
+    "P9StructuredEvidenceSet",
+    "P9SubjectEvidence",
+    "construct_p9_evidence_references",
+    "DEFAULT_TARGET_NOTATION_PROFILE_ID",
+    "DEFAULT_TARGET_NOTATION_PROFILE_VERSION",
+    "P9InitialReviewItemSet",
+    "construct_initial_p9_review_items",
+    "InitialReviewDocumentAssembly",
+    "ReviewDocumentEligibilityAssessment",
+    "assemble_initial_review_document",
     "DEFAULT_PROJECTS_ROOT",
     "ReviewWorkspaceRepository",
     "EFFECTIVE_DECISIONS_FILENAME",
