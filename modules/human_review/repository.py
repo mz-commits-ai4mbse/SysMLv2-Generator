@@ -45,6 +45,7 @@ _TARGET_ID_PATTERNS = {
     "information_unit_publication": re.compile(r"^IU-[0-9]{6}$"),
     "terminology_mapping_candidate": re.compile(r"^TMC-[0-9]{6}$"),
     "framework_assignment_candidate": re.compile(r"^FAC-[0-9]{6}$"),
+    "review_document_finalization": re.compile(r"^RVV-[0-9]{6}$"),
 }
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
 

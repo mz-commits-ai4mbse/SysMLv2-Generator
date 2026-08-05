@@ -11,6 +11,7 @@ HUMAN_REVIEW_TARGET_TYPES = frozenset(
         "information_unit_publication",
         "terminology_mapping_candidate",
         "framework_assignment_candidate",
+        "review_document_finalization",
     }
 )
 

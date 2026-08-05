@@ -178,6 +178,7 @@ def test_review_vocabularies_are_closed() -> None:
             "information_unit_publication",
             "terminology_mapping_candidate",
             "framework_assignment_candidate",
+            "review_document_finalization",
         }
     )
     assert HUMAN_REVIEW_DECISIONS == frozenset(

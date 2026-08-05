@@ -233,6 +233,27 @@ from .review_document_assembly import (
     assemble_initial_review_document,
 )
 
+from .finalization_authorization import (
+    REVIEW_FINALIZATION_AUTHORIZATION_SCHEMA_VERSION,
+    AuthorizedReviewDocumentFinalization,
+    ReviewFinalizationAuthorization,
+    authorize_persisted_review_document_finalization,
+    authorize_review_document_finalization,
+    calculate_review_finalization_authorization_fingerprint,
+    validate_review_finalization_authorization,
+)
+
+from .finalization_validation import (
+    FINALIZATION_BLOCKING_OUTCOMES,
+    REVIEW_FINALIZATION_VALIDATION_SCHEMA_VERSION,
+    ReviewFinalizationItemSnapshot,
+    ReviewFinalizationValidationAssessment,
+    assess_review_document_finalization,
+    calculate_review_finalization_validation_fingerprint,
+    create_review_document_finalization_target,
+    validate_review_finalization_assessment,
+)
+
 from .repository import (
     DEFAULT_PROJECTS_ROOT,
     ReviewWorkspaceRepository,
@@ -276,6 +297,21 @@ __all__ = [
     "InitialReviewDocumentAssembly",
     "ReviewDocumentEligibilityAssessment",
     "assemble_initial_review_document",
+    "REVIEW_FINALIZATION_AUTHORIZATION_SCHEMA_VERSION",
+    "AuthorizedReviewDocumentFinalization",
+    "ReviewFinalizationAuthorization",
+    "authorize_persisted_review_document_finalization",
+    "authorize_review_document_finalization",
+    "calculate_review_finalization_authorization_fingerprint",
+    "validate_review_finalization_authorization",
+    "FINALIZATION_BLOCKING_OUTCOMES",
+    "REVIEW_FINALIZATION_VALIDATION_SCHEMA_VERSION",
+    "ReviewFinalizationItemSnapshot",
+    "ReviewFinalizationValidationAssessment",
+    "assess_review_document_finalization",
+    "calculate_review_finalization_validation_fingerprint",
+    "create_review_document_finalization_target",
+    "validate_review_finalization_assessment",
     "DEFAULT_PROJECTS_ROOT",
     "ReviewWorkspaceRepository",
     "EFFECTIVE_DECISIONS_FILENAME",

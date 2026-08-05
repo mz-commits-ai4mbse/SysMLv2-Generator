@@ -34,6 +34,10 @@ from .errors import (
     ReviewValidationError,
     ReviewWorkspaceError,
 )
+from .finalization_authorization import (
+    AuthorizedReviewDocumentFinalization,
+    validate_review_finalization_authorization,
+)
 from .identifiers import (
     is_valid_review_document_id,
     is_valid_review_document_version_id,
@@ -85,6 +89,7 @@ from .types import (
 from .version_manifest import (
     REVIEW_DOCUMENT_VERSION_MANIFEST_FILENAME,
     calculate_review_document_version_fingerprint,
+    finalize_review_document_version,
     review_document_version_from_json,
     review_document_version_to_json,
     validate_review_document_version,
@@ -1142,6 +1147,293 @@ class ReviewWorkspaceRepository:
             )
 
         return persisted_version, persisted_revision
+
+    def persist_authorized_finalization(
+        self,
+        finalization: AuthorizedReviewDocumentFinalization,
+    ) -> ReviewDocumentVersion:
+        """Atomically persist one exactly authorized finalization."""
+
+        if not isinstance(
+            finalization,
+            AuthorizedReviewDocumentFinalization,
+        ):
+            raise ReviewValidationError(
+                "finalization must be an "
+                "AuthorizedReviewDocumentFinalization."
+            )
+
+        authorization = finalization.authorization
+        finalized_version = (
+            finalization.finalized_version
+        )
+
+        validate_review_finalization_authorization(
+            authorization
+        )
+        validate_review_document_version(
+            finalized_version
+        )
+
+        if finalized_version.version_state != "finalized":
+            raise ReviewIntegrityError(
+                "Authorized finalization must contain "
+                "a finalized Review Document Version."
+            )
+
+        identity_values = (
+            (
+                finalized_version.project_id,
+                authorization.project_id,
+                "project_id",
+            ),
+            (
+                finalized_version.review_document_id,
+                authorization.review_document_id,
+                "review_document_id",
+            ),
+            (
+                finalized_version
+                .review_document_version_id,
+                authorization
+                .review_document_version_id,
+                "review_document_version_id",
+            ),
+            (
+                finalized_version
+                .finalized_revision_id,
+                authorization.review_revision_id,
+                "finalized_revision_id",
+            ),
+            (
+                finalized_version
+                .finalization_decision_id,
+                authorization
+                .human_review_decision_id,
+                "finalization_decision_id",
+            ),
+            (
+                finalized_version.finalized_at,
+                authorization.finalized_at,
+                "finalized_at",
+            ),
+            (
+                finalized_version
+                .content_fingerprint,
+                authorization
+                .finalized_version_content_fingerprint,
+                "finalized version fingerprint",
+            ),
+        )
+
+        for actual, expected, label in identity_values:
+            if actual != expected:
+                raise ReviewIntegrityError(
+                    "Authorized finalization "
+                    f"{label} does not match its "
+                    "authorization."
+                )
+
+        version_directory = (
+            review_document_version_path(
+                self.root,
+                authorization.project_id,
+                authorization.review_document_id,
+                authorization
+                .review_document_version_id,
+            )
+        )
+        version_manifest = (
+            version_directory
+            / REVIEW_DOCUMENT_VERSION_MANIFEST_FILENAME
+        )
+        temporary_manifest = (
+            version_directory
+            / (
+                "."
+                f"{REVIEW_DOCUMENT_VERSION_MANIFEST_FILENAME}"
+                ".tmp"
+            )
+        )
+
+        if (
+            temporary_manifest.exists()
+            or temporary_manifest.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Interrupted Review Version "
+                "finalization requires explicit "
+                f"recovery: {temporary_manifest}."
+            )
+
+        current_version = self.load_version(
+            authorization.project_id,
+            authorization.review_document_id,
+            authorization.review_document_version_id,
+        )
+
+        if current_version.version_state != "draft":
+            raise InvalidReviewVersionTransitionError(
+                "Only a persisted draft Review "
+                "Document Version can be finalized."
+            )
+
+        if (
+            current_version.content_fingerprint
+            != authorization
+            .draft_version_content_fingerprint
+        ):
+            raise StaleReviewRevisionError(
+                "Persisted Review Version differs "
+                "from the authorized draft version."
+            )
+
+        if (
+            current_version.head_revision_id
+            != authorization.review_revision_id
+        ):
+            raise StaleReviewRevisionError(
+                "Persisted Review Version head differs "
+                "from the authorized Review Revision."
+            )
+
+        current_revision = self.load_revision(
+            authorization.project_id,
+            authorization.review_document_id,
+            authorization.review_document_version_id,
+            authorization.review_revision_id,
+        )
+
+        if (
+            current_revision.revision_fingerprint
+            != authorization
+            .review_revision_fingerprint
+        ):
+            raise StaleReviewRevisionError(
+                "Persisted Review Revision differs "
+                "from the authorized revision."
+            )
+
+        expected_finalized_version = (
+            finalize_review_document_version(
+                current_version,
+                finalized_revision_id=(
+                    authorization.review_revision_id
+                ),
+                finalization_decision_id=(
+                    authorization
+                    .human_review_decision_id
+                ),
+                timestamp=authorization.finalized_at,
+            )
+        )
+
+        if (
+            expected_finalized_version
+            != finalized_version
+        ):
+            raise ReviewIntegrityError(
+                "Finalized Review Version does not "
+                "match the authorized transition."
+            )
+
+        self._write_new_text(
+            temporary_manifest,
+            review_document_version_to_json(
+                finalized_version
+            ),
+            label=(
+                "temporary finalized Review "
+                "Document Version Manifest"
+            ),
+        )
+
+        persisted_temporary = (
+            self._load_version_manifest_file(
+                temporary_manifest,
+                expected_project_id=(
+                    authorization.project_id
+                ),
+                expected_document_id=(
+                    authorization.review_document_id
+                ),
+                expected_version_id=(
+                    authorization
+                    .review_document_version_id
+                ),
+            )
+        )
+
+        if (
+            persisted_temporary
+            != finalized_version
+        ):
+            raise ReviewIntegrityError(
+                "Temporary finalized Review Version "
+                "differs from the authorized version."
+            )
+
+        reloaded_current = (
+            self._load_version_manifest_file(
+                version_manifest,
+                expected_project_id=(
+                    authorization.project_id
+                ),
+                expected_document_id=(
+                    authorization.review_document_id
+                ),
+                expected_version_id=(
+                    authorization
+                    .review_document_version_id
+                ),
+            )
+        )
+
+        if reloaded_current != current_version:
+            raise ReviewRecoveryRequiredError(
+                "Review Version changed while "
+                "finalization was being persisted; "
+                "explicit recovery is required."
+            )
+
+        try:
+            os.replace(
+                temporary_manifest,
+                version_manifest,
+            )
+        except OSError as exc:
+            raise ReviewRecoveryRequiredError(
+                "Replacing the Review Version Manifest "
+                "during finalization failed; explicit "
+                f"recovery is required: {version_manifest}."
+            ) from exc
+
+        persisted = self.load_version(
+            authorization.project_id,
+            authorization.review_document_id,
+            authorization.review_document_version_id,
+        )
+
+        if persisted != finalized_version:
+            raise ReviewIntegrityError(
+                "Reloaded finalized Review Version "
+                "differs from the authorized version."
+            )
+
+        persisted_revision = self.load_revision(
+            authorization.project_id,
+            authorization.review_document_id,
+            authorization.review_document_version_id,
+            authorization.review_revision_id,
+        )
+
+        if persisted_revision != current_revision:
+            raise ReviewIntegrityError(
+                "Finalization must not modify the "
+                "immutable Review Revision."
+            )
+
+        return persisted
 
     def _updated_version_with_head(
         self,

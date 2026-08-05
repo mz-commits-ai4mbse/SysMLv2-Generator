@@ -35,6 +35,9 @@ _TARGET_ID_PATTERNS = {
     "framework_assignment_candidate": re.compile(
         r"^FAC-[0-9]{6}$"
     ),
+    "review_document_finalization": re.compile(
+        r"^RVV-[0-9]{6}$"
+    ),
 }
 _GENERAL_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
@@ -331,6 +334,23 @@ def _parse_target(value: Any) -> HumanReviewTargetSnapshot:
         _TARGET_ID_PATTERNS[target_type],
         "target_id",
     )
+    recommended_review_mode = _choice(
+        data["recommended_review_mode"],
+        HUMAN_REVIEW_MODES,
+        "recommended_review_mode",
+    )
+
+    if (
+        target_type
+        == "review_document_finalization"
+        and recommended_review_mode
+        != "detailed_review"
+    ):
+        raise HumanReviewIntegrityError(
+            "Review Document finalization must "
+            "recommend detailed_review."
+        )
+
     confirmation_required = _boolean(
         data["confirmation_required"],
         "confirmation_required",
@@ -370,10 +390,8 @@ def _parse_target(value: Any) -> HumanReviewTargetSnapshot:
             _SHA256,
             "target_content_fingerprint",
         ),
-        recommended_review_mode=_choice(
-            data["recommended_review_mode"],
-            HUMAN_REVIEW_MODES,
-            "recommended_review_mode",
+        recommended_review_mode=(
+            recommended_review_mode
         ),
         confirmation_required=True,
         reference_validation_status=validation_status,
@@ -387,6 +405,16 @@ def _validate_gate(
     decision: str,
     rationale: str | None,
 ) -> None:
+    if (
+        target.target_type
+        == "review_document_finalization"
+        and review_mode != "detailed_review"
+    ):
+        raise HumanReviewIntegrityError(
+            "Review Document finalization requires "
+            "detailed_review."
+        )
+
     if review_mode == "quick_confirmation" and (
         target.recommended_review_mode != "quick_confirmation"
         or target.reference_validation_status == "invalid"
