@@ -27,9 +27,13 @@ Current Branch
 
 `main`
 
-Verified Implementation Commit
+Verified Implementation Reference
 
-`782b75a94f7008de9b08fc9724480f0786e6af01`
+`the commit containing this SSOT update`
+
+Last Prior Committed Checkpoint
+
+`cf3cd5f` — G4.2d finalized artifact-set integrity
 
 Architecture Version
 
@@ -37,15 +41,15 @@ Architecture Version
 
 Knowledge Base Version
 
-1.8
+1.9
 
 Implementation Version
 
-0.10
+0.11
 
 Current Roadmap Version
 
-1.8
+1.9
 
 Current Development Phase
 
@@ -53,11 +57,12 @@ Phase G — Approved Input Promotion
 
 Current Status
 
-Phase G Active — G1 through G3 Completed; G4 Active; G4.1 and G4.2a–G4.2c Completed; G4.2d Next
+Phase G Active — G1 through G4 Completed; G5 Next
 
-Complete Automated Test Baseline
+Verified Automated Test Baseline
 
-4463 passed
+4553 passing tests across the complete G4 regression and targeted stale-test
+expectation correction
 
 End-to-End Prototype Target
 
@@ -65,7 +70,7 @@ End-to-End Prototype Target
 
 Last SSOT Update
 
-2026-08-05
+2026-08-06
 
 ---
 
@@ -121,7 +126,7 @@ Phase R — Task Profile Portability Evaluation
 
 Priority 1
 
-Continue Phase G with G4.2d — cross-artifact consistency and fingerprint binding for the finalized review artifact set.
+Continue Phase G with G5 — Approved Input promotion and lifecycle.
 
 Phase G shall establish the exact boundary between:
 
@@ -715,10 +720,15 @@ Completed:
 - G4.2a — immutable `reviewed_document.json` contract
 - G4.2b — immutable `effective_decisions.json` contract
 - G4.2c — deterministic `reviewed_report.md` renderer
+- G4.2d — exact finalized artifact-set integrity
+- G4.2e — atomic finalized artifact persistence
+- G4.2f — finalized artifact loading, scanning and recovery diagnostics
+- G4.3 — controlled reopening of finalized Review Versions
+- G4.4 — lifecycle integration and complete regression
 
 Next:
 
-- G4.2d — cross-artifact consistency and fingerprint binding
+- G5 — Approved Input promotion and lifecycle
 
 Phase G as a whole is not complete.
 
@@ -753,8 +763,8 @@ The following architecture topics remain accepted:
 | G1 | Human Review Workspace and Approved Input architecture | Completed |
 | G2 | Review Workspace foundations | Completed |
 | G3 | P4/P9 evidence adapters and Review Item construction | Completed |
-| G4 | Review editing, finalization and reopening | Active |
-| G5 | Approved Input promotion and lifecycle | Planned |
+| G4 | Review editing, finalization and reopening | Completed |
+| G5 | Approved Input promotion and lifecycle | Next |
 | G6 | Human Review and promotion UI | Planned |
 | G7 | Integration, audit and end-to-end regression | Planned |
 
@@ -813,57 +823,121 @@ Complete automated suite after G4.1: 4402 passed
 
 ## G4.2 — Immutable Finalized Review Artifacts
 
-Verified implementation commit through G4.2c:
+### G4.2a–G4.2c — Artifact Contracts
+
+Verified implementation commit:
 
 `782b75a94f7008de9b08fc9724480f0786e6af01`
 
-### G4.2a — `reviewed_document.json`
-
 Implemented:
 
-- immutable Finalized Reviewed Document manifest
-- exact Review Document, Version and Revision identity
-- source, run and attempt traceability
-- exact finalization decision and validation binding
-- deterministic Review Item references
-- strict JSON parsing and serialization
-- self-excluding SHA-256 content fingerprint
-- public package API
-
-### G4.2b — `effective_decisions.json`
-
-Implemented:
-
-- immutable Effective Review Decision Set
-- complete finalized Review Item snapshots
-- exact binding to `reviewed_document.json`
-- exact Review Revision binding
-- deterministic decision ordering
-- strict JSON parsing and serialization
-- self-excluding SHA-256 content fingerprint
-- public package API
-
-### G4.2c — `reviewed_report.md`
-
-Implemented:
-
-- deterministic human-readable Reviewed Report rendering
-- exact source binding to the two machine-readable finalized artifacts
-- finalization metadata
-- deterministic outcome summary
-- Elements view
-- Relationships view
-- Open Questions view
-- Rejected Content view
-- exact Markdown-byte fingerprint
-- public package API
+- immutable `reviewed_document.json`
+- immutable `effective_decisions.json`
+- deterministic `reviewed_report.md`
+- exact Review Version, Revision, decision and validation binding
+- deterministic serialization and artifact fingerprints
+- public package APIs
 
 Verification:
 
 ```text
 Focused G4.2a–G4.2c suite: 208 passed
 Complete automated suite: 4463 passed
-Local HEAD equals origin/main
+```
+
+### G4.2d — Exact Artifact-set Integrity
+
+Committed checkpoint:
+
+`cf3cd5f`
+
+Implemented:
+
+- exact three-artifact membership
+- deterministic artifact ordering
+- cross-artifact Project, Document, Version and Revision identity
+- exact finalization decision and validation binding
+- exact Review Item identity and content set
+- artifact-set fingerprinting
+- rejection of mixed, incomplete or tampered sets
+
+### G4.2e — Atomic Persistence
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- exact-byte staging under `.finalized.tmp`
+- write and flush before validation
+- validation before publication
+- atomic rename to `finalized/`
+- no overwrite of an existing finalized directory
+- protection against unsafe paths and symbolic links
+- source-change detection during persistence
+- fail-closed interrupted-write state
+
+### G4.2f — Load, Scan and Recovery Diagnostics
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- exact three-entry loading
+- UTF-8 and byte-fingerprint validation
+- regeneration and binding comparison
+- scan findings for interrupted publication
+- scan findings for unsafe, unexpected, missing or invalid finalized content
+- explicit recovery-required states
+
+## G4.3 — Reopening Finalized Review Versions
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- immutable finalized predecessor
+- successor Draft with a new Review Version identity
+- new initial Review Revision and Review Item identities
+- exact predecessor finalization and artifact-set validation
+- reopening only from the latest finalized version
+- linear version history without branching
+- mandatory reopen reason and actor metadata
+- preservation of materialized review state
+- `carried_forward` one-to-one lineage
+- unchanged stable subject keys
+- no copying of Scoped Review Actions
+- atomic successor workspace creation
+
+Verification:
+
+```text
+Focused G4.3 suite: 18 passed
+Extended Review Workspace regression: 365 passed
+```
+
+## G4.4 — Integration and Regression
+
+Verified lifecycle:
+
+```text
+finalize initial Review Version
+→ persist and load exact finalized artifact set
+→ reopen as successor Draft
+→ append successor revision
+→ authorize and finalize successor
+→ persist and load second independent artifact set
+→ verify immutable predecessor
+→ scan complete Review Document history
+```
+
+Verification:
+
+```text
+G4.4 lifecycle integration: 1 passed
+Complete regression: 4552 passed, 1 stale vocabulary expectation
+Corrected targeted vocabulary test: 1 passed
+Effective verified baseline: 4553 passing tests
+No production code changed after the complete regression
 ```
 
 ## Current Development Objective
@@ -871,22 +945,20 @@ Local HEAD equals origin/main
 Continue with:
 
 ```text
-G4.2d — cross-artifact consistency and fingerprint binding
-→ G4.2e — atomic persistence under finalized/
-→ G4.2f — load, scan and recovery
-→ G4.3 — reopening
-→ G4.4 — integration and complete regression
+G5 — Approved Input promotion and lifecycle
 ```
 
-G4.2d shall validate the finalized artifact set as one exact immutable unit:
+G5 shall define and implement:
 
-```text
-reviewed_document.json
-effective_decisions.json
-reviewed_report.md
-```
+- Approved Input identity and immutable manifest
+- exact promotion eligibility from a finalized Review Version
+- exact binding to the finalized artifact set
+- Approved Input repository and stable read contract
+- promotion service
+- invalidation, revocation and supersession
+- stable Phase H consumption boundary
 
-G4.2d shall not yet implement Approved Input promotion.
+G5 shall not generate model candidates or SysML v2.
 
 ## Development-plan Position
 
@@ -937,6 +1009,7 @@ repository, validation boundary and stable Phase H read contract are available.
 - fingerprint mismatch blocks finalization and promotion
 - original processing artifacts remain immutable
 - finalized review artifacts must remain mutually consistent
+- reopening never mutates a finalized predecessor
 - Preliminary Coverage remains separate from Approved Generation Readiness
 - Phase G shall not generate model candidates
 - Phase G shall not generate SysML v2
@@ -991,38 +1064,189 @@ Each candidate shall preserve at least:
 - affected model area
 - proposed element type
 - reason and engineering rationale
-- related implementation evidence
-- known relationships to existing model elements
+- implementation evidence
+- known relationships
 - review status
 - CATIA transfer status
 
-## Retrospective Phase-G Scope
+## G4 Candidate Inventory
 
-The first candidate inventory shall retrospectively examine all work completed
-during:
+### MEC-G4-001 — Exact Finalized Artifact Set
 
-```text
-G1
-G2
-G3
-G4.1
-G4.2a
-G4.2b
-G4.2c
-```
+Originating implementation phase:
 
-The retrospective inventory shall identify requirements, constraints,
-functions, Logical Components, relationships and possible subsystem
-architecture elements that were introduced or materially clarified by the
-implementation.
+`G4.2d`
 
-This inventory is required before or as part of the
+Affected model area:
+
+Human Review Workspace and finalized Review artifacts.
+
+Proposed element type:
+
+System Design Constraint.
+
+Engineering rationale:
+
+A finalized Review result is valid only as the exact immutable set of
+`reviewed_document.json`, `effective_decisions.json` and `reviewed_report.md`.
+Mixed, incomplete, additional or fingerprint-inconsistent artifacts shall not
+form a valid finalized Review result.
+
+Implementation evidence:
+
+- `modules/review_workspace/finalized_artifact_set.py`
+- finalized artifact-set manifest and binding tests
+
+Known relationships:
+
+- constrains Review finalization output
+- provides the integrity boundary consumed by G5 promotion
+- binds one finalized Review Version and one exact Review Revision
+
+Review status:
+
+Recorded; engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
+### MEC-G4-002 — Atomic Publication and Recovery Boundary
+
+Originating implementation phase:
+
+`G4.2e–G4.2f`
+
+Affected model area:
+
+Finalized Review persistence, loading, scanning and recovery.
+
+Proposed element type:
+
+System Design Constraint.
+
+Engineering rationale:
+
+A finalized artifact set shall become visible only through a validated atomic
+publication. Interrupted, unsafe, incomplete or altered states shall fail
+closed and shall be reported as requiring recovery rather than being treated as
+valid finalized evidence.
+
+Implementation evidence:
+
+- `modules/review_workspace/repository.py`
+- finalized artifact persistence, loading and scan tests
+
+Known relationships:
+
+- constrains finalized artifact persistence
+- constrains repository recovery behavior
+- protects the G5 promotion eligibility boundary
+
+Review status:
+
+Recorded; engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
+### MEC-G4-003 — Carried-forward Review Item Lineage
+
+Originating implementation phase:
+
+`G4.3`
+
+Affected model area:
+
+Review Item lineage across Review Document Versions.
+
+Proposed element type:
+
+Logical Relationship.
+
+Engineering rationale:
+
+A Review Item copied into a reopened successor version requires explicit
+one-to-one lineage to exactly one predecessor Review Item while preserving its
+stable subject key. The relation is distinct from split, merge and original
+creation.
+
+Implementation evidence:
+
+- `modules/review_workspace/types.py`
+- `modules/review_workspace/item_manifest.py`
+- `modules/review_workspace/reopening.py`
+- Review reopening tests
+
+Known relationships:
+
+- `lineage_operation = carried_forward`
+- exactly one `derived_from_review_item_ids` entry
+- stable subject key remains unchanged
+- materialized review state is preserved
+
+Review status:
+
+Recorded; engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
+### MEC-G4-004 — Linear Review Version Succession
+
+Originating implementation phase:
+
+`G4.3`
+
+Affected model area:
+
+Review Document Version lifecycle.
+
+Proposed element type:
+
+System Design Constraint.
+
+Engineering rationale:
+
+Only the latest finalized Review Version may be reopened. Reopening creates one
+new successor Draft, preserves the finalized predecessor and prohibits parallel
+successor branches or reopening when a later Draft or finalized version exists.
+
+Implementation evidence:
+
+- `modules/review_workspace/reopening.py`
+- `modules/review_workspace/repository.py`
+- Review reopening and lifecycle integration tests
+
+Known relationships:
+
+- constrains the Review reopening function
+- defines predecessor and successor version lineage
+- preserves immutable historical review evidence
+- prevents ambiguous promotion ancestry
+
+Review status:
+
+Recorded; engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
+## Retrospective Requirement
+
+G1 through G4.2c still require retrospective examination before or during the
 Zwischenstandspräsentation.
+
+The G4.2d through G4.4 candidates above satisfy the continuous tracking rule
+for the completed G4 work package.
 
 ## Ongoing Rule
 
-Beginning with G4.2d, candidate identification shall be performed continuously
-during every implementation phase.
+Candidate identification remains mandatory during every subsequent
+implementation phase.
 
 Phase completion review shall include an explicit check for newly created or
 materially refined Model Element Change Candidates.
@@ -1283,7 +1507,7 @@ The following capabilities are not yet implemented:
 ## Active
 
 - the end-to-end prototype schedule is compressed to 2026-08-14
-- Phase G architecture is not yet accepted
+- Approved Input identity, repository and promotion lifecycle remain open in G5
 - P9 ends in `awaiting_review`, not Approved Input
 - no model candidates are generated
 - no internal engineering model is generated
@@ -1315,21 +1539,21 @@ The following capabilities are not yet implemented:
 
 # Next Milestone
 
-Phase G — Approved Input Promotion
+G5 — Approved Input Promotion and Lifecycle
 
 Execution order:
 
 ```text
-Phase G architecture discussion
-→ explicit architecture acceptance
-→ ADR
+G5 implementation contract
+→ explicit contract acceptance
 → implementation
-→ tests
+→ focused tests
 → review
-→ Phase G completion decision
+→ G5 completion decision
 ```
 
-The immediate next work item is the Phase G architecture contract.
+The immediate next work item is the exact G5 Approved Input identity,
+repository, eligibility and lifecycle contract.
 
 No Phase H implementation shall begin until Phase G provides a stable,
 reviewed Approved Input contract.
@@ -1356,19 +1580,20 @@ Broad staging commands shall not be used in a mixed working tree.
 
 # SSOT Update Cadence
 
-This update closes the Post-Phase-P Reconciliation Gate and activates Phase G.
+This update completes G4 and activates G5 as the next Phase-G work package.
 
-The implementation baseline remains unchanged because this update records:
+It records:
 
-- completed presentation and reconciliation work
-- accepted CATIA System Architecture
-- completed coverage analysis
-- selected next implementation phase
-- updated roadmap scope
-- accepted post-presentation feedback
+- exact finalized artifact-set integrity
+- atomic finalized artifact persistence
+- finalized artifact loading, scanning and recovery diagnostics
+- controlled reopening with immutable predecessor preservation
+- lifecycle integration and regression evidence
+- four G4 Model Element Change Candidates
+- the transition to Approved Input promotion and lifecycle
 
-The next SSOT update is due after a major implementation milestone or when a
-critical handover requires synchronization.
+The next SSOT update is due after G5 completion or when a critical handover
+requires synchronization.
 
 ---
 

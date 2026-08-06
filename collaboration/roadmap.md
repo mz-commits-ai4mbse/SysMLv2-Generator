@@ -26,19 +26,19 @@ Architecture Version
 
 Knowledge Base Version
 
-1.8
+1.9
 
 Implementation Version
 
-0.10
+0.11
 
 Roadmap Version
 
-1.8
+1.9
 
 Last SSOT Update
 
-2026-08-05
+2026-08-06
 
 Current Phase
 
@@ -46,15 +46,20 @@ Current Phase
 
 Current Status
 
-Phase G Active — G1 through G3 Completed; G4 Active; G4.1 and G4.2a–G4.2c Completed; G4.2d Next
+Phase G Active — G1 through G4 Completed; G5 Next
 
-Verified Implementation Commit
+Verified Implementation Reference
 
-`782b75a94f7008de9b08fc9724480f0786e6af01`
+`the commit containing this SSOT update`
 
-Complete Automated Test Baseline
+Last Prior Committed Checkpoint
 
-4463 passed
+`cf3cd5f` — G4.2d finalized artifact-set integrity
+
+Verified Automated Test Baseline
+
+4553 passing tests across the complete G4 regression and targeted stale-test
+expectation correction
 
 Manual P9 Acceptance Audit
 
@@ -509,8 +514,8 @@ Accepted
 | G1 | Human Review Workspace and Approved Input architecture | Completed |
 | G2 | Review Workspace foundations | Completed |
 | G3 | P4/P9 evidence adapters and Review Item construction | Completed |
-| G4 | Review editing, finalization and reopening | Active |
-| G5 | Approved Input promotion and lifecycle | Planned |
+| G4 | Review editing, finalization and reopening | Completed |
+| G5 | Approved Input promotion and lifecycle | Next |
 | G6 | Human Review and promotion UI | Planned |
 | G7 | Integration, audit and end-to-end regression | Planned |
 
@@ -522,11 +527,11 @@ Accepted
 | G4.2a | Immutable `reviewed_document.json` contract | Completed |
 | G4.2b | Immutable `effective_decisions.json` contract | Completed |
 | G4.2c | Deterministic `reviewed_report.md` renderer | Completed |
-| G4.2d | Cross-artifact consistency and fingerprint binding | Next |
-| G4.2e | Atomic persistence under `finalized/` | Planned |
-| G4.2f | Load, scan and recovery | Planned |
-| G4.3 | Reopening finalized Review Versions | Planned |
-| G4.4 | Integration and complete regression | Planned |
+| G4.2d | Cross-artifact consistency and fingerprint binding | Completed |
+| G4.2e | Atomic persistence under `finalized/` | Completed |
+| G4.2f | Load, scan and recovery | Completed |
+| G4.3 | Reopening finalized Review Versions | Completed |
+| G4.4 | Integration and complete regression | Completed |
 
 ## Verified Implementation
 
@@ -599,31 +604,98 @@ Verification:
 ```text
 Focused G4.2a–G4.2c suite: 208 passed
 Complete automated suite: 4463 passed
-HEAD equals origin/main
+```
+
+### G4.2d
+
+Committed checkpoint:
+
+`cf3cd5f`
+
+Implemented:
+
+- one exact immutable finalized artifact-set contract
+- exact three-artifact membership
+- cross-artifact identity, revision, decision and validation binding
+- deterministic artifact ordering
+- artifact-set fingerprinting
+- rejection of mixed, incomplete or tampered sets
+
+### G4.2e–G4.2f
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- exact-byte persistence under `finalized/`
+- temporary `.finalized.tmp` staging
+- write, flush, validation and atomic publication
+- immutable finalized-directory protection
+- strict finalized artifact-set loading
+- scan diagnostics for interrupted, unsafe, incomplete or invalid states
+- fail-closed recovery boundary
+
+### G4.3
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- reopening only through a new successor Review Version
+- linear Review Version history without branching
+- exact predecessor finalization and artifact-set validation
+- new Version, Revision and Review Item identities
+- `carried_forward` one-to-one Review Item lineage
+- preservation of materialized review state
+- no copying of Scoped Review Actions
+- atomic successor Draft creation
+
+Verification:
+
+```text
+Focused G4.3 suite: 18 passed
+Extended Review Workspace regression: 365 passed
+```
+
+### G4.4
+
+Included in the G4 completion commit containing this SSOT update.
+
+Verified lifecycle:
+
+```text
+finalize
+→ persist exact finalized artifact set
+→ reopen
+→ append successor revision
+→ authorize and finalize successor
+→ persist second independent artifact set
+→ scan complete Review Document history
+```
+
+Verification:
+
+```text
+G4.4 lifecycle integration: 1 passed
+Complete regression: 4552 passed, 1 stale vocabulary expectation
+Corrected targeted vocabulary test: 1 passed
+Effective verified baseline: 4553 passing tests
+No production code changed after the complete regression
 ```
 
 ## Immediate Next Activity
 
 ```text
-G4.2d — cross-artifact consistency and fingerprint binding
+G5 — Approved Input promotion and lifecycle
 ```
 
-The three finalized artifacts shall be validated as one exact immutable set:
-
-```text
-reviewed_document.json
-effective_decisions.json
-reviewed_report.md
-```
+G5 shall define and implement the exact promotion boundary from a valid
+finalized Review Version and its immutable artifact set to Approved Input.
 
 ## Remaining Deliverables
 
-- finalized artifact-set consistency contract
-- atomic finalized-artifact persistence
-- finalized-artifact loading, scanning and recovery
-- controlled reopening
 - Approved Input identity and manifest
-- Approved Input repository
+- Approved Input repository and stable read contract
 - promotion eligibility
 - promotion service
 - invalidation, revocation and supersession
@@ -641,6 +713,7 @@ reviewed_report.md
 - fingerprint mismatch blocks finalization and promotion
 - original processing evidence remains immutable
 - finalized artifacts must remain mutually consistent
+- reopening never mutates a finalized predecessor
 - Phase G shall not generate model candidates
 - Phase G shall not generate SysML v2
 
@@ -677,6 +750,20 @@ Element Change Candidates.
 
 Each phase-completion review shall explicitly determine whether implementation
 created or materially refined engineering model content.
+
+## G4 Recorded Candidates
+
+| ID | Origin | Candidate | Proposed model element type | Status |
+|---|---|---|---|---|
+| MEC-G4-001 | G4.2d | Exact Finalized Artifact Set as a three-artifact boundary | System Design Constraint | Recorded; engineering review pending |
+| MEC-G4-002 | G4.2e–G4.2f | Atomic publication and explicit recovery boundary | System Design Constraint | Recorded; engineering review pending |
+| MEC-G4-003 | G4.3 | `carried_forward` lineage between predecessor and successor Review Items | Logical Relationship | Recorded; engineering review pending |
+| MEC-G4-004 | G4.3 | Linear Review Version succession without parallel branches | System Design Constraint | Recorded; engineering review pending |
+
+These candidates are implementation observations only.
+
+They do not change CATIA until engineering review, explicit acceptance and a
+separate CATIA model update have occurred.
 
 ## Authority Boundary
 

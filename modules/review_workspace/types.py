@@ -104,6 +104,7 @@ REVIEW_ITEM_LINEAGE_OPERATIONS = frozenset(
         "split",
         "merge",
         "human_created",
+        "carried_forward",
     }
 )
 

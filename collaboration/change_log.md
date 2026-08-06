@@ -1,5 +1,119 @@
 # Change Log
 
+## 2026-08-06 — G4 Completion and G5 Transition
+
+Versions after this update:
+
+- Architecture Version: 1.3
+- Knowledge Base Version: 1.9
+- Implementation Version: 0.11
+- Roadmap Version: 1.9
+
+Implementation reference:
+
+- G4 completion: the commit containing this SSOT update
+- Last prior committed checkpoint:
+  `cf3cd5f` — G4.2d finalized artifact-set integrity
+
+Verification:
+
+```text
+Focused G4.3 suite: 18 passed
+Extended Review Workspace regression: 365 passed
+G4.4 lifecycle integration: 1 passed
+Complete regression: 4552 passed, 1 stale vocabulary expectation
+Corrected targeted vocabulary test: 1 passed
+Effective verified baseline: 4553 passing tests
+No production code changed after the complete regression
+```
+
+G4.2d completion:
+
+- the exact immutable finalized artifact-set contract was implemented
+- exact three-artifact membership was enforced
+- cross-artifact identity, revision, decision and validation binding was
+  implemented
+- deterministic artifact ordering and artifact-set fingerprinting were
+  implemented
+- mixed, incomplete and tampered sets are rejected
+- committed checkpoint: `cf3cd5f`
+
+G4.2e completion:
+
+- exact-byte staging under `.finalized.tmp` was implemented
+- write, flush and validation occur before publication
+- publication uses atomic rename to `finalized/`
+- existing finalized content is never overwritten
+- unsafe paths, symbolic links, partial writes and source changes fail closed
+
+G4.2f completion:
+
+- exact finalized artifact-set loading was implemented
+- UTF-8, byte, fingerprint and binding validation was implemented
+- deterministic regeneration comparison was implemented
+- scan diagnostics identify interrupted, unsafe, unexpected, missing and
+  invalid finalized states
+- recovery-required states remain explicit and fail closed
+
+G4.3 completion:
+
+- finalized predecessors remain immutable
+- reopening creates one new successor Draft
+- only the latest finalized Review Version may be reopened
+- parallel version branches are prohibited
+- successor Version, Revision and Review Item identities are new
+- materialized review state is preserved
+- Scoped Review Actions are not copied
+- `carried_forward` one-to-one Review Item lineage was implemented
+- stable subject keys remain unchanged
+- successor workspace creation is atomic
+
+G4.4 completion:
+
+- the complete finalize, persist, reopen, revise, refinalize and repersist
+  lifecycle was verified
+- predecessor Version, Revision and artifact bytes remained unchanged
+- two independent finalized artifact sets were loaded successfully
+- complete Review Document scanning remained clean
+- G4 is complete
+
+Recorded Model Element Change Candidates:
+
+- MEC-G4-001 — Exact Finalized Artifact Set as a three-artifact boundary
+- MEC-G4-002 — Atomic publication and explicit recovery boundary
+- MEC-G4-003 — `carried_forward` Review Item lineage
+- MEC-G4-004 — Linear Review Version succession without parallel branches
+
+Candidate status:
+
+- recorded from implementation evidence
+- engineering review pending
+- not accepted CATIA changes
+- CATIA transfer not started
+
+Phase G status:
+
+- G1 through G4 completed
+- G5 is next
+- Phase G remains active
+
+Immediate next activity:
+
+```text
+G5 — Approved Input promotion and lifecycle
+→ exact implementation contract
+→ explicit acceptance
+→ implementation
+→ focused tests
+→ review
+→ G5 completion decision
+```
+
+No Phase H implementation begins before Phase G and the
+Zwischenstandspräsentation are complete.
+
+---
+
 ## 2026-08-05 — G3 and G4.1–G4.2c Completion Checkpoint
 
 Versions after this update:

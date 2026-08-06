@@ -343,6 +343,7 @@ def test_review_vocabularies_are_explicit() -> None:
         "split",
         "merge",
         "human_created",
+        "carried_forward",
     }
 
     assert RELATIONSHIP_PROFILE_VALIDATION_STATUSES == {

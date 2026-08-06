@@ -31,9 +31,13 @@ Branch
 
 `main`
 
-Verified Implementation Commit
+Verified Implementation Reference
 
-`782b75a94f7008de9b08fc9724480f0786e6af01`
+`the commit containing this SSOT update`
+
+Last Prior Committed Checkpoint
+
+`cf3cd5f` — G4.2d finalized artifact-set integrity
 
 Architecture Version
 
@@ -41,19 +45,19 @@ Architecture Version
 
 Knowledge Base Version
 
-1.8
+1.9
 
 Implementation Version
 
-0.10
+0.11
 
 Roadmap Version
 
-1.8
+1.9
 
 Last SSOT Update
 
-2026-08-05
+2026-08-06
 
 Current Phase
 
@@ -61,16 +65,16 @@ Phase G — Approved Input Promotion
 
 Current Status
 
-G1 through G3 completed. G4 active. G4.1 and G4.2a through G4.2c completed.
-G4.2d is next.
+G1 through G4 completed. G5 is next.
 
-Complete Automated Test Baseline
+Verified Automated Test Baseline
 
-4463 passed
+4553 passing tests across the complete G4 regression and targeted stale-test
+expectation correction
 
 Remote Synchronization
 
-`HEAD == origin/main`
+Verify after the G4 completion commit and push.
 
 Executable Prototype Target
 
@@ -92,14 +96,14 @@ Read in this order:
 
 Then inspect the committed implementation for:
 
-- Review Workspace foundations
-- G3 P4/P9 evidence adapters
-- G3 Review Item builders
-- Review Document assembly
-- G4.1 finalization validation
-- G4.1 finalization authorization
-- G4.2 finalized artifact contracts
-- existing tests for those modules
+- completed Review Workspace foundations
+- P4/P9 evidence adapters and Review Document assembly
+- finalization validation and authorization
+- exact finalized artifact-set contracts
+- finalized artifact persistence, loading and scanning
+- Review Version reopening
+- lifecycle integration tests
+- ADR-016 Approved Input identity, promotion and lifecycle boundaries
 
 Do not use previous chat history as the source of truth.
 
@@ -261,12 +265,9 @@ Verified implementation commit:
 
 Implemented:
 
-- P4 evidence selection and references
-- P4 Review Item construction
-- P9 Review evidence selection
-- P9 proposal adaptation
-- P9 source and consensus evidence adaptation
-- P9 Review Item construction
+- P4 and P9 evidence selection
+- structured proposal and evidence references
+- Review Item construction
 - stable subject keys
 - original Review Report locators
 - deterministic Review Document assembly
@@ -290,9 +291,8 @@ Implemented:
 
 - finalization eligibility assessment
 - open and unresolved item blocking
-- exact version and revision binding
-- validation fingerprint binding
-- Human Review target type `review_document_finalization`
+- exact Version, Revision and validation binding
+- Human Review finalization target
 - detailed-review confirmation
 - stale-decision rejection
 - exact decision fingerprint binding
@@ -306,74 +306,13 @@ Focused G4.1 suite: 314 passed
 Complete automated suite: 4402 passed
 ```
 
-## G4.2a — Finalized Reviewed Document
+## G4.2a–G4.2c — Finalized Artifact Contracts
 
-Implemented module:
-
-`modules/review_workspace/reviewed_document_manifest.py`
-
-Implemented tests:
-
-- `tests/test_finalized_reviewed_document_manifest.py`
-- `tests/test_finalized_reviewed_document_public_api.py`
-
-Artifact:
-
-`reviewed_document.json`
-
-## G4.2b — Effective Review Decisions
-
-Implemented module:
-
-`modules/review_workspace/effective_decisions_manifest.py`
-
-Implemented tests:
-
-- `tests/test_effective_review_decisions_manifest.py`
-- `tests/test_effective_review_decisions_public_api.py`
-
-Artifact:
-
-`effective_decisions.json`
-
-## G4.2c — Reviewed Report
-
-Implemented module:
-
-`modules/review_workspace/reviewed_report_renderer.py`
-
-Implemented tests:
-
-- `tests/test_reviewed_report_renderer.py`
-- `tests/test_reviewed_report_renderer_public_api.py`
-
-Artifact:
-
-`reviewed_report.md`
-
-Verified implementation commit for G4.2a through G4.2c:
+Verified implementation commit:
 
 `782b75a94f7008de9b08fc9724480f0786e6af01`
 
-Verification:
-
-```text
-Focused G4.2a–G4.2c suite: 208 passed
-Complete automated suite: 4463 passed
-HEAD equals origin/main
-```
-
----
-
-# Exact Next Work Package
-
-## G4.2d — Cross-artifact Consistency and Fingerprint Binding
-
-Begin with inspection.
-
-Do not implement before verifying the current files and contracts.
-
-The three finalized artifacts are:
+Implemented artifacts:
 
 ```text
 reviewed_document.json
@@ -381,41 +320,154 @@ effective_decisions.json
 reviewed_report.md
 ```
 
-G4.2d shall define and implement one exact artifact-set contract that verifies:
+Implemented:
 
-- same Project ID
-- same Review Document ID
-- same Review Document Version ID
-- same Review Revision ID
-- same finalized timestamp
-- exact Review Revision fingerprint
-- exact finalization decision ID
-- exact finalization decision fingerprint
-- exact finalization validation fingerprint
-- exact `reviewed_document.json` fingerprint
-- exact `effective_decisions.json` fingerprint
-- exact `reviewed_report.md` byte fingerprint
+- immutable machine-readable finalized manifests
+- deterministic human-readable Reviewed Report
+- exact Version, Revision, decision and validation binding
+- deterministic serialization and fingerprints
+- public package APIs
+
+Verification:
+
+```text
+Focused G4.2a–G4.2c suite: 208 passed
+Complete automated suite: 4463 passed
+```
+
+## G4.2d — Exact Finalized Artifact Set
+
+Committed checkpoint:
+
+`cf3cd5f`
+
+Implemented:
+
+- exact three-artifact membership
+- deterministic ordering
+- cross-artifact identity and fingerprint binding
 - exact Review Item identity and content set
-- deterministic artifact ordering
-- rejection of any mixed or tampered artifact set
+- artifact-set fingerprint
+- rejection of mixed, incomplete and tampered sets
 
-G4.2d shall not yet:
+## G4.2e — Atomic Persistence
 
-- persist the final artifact set
-- implement load, scan or recovery
-- reopen a finalized Review Version
-- create Approved Input
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- `.finalized.tmp` staging
+- exact-byte write and flush
+- validation before publication
+- atomic rename to `finalized/`
+- no finalized-directory overwrite
+- unsafe-path and symbolic-link protection
+- interrupted-write recovery state
+
+## G4.2f — Load, Scan and Recovery Diagnostics
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- exact three-entry loading
+- byte, UTF-8, fingerprint and binding validation
+- deterministic regeneration comparison
+- scan findings for interrupted, unsafe, unexpected, missing or invalid states
+- fail-closed recovery-required reporting
+
+## G4.3 — Reopening Finalized Review Versions
+
+Included in the G4 completion commit containing this SSOT update.
+
+Implemented:
+
+- immutable finalized predecessor
+- new successor Draft
+- new Version, Revision and Review Item identities
+- latest-finalized-only reopening
+- linear version history without branching
+- mandatory reason, actor and timestamp
+- preserved materialized review state
+- `carried_forward` one-to-one lineage
+- stable subject-key preservation
+- no copying of Scoped Review Actions
+- atomic successor workspace creation
+
+Verification:
+
+```text
+Focused G4.3 suite: 18 passed
+Extended Review Workspace regression: 365 passed
+```
+
+## G4.4 — Integration and Regression
+
+Verified lifecycle:
+
+```text
+finalize
+→ persist exact artifact set
+→ reopen
+→ append successor revision
+→ authorize and finalize successor
+→ persist second independent artifact set
+→ verify immutable predecessor
+→ scan complete Review Document history
+```
+
+Verification:
+
+```text
+G4.4 lifecycle integration: 1 passed
+Complete regression: 4552 passed, 1 stale vocabulary expectation
+Corrected targeted vocabulary test: 1 passed
+Effective verified baseline: 4553 passing tests
+No production code changed after the complete regression
+```
+
+# Exact Next Work Package
+
+## G5 — Approved Input Promotion and Lifecycle
+
+Begin with architecture and implementation-contract inspection.
+
+Read ADR-016 and inspect the completed G4 finalized Review contracts before
+proposing implementation.
+
+G5 shall define the exact contracts for:
+
+- Approved Input identity
+- immutable Approved Input manifest
+- eligibility from one exact finalized Review Version
+- exact binding to the finalized artifact set
+- Approved Input repository and stable read contract
+- promotion service API
+- invalidation
+- revocation
+- supersession
+- stable Phase H consumption boundary
+
+G5 shall preserve:
+
+- Project isolation
+- exact Source, Run, Artifact and Review traceability
+- Human Review authority
+- immutable original processing evidence
+- immutable finalized Review evidence
+- deterministic fingerprints
+- fail-closed validation
+
+G5 shall not:
+
+- promote an unfinalized Review Version
+- use confidence or consensus as promotion authority
+- mutate finalized Review artifacts
 - generate model candidates
 - generate SysML v2
 
-After G4.2d:
-
-```text
-G4.2e — atomic persistence under finalized/
-G4.2f — load, scan and recovery
-G4.3 — reopening
-G4.4 — integration and complete regression
-```
+Do not implement G5 before the exact contract, affected paths and test boundary
+have been reviewed and explicitly accepted.
 
 ---
 
@@ -423,48 +475,22 @@ G4.4 — integration and complete regression
 
 Implementation-derived engineering concepts must not be lost until Phase N.
 
-## Retrospective Requirement
+## Recorded G4 Candidates
 
-Review all completed work from:
+| ID | Origin | Candidate | Proposed type | Status |
+|---|---|---|---|---|
+| MEC-G4-001 | G4.2d | Exact Finalized Artifact Set as a three-artifact boundary | System Design Constraint | Engineering review pending |
+| MEC-G4-002 | G4.2e–G4.2f | Atomic publication and explicit recovery boundary | System Design Constraint | Engineering review pending |
+| MEC-G4-003 | G4.3 | `carried_forward` Review Item lineage | Logical Relationship | Engineering review pending |
+| MEC-G4-004 | G4.3 | Linear Review Version succession without parallel branches | System Design Constraint | Engineering review pending |
 
-```text
-G1
-G2
-G3
-G4.1
-G4.2a
-G4.2b
-G4.2c
-```
+Detailed rationale and implementation evidence are recorded in:
 
-Identify newly introduced or materially refined:
+- `collaboration/current_state.md`
+- `collaboration/model_registry.json`
+- `collaboration/change_log.md`
 
-- requirements
-- constraints
-- functions
-- Logical Components
-- logical relationships
-- allocations
-- possible subsystem boundaries
-- Subsystem Requirements
-- Subsystem Functions
-- Subsystem Logical Architecture
-- Subsystem Physical Architecture
-
-The retrospective inventory is required before or during the
-Zwischenstandspräsentation.
-
-## Ongoing Requirement
-
-Beginning with G4.2d, every implementation phase shall continuously identify
-Model Element Change Candidates.
-
-Each phase-completion review shall explicitly assess whether new or refined
-model elements arose.
-
-## Authority Boundary
-
-A candidate is not an accepted CATIA change.
+These candidates are not accepted CATIA changes.
 
 Required sequence:
 
@@ -475,6 +501,14 @@ Implementation observation
 → explicit acceptance
 → CATIA update
 ```
+
+## Retrospective Requirement
+
+G1 through G4.2c still require retrospective examination before or during the
+Zwischenstandspräsentation.
+
+The four recorded candidates satisfy the continuous tracking requirement for
+G4.2d through G4.4.
 
 Phase N shall use the reviewed candidate inventory.
 
@@ -539,11 +573,10 @@ Before Phase H begins:
 First:
 
 1. read the SSOT files
-2. verify the local and remote commit
-3. inspect the three G4.2 artifact modules and their tests
-4. summarize the exact existing contracts
-5. propose the narrow G4.2d artifact-set contract
-6. do not implement until the contract and affected paths are clear
+2. verify the G4 completion commit and remote synchronization
+3. inspect ADR-016 and the completed G4 finalized Review contracts
+4. summarize the exact Approved Input and promotion boundaries already accepted
+5. propose the narrow G5 implementation contract and affected paths
+6. do not implement until the G5 contract is explicitly accepted
 
-Continue with the same exact local-souffleur workflow used for G4.1 and
-G4.2a–G4.2c.
+Continue with the same exact local-souffleur workflow used throughout G4.

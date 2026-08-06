@@ -302,6 +302,11 @@ from .finalized_artifact_set import (
     validate_finalized_review_artifact_set,
 )
 
+from .reopening import (
+    ReopenedReviewVersionBundle,
+    create_reopened_review_version_bundle,
+    validate_reopened_review_version_bundle,
+)
 from .repository import (
     DEFAULT_PROJECTS_ROOT,
     ReviewWorkspaceRepository,
@@ -397,6 +402,9 @@ __all__ = [
     "create_finalized_review_artifact_set",
     "validate_finalized_review_artifact_set",
     "DEFAULT_PROJECTS_ROOT",
+    "ReopenedReviewVersionBundle",
+    "create_reopened_review_version_bundle",
+    "validate_reopened_review_version_bundle",
     "ReviewWorkspaceRepository",
     "EFFECTIVE_DECISIONS_FILENAME",
     "FINALIZED_DIRECTORY_NAME",

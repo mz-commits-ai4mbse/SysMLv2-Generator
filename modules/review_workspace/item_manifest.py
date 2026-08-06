@@ -631,6 +631,13 @@ def _validate_lineage(item: ReviewItem) -> None:
                 "two parent Review Items."
             )
 
+    elif item.lineage_operation == "carried_forward":
+        if len(parents) != 1:
+            raise ReviewIntegrityError(
+                "A carried-forward Review Item requires "
+                "exactly one predecessor Review Item."
+            )
+
 
 def _validate_proposal_references(
     proposals: tuple[ReviewProposalReference, ...],

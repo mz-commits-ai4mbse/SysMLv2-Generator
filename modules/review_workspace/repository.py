@@ -38,6 +38,15 @@ from .finalization_authorization import (
     AuthorizedReviewDocumentFinalization,
     validate_review_finalization_authorization,
 )
+from .effective_decisions_manifest import (
+    effective_review_decision_set_from_json,
+)
+from .finalized_artifact_set import (
+    FINALIZED_REVIEW_ARTIFACT_ORDER,
+    FinalizedReviewArtifactSet,
+    create_finalized_review_artifact_set,
+    validate_finalized_review_artifact_set,
+)
 from .identifiers import (
     is_valid_review_document_id,
     is_valid_review_document_version_id,
@@ -45,6 +54,7 @@ from .identifiers import (
     is_valid_scoped_review_action_id,
     next_review_document_id,
     next_review_document_version_id,
+    next_review_item_id,
     next_review_revision_id,
     next_scoped_review_action_id,
     validate_review_document_id,
@@ -52,10 +62,14 @@ from .identifiers import (
     validate_review_revision_id,
 )
 from .paths import (
+    EFFECTIVE_DECISIONS_FILENAME,
     FINALIZED_DIRECTORY_NAME,
+    REVIEWED_DOCUMENT_FILENAME,
+    REVIEWED_REPORT_FILENAME,
     REVISIONS_DIRECTORY_NAME,
     SCOPED_ACTIONS_DIRECTORY_NAME,
     VERSIONS_DIRECTORY_NAME,
+    finalized_review_path,
     project_path,
     review_document_path,
     review_document_version_path,
@@ -71,6 +85,17 @@ from .scoped_action_manifest import (
     scoped_review_action_from_json,
     scoped_review_action_to_json,
     validate_scoped_review_action,
+)
+from .reviewed_document_manifest import (
+    finalized_reviewed_document_from_json,
+)
+from .reviewed_report_renderer import (
+    create_rendered_reviewed_report,
+)
+from .reopening import (
+    ReopenedReviewVersionBundle,
+    create_reopened_review_version_bundle,
+    validate_reopened_review_version_bundle,
 )
 from .revision_manifest import (
     review_revision_filename,
@@ -109,6 +134,10 @@ _TEMP_REVISION_PATTERN = re.compile(
 )
 _TEMP_SCOPED_ACTION_PATTERN = re.compile(
     r"^\.(SRA-[0-9]{6})\.json\.tmp$"
+)
+
+_TEMP_FINALIZED_DIRECTORY_NAME = (
+    f".{FINALIZED_DIRECTORY_NAME}.tmp"
 )
 
 _DOCUMENT_DIRECTORY_ENTRIES = frozenset(
@@ -1435,6 +1464,1199 @@ class ReviewWorkspaceRepository:
 
         return persisted
 
+    def persist_finalized_artifact_set(
+        self,
+        artifact_set: FinalizedReviewArtifactSet,
+    ) -> FinalizedReviewArtifactSet:
+        """Atomically persist one exact finalized artifact set."""
+
+        validate_finalized_review_artifact_set(
+            artifact_set
+        )
+
+        reviewed_document = (
+            artifact_set.reviewed_document
+        )
+
+        persisted_document = self.load_document(
+            reviewed_document.project_id,
+            reviewed_document.review_document_id,
+        )
+
+        version_directory = (
+            review_document_version_path(
+                self.root,
+                reviewed_document.project_id,
+                reviewed_document.review_document_id,
+                reviewed_document
+                .review_document_version_id,
+            )
+        )
+        self._assert_directory_safe(
+            version_directory,
+            label="Review Document Version directory",
+        )
+
+        temporary_directory = (
+            version_directory
+            / _TEMP_FINALIZED_DIRECTORY_NAME
+        )
+        final_directory = finalized_review_path(
+            self.root,
+            reviewed_document.project_id,
+            reviewed_document.review_document_id,
+            reviewed_document.review_document_version_id,
+        )
+
+        if (
+            temporary_directory.exists()
+            or temporary_directory.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Interrupted finalized Review artifact "
+                "persistence requires explicit recovery: "
+                f"{temporary_directory}."
+            )
+
+        if final_directory.is_symlink():
+            raise UnsafeReviewWorkspacePathError(
+                "Symbolic-link finalized Review artifact "
+                f"directories are rejected: {final_directory}."
+            )
+
+        if final_directory.exists():
+            if not final_directory.is_dir():
+                raise UnsafeReviewWorkspacePathError(
+                    "Finalized Review artifact path is not "
+                    f"a directory: {final_directory}."
+                )
+
+            raise ReviewPersistenceError(
+                "Finalized Review artifact directory "
+                f"already exists: {final_directory}."
+            )
+
+        persisted_version = self.load_version(
+            reviewed_document.project_id,
+            reviewed_document.review_document_id,
+            reviewed_document.review_document_version_id,
+        )
+
+        if persisted_version.version_state != "finalized":
+            raise InvalidReviewVersionTransitionError(
+                "Finalized Review artifacts may be persisted "
+                "only for a finalized Review Document Version."
+            )
+
+        persisted_revision = self.load_revision(
+            reviewed_document.project_id,
+            reviewed_document.review_document_id,
+            reviewed_document.review_document_version_id,
+            reviewed_document.review_revision_id,
+        )
+
+        self._validate_finalized_artifact_repository_binding(
+            artifact_set,
+            persisted_document,
+            persisted_version,
+            persisted_revision,
+        )
+
+        try:
+            temporary_directory.mkdir()
+        except FileExistsError as exc:
+            raise ReviewRecoveryRequiredError(
+                "Temporary finalized Review artifact "
+                "directory appeared during persistence: "
+                f"{temporary_directory}."
+            ) from exc
+        except OSError as exc:
+            raise ReviewPersistenceError(
+                "Unable to create temporary finalized "
+                "Review artifact directory "
+                f"{temporary_directory}: {exc}"
+            ) from exc
+
+        for artifact in artifact_set.artifacts:
+            self._write_new_bytes(
+                temporary_directory / artifact.filename,
+                artifact.content,
+                label=(
+                    "temporary finalized Review artifact "
+                    f"{artifact.filename}"
+                ),
+            )
+
+        self._validate_exact_finalized_artifact_directory(
+            temporary_directory,
+            artifact_set,
+            label=(
+                "temporary finalized Review artifact "
+                "directory"
+            ),
+        )
+
+        version_manifest = (
+            version_directory
+            / REVIEW_DOCUMENT_VERSION_MANIFEST_FILENAME
+        )
+        revision_file = review_revision_path(
+            self.root,
+            reviewed_document.project_id,
+            reviewed_document.review_document_id,
+            reviewed_document.review_document_version_id,
+            reviewed_document.review_revision_id,
+        )
+
+        reloaded_version = (
+            self._load_version_manifest_file(
+                version_manifest,
+                expected_project_id=(
+                    reviewed_document.project_id
+                ),
+                expected_document_id=(
+                    reviewed_document.review_document_id
+                ),
+                expected_version_id=(
+                    reviewed_document
+                    .review_document_version_id
+                ),
+            )
+        )
+        reloaded_revision = self._load_revision_file(
+            revision_file,
+            expected_project_id=(
+                reviewed_document.project_id
+            ),
+            expected_document_id=(
+                reviewed_document.review_document_id
+            ),
+            expected_version_id=(
+                reviewed_document
+                .review_document_version_id
+            ),
+            expected_revision_id=(
+                reviewed_document.review_revision_id
+            ),
+        )
+        reloaded_document = self.load_document(
+            reviewed_document.project_id,
+            reviewed_document.review_document_id,
+        )
+
+        if (
+            reloaded_document != persisted_document
+            or reloaded_version != persisted_version
+            or reloaded_revision != persisted_revision
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Persisted Review finalization sources "
+                "changed while finalized artifacts were "
+                "being prepared; explicit recovery is "
+                "required."
+            )
+
+        if (
+            final_directory.exists()
+            or final_directory.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Finalized Review artifact path appeared "
+                "during persistence; explicit recovery is "
+                f"required: {final_directory}."
+            )
+
+        try:
+            temporary_directory.rename(
+                final_directory
+            )
+        except OSError as exc:
+            raise ReviewRecoveryRequiredError(
+                "Unable to atomically publish finalized "
+                "Review artifacts; explicit recovery is "
+                f"required: {temporary_directory}."
+            ) from exc
+
+        try:
+            self._validate_exact_finalized_artifact_directory(
+                final_directory,
+                artifact_set,
+                label=(
+                    "finalized Review artifact directory"
+                ),
+            )
+        except ReviewWorkspaceError as exc:
+            raise ReviewRecoveryRequiredError(
+                "Published finalized Review artifacts do "
+                "not match the validated artifact set; "
+                "explicit recovery is required: "
+                f"{final_directory}."
+            ) from exc
+
+        return artifact_set
+
+    def load_finalized_artifact_set(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+    ) -> FinalizedReviewArtifactSet:
+        """Load and validate one exact finalized artifact set."""
+
+        version_directory = (
+            review_document_version_path(
+                self.root,
+                project_id,
+                review_document_id,
+                review_document_version_id,
+            )
+        )
+        temporary_directory = (
+            version_directory
+            / _TEMP_FINALIZED_DIRECTORY_NAME
+        )
+
+        if (
+            temporary_directory.exists()
+            or temporary_directory.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Interrupted finalized Review artifact "
+                "persistence requires explicit recovery: "
+                f"{temporary_directory}."
+            )
+
+        final_directory = finalized_review_path(
+            self.root,
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+
+        if final_directory.is_symlink():
+            raise UnsafeReviewWorkspacePathError(
+                "Symbolic-link finalized Review artifact "
+                f"directories are rejected: {final_directory}."
+            )
+
+        if (
+            final_directory.exists()
+            and not final_directory.is_dir()
+        ):
+            raise UnsafeReviewWorkspacePathError(
+                "Finalized Review artifact path is not "
+                f"a directory: {final_directory}."
+            )
+
+        persisted_document = self.load_document(
+            project_id,
+            review_document_id,
+        )
+        persisted_version = self.load_version(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+
+        if persisted_version.version_state != "finalized":
+            raise InvalidReviewVersionTransitionError(
+                "Finalized Review artifacts can be loaded "
+                "only for a finalized Review Document Version."
+            )
+
+        if not final_directory.exists():
+            raise ReviewReferenceError(
+                "Finalized Review Artifact Set was not found: "
+                f"{project_id}/{review_document_id}/"
+                f"{review_document_version_id}."
+            )
+
+        self._assert_exact_directory_entries(
+            final_directory,
+            required=frozenset(
+                FINALIZED_REVIEW_ARTIFACT_ORDER
+            ),
+            optional=frozenset(),
+            label=(
+                "finalized Review artifact directory"
+            ),
+        )
+
+        persisted_contents = tuple(
+            (
+                filename,
+                self._read_bytes(
+                    final_directory / filename,
+                    label=(
+                        "finalized Review artifact "
+                        f"{filename}"
+                    ),
+                ),
+            )
+            for filename in (
+                FINALIZED_REVIEW_ARTIFACT_ORDER
+            )
+        )
+        content_by_filename = dict(
+            persisted_contents
+        )
+
+        reviewed_document = (
+            finalized_reviewed_document_from_json(
+                self._decode_utf8(
+                    content_by_filename[
+                        REVIEWED_DOCUMENT_FILENAME
+                    ],
+                    label=REVIEWED_DOCUMENT_FILENAME,
+                )
+            )
+        )
+        effective_decisions = (
+            effective_review_decision_set_from_json(
+                self._decode_utf8(
+                    content_by_filename[
+                        EFFECTIVE_DECISIONS_FILENAME
+                    ],
+                    label=EFFECTIVE_DECISIONS_FILENAME,
+                )
+            )
+        )
+        persisted_report_markdown = (
+            self._decode_utf8(
+                content_by_filename[
+                    REVIEWED_REPORT_FILENAME
+                ],
+                label=REVIEWED_REPORT_FILENAME,
+            )
+        )
+
+        requested_identity_values = (
+            (
+                reviewed_document.project_id,
+                project_id,
+                "project_id",
+            ),
+            (
+                reviewed_document.review_document_id,
+                review_document_id,
+                "review_document_id",
+            ),
+            (
+                reviewed_document
+                .review_document_version_id,
+                review_document_version_id,
+                "review_document_version_id",
+            ),
+        )
+
+        for actual, expected, label in (
+            requested_identity_values
+        ):
+            if actual != expected:
+                raise ReviewIntegrityError(
+                    "Finalized Review Artifact Set "
+                    f"{label} does not match its "
+                    "repository path."
+                )
+
+        if (
+            reviewed_document.review_revision_id
+            != persisted_version.finalized_revision_id
+        ):
+            raise ReviewIntegrityError(
+                "Finalized Review Artifact Set does not "
+                "bind the finalized Review Revision."
+            )
+
+        reviewed_report = (
+            create_rendered_reviewed_report(
+                reviewed_document,
+                effective_decisions,
+            )
+        )
+
+        if (
+            persisted_report_markdown
+            != reviewed_report.markdown
+        ):
+            raise ReviewIntegrityError(
+                "reviewed_report.md is not the exact "
+                "deterministic rendering of its persisted "
+                "finalized review sources."
+            )
+
+        artifact_set = (
+            create_finalized_review_artifact_set(
+                reviewed_document,
+                effective_decisions,
+                reviewed_report,
+            )
+        )
+
+        for artifact, (
+            expected_filename,
+            persisted_content,
+        ) in zip(
+            artifact_set.artifacts,
+            persisted_contents,
+            strict=True,
+        ):
+            if artifact.filename != expected_filename:
+                raise ReviewIntegrityError(
+                    "Loaded finalized Review Artifact Set "
+                    "does not use the canonical artifact "
+                    "order."
+                )
+
+            if artifact.content != persisted_content:
+                raise ReviewIntegrityError(
+                    f"{artifact.filename} does not contain "
+                    "the exact canonical bytes required by "
+                    "the finalized artifact contract."
+                )
+
+        persisted_revision = self.load_revision(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+            reviewed_document.review_revision_id,
+        )
+
+        self._validate_finalized_artifact_repository_binding(
+            artifact_set,
+            persisted_document,
+            persisted_version,
+            persisted_revision,
+        )
+
+        return artifact_set
+
+    def reopen_finalized_version(
+        self,
+        project_id: str,
+        review_document_id: str,
+        predecessor_version_id: str,
+        *,
+        reopen_reason: str,
+        opened_by: str,
+        timestamp: str,
+    ) -> ReopenedReviewVersionBundle:
+        """Atomically create one documented successor version."""
+
+        versions_directory = review_versions_path(
+            self.root,
+            project_id,
+            review_document_id,
+        )
+        self._assert_directory_safe(
+            versions_directory,
+            label="Review Document Version root",
+        )
+
+        initial_entries = self._directory_entries(
+            versions_directory,
+            label="Review Document Version root",
+        )
+
+        for entry in initial_entries:
+            if (
+                _TEMP_VERSION_PATTERN.fullmatch(
+                    entry.name
+                )
+                is not None
+            ):
+                raise ReviewRecoveryRequiredError(
+                    "Interrupted Review Document Version "
+                    "creation requires explicit recovery: "
+                    f"{entry}."
+                )
+
+        predecessor_version = self.load_version(
+            project_id,
+            review_document_id,
+            predecessor_version_id,
+        )
+
+        if predecessor_version.version_state != "finalized":
+            raise InvalidReviewVersionTransitionError(
+                "Only a finalized Review Document Version "
+                "can be reopened."
+            )
+
+        predecessor_artifact_set = (
+            self.load_finalized_artifact_set(
+                project_id,
+                review_document_id,
+                predecessor_version_id,
+            )
+        )
+
+        if (
+            predecessor_version.finalized_revision_id
+            is None
+        ):
+            raise ReviewIntegrityError(
+                "A finalized predecessor version requires "
+                "finalized_revision_id."
+            )
+
+        predecessor_revision = self.load_revision(
+            project_id,
+            review_document_id,
+            predecessor_version_id,
+            predecessor_version.finalized_revision_id,
+        )
+
+        scan = self.scan_project(project_id)
+
+        related_issues = tuple(
+            issue
+            for issue in scan.issues
+            if issue.review_document_id
+            == review_document_id
+        )
+
+        if related_issues:
+            issue_codes = ", ".join(
+                sorted(
+                    {
+                        issue.code
+                        for issue in related_issues
+                    }
+                )
+            )
+            raise ReviewIntegrityError(
+                "Review Document cannot be reopened while "
+                "blocking repository issues exist: "
+                f"{issue_codes}."
+            )
+
+        document_versions = tuple(
+            version
+            for version in scan.versions
+            if (
+                version.review_document_id
+                == review_document_id
+            )
+        )
+
+        self._validate_linear_review_version_history(
+            document_versions,
+            predecessor_version=predecessor_version,
+        )
+
+        new_version_id = (
+            next_review_document_version_id(
+                version.review_document_version_id
+                for version in document_versions
+            )
+        )
+
+        occupied_revision_ids = tuple(
+            revision.review_revision_id
+            for revision in scan.revisions
+        )
+        new_revision_id = next_review_revision_id(
+            occupied_revision_ids
+        )
+
+        occupied_item_ids = {
+            item.review_item_id
+            for revision in scan.revisions
+            for item in revision.review_items
+        }
+        new_item_ids: list[str] = []
+
+        for _ in predecessor_revision.review_items:
+            new_item_id = next_review_item_id(
+                (
+                    *occupied_item_ids,
+                    *new_item_ids,
+                )
+            )
+            new_item_ids.append(new_item_id)
+
+        bundle = create_reopened_review_version_bundle(
+            predecessor_version,
+            predecessor_revision,
+            review_document_version_id=(
+                new_version_id
+            ),
+            review_revision_id=new_revision_id,
+            review_item_ids=tuple(new_item_ids),
+            reopen_reason=reopen_reason,
+            opened_by=opened_by,
+            timestamp=timestamp,
+        )
+
+        validate_reopened_review_version_bundle(
+            bundle,
+            predecessor_version=predecessor_version,
+            predecessor_revision=predecessor_revision,
+        )
+
+        final_directory = (
+            versions_directory / new_version_id
+        )
+        temporary_directory = (
+            versions_directory
+            / f".create-{new_version_id}.tmp"
+        )
+
+        if final_directory.is_symlink():
+            raise UnsafeReviewWorkspacePathError(
+                "Symbolic-link reopened Review Document "
+                f"Version paths are rejected: {final_directory}."
+            )
+
+        if final_directory.exists():
+            raise ReviewPersistenceError(
+                "Reopened Review Document Version path "
+                f"already exists: {final_directory}."
+            )
+
+        if (
+            temporary_directory.exists()
+            or temporary_directory.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Interrupted reopened Review Document "
+                "Version creation requires explicit "
+                f"recovery: {temporary_directory}."
+            )
+
+        revisions_directory = (
+            temporary_directory
+            / REVISIONS_DIRECTORY_NAME
+        )
+        scoped_actions_directory = (
+            temporary_directory
+            / SCOPED_ACTIONS_DIRECTORY_NAME
+        )
+
+        try:
+            temporary_directory.mkdir()
+            revisions_directory.mkdir()
+            scoped_actions_directory.mkdir()
+        except OSError as exc:
+            raise ReviewPersistenceError(
+                "Unable to create temporary reopened "
+                "Review Document Version workspace "
+                f"{temporary_directory}: {exc}"
+            ) from exc
+
+        version_manifest = (
+            temporary_directory
+            / REVIEW_DOCUMENT_VERSION_MANIFEST_FILENAME
+        )
+        revision_file = (
+            revisions_directory
+            / review_revision_filename(
+                bundle.initial_revision
+                .review_revision_id
+            )
+        )
+
+        self._write_new_text(
+            version_manifest,
+            review_document_version_to_json(
+                bundle.version
+            ),
+            label=(
+                "temporary reopened Review Document "
+                "Version Manifest"
+            ),
+        )
+        self._write_new_text(
+            revision_file,
+            review_revision_to_json(
+                bundle.initial_revision
+            ),
+            label=(
+                "temporary initial reopened Review "
+                "Revision"
+            ),
+        )
+
+        persisted_version = (
+            self._load_version_from_directory(
+                project_id,
+                review_document_id,
+                new_version_id,
+                temporary_directory,
+            )
+        )
+        persisted_revision = (
+            self._load_revision_file(
+                revision_file,
+                expected_project_id=project_id,
+                expected_document_id=(
+                    review_document_id
+                ),
+                expected_version_id=new_version_id,
+                expected_revision_id=new_revision_id,
+            )
+        )
+
+        if persisted_version != bundle.version:
+            raise ReviewIntegrityError(
+                "Persisted reopened Review Document "
+                "Version differs from the validated input."
+            )
+
+        if (
+            persisted_revision
+            != bundle.initial_revision
+        ):
+            raise ReviewIntegrityError(
+                "Persisted initial reopened Review "
+                "Revision differs from the validated input."
+            )
+
+        reloaded_predecessor_version = (
+            self.load_version(
+                project_id,
+                review_document_id,
+                predecessor_version_id,
+            )
+        )
+        reloaded_predecessor_revision = (
+            self.load_revision(
+                project_id,
+                review_document_id,
+                predecessor_version_id,
+                predecessor_revision
+                .review_revision_id,
+            )
+        )
+        reloaded_predecessor_artifact_set = (
+            self.load_finalized_artifact_set(
+                project_id,
+                review_document_id,
+                predecessor_version_id,
+            )
+        )
+
+        if (
+            reloaded_predecessor_version
+            != predecessor_version
+            or reloaded_predecessor_revision
+            != predecessor_revision
+            or reloaded_predecessor_artifact_set
+            != predecessor_artifact_set
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Finalized predecessor sources changed "
+                "while the successor version was being "
+                "prepared; explicit recovery is required."
+            )
+
+        current_entry_names = {
+            entry.name
+            for entry in self._directory_entries(
+                versions_directory,
+                label=(
+                    "Review Document Version root"
+                ),
+            )
+        }
+        expected_entry_names = {
+            entry.name
+            for entry in initial_entries
+        } | {
+            temporary_directory.name
+        }
+
+        if current_entry_names != expected_entry_names:
+            raise ReviewRecoveryRequiredError(
+                "Review Document Version history changed "
+                "while the successor version was being "
+                "prepared; explicit recovery is required."
+            )
+
+        if (
+            final_directory.exists()
+            or final_directory.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "Reopened Review Document Version path "
+                "appeared during persistence; explicit "
+                f"recovery is required: {final_directory}."
+            )
+
+        try:
+            temporary_directory.rename(
+                final_directory
+            )
+        except OSError as exc:
+            raise ReviewRecoveryRequiredError(
+                "Unable to atomically publish the reopened "
+                "Review Document Version; explicit recovery "
+                f"is required: {temporary_directory}."
+            ) from exc
+
+        final_version = self.load_version(
+            project_id,
+            review_document_id,
+            new_version_id,
+        )
+        final_revision = self.load_revision(
+            project_id,
+            review_document_id,
+            new_version_id,
+            new_revision_id,
+        )
+
+        finalized_directory = (
+            final_directory
+            / FINALIZED_DIRECTORY_NAME
+        )
+
+        if (
+            finalized_directory.exists()
+            or finalized_directory.is_symlink()
+        ):
+            raise ReviewRecoveryRequiredError(
+                "A newly reopened draft version must not "
+                "contain finalized artifacts."
+            )
+
+        persisted_bundle = (
+            ReopenedReviewVersionBundle(
+                predecessor_version_id=(
+                    bundle.predecessor_version_id
+                ),
+                predecessor_revision_id=(
+                    bundle.predecessor_revision_id
+                ),
+                version=final_version,
+                initial_revision=final_revision,
+                review_item_id_mapping=(
+                    bundle.review_item_id_mapping
+                ),
+            )
+        )
+
+        validate_reopened_review_version_bundle(
+            persisted_bundle,
+            predecessor_version=predecessor_version,
+            predecessor_revision=predecessor_revision,
+        )
+
+        return persisted_bundle
+
+    @staticmethod
+    def _validate_linear_review_version_history(
+        versions: tuple[
+            ReviewDocumentVersion,
+            ...,
+        ],
+        *,
+        predecessor_version: ReviewDocumentVersion,
+    ) -> None:
+        if not versions:
+            raise ReviewIntegrityError(
+                "Review Document Version history is empty."
+            )
+
+        ordered = tuple(
+            sorted(
+                versions,
+                key=lambda version: (
+                    version.version_number,
+                    version
+                    .review_document_version_id,
+                ),
+            )
+        )
+
+        version_ids = tuple(
+            version.review_document_version_id
+            for version in ordered
+        )
+        version_numbers = tuple(
+            version.version_number
+            for version in ordered
+        )
+
+        if len(version_ids) != len(set(version_ids)):
+            raise ReviewIntegrityError(
+                "Review Document Version history contains "
+                "duplicate version identities."
+            )
+
+        if (
+            len(version_numbers)
+            != len(set(version_numbers))
+        ):
+            raise ReviewIntegrityError(
+                "Review Document Version history contains "
+                "duplicate version numbers."
+            )
+
+        for index, version in enumerate(
+            ordered,
+            start=1,
+        ):
+            if version.version_number != index:
+                raise ReviewIntegrityError(
+                    "Review Document Version history must "
+                    "use consecutive version numbers."
+                )
+
+            if index == 1:
+                if (
+                    version.predecessor_version_id
+                    is not None
+                ):
+                    raise ReviewIntegrityError(
+                        "The first Review Document Version "
+                        "must not identify a predecessor."
+                    )
+                continue
+
+            previous = ordered[index - 2]
+
+            if (
+                version.predecessor_version_id
+                != previous
+                .review_document_version_id
+            ):
+                raise ReviewIntegrityError(
+                    "Review Document Version history is "
+                    "not a linear predecessor chain."
+                )
+
+        if any(
+            version.version_state == "draft"
+            for version in ordered
+        ):
+            raise InvalidReviewVersionTransitionError(
+                "A finalized Review Document Version "
+                "cannot be reopened while a draft "
+                "successor version exists."
+            )
+
+        latest = ordered[-1]
+
+        if (
+            latest.review_document_version_id
+            != predecessor_version
+            .review_document_version_id
+        ):
+            raise InvalidReviewVersionTransitionError(
+                "Only the latest Review Document Version "
+                "can be reopened."
+            )
+
+        if latest != predecessor_version:
+            raise ReviewIntegrityError(
+                "Selected predecessor version differs "
+                "from the latest persisted version state."
+            )
+
+    @staticmethod
+    def _validate_finalized_artifact_repository_binding(
+        artifact_set: FinalizedReviewArtifactSet,
+        document: ReviewDocument,
+        version: ReviewDocumentVersion,
+        revision: ReviewRevision,
+    ) -> None:
+        reviewed_document = (
+            artifact_set.reviewed_document
+        )
+
+        document_identity_values = (
+            (
+                document.project_id,
+                reviewed_document.project_id,
+                "project_id",
+            ),
+            (
+                document.review_document_id,
+                reviewed_document.review_document_id,
+                "review_document_id",
+            ),
+            (
+                document.source_id,
+                reviewed_document.source_id,
+                "source_id",
+            ),
+            (
+                document.source_sha256,
+                reviewed_document.source_sha256,
+                "source_sha256",
+            ),
+            (
+                document.processing_run_id,
+                reviewed_document.processing_run_id,
+                "processing_run_id",
+            ),
+            (
+                document.attempt_id,
+                reviewed_document.attempt_id,
+                "attempt_id",
+            ),
+            (
+                document.content_fingerprint,
+                reviewed_document
+                .review_document_content_fingerprint,
+                "content fingerprint",
+            ),
+        )
+
+        for actual, expected, label in (
+            document_identity_values
+        ):
+            if actual != expected:
+                raise ReviewIntegrityError(
+                    "Finalized artifact set does not "
+                    "match the persisted Review Document "
+                    f"{label}."
+                )
+
+        identity_values = (
+            (
+                version.project_id,
+                reviewed_document.project_id,
+                "project_id",
+            ),
+            (
+                version.review_document_id,
+                reviewed_document.review_document_id,
+                "review_document_id",
+            ),
+            (
+                version.review_document_version_id,
+                reviewed_document
+                .review_document_version_id,
+                "review_document_version_id",
+            ),
+            (
+                version.version_number,
+                reviewed_document.version_number,
+                "version_number",
+            ),
+            (
+                version.predecessor_version_id,
+                reviewed_document.predecessor_version_id,
+                "predecessor_version_id",
+            ),
+            (
+                version.finalized_revision_id,
+                reviewed_document.review_revision_id,
+                "finalized_revision_id",
+            ),
+            (
+                version.finalization_decision_id,
+                reviewed_document
+                .finalization_decision_id,
+                "finalization_decision_id",
+            ),
+            (
+                version.finalized_at,
+                reviewed_document.finalized_at,
+                "finalized_at",
+            ),
+            (
+                version.content_fingerprint,
+                reviewed_document
+                .finalized_version_content_fingerprint,
+                "finalized version fingerprint",
+            ),
+        )
+
+        for actual, expected, label in identity_values:
+            if actual != expected:
+                raise ReviewIntegrityError(
+                    "Finalized artifact set does not "
+                    "match the persisted Review Document "
+                    f"Version {label}."
+                )
+
+        if (
+            revision.review_revision_id
+            != reviewed_document.review_revision_id
+        ):
+            raise ReviewIntegrityError(
+                "Finalized artifact set does not bind "
+                "the persisted Review Revision ID."
+            )
+
+        if (
+            revision.revision_fingerprint
+            != reviewed_document
+            .review_revision_fingerprint
+        ):
+            raise ReviewIntegrityError(
+                "Finalized artifact set does not bind "
+                "the persisted Review Revision fingerprint."
+            )
+
+        expected_decisions = tuple(
+            sorted(
+                revision.review_items,
+                key=lambda item: item.review_item_id,
+            )
+        )
+
+        if (
+            artifact_set
+            .effective_decisions
+            .effective_decisions
+            != expected_decisions
+        ):
+            raise ReviewIntegrityError(
+                "Finalized artifact set differs from "
+                "the persisted Review Revision items."
+            )
+
+    def _validate_exact_finalized_artifact_directory(
+        self,
+        directory: Path,
+        artifact_set: FinalizedReviewArtifactSet,
+        *,
+        label: str,
+    ) -> None:
+        self._assert_directory_safe(
+            directory,
+            label=label,
+        )
+        self._assert_exact_directory_entries(
+            directory,
+            required=frozenset(
+                artifact.filename
+                for artifact in artifact_set.artifacts
+            ),
+            optional=frozenset(),
+            label=label,
+        )
+
+        for artifact in artifact_set.artifacts:
+            path = directory / artifact.filename
+
+            self._assert_file_safe(
+                path,
+                label=(
+                    "finalized Review artifact "
+                    f"{artifact.filename}"
+                ),
+            )
+
+            persisted_content = self._read_bytes(
+                path,
+                label=(
+                    "finalized Review artifact "
+                    f"{artifact.filename}"
+                ),
+            )
+
+            if persisted_content != artifact.content:
+                raise ReviewIntegrityError(
+                    f"{artifact.filename} does not "
+                    "contain the exact validated bytes."
+                )
+
     def _updated_version_with_head(
         self,
         version: ReviewDocumentVersion,
@@ -1963,6 +3185,72 @@ class ReviewWorkspaceRepository:
                 )
                 continue
 
+            temporary_finalized_directory = (
+                entry / _TEMP_FINALIZED_DIRECTORY_NAME
+            )
+
+            if (
+                temporary_finalized_directory.exists()
+                or temporary_finalized_directory.is_symlink()
+            ):
+                issues.append(
+                    self._issue(
+                        project_id,
+                        code=(
+                            "interrupted_finalized_"
+                            "artifact_persistence"
+                        ),
+                        message=(
+                            "Interrupted finalized Review "
+                            "artifact persistence requires "
+                            "explicit recovery."
+                        ),
+                        path=(
+                            temporary_finalized_directory
+                        ),
+                        review_document_id=(
+                            review_document_id
+                        ),
+                        review_document_version_id=(
+                            candidate_version_id
+                        ),
+                    )
+                )
+                continue
+
+            final_directory = (
+                entry / FINALIZED_DIRECTORY_NAME
+            )
+
+            if (
+                final_directory.is_symlink()
+                or (
+                    final_directory.exists()
+                    and not final_directory.is_dir()
+                )
+            ):
+                issues.append(
+                    self._issue(
+                        project_id,
+                        code=(
+                            "unsafe_finalized_artifact_path"
+                        ),
+                        message=(
+                            "Finalized Review artifact path "
+                            "must be a non-symbolic-link "
+                            "directory."
+                        ),
+                        path=final_directory,
+                        review_document_id=(
+                            review_document_id
+                        ),
+                        review_document_version_id=(
+                            candidate_version_id
+                        ),
+                    )
+                )
+                continue
+
             temporary_manifest = entry / (
                 "."
                 f"{REVIEW_DOCUMENT_VERSION_MANIFEST_FILENAME}"
@@ -2051,6 +3339,195 @@ class ReviewWorkspaceRepository:
                 scanned_revisions,
                 scanned_actions,
                 issues,
+            )
+            self._scan_finalized_artifact_set(
+                version,
+                issues,
+            )
+
+    def _scan_finalized_artifact_set(
+        self,
+        version: ReviewDocumentVersion,
+        issues: list[ReviewWorkspaceIssue],
+    ) -> None:
+        final_directory = finalized_review_path(
+            self.root,
+            version.project_id,
+            version.review_document_id,
+            version.review_document_version_id,
+        )
+        temporary_directory = (
+            final_directory.parent
+            / _TEMP_FINALIZED_DIRECTORY_NAME
+        )
+
+        if (
+            temporary_directory.exists()
+            or temporary_directory.is_symlink()
+        ):
+            issues.append(
+                self._issue(
+                    version.project_id,
+                    code=(
+                        "interrupted_finalized_"
+                        "artifact_persistence"
+                    ),
+                    message=(
+                        "Interrupted finalized Review "
+                        "artifact persistence requires "
+                        "explicit recovery."
+                    ),
+                    path=temporary_directory,
+                    review_document_id=(
+                        version.review_document_id
+                    ),
+                    review_document_version_id=(
+                        version.review_document_version_id
+                    ),
+                )
+            )
+            return
+
+        if version.version_state == "draft":
+            if (
+                final_directory.exists()
+                or final_directory.is_symlink()
+            ):
+                issues.append(
+                    self._issue(
+                        version.project_id,
+                        code=(
+                            "unexpected_finalized_artifact_set"
+                        ),
+                        message=(
+                            "A draft Review Document Version "
+                            "must not contain finalized Review "
+                            "artifacts."
+                        ),
+                        path=final_directory,
+                        review_document_id=(
+                            version.review_document_id
+                        ),
+                        review_document_version_id=(
+                            version.review_document_version_id
+                        ),
+                    )
+                )
+
+            return
+
+        if not final_directory.exists():
+            issues.append(
+                self._issue(
+                    version.project_id,
+                    code=(
+                        "missing_finalized_artifact_set"
+                    ),
+                    message=(
+                        "A finalized Review Document Version "
+                        "must contain its exact finalized "
+                        "Review Artifact Set."
+                    ),
+                    path=final_directory,
+                    review_document_id=(
+                        version.review_document_id
+                    ),
+                    review_document_version_id=(
+                        version.review_document_version_id
+                    ),
+                    review_revision_id=(
+                        version.finalized_revision_id
+                    ),
+                )
+            )
+            return
+
+        try:
+            self.load_finalized_artifact_set(
+                version.project_id,
+                version.review_document_id,
+                version.review_document_version_id,
+            )
+        except ReviewRecoveryRequiredError as exc:
+            issues.append(
+                self._issue(
+                    version.project_id,
+                    code=(
+                        "interrupted_finalized_"
+                        "artifact_persistence"
+                    ),
+                    message=str(exc),
+                    path=temporary_directory,
+                    review_document_id=(
+                        version.review_document_id
+                    ),
+                    review_document_version_id=(
+                        version.review_document_version_id
+                    ),
+                    review_revision_id=(
+                        version.finalized_revision_id
+                    ),
+                )
+            )
+        except UnsafeReviewWorkspacePathError as exc:
+            issues.append(
+                self._issue(
+                    version.project_id,
+                    code=(
+                        "unsafe_finalized_artifact_path"
+                    ),
+                    message=str(exc),
+                    path=final_directory,
+                    review_document_id=(
+                        version.review_document_id
+                    ),
+                    review_document_version_id=(
+                        version.review_document_version_id
+                    ),
+                    review_revision_id=(
+                        version.finalized_revision_id
+                    ),
+                )
+            )
+        except ReviewReferenceError as exc:
+            issues.append(
+                self._issue(
+                    version.project_id,
+                    code=(
+                        "missing_finalized_artifact_set"
+                    ),
+                    message=str(exc),
+                    path=final_directory,
+                    review_document_id=(
+                        version.review_document_id
+                    ),
+                    review_document_version_id=(
+                        version.review_document_version_id
+                    ),
+                    review_revision_id=(
+                        version.finalized_revision_id
+                    ),
+                )
+            )
+        except ReviewWorkspaceError as exc:
+            issues.append(
+                self._issue(
+                    version.project_id,
+                    code=(
+                        "invalid_finalized_artifact_set"
+                    ),
+                    message=str(exc),
+                    path=final_directory,
+                    review_document_id=(
+                        version.review_document_id
+                    ),
+                    review_document_version_id=(
+                        version.review_document_version_id
+                    ),
+                    review_revision_id=(
+                        version.finalized_revision_id
+                    ),
+                )
             )
 
     def _scan_review_revisions(
@@ -3552,6 +5029,53 @@ class ReviewWorkspaceRepository:
         except OSError as exc:
             raise ReviewPersistenceError(
                 f"Unable to persist {label} {path}: {exc}"
+            ) from exc
+
+    @staticmethod
+    def _write_new_bytes(
+        path: Path,
+        content: bytes,
+        *,
+        label: str,
+    ) -> None:
+        try:
+            with path.open("xb") as stream:
+                stream.write(content)
+                stream.flush()
+                os.fsync(stream.fileno())
+        except FileExistsError as exc:
+            raise ReviewPersistenceError(
+                f"{label} path already exists: {path}."
+            ) from exc
+        except OSError as exc:
+            raise ReviewPersistenceError(
+                f"Unable to persist {label} {path}: {exc}"
+            ) from exc
+
+    @staticmethod
+    def _read_bytes(
+        path: Path,
+        *,
+        label: str,
+    ) -> bytes:
+        try:
+            return path.read_bytes()
+        except OSError as exc:
+            raise ReviewPersistenceError(
+                f"Unable to read {label} {path}: {exc}"
+            ) from exc
+
+    @staticmethod
+    def _decode_utf8(
+        content: bytes,
+        *,
+        label: str,
+    ) -> str:
+        try:
+            return content.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ReviewIntegrityError(
+                f"{label} is not valid UTF-8."
             ) from exc
 
     @staticmethod
