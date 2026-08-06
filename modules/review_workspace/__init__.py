@@ -291,6 +291,17 @@ from .reviewed_report_renderer import (
     validate_reviewed_report_source_binding,
 )
 
+from .finalized_artifact_set import (
+    FINALIZED_REVIEW_ARTIFACT_ORDER,
+    FINALIZED_REVIEW_ARTIFACT_SET_SCHEMA_VERSION,
+    FinalizedReviewArtifact,
+    FinalizedReviewArtifactSet,
+    calculate_finalized_review_artifact_fingerprint,
+    calculate_finalized_review_artifact_set_fingerprint,
+    create_finalized_review_artifact_set,
+    validate_finalized_review_artifact_set,
+)
+
 from .repository import (
     DEFAULT_PROJECTS_ROOT,
     ReviewWorkspaceRepository,
@@ -377,6 +388,14 @@ __all__ = [
     "reviewed_report_to_markdown",
     "validate_rendered_reviewed_report",
     "validate_reviewed_report_source_binding",
+    "FINALIZED_REVIEW_ARTIFACT_ORDER",
+    "FINALIZED_REVIEW_ARTIFACT_SET_SCHEMA_VERSION",
+    "FinalizedReviewArtifact",
+    "FinalizedReviewArtifactSet",
+    "calculate_finalized_review_artifact_fingerprint",
+    "calculate_finalized_review_artifact_set_fingerprint",
+    "create_finalized_review_artifact_set",
+    "validate_finalized_review_artifact_set",
     "DEFAULT_PROJECTS_ROOT",
     "ReviewWorkspaceRepository",
     "EFFECTIVE_DECISIONS_FILENAME",
