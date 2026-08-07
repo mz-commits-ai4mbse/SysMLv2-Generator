@@ -1,5 +1,160 @@
 # Change Log
 
+## 2026-08-07 — G5 Completion and G6 Transition
+
+Versions after this update:
+
+- Architecture Version: 1.3
+- Knowledge Base Version: 1.10
+- Implementation Version: 0.12
+- Roadmap Version: 1.10
+
+Implementation reference:
+
+- G5 completion: the commit containing this SSOT update
+- Last prior committed checkpoint:
+  `d472038008fdd6c8f72101037e71f9e05081acf0` — G4 completion
+
+Verification:
+
+```text
+G5.1–G5.3 focused aggregate: 76 passed
+G5.4 focused eligibility suite: 15 passed
+G5.5 focused promotion-service suite: 18 passed
+G5.1–G5.5 aggregate: 109 passed
+G5.6 focused lifecycle and affected-boundary suite: 61 passed
+Complete Approved Input package regression: 139 passed
+Complete repository regression: 4692 passed in 18.33s
+git diff --check: passed
+No production code changed after the complete repository regression
+```
+
+G5.1 completion:
+
+- project-local sequential immutable `AIN` and `AIE` identities were implemented
+- Approved Input error, validation and allocation contracts were implemented
+- initial Approved Input kinds and authority-state vocabulary were implemented
+
+G5.2 completion:
+
+- immutable Approved Input Manifest was implemented
+- exact Project, Source, Processing Run, Review Item, finalized artifact-set,
+  Human Review Decision and validation binding was implemented
+- deterministic serialization and content fingerprinting were implemented
+- relationship statements require valid target-notation profile evidence
+- `stable_subject_key` and finalized artifact-set fingerprint are preserved
+
+G5.3 completion:
+
+- dedicated project-local Approved Input repository was implemented
+- immutable manifest persistence, loading, listing and identifier allocation were
+  implemented
+- atomic no-overwrite publication and interrupted-write recovery diagnostics were
+  implemented
+- symbolic links, unexpected entries, tampered manifests and project-boundary
+  violations fail closed
+
+G5.4 completion:
+
+- deterministic read-only Promotion Eligibility assessment was implemented
+- current Source, Processing Run, artifact lifecycle, finalized Review evidence
+  and exact Human Review Decision bindings are checked
+- nonaccepted items remain non-promotable without blocking unrelated accepted
+  items
+- accepted relationships require valid profile evidence
+- under the accepted G5.4 boundary, `open_question` remains non-promotable until
+  the Review contract provides explicit conversion evidence
+
+G5.5 completion:
+
+- promotion materialization, planning and service responsibilities were separated
+- promotion revalidates current authority snapshots before persistence
+- promotion is idempotent
+- partial promotion can resume deterministically without duplicating an active
+  Approved Input
+- one independently reviewed item produces at most one equivalent active
+  Approved Input
+
+G5.6 completion:
+
+- Approved Input manifests remain immutable with initial state `active`
+- lifecycle changes are represented only by immutable Approved Input Events
+- project-local AIE identifiers are globally sequential and never reused
+- derived states `invalidated`, `revoked` and `superseded` were implemented
+- terminal transitions are limited to:
+  `active -> invalidated`, `active -> revoked`, `active -> superseded`
+- successor reconciliation retains materially unchanged accepted Approved Inputs
+- changed accepted subjects create a new Approved Input and supersede the old one
+- rejected or out-of-scope successor subjects revoke prior authority
+- deferred or absent subjects do not silently revoke prior authority
+- Promotion Equivalence is based on stable subject identity plus
+  authority-relevant engineering content and evidence, not Review Version IDs
+
+G5.7 completion:
+
+- stable Phase H read contract was implemented:
+  `ApprovedInputRepository.list_active_approved_inputs(project_id)`
+- Phase H receives only currently active Approved Input manifests
+- inactive Approved Inputs remain immutable and fully traceable
+- complete G5 promotion, idempotence, invalidation, supersession and active-read
+  integration was verified
+
+Development-plan status:
+
+```text
+Domain
+[x] IDs, Typen, Manifest
+[x] Repository + Read Contract
+[x] Validation + Fehlerhierarchie
+
+Promotion
+[x] Eligibility aus P4/P9
+[x] Decision-/Fingerprint-Bindung
+[x] promote / invalidate / revoke / supersede
+
+Abschluss
+[x] Vollständige Traceability
+[ ] Review-/Promotion-UI
+[ ] Tests + Manual Acceptance
+```
+
+Recorded Model Element Change Candidates:
+
+- MEC-G5-001 — Immutable Approved Input authority derived from manifest plus
+  append-only lifecycle events
+- MEC-G5-002 — Promotion Equivalence and stable-subject retention across
+  successor Review Versions
+- MEC-G5-003 — Active-only Approved Input consumption boundary for Phase H
+
+Candidate status:
+
+- recorded from implementation evidence
+- engineering review pending
+- not accepted CATIA changes
+- CATIA transfer not started
+
+Phase G status:
+
+- G1 through G5 completed
+- G6 is next
+- Phase G remains active
+
+Immediate next activity:
+
+```text
+G6 — Human Review and promotion UI
+→ surface the completed G2–G5 contracts
+→ preserve exact authority and lifecycle boundaries
+→ focused UI tests
+→ review
+→ G6 completion decision
+```
+
+No Phase H implementation begins before Phase G and the
+Zwischenstandspräsentation are complete.
+
+---
+
 ## 2026-08-06 — G4 Completion and G5 Transition
 
 Versions after this update:

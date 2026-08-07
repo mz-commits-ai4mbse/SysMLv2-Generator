@@ -33,7 +33,7 @@ Verified Implementation Reference
 
 Last Prior Committed Checkpoint
 
-`cf3cd5f` — G4.2d finalized artifact-set integrity
+`d472038008fdd6c8f72101037e71f9e05081acf0` — G4 completion
 
 Architecture Version
 
@@ -41,15 +41,15 @@ Architecture Version
 
 Knowledge Base Version
 
-1.9
+1.10
 
 Implementation Version
 
-0.11
+0.12
 
 Current Roadmap Version
 
-1.9
+1.10
 
 Current Development Phase
 
@@ -57,12 +57,11 @@ Phase G — Approved Input Promotion
 
 Current Status
 
-Phase G Active — G1 through G4 Completed; G5 Next
+Phase G Active — G1 through G5 Completed; G6 Next
 
 Verified Automated Test Baseline
 
-4553 passing tests across the complete G4 regression and targeted stale-test
-expectation correction
+4692 passed in the complete repository regression after G5 completion
 
 End-to-End Prototype Target
 
@@ -70,7 +69,7 @@ End-to-End Prototype Target
 
 Last SSOT Update
 
-2026-08-06
+2026-08-07
 
 ---
 
@@ -126,7 +125,7 @@ Phase R — Task Profile Portability Evaluation
 
 Priority 1
 
-Continue Phase G with G5 — Approved Input promotion and lifecycle.
+Continue Phase G with G6 — Human Review and promotion UI.
 
 Phase G shall establish the exact boundary between:
 
@@ -555,6 +554,102 @@ Still retained in Phase N:
 - confirmation that CATIA is the only maintained engineering model
 
 Phase N is therefore not complete.
+
+---
+
+# Phase G — Current Implementation Status
+
+G1 through G5 are completed.
+
+G6 — Human Review and promotion UI is the immediate next work package.
+
+## G5 — Approved Input Promotion and Lifecycle
+
+G5 establishes the implemented authoritative boundary:
+
+```text
+Finalized Reviewed Document
++ exact Human Review Decision
++ current upstream integrity
+→ Approved Input
+```
+
+Implemented capabilities include:
+
+- project-local sequential immutable `AIN` and `AIE` identities
+- immutable Approved Input Manifests
+- dedicated project-local Approved Input repository
+- exact Source, Run, Attempt, Artifact, Review Item, finalization-decision and
+  validation traceability
+- deterministic Promotion Eligibility assessment
+- idempotent promotion with deterministic partial-recovery behavior
+- immutable Approved Input lifecycle events
+- derived `active`, `invalidated`, `revoked` and `superseded` authority states
+- successor-version reconciliation by stable subject and Promotion Equivalence
+- retention of materially unchanged accepted Approved Inputs
+- supersession of changed and reaccepted subjects
+- explicit revocation for rejected or out-of-scope successor subjects
+- no silent revocation for deferred or merely absent subjects
+- stable Phase H read contract returning active Approved Inputs only
+
+The implemented Phase H boundary is:
+
+```python
+ApprovedInputRepository.list_active_approved_inputs(
+    project_id,
+) -> tuple[ApprovedInputManifest, ...]
+```
+
+Phase H shall not derive engineering authority from:
+
+- Draft Review Revisions
+- original Review Reports as model-generation authority
+- Agent confidence
+- Consensus
+- Human Review UI state
+- invalidated, revoked or superseded Approved Inputs
+
+Known G5 boundary:
+
+- `human_clarification` remains part of the Approved Input manifest vocabulary
+- the current Review contract does not yet provide explicit open-question
+  conversion evidence
+- therefore `open_question` remains non-promotable under the accepted G5.4
+  fail-closed rule
+
+Verification:
+
+```text
+G5.1–G5.3 focused aggregate: 76 passed
+G5.4 focused eligibility suite: 15 passed
+G5.5 focused promotion-service suite: 18 passed
+G5.1–G5.5 aggregate: 109 passed
+G5.6 focused lifecycle and affected-boundary suite: 61 passed
+Approved Input package regression: 139 passed
+Complete repository regression: 4692 passed in 18.33s
+git diff --check: passed
+```
+
+No production code changed after the complete repository regression.
+
+Development-plan status after G5:
+
+```text
+Domain
+[x] IDs, Typen, Manifest
+[x] Repository + Read Contract
+[x] Validation + Fehlerhierarchie
+
+Promotion
+[x] Eligibility aus P4/P9
+[x] Decision-/Fingerprint-Bindung
+[x] promote / invalidate / revoke / supersede
+
+Abschluss
+[x] Vollständige Traceability
+[ ] Review-/Promotion-UI
+[ ] Tests + Manual Acceptance
+```
 
 ---
 
@@ -1235,12 +1330,87 @@ CATIA transfer status:
 
 Not started.
 
+## G5 Candidate Inventory
+
+### MEC-G5-001 — Event-sourced Approved Input Authority
+
+Originating implementation phase:
+
+`G5.6`
+
+Implementation observation:
+
+Approved Input manifests remain immutable at their initial authority state.
+Current authority is derived from the immutable manifest plus an append-only
+Approved Input Event history.
+
+Proposed model element type:
+
+System Design Constraint.
+
+Review status:
+
+Engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
+### MEC-G5-002 — Promotion Equivalence Across Review Versions
+
+Originating implementation phase:
+
+`G5.6`
+
+Implementation observation:
+
+An accepted successor Review Item with the same stable subject and materially
+equivalent authority-relevant engineering content and evidence retains the
+existing active Approved Input. Review Version, Review Revision and Review Item
+identity changes alone do not require a new Approved Input.
+
+Proposed model element type:
+
+System Design Constraint.
+
+Review status:
+
+Engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
+### MEC-G5-003 — Active-only Phase H Consumption Boundary
+
+Originating implementation phase:
+
+`G5.7`
+
+Implementation observation:
+
+Subsequent engineering processing consumes Approved Inputs only through the
+stable active-only repository read contract. Invalidated, revoked and superseded
+Approved Inputs remain traceable but are excluded from active engineering use.
+
+Proposed model element type:
+
+System Design Constraint.
+
+Review status:
+
+Engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
 ## Retrospective Requirement
 
 G1 through G4.2c still require retrospective examination before or during the
 Zwischenstandspräsentation.
 
-The G4.2d through G4.4 candidates above satisfy the continuous tracking rule
+The G4.2d through G5 candidates above satisfy the continuous tracking rule
 for the completed G4 work package.
 
 ## Ongoing Rule

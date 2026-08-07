@@ -26,19 +26,19 @@ Architecture Version
 
 Knowledge Base Version
 
-1.9
+1.10
 
 Implementation Version
 
-0.11
+0.12
 
 Roadmap Version
 
-1.9
+1.10
 
 Last SSOT Update
 
-2026-08-06
+2026-08-07
 
 Current Phase
 
@@ -46,7 +46,7 @@ Current Phase
 
 Current Status
 
-Phase G Active — G1 through G4 Completed; G5 Next
+Phase G Active — G1 through G5 Completed; G6 Next
 
 Verified Implementation Reference
 
@@ -54,12 +54,11 @@ Verified Implementation Reference
 
 Last Prior Committed Checkpoint
 
-`cf3cd5f` — G4.2d finalized artifact-set integrity
+`d472038008fdd6c8f72101037e71f9e05081acf0` — G4 completion
 
 Verified Automated Test Baseline
 
-4553 passing tests across the complete G4 regression and targeted stale-test
-expectation correction
+4692 passed in the complete repository regression after G5 completion
 
 Manual P9 Acceptance Audit
 
@@ -515,8 +514,8 @@ Accepted
 | G2 | Review Workspace foundations | Completed |
 | G3 | P4/P9 evidence adapters and Review Item construction | Completed |
 | G4 | Review editing, finalization and reopening | Completed |
-| G5 | Approved Input promotion and lifecycle | Next |
-| G6 | Human Review and promotion UI | Planned |
+| G5 | Approved Input promotion and lifecycle | Completed |
+| G6 | Human Review and promotion UI | Next |
 | G7 | Integration, audit and end-to-end regression | Planned |
 
 ## G4 Breakdown
@@ -532,6 +531,18 @@ Accepted
 | G4.2f | Load, scan and recovery | Completed |
 | G4.3 | Reopening finalized Review Versions | Completed |
 | G4.4 | Integration and complete regression | Completed |
+
+## G5 Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| G5.1 | Approved Input identity, types and error hierarchy | Completed |
+| G5.2 | Immutable Approved Input Manifest | Completed |
+| G5.3 | Approved Input Repository | Completed |
+| G5.4 | Promotion Eligibility | Completed |
+| G5.5 | Promotion Service | Completed |
+| G5.6 | Approved Input lifecycle and successor reconciliation | Completed |
+| G5.7 | Stable Phase H read contract and G5 integration | Completed |
 
 ## Verified Implementation
 
@@ -683,25 +694,68 @@ Effective verified baseline: 4553 passing tests
 No production code changed after the complete regression
 ```
 
+### G5
+
+Included in the G5 completion commit containing this SSOT update.
+
+Implemented:
+
+- project-local immutable `AIN` and `AIE` identities
+- immutable Approved Input Manifest
+- project-local Approved Input repository
+- deterministic Promotion Eligibility
+- idempotent Promotion Service
+- immutable event-sourced authority lifecycle
+- invalidation, revocation and supersession
+- successor reconciliation using stable subject and Promotion Equivalence
+- stable active-only Phase H read contract
+- complete Project, Source, Run, Artifact, Review and Human Decision traceability
+
+Verification:
+
+```text
+G5.1–G5.3 focused aggregate: 76 passed
+G5.4 focused eligibility suite: 15 passed
+G5.5 focused promotion-service suite: 18 passed
+G5.1–G5.5 aggregate: 109 passed
+G5.6 focused lifecycle and affected-boundary suite: 61 passed
+Approved Input package regression: 139 passed
+Complete repository regression: 4692 passed in 18.33s
+git diff --check: passed
+```
+
+Known fail-closed boundary:
+
+- `open_question` does not create Approved Input in G5
+- `human_clarification` remains reserved until explicit conversion evidence is
+  represented by the Review contract
+
 ## Immediate Next Activity
 
 ```text
-G5 — Approved Input promotion and lifecycle
+G6 — Human Review and promotion UI
 ```
 
-G5 shall define and implement the exact promotion boundary from a valid
-finalized Review Version and its immutable artifact set to Approved Input.
+G6 shall surface the completed Review Workspace and Approved Input contracts
+without creating a parallel authority model.
+
+The UI shall preserve:
+
+- exact Review Item and proposal visibility
+- immutable original evidence
+- explicit finalization authority
+- current promotion eligibility
+- Approved Input lifecycle state
+- clear active/inactive authority distinction
+- project-local traceability
 
 ## Remaining Deliverables
 
-- Approved Input identity and manifest
-- Approved Input repository and stable read contract
-- promotion eligibility
-- promotion service
-- invalidation, revocation and supersession
-- stable Phase H read contract
-- focused Review and promotion UI
-- complete end-to-end integration and manual acceptance
+- focused Human Review and promotion UI
+- complete end-to-end integration
+- recovery and audit verification
+- manual acceptance
+- final Phase-G regression and completion decision
 
 ## Mandatory Boundaries
 
@@ -759,6 +813,9 @@ created or materially refined engineering model content.
 | MEC-G4-002 | G4.2e–G4.2f | Atomic publication and explicit recovery boundary | System Design Constraint | Recorded; engineering review pending |
 | MEC-G4-003 | G4.3 | `carried_forward` lineage between predecessor and successor Review Items | Logical Relationship | Recorded; engineering review pending |
 | MEC-G4-004 | G4.3 | Linear Review Version succession without parallel branches | System Design Constraint | Recorded; engineering review pending |
+| MEC-G5-001 | G5.6 | Approved Input authority derived from immutable manifest plus append-only lifecycle events | System Design Constraint | Recorded; engineering review pending |
+| MEC-G5-002 | G5.6 | Promotion Equivalence retains materially unchanged accepted subjects across successor Review Versions | System Design Constraint | Recorded; engineering review pending |
+| MEC-G5-003 | G5.7 | Phase H consumes only active Approved Inputs through the stable repository read contract | System Design Constraint | Recorded; engineering review pending |
 
 These candidates are implementation observations only.
 

@@ -37,7 +37,7 @@ Verified Implementation Reference
 
 Last Prior Committed Checkpoint
 
-`cf3cd5f` — G4.2d finalized artifact-set integrity
+`d472038008fdd6c8f72101037e71f9e05081acf0` — G4 completion
 
 Architecture Version
 
@@ -45,19 +45,19 @@ Architecture Version
 
 Knowledge Base Version
 
-1.9
+1.10
 
 Implementation Version
 
-0.11
+0.12
 
 Roadmap Version
 
-1.9
+1.10
 
 Last SSOT Update
 
-2026-08-06
+2026-08-07
 
 Current Phase
 
@@ -65,16 +65,15 @@ Phase G — Approved Input Promotion
 
 Current Status
 
-G1 through G4 completed. G5 is next.
+G1 through G5 completed. G6 is next.
 
 Verified Automated Test Baseline
 
-4553 passing tests across the complete G4 regression and targeted stale-test
-expectation correction
+4692 passed in the complete repository regression after G5 completion
 
 Remote Synchronization
 
-Verify after the G4 completion commit and push.
+Verify after the G5 completion commit and push.
 
 Executable Prototype Target
 
@@ -426,51 +425,89 @@ Effective verified baseline: 4553 passing tests
 No production code changed after the complete regression
 ```
 
+# G5 — Approved Input Promotion and Lifecycle
+
+G5 is complete.
+
+Implemented:
+
+- AIN/AIE project-local immutable identity contracts
+- immutable Approved Input Manifest
+- dedicated Approved Input repository
+- Promotion Eligibility
+- idempotent Promotion Service
+- exact finalization and Human Review Decision binding
+- invalidation, revocation and supersession
+- immutable Approved Input Event history
+- successor-version reconciliation
+- Promotion Equivalence for materially unchanged accepted subjects
+- stable active-only Phase H read contract
+
+Verified:
+
+```text
+G5.1–G5.3 focused aggregate: 76 passed
+G5.4 focused eligibility suite: 15 passed
+G5.5 focused promotion-service suite: 18 passed
+G5.1–G5.5 aggregate: 109 passed
+G5.6 focused lifecycle and affected-boundary suite: 61 passed
+Approved Input package regression: 139 passed
+Complete repository regression: 4692 passed in 18.33s
+git diff --check: passed
+```
+
+Important G5 boundaries:
+
+- Approved Input manifests are immutable
+- authority changes only through immutable AIE events
+- active Approved Inputs only are visible through the Phase H read contract
+- unchanged accepted successor subjects retain the existing active AIN
+- changed accepted successor subjects create a new AIN and supersede the old AIN
+- rejected or out-of-scope successor subjects revoke prior authority
+- deferred or absent subjects do not silently revoke prior authority
+- `open_question` remains non-promotable until explicit conversion evidence exists
+- `human_clarification` is reserved but currently unreachable
+- Phase G does not create Model Candidates or SysML v2
+
 # Exact Next Work Package
 
-## G5 — Approved Input Promotion and Lifecycle
+## G6 — Human Review and Promotion UI
 
-Begin with architecture and implementation-contract inspection.
+G6 shall surface the already implemented G2–G5 authority contracts.
 
-Read ADR-016 and inspect the completed G4 finalized Review contracts before
-proposing implementation.
+The UI shall not introduce a second source of truth for:
 
-G5 shall define the exact contracts for:
+- Review state
+- finalization state
+- promotion eligibility
+- Approved Input authority
+- lifecycle state
 
-- Approved Input identity
-- immutable Approved Input manifest
-- eligibility from one exact finalized Review Version
-- exact binding to the finalized artifact set
-- Approved Input repository and stable read contract
-- promotion service API
-- invalidation
-- revocation
-- supersession
-- stable Phase H consumption boundary
+Required UI behavior includes:
 
-G5 shall preserve:
+- clear Review Item and proposal visibility
+- inline review operations over the existing immutable-revision model
+- explicit finalization action distinct from draft editing
+- promotion visibility after exact finalization
+- active/inactive Approved Input status presentation
+- traceability navigation to Source, Processing Run, artifacts, Review Version,
+  Human Review Decision and lifecycle events
+- no model-candidate generation
+- no SysML v2 generation
 
-- Project isolation
-- exact Source, Run, Artifact and Review traceability
-- Human Review authority
-- immutable original processing evidence
-- immutable finalized Review evidence
-- deterministic fingerprints
-- fail-closed validation
+Before implementation:
 
-G5 shall not:
+1. inspect the existing application shell and current Human Review UI boundaries
+2. define the exact G6 user workflow and affected paths
+3. review the contract
+4. obtain explicit acceptance
+5. implement incrementally with focused UI/service tests
 
-- promote an unfinalized Review Version
-- use confidence or consensus as promotion authority
-- mutate finalized Review artifacts
-- generate model candidates
-- generate SysML v2
-
-Do not implement G5 before the exact contract, affected paths and test boundary
-have been reviewed and explicitly accepted.
+Do not weaken G5 authority checks for UI convenience.
 
 ---
 
+# Model Element Change Candidate Discipline
 # Model Element Change Candidate Discipline
 
 Implementation-derived engineering concepts must not be lost until Phase N.
@@ -483,6 +520,9 @@ Implementation-derived engineering concepts must not be lost until Phase N.
 | MEC-G4-002 | G4.2e–G4.2f | Atomic publication and explicit recovery boundary | System Design Constraint | Engineering review pending |
 | MEC-G4-003 | G4.3 | `carried_forward` Review Item lineage | Logical Relationship | Engineering review pending |
 | MEC-G4-004 | G4.3 | Linear Review Version succession without parallel branches | System Design Constraint | Engineering review pending |
+| MEC-G5-001 | G5.6 | Event-sourced Approved Input authority | System Design Constraint | Engineering review pending |
+| MEC-G5-002 | G5.6 | Promotion Equivalence across successor Review Versions | System Design Constraint | Engineering review pending |
+| MEC-G5-003 | G5.7 | Active-only Phase H Approved Input consumption boundary | System Design Constraint | Engineering review pending |
 
 Detailed rationale and implementation evidence are recorded in:
 
@@ -507,8 +547,8 @@ Implementation observation
 G1 through G4.2c still require retrospective examination before or during the
 Zwischenstandspräsentation.
 
-The four recorded candidates satisfy the continuous tracking requirement for
-G4.2d through G4.4.
+The recorded G4 and G5 candidates satisfy the continuous tracking requirement
+from G4.2d through G5.
 
 Phase N shall use the reviewed candidate inventory.
 
