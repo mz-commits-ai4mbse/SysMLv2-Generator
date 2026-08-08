@@ -7,10 +7,14 @@ import os
 from pathlib import Path
 from typing import Any
 
+from app.human_review_approval_ui import (
+    render_human_review_approval_ui,
+)
 from app.project_dashboard_ui import render_project_dashboard_ui
 from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
+    APP_VIEW_REVIEW,
     APP_VIEWS,
     DASHBOARD_VIEW_SOURCES,
     SESSION_APP_VIEW,
@@ -45,6 +49,7 @@ from modules.project_workspace import (
 _APP_VIEW_LABELS = {
     APP_VIEW_DASHBOARD: "Project Dashboard",
     APP_VIEW_INGESTION: "Agentic Ingestion",
+    APP_VIEW_REVIEW: "Human Review & Approval",
 }
 
 _P9_UPLOAD_TYPES = ("md", "txt", "json", "csv", "tsv", "pdf")
@@ -74,6 +79,7 @@ def render_turing_generator_ui(
     project_workspace: ProjectWorkspace | None = None,
     ingestion_service: ProjectBoundIngestionService | None = None,
     dashboard_renderer: Callable[..., None] | None = None,
+    review_renderer: Callable[..., None] | None = None,
 ) -> None:
     """Render the common application shell and route the selected view."""
 
@@ -101,6 +107,11 @@ def render_turing_generator_ui(
         if dashboard_renderer is None
         else dashboard_renderer
     )
+    render_review = (
+        render_human_review_approval_ui
+        if review_renderer is None
+        else review_renderer
+    )
 
     apply_pending_app_view(st.session_state)
     navigation = read_navigation_state(st.session_state)
@@ -111,6 +122,14 @@ def render_turing_generator_ui(
 
     if active_view == APP_VIEW_DASHBOARD:
         render_dashboard(
+            root,
+            streamlit_module=st,
+            project_workspace=workspace,
+        )
+        return
+
+    if active_view == APP_VIEW_REVIEW:
+        render_review(
             root,
             streamlit_module=st,
             project_workspace=workspace,

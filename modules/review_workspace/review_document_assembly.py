@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 
 from modules.project_processing import (
@@ -127,6 +128,7 @@ def assemble_initial_review_document(
     review_revision_id: str,
     opened_by: str,
     timestamp: str,
+    occupied_review_item_ids: Iterable[str] = (),
 ) -> InitialReviewDocumentAssembly:
     """Construct one exact initial Review Document bundle.
 
@@ -156,6 +158,10 @@ def assemble_initial_review_document(
         p4_evidence_references,
     )
 
+    reserved_review_item_ids = tuple(
+        occupied_review_item_ids
+    )
+
     p9_review_items = (
         construct_initial_p9_review_items(
             p9_structured_proposals,
@@ -164,12 +170,18 @@ def assemble_initial_review_document(
             review_document_version_id=(
                 review_document_version_id
             ),
+            occupied_review_item_ids=(
+                reserved_review_item_ids
+            ),
         )
     )
 
-    occupied_review_item_ids = tuple(
-        item.review_item_id
-        for item in p9_review_items.review_items
+    allocated_review_item_ids = (
+        *reserved_review_item_ids,
+        *(
+            item.review_item_id
+            for item in p9_review_items.review_items
+        ),
     )
 
     p4_review_items = (
@@ -181,7 +193,7 @@ def assemble_initial_review_document(
                 review_document_version_id
             ),
             occupied_review_item_ids=(
-                occupied_review_item_ids
+                allocated_review_item_ids
             ),
         )
     )

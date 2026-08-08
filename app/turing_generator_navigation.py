@@ -12,9 +12,11 @@ from modules.project_workspace.identifiers import is_valid_project_id
 
 APP_VIEW_DASHBOARD = "dashboard"
 APP_VIEW_INGESTION = "ingestion"
+APP_VIEW_REVIEW = "review"
 APP_VIEWS = (
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
+    APP_VIEW_REVIEW,
 )
 
 DASHBOARD_VIEW_OVERVIEW = "overview"

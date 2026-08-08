@@ -94,6 +94,17 @@ _IDENTIFIER_PATTERN = re.compile(
 
 
 @dataclass(frozen=True, slots=True)
+class P9ConsensusEvidenceFact:
+    """Exact filter fact for one structured Consensus evidence fragment."""
+
+    artifact_id: str
+    evidence_locator: str
+    evidence_content_fingerprint: str
+    agreement_level: str
+    review_required: bool
+
+
+@dataclass(frozen=True, slots=True)
 class P9SubjectEvidence:
     """Exact P9 evidence associated with one stable review subject."""
 
@@ -298,6 +309,90 @@ def construct_p9_evidence_references(
         subject_evidence=records,
     )
 
+
+
+def load_p9_consensus_evidence_facts(
+    p9_evidence: object,
+    structured_proposals: object,
+    *,
+    repository_root: Path | str,
+) -> tuple[P9ConsensusEvidenceFact, ...]:
+    """Load exact candidate-element Consensus facts for G6 filtering."""
+
+    if not isinstance(p9_evidence, P9ReviewEvidenceSet):
+        raise ReviewValidationError(
+            "p9_evidence must be a P9ReviewEvidenceSet."
+        )
+    if not isinstance(
+        structured_proposals,
+        P9StructuredProposalSet,
+    ):
+        raise ReviewValidationError(
+            "structured_proposals must be a P9StructuredProposalSet."
+        )
+
+    root = _validated_repository_root(
+        repository_root
+    )
+    _validate_proposal_set_identity(
+        p9_evidence,
+        structured_proposals,
+    )
+    _validate_proposal_artifact_membership(
+        p9_evidence,
+        structured_proposals,
+    )
+
+    reference = _select_derivation_consensus_reference(
+        p9_evidence
+    )
+    report = _load_consensus_report(
+        reference,
+        repository_root=root,
+        p9_evidence=p9_evidence,
+    )
+    _validate_consensus_agents(
+        report,
+        structured_proposals,
+    )
+
+    facts = []
+    seen = set()
+
+    for index, raw_group in enumerate(
+        report["groups"]
+    ):
+        group = _validate_consensus_group(
+            raw_group,
+            expected_total_agents=report["total_agents"],
+            report_agent_ids=tuple(
+                report["agent_ids"]
+            ),
+        )
+        if group["item_type"] != "candidate_model_element":
+            continue
+
+        key = group["group_key"]
+        if key in seen:
+            raise ReviewIntegrityError(
+                "Derivation Consensus Report contains duplicate "
+                "candidate-model-element groups."
+            )
+        seen.add(key)
+
+        facts.append(
+            P9ConsensusEvidenceFact(
+                artifact_id=reference.artifact_id,
+                evidence_locator=f"/groups/{index}",
+                evidence_content_fingerprint=(
+                    _canonical_fingerprint(group)
+                ),
+                agreement_level=group["agreement_level"],
+                review_required=group["review_required"],
+            )
+        )
+
+    return tuple(facts)
 
 def _construct_source_references(
     proposals: P9StructuredProposalSet,
