@@ -30,9 +30,11 @@ from modules.project_ingestion import (
     ProjectBoundIngestionService,
     ProjectIngestionConfiguration,
     ProjectIngestionConfigurationError,
+    calculate_ingestion_configuration_fingerprint,
     ProjectIngestionError,
     ProjectIngestionExecutionError,
     ProjectIngestionInputError,
+    ProjectIngestionRecoveryRequiredError,
 )
 from modules.project_sources import (
     CONTEXT_ONLY_SOURCE_ROLE,
@@ -69,6 +71,9 @@ _P9_MODEL_OPTIONS = (
 )
 _SESSION_LAST_INGESTION_RESULT = (
     "turing_generator.last_ingestion_result"
+)
+_SESSION_INGESTION_IN_PROGRESS = (
+    "turing_generator.ingestion_in_progress"
 )
 
 
@@ -422,7 +427,7 @@ def render_project_ingestion_execution(
     ingestion_service: ProjectBoundIngestionService,
     navigation: ApplicationNavigationState,
 ) -> None:
-    """Configure and execute one project-bound Agentic Ingestion Run."""
+    """Configure, execute or retry one project-bound Agentic Ingestion."""
 
     if navigation.project_id is None:
         return
@@ -463,6 +468,100 @@ def render_project_ingestion_execution(
         f"Execution Source: {selected_source.original_filename} · "
         f"{selected_source.source_id} · "
         f"{_SOURCE_ROLE_LABELS.get(selected_source.source_role, selected_source.source_role)}"
+    )
+
+    local_execution = st.session_state.get(
+        _SESSION_INGESTION_IN_PROGRESS
+    )
+    if (
+        isinstance(local_execution, dict)
+        and local_execution.get("project_id")
+        == navigation.project_id
+        and local_execution.get("source_id")
+        == selected_source.source_id
+    ):
+        st.info(
+            "Agentic Ingestion is already executing in this "
+            "application session."
+        )
+        return
+
+    state_reader = getattr(
+        ingestion_service,
+        "source_execution_state",
+        None,
+    )
+    supports_state = callable(state_reader)
+    if supports_state:
+        try:
+            execution_state = state_reader(
+                navigation.project_id,
+                selected_source.source_id,
+            )
+        except ProjectIngestionError:
+            st.error(
+                "The current Processing state could not be validated. "
+                "No execution action is available."
+            )
+            return
+        except Exception:
+            st.error(
+                "The current Processing state is unavailable. "
+                "No execution action is available."
+            )
+            return
+    else:
+        execution_state = None
+
+    if execution_state is not None:
+        if execution_state.run_state == "running":
+            st.info(
+                "Agentic Ingestion is recorded as running · "
+                f"{execution_state.processing_run_id} · "
+                f"{execution_state.attempt_id or 'attempt unavailable'} · "
+                f"{execution_state.processing_stage or 'stage unavailable'}."
+            )
+            render_last_ingestion_result(
+                st,
+                project_id=navigation.project_id,
+            )
+            return
+
+        if execution_state.run_state == "awaiting_review":
+            st.success(
+                "Agentic Ingestion has completed and this Source is "
+                "awaiting Human Review · "
+                f"{execution_state.processing_run_id} · "
+                f"{execution_state.attempt_id or 'attempt unavailable'}."
+            )
+            render_last_ingestion_result(
+                st,
+                project_id=navigation.project_id,
+            )
+            return
+
+        if execution_state.recovery_required:
+            st.error(
+                "The current Processing Run requires explicit recovery "
+                "before Agentic Ingestion can continue · "
+                f"{execution_state.processing_run_id}."
+            )
+            render_last_ingestion_result(
+                st,
+                project_id=navigation.project_id,
+            )
+            return
+
+        if execution_state.run_state == "completed":
+            st.info(
+                "The current Processing Run is completed. A new Run "
+                "requires an explicit successor workflow."
+            )
+            return
+
+    retry_mode = bool(
+        execution_state is not None
+        and execution_state.can_retry
     )
 
     model = st.selectbox(
@@ -528,11 +627,74 @@ def render_project_ingestion_execution(
             )
             api_key = entered_key.strip() or None
 
-    if st.button(
-        "Run Agentic Ingestion",
-        key="turing_generator.run_agentic_ingestion",
-        type="primary",
-    ):
+    configuration = ProjectIngestionConfiguration(
+        provider=DEFAULT_PROVIDER,
+        model=model,
+        runs_per_member=int(runs_per_member),
+        max_members_per_team=(
+            None if team_scope == "all" else 1
+        ),
+        dry_run=bool(dry_run),
+    )
+
+    configuration_matches = True
+    if retry_mode:
+        configuration_matches = (
+            execution_state.configuration_fingerprint
+            == calculate_ingestion_configuration_fingerprint(
+                configuration
+            )
+        )
+        st.warning(
+            "The previous Processing Attempt failed. Retry preserves "
+            f"{execution_state.processing_run_id} and creates a new "
+            "immutable Attempt."
+        )
+        if not configuration_matches:
+            st.warning(
+                "Retry requires the exact material configuration of "
+                "the failed Run. Restore the original model, team "
+                "scope, runs-per-member and dry/live mode."
+            )
+
+    action_key = (
+        "turing_generator.retry_agentic_ingestion"
+        if retry_mode
+        else "turing_generator.run_agentic_ingestion"
+    )
+    action_label = (
+        "Retry Agentic Ingestion"
+        if retry_mode
+        else "Run Agentic Ingestion"
+    )
+
+    action_placeholder = None
+    clicked = False
+    if not retry_mode or configuration_matches:
+        empty_factory = getattr(st, "empty", None)
+        if callable(empty_factory):
+            action_placeholder = empty_factory()
+            clicked = action_placeholder.button(
+                action_label,
+                key=action_key,
+                type="primary",
+            )
+        else:
+            # Compatibility path for existing Streamlit test doubles.
+            clicked = st.button(
+                action_label,
+                key=action_key,
+                type="primary",
+            )
+
+    if clicked:
+        if action_placeholder is not None:
+            # Remove the write action immediately in the same Streamlit
+            # render before the synchronous ingestion call starts. This
+            # prevents a visible Retry/Run button while the observer reports
+            # the Processing Attempt as running.
+            action_placeholder.empty()
+
         if not dry_run and not live_confirmation:
             st.error(
                 "Live execution requires explicit confirmation."
@@ -546,34 +708,67 @@ def render_project_ingestion_execution(
                 "Live OpenAI execution requires an API key."
             )
         else:
-            configuration = ProjectIngestionConfiguration(
-                provider=DEFAULT_PROVIDER,
-                model=model,
-                runs_per_member=int(runs_per_member),
-                max_members_per_team=(
-                    None if team_scope == "all" else 1
-                ),
-                dry_run=bool(dry_run),
+            st.session_state[
+                _SESSION_INGESTION_IN_PROGRESS
+            ] = {
+                "project_id": navigation.project_id,
+                "source_id": selected_source.source_id,
+            }
+            st.info(
+                "Retrying Agentic Ingestion…"
+                if retry_mode
+                else "Starting Agentic Ingestion…"
             )
 
+            def render_started(snapshot) -> None:
+                st.info(
+                    "Agentic Ingestion is running · "
+                    f"{snapshot.processing_run_id} · "
+                    f"{snapshot.attempt_id or 'attempt unavailable'} · "
+                    f"{snapshot.processing_stage or 'stage unavailable'}."
+                )
+
             try:
-                result = (
-                    ingestion_service.execute_registered_source(
+                if retry_mode:
+                    result = ingestion_service.retry_registered_source(
+                        navigation.project_id,
+                        selected_source.source_id,
+                        execution_state.processing_run_id,
+                        configuration=configuration,
+                        api_key=api_key,
+                        execution_observer=render_started,
+                    )
+                elif supports_state:
+                    result = ingestion_service.execute_registered_source(
+                        navigation.project_id,
+                        selected_source.source_id,
+                        configuration=configuration,
+                        api_key=api_key,
+                        execution_observer=render_started,
+                    )
+                else:
+                    # Compatibility path for existing test doubles only.
+                    result = ingestion_service.execute_registered_source(
                         navigation.project_id,
                         selected_source.source_id,
                         configuration=configuration,
                         api_key=api_key,
                     )
-                )
             except ProjectIngestionConfigurationError:
                 st.error(
-                    "The execution configuration is invalid."
+                    "The execution configuration is invalid or no "
+                    "longer matches the failed Run."
                 )
             except ProjectIngestionExecutionError:
                 st.error(
-                    "The selected Source cannot start a new Processing "
-                    "Run. Inspect its current Run or project issues in "
-                    "the Project Dashboard."
+                    "The selected Source cannot start this Processing "
+                    "operation. Inspect its current Run in the "
+                    "Project Dashboard."
+                )
+            except ProjectIngestionRecoveryRequiredError:
+                st.error(
+                    "The Processing Run requires explicit recovery "
+                    "before execution can continue."
                 )
             except ProjectIngestionError:
                 st.error(
@@ -588,11 +783,20 @@ def render_project_ingestion_execution(
             else:
                 st.session_state[
                     SESSION_SELECTED_ENTITY_ID
-                ] = result.processing_run_id
+                ] = (
+                    selected_source.source_id
+                    if result.run_state in {"failed", "blocked"}
+                    else result.processing_run_id
+                )
                 st.session_state[
                     _SESSION_LAST_INGESTION_RESULT
                 ] = _safe_ingestion_result(result)
                 render_ingestion_result_message(st, result)
+            finally:
+                st.session_state.pop(
+                    _SESSION_INGESTION_IN_PROGRESS,
+                    None,
+                )
 
     render_last_ingestion_result(
         st,
@@ -611,16 +815,51 @@ def render_ingestion_result_message(
             "Agentic Ingestion completed and published its "
             "unreviewed artifacts. Human review is required."
         )
-    elif result.run_state == "blocked":
+        return
+
+    if result.run_state == "blocked":
         st.error(
             "The Processing Run requires recovery before it can "
             "continue."
         )
-    else:
-        st.error(
-            "The Processing Run failed. No successful ingestion "
-            "state was inferred."
+        return
+
+    safe_messages = {
+        "llm_authentication_failed": (
+            "LLM authentication failed. Check the API credentials "
+            "and retry this Processing Run."
+        ),
+        "llm_permission_denied": (
+            "The LLM provider denied access. Check provider permissions "
+            "and retry."
+        ),
+        "llm_rate_limited": (
+            "The LLM provider rate-limited this execution. Retry later."
+        ),
+        "llm_timeout": (
+            "The LLM request timed out. Retry the Processing Run."
+        ),
+        "llm_connection_failed": (
+            "The LLM provider could not be reached. Check connectivity "
+            "and retry the Processing Run."
+        ),
+        "llm_request_rejected": (
+            "The LLM provider rejected the request. Check the selected "
+            "provider/model configuration before retrying."
+        ),
+        "llm_provider_unavailable": (
+            "The LLM provider is currently unavailable. Retry later."
+        ),
+    }
+    st.error(
+        safe_messages.get(
+            getattr(result, "failure_reason", None),
+            (
+                "The Processing Run failed. No successful ingestion "
+                "state was inferred."
+            ),
         )
+    )
 
 
 def render_last_ingestion_result(

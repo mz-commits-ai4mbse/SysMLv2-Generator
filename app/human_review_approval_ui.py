@@ -215,9 +215,6 @@ def _render_review_queue(
             "write actions."
         ),
     )
-    st.session_state[
-        _SESSION_REVIEWER_IDENTITY
-    ] = reviewer_identity
 
     if not project_view.items:
         st.info("No Human Review work is currently available.")

@@ -344,3 +344,86 @@ def test_serialized_fingerprint_is_not_self_referential() -> None:
 
     assert canonical
     assert document.content_fingerprint not in canonical
+
+def test_review_document_accepts_processing_semantic_reference_versions() -> None:
+    document = create_review_document(
+        project_id="000001",
+        review_document_id="RVD-000002",
+        source_id="SRC-000001",
+        source_sha256="b" * 64,
+        processing_run_id="RUN-000001",
+        attempt_id="ATT-000001",
+        primary_review_artifact_reference=(
+            _artifact_reference()
+        ),
+        supporting_artifact_references=(
+            _artifact_reference(
+                artifact_type="agent_outputs",
+                artifact_id="AGENT-001",
+                fingerprint="c" * 64,
+                path=(
+                    "data/projects/000001/runs/RUN-000001/"
+                    "artifacts/agent_outputs/agent.json"
+                ),
+            ),
+        ),
+        framework_template=FrameworkTemplateReference(
+            template_id="TURING_RFLP_FRAMEWORK",
+            template_version="1.0.0",
+        ),
+        semantic_reference_versions=(
+            SemanticReferenceVersion(
+                reference_system_id="BFO_2020",
+                reference_version="2020",
+            ),
+            SemanticReferenceVersion(
+                reference_system_id="IOF_CORE_202602",
+                reference_version="202602",
+            ),
+            SemanticReferenceVersion(
+                reference_system_id="TURING_CORE_VOCABULARY",
+                reference_version="1.0.0",
+            ),
+        ),
+        timestamp="2026-08-10T13:55:00Z",
+    )
+
+    validate_review_document(document)
+
+    serialized = review_document_to_json(document)
+    reopened = review_document_from_json(serialized)
+
+    assert tuple(
+        (
+            reference.reference_system_id,
+            reference.reference_version,
+        )
+        for reference in reopened.semantic_reference_versions
+    ) == (
+        ("BFO_2020", "2020"),
+        ("IOF_CORE_202602", "202602"),
+        ("TURING_CORE_VOCABULARY", "1.0.0"),
+    )
+
+
+@pytest.mark.parametrize(
+    "reference_version",
+    ("", " 2020", "2020 "),
+)
+def test_review_document_rejects_invalid_processing_semantic_reference_version(
+    reference_version: str,
+) -> None:
+    document = _document()
+
+    modified = replace(
+        document,
+        semantic_reference_versions=(
+            SemanticReferenceVersion(
+                reference_system_id="BFO_2020",
+                reference_version=reference_version,
+            ),
+        ),
+    )
+
+    with pytest.raises(ReviewValidationError):
+        validate_review_document(modified)

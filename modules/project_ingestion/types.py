@@ -38,6 +38,25 @@ class ProjectBoundSourceInventory:
     issues: tuple[ProjectBoundSourceIssue, ...] = ()
 
 
+
+@dataclass(frozen=True, slots=True)
+class ProjectBoundIngestionExecutionState:
+    """Safe current execution state for one registered Source."""
+
+    project_id: str
+    source_id: str
+    processing_run_id: str | None
+    attempt_id: str | None
+    run_state: str | None
+    processing_stage: str | None
+    failure_reason: str | None
+    blocked_reason: str | None
+    pending_review: bool
+    configuration_fingerprint: str | None
+    can_start_new: bool
+    can_retry: bool
+    recovery_required: bool
+
 @dataclass(frozen=True, slots=True)
 class ProjectBoundIngestionWorkResult:
     """Safe result of execution into non-authoritative Run work."""

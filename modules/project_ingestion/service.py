@@ -14,6 +14,7 @@ from modules.ingestion.team_agentic_pipeline import (
 from modules.project_processing import (
     ProjectProcessingRepository,
     create_processing_event,
+    create_retry_event,
     derive_processing_run_state,
     create_processing_run_manifest,
     create_semantic_reference_version,
@@ -36,8 +37,12 @@ from .configuration import (
     validate_ingestion_configuration,
     workflow_profile_for_source_role,
 )
+from .failure_classification import (
+    classify_pipeline_failure,
+)
 from .publisher import ProjectIngestionPublisher
 from .errors import (
+    ProjectIngestionConfigurationError,
     ProjectIngestionExecutionError,
     ProjectIngestionInputError,
     ProjectIngestionOutputValidationError,
@@ -47,6 +52,7 @@ from .errors import (
     ProjectIngestionTemporaryFileError,
 )
 from .types import (
+    ProjectBoundIngestionExecutionState,
     ProjectBoundIngestionResult,
     ProjectBoundIngestionWorkResult,
     ProjectBoundSourceInventory,
@@ -199,13 +205,12 @@ class ProjectBoundIngestionService:
         *,
         configuration: ProjectIngestionConfiguration,
         api_key: str | None = None,
+        execution_observer: (
+            Callable[[ProjectBoundIngestionExecutionState], None]
+            | None
+        ) = None,
     ) -> ProjectBoundIngestionWorkResult:
-        """Execute Phase F inside one P5 Run work directory.
-
-        This Step-4 operation creates the Run and Attempt, performs
-        deterministic Source Projection and executes Phase F. Generated
-        files remain non-authoritative work until Step 5 publishes them.
-        """
+        """Create one new Run and execute its first Phase-F Attempt."""
 
         validated_configuration = (
             validate_ingestion_configuration(configuration)
@@ -215,7 +220,6 @@ class ProjectBoundIngestionService:
             project_id,
             source_id,
         )
-
         processing_run_id = self._processing.next_run_id(
             project_id
         )
@@ -229,10 +233,8 @@ class ProjectBoundIngestionService:
                 reference_system_id=reference_id,
                 reference_version=reference_version,
             )
-            for (
-                reference_id,
-                reference_version,
-            ) in validated_configuration.semantic_reference_versions
+            for reference_id, reference_version
+            in validated_configuration.semantic_reference_versions
         )
         created_at = self._current_utc_timestamp()
 
@@ -245,9 +247,7 @@ class ProjectBoundIngestionService:
             workflow_profile=workflow_profile_for_source_role(
                 source_manifest.source_role
             ),
-            configuration_fingerprint=(
-                configuration_fingerprint
-            ),
+            configuration_fingerprint=configuration_fingerprint,
             framework_template_id=(
                 project_manifest.framework_template.template_id
             ),
@@ -300,6 +300,86 @@ class ProjectBoundIngestionService:
             ),
         )
         history = self._processing.append_event(started_event)
+        self._notify_execution_observer(
+            execution_observer,
+            history,
+        )
+        return self._execute_started_attempt(
+            history=history,
+            attempt_id=attempt_id,
+            configuration=validated_configuration,
+            api_key=api_key,
+        )
+
+    def retry_registered_source_to_work(
+        self,
+        project_id: str,
+        source_id: str,
+        processing_run_id: str,
+        *,
+        configuration: ProjectIngestionConfiguration,
+        api_key: str | None = None,
+        execution_observer: (
+            Callable[[ProjectBoundIngestionExecutionState], None]
+            | None
+        ) = None,
+    ) -> ProjectBoundIngestionWorkResult:
+        """Retry one failed unchanged Run as a new immutable Attempt."""
+
+        validated_configuration = (
+            validate_ingestion_configuration(configuration)
+        )
+        project_manifest = self._workspace.load_project(project_id)
+        source_manifest = self._source_registry.load_source(
+            project_id,
+            source_id,
+        )
+        history = self._processing.load_run(
+            project_id,
+            processing_run_id,
+        )
+        self._validate_retry_binding(
+            history=history,
+            project_manifest=project_manifest,
+            source_manifest=source_manifest,
+            configuration=validated_configuration,
+        )
+
+        attempt_id = self._processing.next_attempt_id(
+            project_id,
+            processing_run_id,
+            AGENTIC_INGESTION_STAGE,
+        )
+        retry_event = create_retry_event(
+            history,
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            attempt_id=attempt_id,
+            reason_code="agentic_ingestion_retry_started",
+            timestamp=self._current_utc_timestamp(),
+        )
+        history = self._processing.append_event(retry_event)
+        self._notify_execution_observer(
+            execution_observer,
+            history,
+        )
+        return self._execute_started_attempt(
+            history=history,
+            attempt_id=attempt_id,
+            configuration=validated_configuration,
+            api_key=api_key,
+        )
+
+    def _execute_started_attempt(
+        self,
+        *,
+        history: Any,
+        attempt_id: str,
+        configuration: ProjectIngestionConfiguration,
+        api_key: str | None,
+    ) -> ProjectBoundIngestionWorkResult:
+        project_id = history.manifest.project_id
+        source_id = history.manifest.source_id
+        processing_run_id = history.manifest.processing_run_id
 
         try:
             projection = self._source_projections.create_projection(
@@ -310,7 +390,7 @@ class ProjectBoundIngestionService:
             return self._fail_execution(
                 history=history,
                 attempt_id=attempt_id,
-                dry_run=validated_configuration.dry_run,
+                dry_run=configuration.dry_run,
                 source_projection_id=None,
                 projection_result=None,
                 reason_code="source_normalization_failed",
@@ -320,7 +400,7 @@ class ProjectBoundIngestionService:
             return self._fail_execution(
                 history=history,
                 attempt_id=attempt_id,
-                dry_run=validated_configuration.dry_run,
+                dry_run=configuration.dry_run,
                 source_projection_id=(
                     projection.manifest.source_projection_id
                 ),
@@ -346,7 +426,6 @@ class ProjectBoundIngestionService:
             report_output_path = (
                 attempt_work / "ingestion_review_report.md"
             )
-
             phase_f_result = self._pipeline_runner(
                 project_root=self.repository_root,
                 task_id=_task_id(
@@ -355,7 +434,7 @@ class ProjectBoundIngestionService:
                     processing_run_id=processing_run_id,
                     attempt_id=attempt_id,
                 ),
-                recipe_id=validated_configuration.recipe_id,
+                recipe_id=configuration.recipe_id,
                 raw_input_path=self._repository_relative_path(
                     projection_content_path
                 ),
@@ -365,29 +444,27 @@ class ProjectBoundIngestionService:
                 execution_root=self._repository_relative_path(
                     execution_root
                 ),
-                provider=validated_configuration.provider,
-                model=validated_configuration.model,
+                provider=configuration.provider,
+                model=configuration.model,
                 api_key=api_key,
-                runs_per_member=(
-                    validated_configuration.runs_per_member
-                ),
+                runs_per_member=configuration.runs_per_member,
                 max_members_per_team=(
-                    validated_configuration.max_members_per_team
+                    configuration.max_members_per_team
                 ),
-                dry_run=validated_configuration.dry_run,
+                dry_run=configuration.dry_run,
             )
-        except Exception:
+        except Exception as exc:
             return self._fail_execution(
                 history=history,
                 attempt_id=attempt_id,
-                dry_run=validated_configuration.dry_run,
+                dry_run=configuration.dry_run,
                 source_projection_id=(
                     projection.manifest.source_projection_id
                 ),
                 projection_result=(
                     projection.manifest.projection_result
                 ),
-                reason_code="team_agentic_ingestion_failed",
+                reason_code=classify_pipeline_failure(exc),
             )
 
         phase_f_run_id = getattr(
@@ -402,7 +479,7 @@ class ProjectBoundIngestionService:
             return self._fail_execution(
                 history=history,
                 attempt_id=attempt_id,
-                dry_run=validated_configuration.dry_run,
+                dry_run=configuration.dry_run,
                 source_projection_id=(
                     projection.manifest.source_projection_id
                 ),
@@ -422,12 +499,67 @@ class ProjectBoundIngestionService:
             attempt_id=attempt_id,
             run_state="running",
             processing_stage=AGENTIC_INGESTION_STAGE,
-            dry_run=validated_configuration.dry_run,
+            dry_run=configuration.dry_run,
             projection_result=(
                 projection.manifest.projection_result
             ),
             phase_f_run_id=phase_f_run_id,
             failure_reason=None,
+        )
+
+    def source_execution_state(
+        self,
+        project_id: str,
+        source_id: str,
+    ) -> ProjectBoundIngestionExecutionState:
+        self._workspace.load_project(project_id)
+        self._source_registry.load_source(project_id, source_id)
+        scan = self._processing.scan_project(project_id)
+
+        blocking_codes = tuple(
+            issue.code
+            for issue in scan.issues
+            if issue.issue_level == "blocking"
+        )
+        if blocking_codes:
+            raise ProjectIngestionRecoveryRequiredError(
+                "Project Processing requires recovery before execution."
+            )
+
+        current = []
+        for history in scan.run_histories:
+            if history.manifest.source_id != source_id:
+                continue
+            state = derive_processing_run_state(history)
+            if state.run_state != "superseded":
+                current.append((history, state))
+
+        if len(current) > 1:
+            raise ProjectIngestionRecoveryRequiredError(
+                "Multiple current Processing Runs exist for one Source."
+            )
+
+        if not current:
+            return ProjectBoundIngestionExecutionState(
+                project_id=project_id,
+                source_id=source_id,
+                processing_run_id=None,
+                attempt_id=None,
+                run_state=None,
+                processing_stage=None,
+                failure_reason=None,
+                blocked_reason=None,
+                pending_review=False,
+                configuration_fingerprint=None,
+                can_start_new=True,
+                can_retry=False,
+                recovery_required=False,
+            )
+
+        history, state = current[0]
+        return self._execution_state_from_history(
+            history,
+            state=state,
         )
 
     def execute_registered_source(
@@ -437,25 +569,55 @@ class ProjectBoundIngestionService:
         *,
         configuration: ProjectIngestionConfiguration,
         api_key: str | None = None,
+        execution_observer: (
+            Callable[[ProjectBoundIngestionExecutionState], None]
+            | None
+        ) = None,
     ) -> ProjectBoundIngestionResult:
-        """Execute, publish and request Human Review for one Source."""
-
         self._require_no_current_run(project_id, source_id)
-
         work = self.execute_registered_source_to_work(
             project_id,
             source_id,
             configuration=configuration,
             api_key=api_key,
+            execution_observer=execution_observer,
         )
+        return self._complete_work(work)
 
+    def retry_registered_source(
+        self,
+        project_id: str,
+        source_id: str,
+        processing_run_id: str,
+        *,
+        configuration: ProjectIngestionConfiguration,
+        api_key: str | None = None,
+        execution_observer: (
+            Callable[[ProjectBoundIngestionExecutionState], None]
+            | None
+        ) = None,
+    ) -> ProjectBoundIngestionResult:
+        work = self.retry_registered_source_to_work(
+            project_id,
+            source_id,
+            processing_run_id,
+            configuration=configuration,
+            api_key=api_key,
+            execution_observer=execution_observer,
+        )
+        return self._complete_work(work)
+
+    def _complete_work(
+        self,
+        work: ProjectBoundIngestionWorkResult,
+    ) -> ProjectBoundIngestionResult:
         if work.run_state != "running":
             return self._final_result_from_work(work)
 
         try:
             artifact_references = (
                 self._publisher.publish_attempt_outputs(
-                    project_id,
+                    work.project_id,
                     work.processing_run_id,
                     work.attempt_id,
                 )
@@ -477,12 +639,12 @@ class ProjectBoundIngestionService:
             )
 
         history = self._processing.load_run(
-            project_id,
+            work.project_id,
             work.processing_run_id,
         )
         latest = history.events[-1]
         published_event = create_processing_event(
-            project_id=project_id,
+            project_id=work.project_id,
             processing_run_id=work.processing_run_id,
             event_id=f"EVT-{latest.event_sequence + 1:06d}",
             event_sequence=latest.event_sequence + 1,
@@ -496,7 +658,6 @@ class ProjectBoundIngestionService:
             timestamp=self._current_utc_timestamp(),
             previous_event_fingerprint=latest.event_fingerprint,
         )
-
         try:
             history = self._processing.append_event(
                 published_event
@@ -512,7 +673,7 @@ class ProjectBoundIngestionService:
 
         latest = history.events[-1]
         review_event = create_processing_event(
-            project_id=project_id,
+            project_id=work.project_id,
             processing_run_id=work.processing_run_id,
             event_id=f"EVT-{latest.event_sequence + 1:06d}",
             event_sequence=latest.event_sequence + 1,
@@ -526,7 +687,6 @@ class ProjectBoundIngestionService:
             timestamp=self._current_utc_timestamp(),
             previous_event_fingerprint=latest.event_fingerprint,
         )
-
         try:
             self._processing.append_event(review_event)
         except Exception:
@@ -551,6 +711,132 @@ class ProjectBoundIngestionService:
             failure_reason=None,
             recovery_required=False,
         )
+
+    def _validate_retry_binding(
+        self,
+        *,
+        history: Any,
+        project_manifest: Any,
+        source_manifest: SourceManifest,
+        configuration: ProjectIngestionConfiguration,
+    ) -> None:
+        state = derive_processing_run_state(history)
+        if state.run_state == "blocked":
+            raise ProjectIngestionRecoveryRequiredError(
+                "Blocked Runs require explicit recovery, not retry."
+            )
+        if state.run_state != "failed":
+            raise ProjectIngestionExecutionError(
+                "Only a failed current Processing Run can be retried."
+            )
+
+        manifest = history.manifest
+        if manifest.source_id != source_manifest.source_id:
+            raise ProjectIngestionExecutionError(
+                "Retry Source identity does not match the Run."
+            )
+        if (
+            manifest.source_sha256 != source_manifest.sha256
+            or manifest.source_role_snapshot
+            != source_manifest.source_role
+        ):
+            raise ProjectIngestionExecutionError(
+                "Registered Source bindings changed; retry is unsafe."
+            )
+        if (
+            manifest.workflow_profile
+            != workflow_profile_for_source_role(
+                source_manifest.source_role
+            )
+        ):
+            raise ProjectIngestionExecutionError(
+                "Workflow profile changed; retry is unsafe."
+            )
+
+        fingerprint = (
+            calculate_ingestion_configuration_fingerprint(
+                configuration
+            )
+        )
+        if manifest.configuration_fingerprint != fingerprint:
+            raise ProjectIngestionConfigurationError(
+                "Retry requires the exact material configuration "
+                "of the failed Processing Run."
+            )
+
+        expected_semantics = tuple(
+            configuration.semantic_reference_versions
+        )
+        actual_semantics = tuple(
+            (
+                item.reference_system_id,
+                item.reference_version,
+            )
+            for item in manifest.semantic_reference_versions
+        )
+        if actual_semantics != expected_semantics:
+            raise ProjectIngestionConfigurationError(
+                "Retry semantic reference bindings changed."
+            )
+
+        framework = project_manifest.framework_template
+        if (
+            manifest.framework_template_id
+            != framework.template_id
+            or manifest.framework_template_version
+            != framework.template_version
+        ):
+            raise ProjectIngestionExecutionError(
+                "Framework binding changed; successor Run required."
+            )
+
+    def _execution_state_from_history(
+        self,
+        history: Any,
+        *,
+        state: Any | None = None,
+    ) -> ProjectBoundIngestionExecutionState:
+        derived = (
+            derive_processing_run_state(history)
+            if state is None
+            else state
+        )
+        return ProjectBoundIngestionExecutionState(
+            project_id=history.manifest.project_id,
+            source_id=history.manifest.source_id,
+            processing_run_id=(
+                history.manifest.processing_run_id
+            ),
+            attempt_id=derived.latest_attempt_id,
+            run_state=derived.run_state,
+            processing_stage=derived.processing_stage,
+            failure_reason=derived.failure_reason,
+            blocked_reason=derived.blocked_reason,
+            pending_review=derived.pending_review,
+            configuration_fingerprint=(
+                history.manifest.configuration_fingerprint
+            ),
+            can_start_new=False,
+            can_retry=(derived.run_state == "failed"),
+            recovery_required=(derived.run_state == "blocked"),
+        )
+
+    def _notify_execution_observer(
+        self,
+        observer: (
+            Callable[[ProjectBoundIngestionExecutionState], None]
+            | None
+        ),
+        history: Any,
+    ) -> None:
+        if observer is None:
+            return
+        snapshot = self._execution_state_from_history(history)
+        try:
+            observer(snapshot)
+        except Exception:
+            # Presentation callbacks never control Processing authority.
+            return
 
     def _require_no_current_run(
         self,

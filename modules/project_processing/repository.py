@@ -147,15 +147,32 @@ class ProjectProcessingRepository:
     ) -> str:
         """Return the next attempt ID for one run and stage."""
 
-        self.load_run(project_id, processing_run_id)
+        history = self.load_run(
+            project_id,
+            processing_run_id,
+        )
 
         if processing_stage not in PROCESSING_STAGES:
             raise ProcessingValidationError(
                 "processing_stage is not supported."
             )
 
-        occupied: set[str] = set()
+        # Attempt identity is part of the immutable Processing Event
+        # history and must not depend on whether an Attempt reached
+        # artifact publication. A failed Attempt can therefore reserve
+        # its ATT-* identity even when no artifact directory exists.
+        occupied: set[str] = {
+            event.attempt_id
+            for event in history.events
+            if (
+                event.processing_stage == processing_stage
+                and event.attempt_id is not None
+            )
+        }
 
+        # Persisted artifact directories are included as a secondary
+        # recovery signal so interrupted/legacy persistence cannot
+        # accidentally cause an Attempt ID to be reused.
         for artifact_kind in PROCESSING_ARTIFACT_KINDS:
             stage_path = (
                 artifacts_path(

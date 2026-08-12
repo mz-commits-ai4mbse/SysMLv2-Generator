@@ -33,52 +33,69 @@ Verified Implementation Reference
 
 Last Prior Committed Checkpoint
 
-`d472038008fdd6c8f72101037e71f9e05081acf0` — G4 completion
+`7209f17a610d3adb359e8b672a28020b71c03333` — G6 completion
 
 Architecture Version
 
-1.3
+1.4
 
 Knowledge Base Version
 
-1.10
+1.11
 
 Implementation Version
 
-0.12
+0.13
 
 Current Roadmap Version
 
-1.10
+1.11
 
 Current Development Phase
 
-Phase G — Approved Input Promotion
+Phase H — Model Candidate Layer
 
 Current Status
 
-Phase G Active — G1 through G5 Completed; G6 Next
+Phase G completed and verified; Phase H architecture contract is next.
 
 Verified Automated Test Baseline
 
-4692 passed in the complete repository regression after G5 completion
+4818 passed in the complete repository regression after G7.4.
 
-End-to-End Prototype Target
+Phase-G Focused Completion Regression
+
+65 passed in 8.95s.
+
+Phase-G Manual Acceptance
+
+PASS
+
+Closed Vertical-slice Target
 
 2026-08-14
 
+Functional Freeze
+
+2026-08-17
+
+Product Demo
+
+2026-08-18
+
 Last SSOT Update
 
-2026-08-07
+2026-08-12
 
 ---
 
 # Current Objective
 
-Complete the executable end-to-end Turing Generator prototype no later than
-2026-08-14.
+Complete the executable closed vertical slice from authoritative Approved Input
+through validated, versioned SysML v2 output, then harden the guided workflow
+for the product demo on 2026-08-18.
 
-The accepted prototype path is:
+The accepted executable path remains:
 
 ```text
 Source
@@ -92,32 +109,24 @@ Source
 → Versioned Output Package
 ```
 
-The required implementation phases are:
+The implementation sequence is now:
 
 ```text
-Phase G — Approved Input Promotion
-→ Zwischenstandspräsentation
-→ Phase H — Model Candidate Layer
-→ Phase I — Model Generation Agent
+Phase H — Model Candidate Layer
+→ Phase I — Model Generation Agent / Internal Engineering Model
 → Phase J — SysML v2 Code Generator
 → Phase K — Validation Layer
 → Phase L — Output Writer
+→ Guided Workflow UI
+→ targeted UX simplification
+→ end-to-end demo hardening
+→ functional freeze
+→ product demo
 ```
 
-Phase N and Phase Q follow after the executable prototype:
-
-```text
-Phase N — CATIA Shadow-model Migration and Final Reconciliation
-→ Phase Q — Thesis Architecture Documentation
-```
-
-Post-prototype portability evaluation and low-priority enhancements follow
-after Phase Q:
-
-```text
-Phase R — Task Profile Portability Evaluation
-→ Phase S — Project Affinity Recommendation
-```
+The Zwischenstandspräsentation no longer blocks Phase H. It is prepared after
+the implementation work so that it can present the complete implemented
+architecture and evidence.
 
 ---
 
@@ -125,19 +134,18 @@ Phase R — Task Profile Portability Evaluation
 
 Priority 1
 
-Continue Phase G with G6 — Human Review and promotion UI.
+Begin Phase H only after the exact Model Candidate architecture contract has
+been surfaced, discussed and explicitly accepted.
 
-Phase G shall establish the exact boundary between:
+Phase H shall consume engineering authority only through:
 
-- raw Sources
-- run-owned processing evidence
-- Human Review Decisions
-- Approved Input
-- later model-candidate generation
+```python
+ApprovedInputRepository.list_active_approved_inputs(project_id)
+```
 
 Priority 2
 
-Complete Phases G through L by 2026-08-14 without weakening:
+Complete the H–L closed vertical slice without reducing quality or weakening:
 
 - Human Review authority
 - project isolation
@@ -145,69 +153,59 @@ Complete Phases G through L by 2026-08-14 without weakening:
 - deterministic validation
 - immutable published evidence
 - CATIA engineering authority
+- explicit artifact contracts
 
 Priority 3
 
-Preserve the verified Phase F/P prototype baseline at:
+Use the system-wide interaction principle accepted in ADR-017:
 
-`26acace4d7ba2849b33c5e0dacedf838f83c7705`
+```text
+Simple by default.
+Explainable on demand.
+Fully traceable underneath.
+```
 
-with:
-
-- 3808 passing automated tests
-- completed P9 manual acceptance audit
-- successful project-bound ingestion ending in `awaiting_review`
+Primary workflow views shall emphasize the engineering result, material
+uncertainty, required human decision and next action. Detailed rationale,
+evidence and audit identifiers remain available through progressive disclosure.
 
 Priority 4
 
-Implement Phase H so that model relationship candidates are not treated as an
-undifferentiated set.
-
-The system shall support:
-
-- explicit relationship candidates
-- relationship type and semantic intent
-- relationship priority
-- prioritization rationale
-- structural-comparability impact
-- Human Review before acceptance
-
-The prioritization shall address relationships whose intended meanings are
-often used inconsistently or near-synonymously in source material or modeling
-practice, including:
-
-- dependency
-- allocation
-- flow
-- refinement-related relationships
-- derivation-related relationships
-- other framework-specific relationship concepts
-
-The objective is not merely to select plausible links.
-
-The objective is to support comparable model structures across related
-products, product variants and independently generated models.
+Keep Streamlit as the prototype UI technology through the 2026-08-18 product
+demo. No React, Vue or FastAPI rewrite is part of the demo critical path.
 
 Priority 5
 
-Maintain complete feature, requirement and implementation traceability while
-the prototype is completed.
-
-The authoritative CATIA model remains the source of engineering requirements.
-
-The committed repository remains the source of implementation reality.
+After H–L closes the technical vertical slice, perform a targeted guided-workflow
+UX pass covering Agentic Ingestion, Human Review, model proposal interaction and
+final SysML v2 result presentation.
 
 Priority 6
 
-Defer the following work until after the executable prototype unless required
-to remove a blocker:
+Preserve the literature-derived presentation framing:
 
-- Phase N final CATIA migration and reconciliation
-- Phase Q thesis architecture documentation
-- Phase R portability evaluation
-- Phase S project-affinity recommendation
-- project editing and deletion refinements
-- OCR and unrestricted multimodal extraction
+```text
+Data Layer
+Process Layer
+Knowledge Layer
+```
+
+The eight Logical Components operationalize these responsibilities. The
+Knowledge Layer is cross-cutting governance rather than a forced single
+subsystem.
+
+Priority 7
+
+Preserve artifact-driven architectural adaptability as an explicit outlook:
+stable processing architecture plus versioned replaceable recipes, profiles,
+context, framework and semantic artifacts shall allow controlled adaptation
+without uncontrolled runtime behavior.
+
+Priority 8
+
+Continue Model Element Change Candidate tracking. CATIA remains the engineering
+authority and no implementation observation becomes an accepted CATIA change
+without explicit engineering review.
 
 ---
 
@@ -559,97 +557,74 @@ Phase N is therefore not complete.
 
 # Phase G — Current Implementation Status
 
-G1 through G5 are completed.
+Phase G is completed.
 
-G6 — Human Review and promotion UI is the immediate next work package.
-
-## G5 — Approved Input Promotion and Lifecycle
-
-G5 establishes the implemented authoritative boundary:
+The implemented authority path is:
 
 ```text
-Finalized Reviewed Document
-+ exact Human Review Decision
-+ current upstream integrity
+Original Source
+→ Processing Evidence
+→ Human Review Workspace
+→ Finalized Reviewed Document
 → Approved Input
 ```
 
-Implemented capabilities include:
-
-- project-local sequential immutable `AIN` and `AIE` identities
-- immutable Approved Input Manifests
-- dedicated project-local Approved Input repository
-- exact Source, Run, Attempt, Artifact, Review Item, finalization-decision and
-  validation traceability
-- deterministic Promotion Eligibility assessment
-- idempotent promotion with deterministic partial-recovery behavior
-- immutable Approved Input lifecycle events
-- derived `active`, `invalidated`, `revoked` and `superseded` authority states
-- successor-version reconciliation by stable subject and Promotion Equivalence
-- retention of materially unchanged accepted Approved Inputs
-- supersession of changed and reaccepted subjects
-- explicit revocation for rejected or out-of-scope successor subjects
-- no silent revocation for deferred or merely absent subjects
-- stable Phase H read contract returning active Approved Inputs only
-
-The implemented Phase H boundary is:
-
-```python
-ApprovedInputRepository.list_active_approved_inputs(
-    project_id,
-) -> tuple[ApprovedInputManifest, ...]
-```
-
-Phase H shall not derive engineering authority from:
-
-- Draft Review Revisions
-- original Review Reports as model-generation authority
-- Agent confidence
-- Consensus
-- Human Review UI state
-- invalidated, revoked or superseded Approved Inputs
-
-Known G5 boundary:
-
-- `human_clarification` remains part of the Approved Input manifest vocabulary
-- the current Review contract does not yet provide explicit open-question
-  conversion evidence
-- therefore `open_question` remains non-promotable under the accepted G5.4
-  fail-closed rule
-
-Verification:
+Completed work packages:
 
 ```text
-G5.1–G5.3 focused aggregate: 76 passed
-G5.4 focused eligibility suite: 15 passed
-G5.5 focused promotion-service suite: 18 passed
-G5.1–G5.5 aggregate: 109 passed
-G5.6 focused lifecycle and affected-boundary suite: 61 passed
-Approved Input package regression: 139 passed
-Complete repository regression: 4692 passed in 18.33s
-git diff --check: passed
+G1  Architecture
+G2  Review Workspace foundations
+G3  P4/P9 evidence adapters and Review Item construction
+G4  Review editing, finalization and reopening
+G5  Approved Input promotion and lifecycle
+G6  Human Review and promotion UI
+G7  Integration, audit, manual acceptance and final regression
 ```
 
-No production code changed after the complete repository regression.
-
-Development-plan status after G5:
+Verified checkpoints:
 
 ```text
-Domain
-[x] IDs, Typen, Manifest
-[x] Repository + Read Contract
-[x] Validation + Fehlerhierarchie
+G5 completion commit:
+865cbab24dfb5bb1f5150ff9336a55d00299a035
 
-Promotion
-[x] Eligibility aus P4/P9
-[x] Decision-/Fingerprint-Bindung
-[x] promote / invalidate / revoke / supersede
+G6 completion commit:
+7209f17a610d3adb359e8b672a28020b71c03333
 
-Abschluss
-[x] Vollständige Traceability
-[ ] Review-/Promotion-UI
-[ ] Tests + Manual Acceptance
+G6 focused regression:
+145 passed
+
+G7.3 manual acceptance:
+PASS
+
+G7.4 focused completion regression:
+65 passed in 8.95s
+
+G7.4 complete repository regression:
+4818 passed in 24.50s
+
+git diff --check:
+PASS
 ```
+
+Primary G7.3 evidence is recorded in:
+
+- `collaboration/audits/phase_g_manual_acceptance_test_report.md`
+- `collaboration/audits/phase_g_manual_acceptance_findings.md`
+
+The manual acceptance verified:
+
+- immutable Review Revisions
+- exact Human Review Decision binding
+- exact three-artifact finalization
+- Approved Input promotion
+- exact AIN authority and traceability
+- reopen successor lineage
+- byte-identical finalized predecessor preservation
+- Scoped Action impact preview and exact materialization
+- fail-closed unresolved relationship behavior
+- no second Agentic Ingestion write action while a Run is `running`
+
+Phase G does not generate Model Candidates or SysML v2.
 
 ---
 
@@ -800,40 +775,23 @@ Human Review shall authorize accepted relationship candidates and exceptions.
 
 ---
 
-# Active Phase G — Approved Input Promotion
+# Phase G — Completed Implementation Baseline
 
 ## Status
 
-Phase G remains active.
-
-Completed:
-
-- G1 — Human Review Workspace and Approved Input architecture
-- G2 — Review Workspace foundations
-- G3 — P4/P9 evidence adapters and Review Item construction
-- G4.1 — Review finalization validation and authorization
-- G4.2a — immutable `reviewed_document.json` contract
-- G4.2b — immutable `effective_decisions.json` contract
-- G4.2c — deterministic `reviewed_report.md` renderer
-- G4.2d — exact finalized artifact-set integrity
-- G4.2e — atomic finalized artifact persistence
-- G4.2f — finalized artifact loading, scanning and recovery diagnostics
-- G4.3 — controlled reopening of finalized Review Versions
-- G4.4 — lifecycle integration and complete regression
-
-Next:
-
-- G5 — Approved Input promotion and lifecycle
-
-Phase G as a whole is not complete.
+Completed and verified on 2026-08-12.
 
 ## Accepted Architecture
 
-Architecture decision:
+Primary authority architecture:
 
 `collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md`
 
-ADR-016 defines the authority chain:
+Accepted interaction architecture:
+
+`collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
+
+ADR-016 defines the engineering authority chain:
 
 ```text
 Processing Evidence
@@ -842,14 +800,8 @@ Processing Evidence
 → Approved Input
 ```
 
-The following architecture topics remain accepted:
-
-- Approved Input granularity and identity
-- eligible P4/P9 evidence boundaries
-- Review Target architecture
-- fingerprint binding
-- lifecycle architecture
-- stable Phase H read boundary
+ADR-017 defines how this complexity is presented to a user without weakening
+the underlying authority, evidence or traceability contracts.
 
 ## Work Breakdown
 
@@ -859,255 +811,130 @@ The following architecture topics remain accepted:
 | G2 | Review Workspace foundations | Completed |
 | G3 | P4/P9 evidence adapters and Review Item construction | Completed |
 | G4 | Review editing, finalization and reopening | Completed |
-| G5 | Approved Input promotion and lifecycle | Next |
-| G6 | Human Review and promotion UI | Planned |
-| G7 | Integration, audit and end-to-end regression | Planned |
+| G5 | Approved Input promotion and lifecycle | Completed |
+| G6 | Human Review and promotion UI | Completed |
+| G7 | Integration, audit, manual acceptance and regression | Completed |
 
-## G3 — Evidence Adapters and Review Document Assembly
-
-Verified implementation commit:
-
-`53bf6046b931af7c7b5189cd78822fd7cf7d51ef`
-
-Implemented capabilities include:
-
-- deterministic selection of eligible P9 Review evidence
-- explicit separation of P9 Agent proposals, consensus evidence and Review Reports
-- deterministic P4 evidence selection
-- structured P4 evidence references
-- P4 Review Item construction
-- P9 proposal and evidence adaptation
-- P9 Review Item construction
-- stable subject keys
-- original Review Report locators
-- element, relationship and open-question separation
-- deterministic initial Review Document assembly
-- exact Project, Source, Processing Run, Attempt and Artifact binding
-- preservation of original immutable processing evidence
-- explicit rejection of heuristic P4/P9 evidence merging
-- prohibition of P4-only Review Document construction
-
-G3 does not finalize reviews and does not create Approved Input.
-
-## G4.1 — Review Finalization Authorization
-
-Verified implementation commit:
-
-`4cedfb10f81e08a3bbea7cdb2fee5d9a1235ddd5`
-
-Implemented capabilities include:
-
-- deterministic finalization eligibility assessment
-- blocking of open and unresolved Review Items
-- exact Review Document Version and Review Revision binding
-- exact validation-fingerprint binding
-- Human Review target type `review_document_finalization`
-- exact persisted `confirm` authorization
-- detailed-review requirement
-- stale-decision rejection
-- exact decision-fingerprint binding
-- immutable authorization record
-- atomic transition of the Review Document Version to `finalized`
-
-Verification:
-
-```text
-Focused G4.1 suite: 314 passed
-Complete automated suite after G4.1: 4402 passed
-```
-
-## G4.2 — Immutable Finalized Review Artifacts
-
-### G4.2a–G4.2c — Artifact Contracts
-
-Verified implementation commit:
-
-`782b75a94f7008de9b08fc9724480f0786e6af01`
+## G5 — Approved Input Promotion and Lifecycle
 
 Implemented:
 
-- immutable `reviewed_document.json`
-- immutable `effective_decisions.json`
-- deterministic `reviewed_report.md`
-- exact Review Version, Revision, decision and validation binding
-- deterministic serialization and artifact fingerprints
-- public package APIs
-
-Verification:
-
-```text
-Focused G4.2a–G4.2c suite: 208 passed
-Complete automated suite: 4463 passed
-```
-
-### G4.2d — Exact Artifact-set Integrity
-
-Committed checkpoint:
-
-`cf3cd5f`
-
-Implemented:
-
-- exact three-artifact membership
-- deterministic artifact ordering
-- cross-artifact Project, Document, Version and Revision identity
-- exact finalization decision and validation binding
-- exact Review Item identity and content set
-- artifact-set fingerprinting
-- rejection of mixed, incomplete or tampered sets
-
-### G4.2e — Atomic Persistence
-
-Included in the G4 completion commit containing this SSOT update.
-
-Implemented:
-
-- exact-byte staging under `.finalized.tmp`
-- write and flush before validation
-- validation before publication
-- atomic rename to `finalized/`
-- no overwrite of an existing finalized directory
-- protection against unsafe paths and symbolic links
-- source-change detection during persistence
-- fail-closed interrupted-write state
-
-### G4.2f — Load, Scan and Recovery Diagnostics
-
-Included in the G4 completion commit containing this SSOT update.
-
-Implemented:
-
-- exact three-entry loading
-- UTF-8 and byte-fingerprint validation
-- regeneration and binding comparison
-- scan findings for interrupted publication
-- scan findings for unsafe, unexpected, missing or invalid finalized content
-- explicit recovery-required states
-
-## G4.3 — Reopening Finalized Review Versions
-
-Included in the G4 completion commit containing this SSOT update.
-
-Implemented:
-
-- immutable finalized predecessor
-- successor Draft with a new Review Version identity
-- new initial Review Revision and Review Item identities
-- exact predecessor finalization and artifact-set validation
-- reopening only from the latest finalized version
-- linear version history without branching
-- mandatory reopen reason and actor metadata
-- preservation of materialized review state
-- `carried_forward` one-to-one lineage
-- unchanged stable subject keys
-- no copying of Scoped Review Actions
-- atomic successor workspace creation
-
-Verification:
-
-```text
-Focused G4.3 suite: 18 passed
-Extended Review Workspace regression: 365 passed
-```
-
-## G4.4 — Integration and Regression
-
-Verified lifecycle:
-
-```text
-finalize initial Review Version
-→ persist and load exact finalized artifact set
-→ reopen as successor Draft
-→ append successor revision
-→ authorize and finalize successor
-→ persist and load second independent artifact set
-→ verify immutable predecessor
-→ scan complete Review Document history
-```
-
-Verification:
-
-```text
-G4.4 lifecycle integration: 1 passed
-Complete regression: 4552 passed, 1 stale vocabulary expectation
-Corrected targeted vocabulary test: 1 passed
-Effective verified baseline: 4553 passing tests
-No production code changed after the complete regression
-```
-
-## Current Development Objective
-
-Continue with:
-
-```text
-G5 — Approved Input promotion and lifecycle
-```
-
-G5 shall define and implement:
-
-- Approved Input identity and immutable manifest
-- exact promotion eligibility from a finalized Review Version
-- exact binding to the finalized artifact set
-- Approved Input repository and stable read contract
-- promotion service
+- project-local immutable `AIN` and `AIE` identities
+- immutable Approved Input Manifest
+- project-local Approved Input repository
+- deterministic Promotion Eligibility
+- idempotent Promotion Service
 - invalidation, revocation and supersession
-- stable Phase H consumption boundary
+- successor reconciliation using stable subject and Promotion Equivalence
+- stable active-only Phase H read contract
+- exact Project, Source, Run, Artifact, Review and Human Decision traceability
 
-G5 shall not generate model candidates or SysML v2.
+Verified G5 checkpoint:
 
-## Development-plan Position
+`865cbab24dfb5bb1f5150ff9336a55d00299a035`
 
-Completed Architecture items:
+## G6 — Human Review and Promotion UI
+
+Implemented:
+
+- project-bound Human Review queue and workspace
+- clear proposal and evidence presentation
+- immutable item-level review operations
+- Scoped Review Action preview and write path
+- exact Human Review Decision confirmation
+- finalization as a distinct action
+- exact promotion from finalized authority
+- active Approved Input visibility
+- reopen workflow
+- safe project-bound Agentic Ingestion retry/recovery interaction
+- safe provider-neutral failure feedback
+
+Verified G6 checkpoint:
+
+`7209f17a610d3adb359e8b672a28020b71c03333`
+
+Focused G6 regression:
 
 ```text
-[x] Approved-Input-Granularität / Identität
-[x] P4/P9-Quellen + Review Targets
-[x] Fingerprints, Lifecycle, Phase-H-Vertrag
+145 passed
+git diff --check: PASS
 ```
 
-Completed Promotion item:
+## G7 — Integration, Audit and Acceptance
+
+G7 intentionally introduced no parallel authority model. Defects found during
+manual acceptance were corrected at their owning G2–G6 abstractions.
+
+Recorded implementation findings:
 
 ```text
-[x] Decision-/Fingerprint-Bindung
+F01 Streamlit widget-owned Session State
+F02 project-bound failed-Run retry integration
+F03 running-state feedback / duplicate write affordance
+F04 safe provider-neutral failure diagnosis
+F05 pre-publication Attempt identity reuse
+F06 cross-layer semantic-reference validation mismatch
 ```
 
-Still open:
+All six findings are closed and documented.
+
+Manual acceptance evidence includes:
 
 ```text
-Domain
-[ ] IDs, Typen, Manifest
-[ ] Repository + Read Contract
-[ ] Validation + Fehlerhierarchie
-
-Promotion
-[ ] Eligibility aus P4/P9
-[ ] promote / invalidate / revoke / supersede
-
-Abschluss
-[ ] Vollständige Traceability
-[ ] Review-/Promotion-UI
-[ ] Tests + Manual Acceptance
+RVD-000001
+RVV-000001 finalized on RVR-000008
+HRD-000001
+AIN-000001
+AIN-000002
+RVV-000002 successor draft
+RVR-000009 initial successor revision
+RIT-000006 … RIT-000010 carried-forward lineage
+RVR-000010 after explicit Scoped Action
+RUN-000004 / ATT-000001 running-state UI verification
 ```
 
-The Review Workspace portions of the Domain work are implemented.
+Final verification:
 
-The Domain checkboxes remain open until the complete Approved Input domain,
-repository, validation boundary and stable Phase H read contract are available.
+```text
+G7.4 focused Phase-G completion regression:
+65 passed in 8.95s
 
-## Mandatory Boundaries
+Complete repository regression:
+4818 passed in 24.50s
 
-- unreviewed P9 artifacts cannot become Approved Input
-- P4 evidence alone cannot create a Review Document
-- consensus cannot authorize finalization or promotion
-- confidence cannot authorize finalization or promotion
-- stale Human Review Decisions cannot authorize a changed target
-- fingerprint mismatch blocks finalization and promotion
-- original processing artifacts remain immutable
-- finalized review artifacts must remain mutually consistent
-- reopening never mutates a finalized predecessor
-- Preliminary Coverage remains separate from Approved Generation Readiness
-- Phase G shall not generate model candidates
-- Phase G shall not generate SysML v2
+git diff --check:
+PASS
+```
+
+## Phase-H Boundary
+
+The stable authority read contract remains:
+
+```python
+ApprovedInputRepository.list_active_approved_inputs(
+    project_id,
+) -> tuple[ApprovedInputManifest, ...]
+```
+
+Phase H shall consume only active Approved Inputs. It shall not infer authority
+from Draft Review state, Agent confidence, Consensus, UI state, inactive AINs
+or original Review Reports.
+
+## Phase-G Exit Decision
+
+Phase G exit criteria are satisfied.
+
+Next:
+
+```text
+Phase H — Model Candidate Layer
+→ architecture contract
+→ explicit acceptance
+→ implementation
+```
+
+No Phase-H production implementation shall begin before that contract is
+explicitly accepted.
 
 ---
 
@@ -1405,13 +1232,52 @@ CATIA transfer status:
 
 Not started.
 
+## G6 Candidate Inventory
+
+### MEC-G6-001 — Task-oriented Interaction with Progressive Disclosure
+
+Originating implementation phase:
+
+`G6 / Phase-G UX reconciliation`
+
+Implementation observation:
+
+The internal authority and traceability architecture is intentionally richer
+than the primary user workflow. Presenting all audit evidence, identifiers and
+technical detail simultaneously increases interaction cost without improving
+engineering authority.
+
+Proposed model element type:
+
+System Design Constraint.
+
+Engineering rationale:
+
+The primary workflow should expose the engineering result, material uncertainty,
+required human decision and next action. Explanation evidence shall be
+available on demand, while complete traceability and audit detail remain
+persisted and inspectable underneath.
+
+Architecture evidence:
+
+- `collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
+- Phase-G manual acceptance UX findings
+
+Review status:
+
+Engineering review pending.
+
+CATIA transfer status:
+
+Not started.
+
 ## Retrospective Requirement
 
-G1 through G4.2c still require retrospective examination before or during the
-Zwischenstandspräsentation.
+G1 through G4.2c still require retrospective examination during the later
+Zwischenstandspräsentation / CATIA reconciliation activity.
 
-The G4.2d through G5 candidates above satisfy the continuous tracking rule
-for the completed G4 work package.
+The G4.2d through G6 candidates above satisfy the continuous tracking rule
+for the implementation-derived concepts explicitly identified during Phase G.
 
 ## Ongoing Rule
 
@@ -1433,104 +1299,116 @@ G through L.
 
 ## Position
 
-The Zwischenstandspräsentation takes place after completion of Phase G and
-before the start of Phase H.
+The Zwischenstandspräsentation is no longer a blocking gate between Phase G and
+Phase H.
+
+It is prepared after the implementation work so that the supervising professor
+can review the complete implemented vertical slice rather than a partial
+mid-build state.
 
 ## Purpose
 
-Present the implemented path from Source processing through Human Review to
-Approved Input to the supervising professor.
+Present the implemented architecture from Source ingestion through validated
+SysML v2 output, explain the literature-derived architecture framing and
+capture professor feedback for the final CATIA and thesis reconciliation.
 
 ## Required Content
 
 - completed development phases
 - accepted architecture decisions
-- executable workflow through Approved Input
-- current automated-test and traceability evidence
+- executable end-to-end workflow
+- automated test and manual acceptance evidence
 - current CATIA architecture coverage
-- retrospective Phase-G Model Element Change Candidates
+- Phase-G and later Model Element Change Candidates
 - open risks, limitations and technical debt
-- planned Phases H through L
+- literature-derived Data / Process / Knowledge architecture
+- mapping from those layers to the eight Logical Components
+- one high-level activity view with approximately 7±2 primary activities
+- artifact-driven architectural adaptability as an outlook
+
+Presentation architecture framing:
+
+```text
+Data Layer
+Process Layer
+Knowledge Layer
+```
+
+The Knowledge Layer is cross-cutting governance. It shall not be forced into one
+artificial deployment component merely for presentation convenience.
 
 ## Exit Criteria
 
-- presentation completed
+- presentation prepared after implementation
 - professor feedback documented
 - architecture and roadmap effects evaluated
-- required decisions recorded in the Collaboration Knowledge Base
-- Phase-G Model Element Change Candidate inventory reviewed
-- SSOT synchronized before Phase H begins
+- required decisions recorded
+- Model Element Change Candidate inventory reviewed
+- CATIA / SSOT effects reconciled as appropriate
 
-The presentation does not by itself change the authoritative CATIA model.
+The presentation does not itself change CATIA authority.
 
-Explicit review and acceptance remain required.
+---
 
-# Planned Prototype Phases
+# Planned Prototype Phases and Demo Work Packages
+
+The remaining implementation sequence is:
+
+| WP | Phase / Deliverable | Target |
+|---|---|---|
+| WP-04 | Phase H — Model Candidate Layer | next |
+| WP-05 | Phase I — Model Generation Agent / Internal Engineering Model | after H |
+| WP-06 | Phase J — SysML v2 Code Generator | after I |
+| WP-07 | Phase K — Validation Layer | after J |
+| WP-08 | Phase L — Output Writer | after K |
+| WP-09 | Guided Workflow UI | after H–L vertical slice |
+| WP-10 | Ingestion + Human Review UX simplification | after H–L |
+| WP-11 | Architecture / Model Proposal UX | after H–L |
+| WP-12 | End-to-End Demo Hardening | 2026-08-16 |
+| WP-13 | Demo Freeze + Rehearsal | 2026-08-17 |
+| WP-14 | CATIA / SSOT Checkpoint | after demo / before final reconciliation |
 
 ## Phase H — Model Candidate Layer
 
-Phase H shall create traceable model-element and relationship candidates from
-Approved Input without generating SysML v2 code.
-
-In addition to model-element candidates, Phase H shall implement:
-
-- relationship candidates
-- canonical relationship semantics
-- relationship priority
-- prioritization rationale
-- comparability impact
-- structural-profile conformance
-- Human Review of selected relationships
-- explicit handling of alternative or near-synonymous relationship concepts
-
-The accepted relationship set shall support comparable structures across
-related models and product variants.
+Consume only active Approved Inputs and create explicit non-authoritative Model
+Candidates with relationship semantics, prioritization, rationale,
+comparability impact and Human Review status.
 
 ## Phase I — Model Generation Agent
 
-Phase I shall assemble reviewed candidates into an internal engineering model.
-
-It shall preserve:
-
-- source traceability
-- Approved Input traceability
-- candidate traceability
-- relationship decisions
-- structural-profile references
-- Human Review Decisions
+Assemble reviewed Model Candidates into an internal engineering model without
+yet treating textual SysML v2 as the internal source of engineering authority.
 
 ## Phase J — SysML v2 Code Generator
 
-Phase J shall generate valid SysML v2 textual notation from the internal model.
-
-The generator shall target the accepted versioned notation and artifact
-structure profiles.
+Generate deterministic, versioned target textual notation from the internal
+engineering model.
 
 ## Phase K — Validation Layer
 
-Phase K shall validate:
-
-- syntax
-- target-notation conformance
-- target-artifact structure
-- model structure
-- relationship consistency
-- relationship semantic consistency
-- constraint conformance
-- traceability
-- comparability-profile conformance
-- larger-context compatibility where available
+Validate syntax, target notation, structure, relationship semantics,
+constraints, traceability and comparability. Failed required validation blocks
+publication.
 
 ## Phase L — Output Writer
 
-Phase L shall publish:
+Publish the versioned output package containing SysML v2 files, validation
+evidence, generation summary, traceability and artifact fingerprints.
 
-- versioned SysML v2 output files
-- validation reports
-- traceability artifacts
-- generation summaries
-- export metadata
-- a complete versioned output package
+## Demo UX Sequence
+
+After H–L:
+
+```text
+Guided Workflow UI
+→ Ingestion / Human Review simplification
+→ Architecture / Model Proposal UX
+→ end-to-end hardening
+→ functional freeze
+→ product demo
+```
+
+Streamlit remains the UI technology through the demo.
 
 ---
 
@@ -1709,24 +1587,24 @@ The following capabilities are not yet implemented:
 
 # Next Milestone
 
-G5 — Approved Input Promotion and Lifecycle
+Phase H — Model Candidate Layer
 
 Execution order:
 
 ```text
-G5 implementation contract
-→ explicit contract acceptance
-→ implementation
-→ focused tests
-→ review
-→ G5 completion decision
+inspect active Approved Input boundary
+→ surface exact Phase-H architecture questions
+→ define Model Candidate contracts and ownership
+→ define relationship candidate / comparability semantics
+→ review the architecture contract
+→ obtain explicit acceptance
+→ implement incrementally
 ```
 
-The immediate next work item is the exact G5 Approved Input identity,
-repository, eligibility and lifecycle contract.
+The first Phase-H step is architecture definition, not implementation.
 
-No Phase H implementation shall begin until Phase G provides a stable,
-reviewed Approved Input contract.
+No production code for Model Candidates shall be added before the contract is
+explicitly accepted.
 
 ---
 
@@ -1750,20 +1628,29 @@ Broad staging commands shall not be used in a mixed working tree.
 
 # SSOT Update Cadence
 
-This update completes G4 and activates G5 as the next Phase-G work package.
+This update closes Phase G and activates Phase H as the next implementation
+phase.
 
 It records:
 
-- exact finalized artifact-set integrity
-- atomic finalized artifact persistence
-- finalized artifact loading, scanning and recovery diagnostics
-- controlled reopening with immutable predecessor preservation
-- lifecycle integration and regression evidence
-- four G4 Model Element Change Candidates
-- the transition to Approved Input promotion and lifecycle
+- G6 Human Review and promotion UI completion
+- G7 manual acceptance and implementation findings F01–F06
+- Approved Input promotion and authority evidence
+- reopen and immutable-predecessor evidence
+- Scoped Action impact-preview evidence
+- running-state write-action guard
+- G7.4 focused and complete regression evidence
+- ADR-017 simple-by-default / progressive-disclosure interaction architecture
+- the non-blocking post-implementation presentation position
+- the H–L closed vertical-slice roadmap
+- guided-workflow and UX work after H–L
+- 2026-08-17 functional freeze
+- 2026-08-18 product demo
+- Streamlit retention through the demo
+- artifact-driven architecture adaptability as an explicit outlook
 
-The next SSOT update is due after G5 completion or when a critical handover
-requires synchronization.
+The next SSOT update is due after Phase H completion or earlier if a material
+architecture decision changes the accepted roadmap or authority boundary.
 
 ---
 

@@ -735,3 +735,55 @@ def test_successor_requires_manifest_instance(
             object(),
             reason_code="material_binding_changed",
         )
+
+def test_next_attempt_id_includes_failed_event_only_attempt(
+    repository,
+    source_manifest,
+) -> None:
+    history = persist_initial_run(
+        repository,
+        source_manifest,
+    )
+    first = history.events[-1]
+
+    started = create_processing_event(
+        project_id=PROJECT_ID,
+        processing_run_id="RUN-000001",
+        event_id="EVT-000002",
+        event_sequence=2,
+        previous_state="created",
+        next_state="running",
+        processing_stage="agentic_ingestion",
+        event_type="stage_started",
+        attempt_id="ATT-000001",
+        reason_code="agentic_ingestion_started",
+        artifact_references=(),
+        timestamp="2026-07-25T10:10:00Z",
+        previous_event_fingerprint=first.event_fingerprint,
+    )
+    history = repository.append_event(started)
+
+    failed = create_processing_event(
+        project_id=PROJECT_ID,
+        processing_run_id="RUN-000001",
+        event_id="EVT-000003",
+        event_sequence=3,
+        previous_state="running",
+        next_state="failed",
+        processing_stage="agentic_ingestion",
+        event_type="run_failed",
+        attempt_id="ATT-000001",
+        reason_code="team_agentic_ingestion_failed",
+        artifact_references=(),
+        timestamp="2026-07-25T10:20:00Z",
+        previous_event_fingerprint=(
+            history.events[-1].event_fingerprint
+        ),
+    )
+    repository.append_event(failed)
+
+    assert repository.next_attempt_id(
+        PROJECT_ID,
+        "RUN-000001",
+        "agentic_ingestion",
+    ) == "ATT-000002"

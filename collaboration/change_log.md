@@ -1,5 +1,168 @@
 # Change Log
 
+## 2026-08-12 — Phase G Completion, ADR-017 and Phase H Transition
+
+Versions after this update:
+
+- Architecture Version: 1.4
+- Knowledge Base Version: 1.11
+- Implementation Version: 0.13
+- Roadmap Version: 1.11
+
+Implementation reference:
+
+- Phase-G completion: the commit containing this SSOT update
+- Last prior committed checkpoint:
+  `7209f17a610d3adb359e8b672a28020b71c03333` — G6 completion
+- G5 checkpoint:
+  `865cbab24dfb5bb1f5150ff9336a55d00299a035`
+
+G6 completion:
+
+- Human Review and promotion UI implemented
+- proposal/evidence review and immutable item-level decisions implemented
+- Scoped Review Actions exposed through impact preview and immutable revision writes
+- exact Human Review Decision and finalization UI implemented
+- Approved Input promotion and active-authority presentation implemented
+- controlled Review reopening exposed
+- project-bound ingestion retry/recovery semantics exposed
+- safe provider-neutral failure feedback implemented
+
+G6 verification:
+
+```text
+Focused regression: 145 passed
+git diff --check: PASS
+```
+
+G7.3 manual acceptance:
+
+- complete Human Review path verified
+- unresolved relationships failed closed
+- `RVV-000001` finalized on `RVR-000008`
+- `HRD-000001` exact confirmation verified
+- exact three-artifact finalized set verified
+- `AIN-000001` and `AIN-000002` promoted
+- AIN authority traced to exact Review, Source, Run and Attempt
+- reopen created `RVV-000002` with fresh `RIT-000006` through `RIT-000010`
+- finalized predecessor subtree remained byte-identical
+- Scoped Action preview materialized one exact target and produced `RVR-000010`
+- running Agentic Ingestion removed the second Run/Retry write action
+
+Manual acceptance result:
+
+```text
+PASS
+```
+
+Recorded G7.3 findings:
+
+```text
+F01 Streamlit widget-owned Session State
+F02 project-bound failed-Run retry integration
+F03 running-state feedback / duplicate write affordance
+F04 safe provider-neutral failure diagnosis
+F05 pre-publication Attempt identity reuse
+F06 cross-layer semantic-reference validation mismatch
+```
+
+All six findings are closed.
+
+Evidence:
+
+- `collaboration/audits/phase_g_manual_acceptance_test_report.md`
+- `collaboration/audits/phase_g_manual_acceptance_findings.md`
+
+G7.4 completion verification:
+
+```text
+Focused Phase-G completion regression:
+65 passed in 8.95s
+
+Complete repository regression:
+4818 passed in 24.50s
+
+git diff --check:
+PASS
+```
+
+Architecture decision ADR-017 accepted:
+
+`collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
+
+Interaction principle:
+
+```text
+Simple by default.
+Explainable on demand.
+Fully traceable underneath.
+```
+
+The principle applies system-wide to:
+
+- Agentic Ingestion
+- semantic processing
+- Human Review
+- Architecture / Model Candidates
+- model generation
+- validation
+- SysML v2 generation
+
+The interaction architecture distinguishes:
+
+1. primary task-oriented workflow
+2. explanation / rationale / relevant evidence
+3. audit / traceability detail
+
+Streamlit remains the prototype UI technology through the product demo.
+No React, Vue or FastAPI rewrite is part of the demo critical path.
+
+Roadmap transition:
+
+```text
+WP-04  Phase H — Model Candidate Layer
+WP-05  Phase I — Model Generation Agent / Internal Engineering Model
+WP-06  Phase J — SysML v2 Code Generator
+WP-07  Phase K — Validation Layer
+WP-08  Phase L — Output Writer
+WP-09  Guided Workflow UI
+WP-10  Ingestion + Human Review UX Simplification
+WP-11  Architecture / Model Proposal UX
+WP-12  End-to-End Demo Hardening
+WP-13  Demo Freeze + Rehearsal
+WP-14  CATIA / SSOT Checkpoint
+```
+
+Schedule:
+
+```text
+2026-08-14  H–L closed vertical slice
+2026-08-15  Guided Workflow UI
+2026-08-16  Demo hardening
+2026-08-17  Functional freeze
+2026-08-18  Product demo
+```
+
+The Zwischenstandspräsentation is moved after implementation and no longer
+blocks Phase H.
+
+Presentation framing to preserve:
+
+- literature-derived Data / Process / Knowledge architecture
+- eight Logical Components as implementation-level operationalization
+- Knowledge Layer as cross-cutting governance
+- high-level activity view with approximately 7±2 primary activities
+- artifact-driven architectural adaptability as an outlook
+
+Phase status:
+
+```text
+Phase G: COMPLETE
+Phase H: NEXT — architecture contract required before implementation
+```
+
+---
+
 ## 2026-08-07 — G5 Completion and G6 Transition
 
 Versions after this update:

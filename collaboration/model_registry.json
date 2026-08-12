@@ -1,6 +1,6 @@
 {
-  "version": "1.10",
-  "last_updated": "2026-08-07",
+  "version": "1.11",
+  "last_updated": "2026-08-12",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -25,11 +25,11 @@
       "verified_commit": "commit_containing_this_ssot_update",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 4692,
+        "complete_automated_test_count": 4818,
         "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
-        "remote_synchronization": "verify_after_g5_completion_commit_and_push",
+        "remote_synchronization": "verify_after_phase_g_closeout_commit_and_push",
         "g2_focused_test_count": 398,
         "g2_review_workspace_tests": "passed",
         "g3_implementation_commit": "53bf6046b931af7c7b5189cd78822fd7cf7d51ef",
@@ -38,7 +38,7 @@
         "g4_2_a_to_c_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
         "g4_2_a_to_c_focused_test_count": 208,
         "g4_2_a_to_c_complete_automated_test_count": 4463,
-        "verified_passing_test_count": 4692,
+        "verified_passing_test_count": 4818,
         "complete_regression_passed_count": 4552,
         "complete_regression_stale_test_expectation_count": 1,
         "targeted_post_regression_passed_count": 1,
@@ -58,9 +58,22 @@
         "g5_complete_repository_test_count": 4692,
         "g5_git_diff_check": "passed",
         "g5_production_code_changed_after_complete_regression": false,
-        "g5_verification_note": "G5 completed with a clean Approved Input package regression of 139 tests and a clean complete repository regression of 4692 tests. No production code changed after the complete regression."
+        "g5_verification_note": "G5 completed with a clean Approved Input package regression of 139 tests and a clean complete repository regression of 4692 tests. No production code changed after the complete regression.",
+        "g5_completion_commit": "865cbab24dfb5bb1f5150ff9336a55d00299a035",
+        "g6_completion_commit": "7209f17a610d3adb359e8b672a28020b71c03333",
+        "g6_focused_regression_test_count": 145,
+        "g6_git_diff_check": "passed",
+        "g7_manual_acceptance": "passed",
+        "g7_focused_completion_test_count": 65,
+        "g7_focused_completion_duration_seconds": 8.95,
+        "g7_complete_repository_test_count": 4818,
+        "g7_complete_repository_duration_seconds": 24.5,
+        "g7_git_diff_check": "passed",
+        "g7_manual_acceptance_report": "collaboration/audits/phase_g_manual_acceptance_test_report.md",
+        "g7_findings_report": "collaboration/audits/phase_g_manual_acceptance_findings.md",
+        "phase_g_verification_note": "Phase G completed with manual acceptance PASS, a focused 65-test completion regression, a complete 4818-test repository regression, and a clean git diff check."
       },
-      "last_prior_committed_checkpoint": "d472038008fdd6c8f72101037e71f9e05081acf0"
+      "last_prior_committed_checkpoint": "7209f17a610d3adb359e8b672a28020b71c03333"
     },
     "collaboration": {
       "location": "collaboration/",
@@ -90,22 +103,24 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.3",
-    "knowledge_base_version": "1.10",
-    "implementation_version": "0.12",
-    "roadmap_version": "1.10"
+    "architecture_version": "1.4",
+    "knowledge_base_version": "1.11",
+    "implementation_version": "0.13",
+    "roadmap_version": "1.11"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
-    "scope": "complete_executable_end_to_end_prototype",
+    "scope": "closed_vertical_slice_then_demo_hardening",
     "critical_path": [
-      "G",
-      "Zwischenstandspräsentation",
       "H",
       "I",
       "J",
       "K",
-      "L"
+      "L",
+      "Guided Workflow UI",
+      "Demo Hardening",
+      "Functional Freeze",
+      "Product Demo"
     ],
     "accepted_flow": [
       "Source",
@@ -126,7 +141,10 @@
       "Publication Gates",
       "Model Consistency",
       "Explicit Artifact Contracts"
-    ]
+    ],
+    "functional_freeze_date": "2026-08-17",
+    "product_demo_date": "2026-08-18",
+    "presentation_blocks_phase_h": false
   },
   "shadow_model": {
     "location": "model/",
@@ -585,7 +603,7 @@
     "phase_g_blocked_until_gate_completion": false
   },
   "approved_input_promotion": {
-    "status": "active",
+    "status": "completed_verified",
     "implementation_phase": "G",
     "purpose": "Promote exactly reviewed engineering information into Approved Input while preserving Project, Source, Run, Artifact, validation and Human Review traceability.",
     "architecture_accepted": true,
@@ -612,9 +630,11 @@
       "G5.5",
       "G5.6",
       "G5.7",
-      "G5"
+      "G5",
+      "G6",
+      "G7"
     ],
-    "active_step": "G6",
+    "active_step": null,
     "blocked_by": null,
     "shall_generate_model_candidates": false,
     "shall_generate_sysml_v2": false,
@@ -662,7 +682,11 @@
       "g5_6_focused_test_count": 61,
       "approved_input_package_test_count": 139,
       "complete_repository_test_count": 4692,
-      "git_diff_check": "passed"
+      "git_diff_check": "passed",
+      "g6_focused_regression_test_count": 145,
+      "g7_manual_acceptance": "passed",
+      "g7_focused_completion_test_count": 65,
+      "g7_complete_repository_test_count": 4818
     },
     "approved_input_contract": {
       "manifest_authority_state": "active",
@@ -713,12 +737,13 @@
       "agent_confidence_authority_allowed": false,
       "consensus_authority_allowed": false,
       "inactive_approved_inputs_allowed": false
-    }
+    },
+    "manual_acceptance_report": "collaboration/audits/phase_g_manual_acceptance_test_report.md"
   },
   "model_candidate_layer": {
-    "status": "planned",
+    "status": "next_architecture_contract_required",
     "implementation_phase": "H",
-    "depends_on_phase": "G",
+    "depends_on_phase": "G_completed",
     "architecture_accepted": false,
     "shall_generate_sysml_v2": false,
     "relationship_prioritization_required": true,
@@ -756,7 +781,9 @@
         "Permitted Exceptions",
         "Review Requirements for Deviations"
       ]
-    }
+    },
+    "implementation_blocked_until_architecture_acceptance": true,
+    "upstream_authority_contract": "ApprovedInputRepository.list_active_approved_inputs(project_id)"
   },
   "model_generation": {
     "status": "planned",
@@ -912,16 +939,19 @@
     "permanent_unassigned_source_pool_allowed": false
   },
   "current_coordination_state": {
-    "stage": "phase_g_approved_input_promotion",
-    "status": "phase_g_g5_completed_g6_next",
+    "stage": "phase_h_model_candidate_layer",
+    "status": "phase_g_completed_phase_h_architecture_contract_next",
     "phase_g_is_immediate_next": false,
     "new_feature_implementation_blocked_until_gate_completion": false,
     "phase_g_architecture_acceptance_required_before_implementation": true,
     "verified_implementation_commit": "commit_containing_this_ssot_update",
-    "complete_automated_test_count": 4692,
+    "complete_automated_test_count": 4818,
     "prototype_target_date": "2026-08-14",
-    "phase_g_is_active": true,
-    "active_step": "G6"
+    "phase_g_is_active": false,
+    "active_step": "phase_h_architecture_contract",
+    "functional_freeze_date": "2026-08-17",
+    "product_demo_date": "2026-08-18",
+    "phase_h_implementation_requires_explicit_architecture_acceptance": true
   },
   "rules": [
     "CATIA is always authoritative for engineering knowledge.",
@@ -954,13 +984,13 @@
     "After every SSOT UPDATE, repository synchronization shall be committed, pushed and verified."
   ],
   "human_review_workspace": {
-    "status": "implemented_verified",
+    "status": "implemented_verified_phase_g_complete",
     "implementation_phase": "G2",
     "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
     "verified_commit": "c61841789ed08b383e4cfc244d31f559125e6edb",
     "verification": {
       "focused_test_count": 398,
-      "complete_automated_test_count": 4206,
+      "complete_automated_test_count": 4818,
       "remote_synchronization": "HEAD_equals_origin_main"
     },
     "identifiers": {
@@ -991,21 +1021,11 @@
       "deterministic_scan_available": true,
       "recovery_diagnostics_available": true
     },
-    "not_yet_implemented": [
-      "P4/P9 Evidence Adapters",
-      "Review Item Construction from Processing Evidence",
-      "Review Finalization",
-      "Review Reopening",
-      "Approved Input Identity AIN",
-      "Approved Input Event Identity AIE",
-      "Approved Input Repository",
-      "Promotion Eligibility",
-      "Promotion Lifecycle",
-      "Review and Promotion UI"
-    ]
+    "not_yet_implemented": [],
+    "phase_g_manual_acceptance": "passed"
   },
   "phase_g": {
-    "status": "active",
+    "status": "completed_verified",
     "completed_steps": [
       "G1",
       "G2",
@@ -1019,17 +1039,29 @@
       "G4.2f",
       "G4.3",
       "G4.4",
-      "G4"
+      "G4",
+      "G5.1",
+      "G5.2",
+      "G5.3",
+      "G5.4",
+      "G5.5",
+      "G5.6",
+      "G5.7",
+      "G5",
+      "G6",
+      "G7"
     ],
-    "active_step": "G5",
+    "active_step": null,
     "verified_implementation_commit": "commit_containing_this_ssot_update",
-    "complete_automated_test_count": 4553,
-    "next_milestone_after_completion": "Zwischenstandspräsentation",
-    "last_prior_committed_checkpoint": "cf3cd5f",
-    "verification_note": "The complete regression produced 4552 passes and one stale vocabulary expectation. Only that test expectation was updated and its targeted rerun passed; no production code changed after the complete regression."
+    "complete_automated_test_count": 4818,
+    "next_milestone_after_completion": "Phase H Model Candidate Layer",
+    "last_prior_committed_checkpoint": "7209f17a610d3adb359e8b672a28020b71c03333",
+    "verification_note": "Phase G manual acceptance passed. Focused completion regression: 65 passed in 8.95s. Complete repository regression: 4818 passed in 24.50s. git diff --check passed.",
+    "manual_acceptance": "passed",
+    "focused_completion_test_count": 65
   },
   "review_workspace": {
-    "status": "implemented_verified",
+    "status": "implemented_verified_phase_g_complete",
     "implementation_phase": "G",
     "architecture_decision": "collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md",
     "verified_implementation_commit": "commit_containing_this_ssot_update",
@@ -1044,9 +1076,12 @@
       "G4.2e atomic finalized artifact persistence",
       "G4.2f finalized artifact loading scanning and recovery diagnostics",
       "G4.3 controlled reopening",
-      "G4.4 lifecycle integration and regression"
+      "G4.4 lifecycle integration and regression",
+      "G5 Approved Input promotion and lifecycle integration",
+      "G6 Human Review and promotion UI",
+      "G7 manual acceptance and end-to-end regression"
     ],
-    "next_step": "G5 Approved Input identity repository promotion and lifecycle",
+    "next_step": null,
     "identifiers": [
       "RVD",
       "RVV",
@@ -1080,8 +1115,8 @@
         "implementation_step": "G4.2f"
       }
     },
-    "complete_automated_test_count": 4553,
-    "last_prior_committed_checkpoint": "cf3cd5f",
+    "complete_automated_test_count": 4818,
+    "last_prior_committed_checkpoint": "7209f17a610d3adb359e8b672a28020b71c03333",
     "reopening": {
       "status": "implemented_verified",
       "implementation_step": "G4.3",
@@ -1092,36 +1127,45 @@
       "scoped_review_actions_copied": false,
       "lineage_operation": "carried_forward"
     },
-    "verification_note": "The complete regression produced 4552 passes and one stale vocabulary expectation. Only that test expectation was updated and its targeted rerun passed; no production code changed after the complete regression."
+    "verification_note": "Phase G manual acceptance passed; focused completion regression 65 passed; complete repository regression 4818 passed.",
+    "manual_acceptance": {
+      "status": "passed",
+      "report": "collaboration/audits/phase_g_manual_acceptance_test_report.md",
+      "findings": "collaboration/audits/phase_g_manual_acceptance_findings.md"
+    }
   },
   "intermediate_status_presentation": {
     "name": "Zwischenstandspräsentation",
-    "status": "planned_after_phase_g",
+    "status": "planned_after_implementation",
     "position": {
-      "after": "G",
-      "before": "H"
+      "after": "L_and_demo_implementation",
+      "before": "final_catia_thesis_reconciliation"
     },
     "audience": "supervising_professor",
     "required_content": [
       "Completed Development Phases",
       "Accepted Architecture Decisions",
-      "Executable Workflow through Approved Input",
-      "Automated Test Evidence",
+      "Executable End-to-End Workflow",
+      "Automated and Manual Test Evidence",
       "Traceability Evidence",
       "CATIA Architecture Coverage",
-      "Phase G Model Element Change Candidates",
+      "Model Element Change Candidates",
       "Open Risks and Limitations",
-      "Planned Phases H through L"
+      "Data Process Knowledge Layer Framing",
+      "Eight Logical Component Mapping",
+      "High-Level Activity View with approximately 7±2 activities",
+      "Artifact-driven Architectural Adaptability Outlook"
     ],
     "exit_criteria": [
-      "Presentation Completed",
+      "Presentation Prepared after Implementation",
       "Professor Feedback Documented",
       "Architecture Effects Evaluated",
       "Roadmap Effects Evaluated",
       "Required Decisions Recorded",
-      "Model Element Change Candidate Inventory Reviewed",
-      "SSOT Synchronized before Phase H"
-    ]
+      "Candidate Inventory Reviewed",
+      "CATIA and SSOT Effects Reconciled as Appropriate"
+    ],
+    "blocks_phase_h": false
   },
   "model_element_change_candidates": {
     "status": "mandatory_cross_phase_practice",
@@ -1169,14 +1213,14 @@
         "G4.2b",
         "G4.2c"
       ],
-      "due": "before_or_during_Zwischenstandspräsentation"
+      "due": "during_post_implementation_Zwischenstandspraesentation_or_Phase_N_reconciliation"
     },
     "continuous_tracking": {
       "status": "mandatory_active",
       "starts_with": "G4.2d",
       "phase_completion_check_required": true,
-      "last_completed_phase_review": "G4",
-      "recorded_candidate_count": 4
+      "last_completed_phase_review": "G",
+      "recorded_candidate_count": 8
     },
     "phase_n_usage": "Use reviewed candidates as explicit input to final Architecture-to-Requirements Reconciliation instead of relying on full retrospective reverse engineering.",
     "recorded_candidates": [
@@ -1256,7 +1300,109 @@
         ],
         "review_status": "recorded_pending_engineering_review",
         "catia_transfer_status": "not_started"
+      },
+      {
+        "candidate_id": "MEC-G5-001",
+        "originating_implementation_phase": "G5.6",
+        "affected_model_area": "Approved Input Authority Lifecycle",
+        "proposed_element_type": "System Design Constraint",
+        "engineering_rationale": "Approved Input manifests remain immutable; current authority is derived from the immutable manifest plus append-only lifecycle events.",
+        "implementation_evidence": [
+          "modules/approved_input/",
+          "Approved Input lifecycle tests"
+        ],
+        "known_relationships": [
+          "Constrains Approved Input authority.",
+          "Preserves immutable historical authority evidence."
+        ],
+        "review_status": "recorded_pending_engineering_review",
+        "catia_transfer_status": "not_started"
+      },
+      {
+        "candidate_id": "MEC-G5-002",
+        "originating_implementation_phase": "G5.6",
+        "affected_model_area": "Approved Input Successor Reconciliation",
+        "proposed_element_type": "System Design Constraint",
+        "engineering_rationale": "Promotion Equivalence uses stable subject identity plus authority-relevant content and evidence so materially unchanged accepted successor subjects retain the existing active Approved Input.",
+        "implementation_evidence": [
+          "modules/approved_input/",
+          "successor reconciliation tests"
+        ],
+        "known_relationships": [
+          "Constrains supersession.",
+          "Preserves stable authority across reopened Review Versions."
+        ],
+        "review_status": "recorded_pending_engineering_review",
+        "catia_transfer_status": "not_started"
+      },
+      {
+        "candidate_id": "MEC-G5-003",
+        "originating_implementation_phase": "G5.7",
+        "affected_model_area": "Phase H Approved Input Consumption Boundary",
+        "proposed_element_type": "System Design Constraint",
+        "engineering_rationale": "Subsequent engineering processing consumes only active Approved Inputs through the stable repository read contract.",
+        "implementation_evidence": [
+          "modules/approved_input/repository.py",
+          "Phase H read-contract tests"
+        ],
+        "known_relationships": [
+          "Constrains Phase H inputs.",
+          "Excludes invalidated revoked and superseded authority from active engineering use."
+        ],
+        "review_status": "recorded_pending_engineering_review",
+        "catia_transfer_status": "not_started"
+      },
+      {
+        "candidate_id": "MEC-G6-001",
+        "originating_implementation_phase": "G6 / Phase-G UX reconciliation",
+        "affected_model_area": "Human-System Interaction and Engineering Review UX",
+        "proposed_element_type": "System Design Constraint",
+        "engineering_rationale": "Primary interaction should expose result, material uncertainty, required decision and next action while explanation and complete audit traceability remain available through progressive disclosure.",
+        "implementation_evidence": [
+          "collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md",
+          "collaboration/audits/phase_g_manual_acceptance_test_report.md"
+        ],
+        "known_relationships": [
+          "Constrains default interaction presentation.",
+          "Does not weaken persisted evidence or authority contracts."
+        ],
+        "review_status": "recorded_pending_engineering_review",
+        "catia_transfer_status": "not_started"
       }
     ]
+  },
+  "interaction_architecture": {
+    "status": "accepted",
+    "architecture_decision": "collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md",
+    "principle": [
+      "Simple by default",
+      "Explainable on demand",
+      "Fully traceable underneath"
+    ],
+    "presentation_levels": {
+      "primary_workflow": [
+        "engineering_result",
+        "material_uncertainty",
+        "required_decision",
+        "next_action"
+      ],
+      "explanation": [
+        "rationale",
+        "alternative_proposals",
+        "relevant_source_evidence",
+        "confidence_or_disagreement_when_useful"
+      ],
+      "audit_traceability": [
+        "run_attempt_ids",
+        "fingerprints",
+        "provenance",
+        "revisions",
+        "validation_evidence"
+      ]
+    },
+    "task_oriented_interaction_separate_from_audit_inspection": true,
+    "backend_traceability_remains_persisted": true,
+    "streamlit_retained_through_product_demo": true,
+    "frontend_rewrite_before_demo": false
   }
 }

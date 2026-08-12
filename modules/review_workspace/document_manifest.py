@@ -664,17 +664,20 @@ def _validate_semantic_reference(
             "SemanticReferenceVersion values."
         )
 
-    _identifier(
-        reference.reference_system_id,
-        _REFERENCE_SYSTEM_ID_PATTERN,
-        "reference_system_id",
-    )
-
-    _identifier(
-        reference.reference_version,
-        _SEMANTIC_VERSION_PATTERN,
-        "reference_version",
-    )
+    # Review Documents preserve the exact semantic-reference binding
+    # from the authoritative Processing Run. Semantic reference
+    # versions are not necessarily SemVer (for example BFO "2020"
+    # or IOF "202602"), so reuse the Processing contract instead of
+    # imposing a narrower Review-only syntax.
+    try:
+        create_semantic_reference_version(
+            reference_system_id=reference.reference_system_id,
+            reference_version=reference.reference_version,
+        )
+    except ProcessingValidationError as exc:
+        raise ReviewValidationError(
+            "Semantic Reference Version is invalid."
+        ) from exc
 
 
 def _exact_object(

@@ -25,6 +25,7 @@ from .errors import (
 from .publisher import ProjectIngestionPublisher
 from .service import ProjectBoundIngestionService
 from .types import (
+    ProjectBoundIngestionExecutionState,
     ProjectBoundIngestionResult,
     ProjectBoundIngestionWorkResult,
     ProjectBoundSourceInventory,
@@ -38,6 +39,7 @@ __all__ = [
     "DEFAULT_RECIPE_ID",
     "DEFAULT_SEMANTIC_REFERENCE_VERSIONS",
     "PIPELINE_CONFIGURATION_VERSION",
+    "ProjectBoundIngestionExecutionState",
     "ProjectBoundIngestionResult",
     "ProjectBoundIngestionService",
     "ProjectBoundIngestionWorkResult",
