@@ -11,7 +11,7 @@ Versions after this update:
 
 Implementation reference:
 
-- Phase-G completion: the commit containing this SSOT update
+- Phase-G completion: `b598bf04770b08738bbce5c15f2f7dfb671aab01`
 - Last prior committed checkpoint:
   `7209f17a610d3adb359e8b672a28020b71c03333` — G6 completion
 - G5 checkpoint:

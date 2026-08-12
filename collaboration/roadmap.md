@@ -50,7 +50,7 @@ Phase G Completed; Phase H architecture contract next.
 
 Verified Implementation Reference
 
-`the commit containing this SSOT update`
+`b598bf04770b08738bbce5c15f2f7dfb671aab01` — Phase G completion
 
 Last Prior Committed Checkpoint
 
