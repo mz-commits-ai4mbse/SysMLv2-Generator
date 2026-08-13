@@ -22,19 +22,19 @@ have been completed.
 
 Architecture Version
 
-1.7
+1.8
 
 Knowledge Base Version
 
-1.14
+1.15
 
 Implementation Version
 
-0.16
+0.17
 
 Roadmap Version
 
-1.14
+1.15
 
 Last SSOT Update
 
@@ -42,23 +42,23 @@ Last SSOT Update
 
 Current Phase
 
-**Phase J — SysML v2 Code Generator**
+**Phase K — Validation Layer**
 
 Current Status
 
-Phase I remains completed and verified. H9 hybrid target projection is completed and verified; Phase J implementation is next.
+Phase J is completed and verified; Phase K validation is next.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — H9 controlled Phase-H extension completion
+`commit containing this SSOT update` — Phase J completion
 
 Last Prior Committed Checkpoint
 
-`027269e94df0ec586a8fd489e78c92fddd0a3aa5` — Phase I completion baseline
+`af6953486a71c3073c0169ef5052dbcabb49c4fc` — accepted Phase-J architecture checkpoint
 
 Verified Automated Test Baseline
 
-5120 passed in 13.12s in the complete repository regression after H9.
+5239 passed in 13.77s in the complete repository regression after Phase J.
 
 Phase-G Focused Completion Regression
 
@@ -98,11 +98,10 @@ Source
 → Versioned Output Package
 ```
 
-Phases G, H and I are complete. The controlled H9 extension is also complete. The technical closed vertical slice now follows:
+Phases G, H, I and J are complete. The controlled H9 extension is also complete. The technical closed vertical slice now follows:
 
 ```text
-Phase J
-→ Phase K
+Phase K
 → Phase L
 ```
 
@@ -1031,30 +1030,96 @@ Phase H — Satisfied
 
 ## Objective
 
-Generate valid SysML v2 textual notation from the internal engineering model.
+Generate deterministic SYSIDE-compatible SysML v2 textual notation from one
+explicitly selected, validated Internal Engineering Model snapshot.
 
-## Deliverables
+## Architecture Decision
 
-- SysML v2 code generator
-- versioned target-notation profile
-- versioned target-artifact structure
-- stable identifier and naming rules
-- SYSIDE-compatible textual output
-- CATIA-compatible textual output where supported
-- generation diagnostics
-- source-to-output traceability references
+`collaboration/decisions/ADR-021-syside-compatible-sysml-v2-generation-architecture.md`
+
+Accepted architecture checkpoint:
+
+`af6953486a71c3073c0169ef5052dbcabb49c4fc`
+
+## Completed Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| J1 | Generation foundation, Target Notation 0.2.0 and SYSIDE syntax evidence | Completed |
+| J2 | Generation Profile, Artifact Structure Profile and preflight | Completed |
+| J3 | Package, symbol, safe-text and canonical-order projection | Completed |
+| J4 | Deterministic element renderer | Completed |
+| J5 | Deterministic relationship renderer and endpoint-role integration | Completed |
+| J6 | Artifact set, traceability, fingerprints and idempotence | Completed |
+| J7 | Explicit service boundary, regression and SSOT closeout | Completed |
+
+## Implemented Deliverables
+
+- explicit I→J authority boundary through `InternalModelReadService`
+- deterministic `SysMLGenerationService`
+- versioned Target Notation 0.2.0
+- versioned Generation Profile 1.0.0
+- versioned Artifact Structure Profile 1.0.0
+- versioned Generator Rules 1.0.0
+- deterministic generation preflight
+- Framework hierarchy → package projection
+- stable generated technical symbols
+- requirement, use-case, action-usage and part-usage rendering
+- dependency, allocation and satisfaction rendering
+- exact relationship endpoint-role/construct checks
+- fail-closed unsupported semantic handling
+- deterministic canonical formatting
+- immutable `GeneratedSysMLArtifactSet`
+- machine-readable IME/IMR → Candidate → Approved Input → Review traceability
+- exact generated line locations
+- generation-input, unit and artifact-set SHA-256 fingerprints
+- deterministic idempotence
+- explicit Phase-K handoff
+- no Phase-L publication inside Phase J
+
+## Verification
+
+```text
+Targeted Turing Core synchronization regression:
+191 passed in 0.19s
+
+Complete repository regression:
+5239 passed in 13.77s
+
+git diff --check:
+PASS
+```
+
+## Phase-N2 Reconciliation Candidates
+
+Record for final CATIA reconciliation without creating preliminary SYSR/SF
+elements during Phase J:
+
+1. deterministic SysML v2 generation from validated explicit IEM input
+2. SYSIDE-compatible versioned target-notation generation
+3. separate semantic mapping, artifact-structure and generator-rule policies
+4. fail-closed unsupported semantics and endpoint compatibility
+5. deterministic generated identity, fingerprints and idempotence
+6. machine-readable generated-output traceability
+7. explicit generation / validation / publication separation across J/K/L
+
+Exact CATIA element types and wording are decided only in N2.
 
 ## Exit Criteria
 
-- the internal model can be serialized as SysML v2 text
-- generated notation conforms to the selected profile
-- generated artifact structure conforms to the selected target structure
-- output remains traceable to the internal model and Approved Input
-- automated tests pass
+- internal model can be serialized as SysML v2 text — satisfied
+- notation conforms to selected generation policy — satisfied
+- artifact structure conforms to selected target structure — satisfied
+- output remains traceable to IEM and Approved Input — satisfied
+- unsupported semantics fail closed — satisfied
+- deterministic idempotence verified — satisfied
+- automated tests pass — satisfied
+- Phase-K boundary explicit — satisfied
+- SSOT synchronized — satisfied by the Phase-J completion commit
 
 ## Status
 
-Planned
+Completed on 2026-08-13
 
 Depends on:
 

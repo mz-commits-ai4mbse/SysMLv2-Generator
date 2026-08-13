@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "TURING_SYSML_V2_GENERATION",
+  "profile_version": "1.0.0",
+  "status": "active",
+  "purpose": "Defines explicit deterministic mappings from reviewed Internal Engineering Model semantics to the allowed SYSIDE-compatible SysML v2 Target Notation subset. Unsupported mappings are explicit and blocking; no fallback mapping is permitted.",
+  "target_notation_context_id": "CTX_SYSML_V2_TARGET_NOTATION",
+  "target_notation_version": "0.2.0",
+  "framework_template_id": "TURING_RFLP_FRAMEWORK",
+  "framework_template_version": "1.0.0",
+  "model_structure_profile_id": "TURING_MODEL_STRUCTURE",
+  "model_structure_profile_version": "1.0.0",
+  "element_mappings": [
+    {
+      "rule_id": "J2_ELEMENT_001",
+      "model_area": "stakeholder.stakeholders",
+      "element_type": "stakeholder",
+      "mapping_status": "unsupported_pending_semantic_mapping",
+      "target_construct_id": null,
+      "production_generation_allowed": false,
+      "rationale": "The current IEM semantic identifies a stakeholder, but J2 does not force it into part, item or another SysML construct without an accepted semantic representation.",
+      "target_element_kind": null
+    },
+    {
+      "rule_id": "J2_ELEMENT_002",
+      "model_area": "stakeholder.user_needs",
+      "element_type": "user_need",
+      "mapping_status": "unsupported_pending_semantic_mapping",
+      "target_construct_id": null,
+      "production_generation_allowed": false,
+      "rationale": "A User Need is not silently weakened into a requirement or documentation-only element. A dedicated accepted mapping is required before production generation.",
+      "target_element_kind": null
+    },
+    {
+      "rule_id": "J2_ELEMENT_003",
+      "model_area": "stakeholder.stakeholder_requirements",
+      "element_type": "stakeholder_requirement",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_008",
+      "production_generation_allowed": true,
+      "rationale": "An IEM stakeholder requirement is an individual reviewed requirement and is therefore represented as a Requirement Usage rather than a reusable Requirement Definition.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_004",
+      "model_area": "stakeholder.use_cases",
+      "element_type": "use_case",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_012",
+      "production_generation_allowed": true,
+      "rationale": "The use case definition syntax was manually opened and visualized without observed errors in SYSIDE during J1.",
+      "target_element_kind": "definition"
+    },
+    {
+      "rule_id": "J2_ELEMENT_005",
+      "model_area": "system.requirements",
+      "element_type": "system_requirement",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_008",
+      "production_generation_allowed": true,
+      "rationale": "An IEM system requirement is an individual reviewed requirement and maps to Requirement Usage.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_006",
+      "model_area": "system.functional",
+      "element_type": "function",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_006",
+      "production_generation_allowed": true,
+      "rationale": "An IEM function is an individual reviewed engineering behavior. It maps to an Action Usage/Feature so relationships can reference the generated occurrence without treating it as a reusable type.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_007",
+      "model_area": "system.logical",
+      "element_type": "logical_component",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_004",
+      "production_generation_allowed": true,
+      "rationale": "An IEM component is an individual reviewed structural element. It maps to a Part Usage/Feature so allocation and other feature-oriented relationships can reference it directly.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_008",
+      "model_area": "system.physical",
+      "element_type": "physical_component",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_004",
+      "production_generation_allowed": true,
+      "rationale": "An IEM component is an individual reviewed structural element. It maps to a Part Usage/Feature so allocation and other feature-oriented relationships can reference it directly.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_009",
+      "model_area": "subsystem.requirements",
+      "element_type": "subsystem_requirement",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_008",
+      "production_generation_allowed": true,
+      "rationale": "An IEM subsystem requirement is an individual reviewed requirement and maps to Requirement Usage.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_010",
+      "model_area": "subsystem.functional",
+      "element_type": "function",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_006",
+      "production_generation_allowed": true,
+      "rationale": "An IEM function is an individual reviewed engineering behavior. It maps to an Action Usage/Feature so relationships can reference the generated occurrence without treating it as a reusable type.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_011",
+      "model_area": "subsystem.logical",
+      "element_type": "logical_component",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_004",
+      "production_generation_allowed": true,
+      "rationale": "An IEM component is an individual reviewed structural element. It maps to a Part Usage/Feature so allocation and other feature-oriented relationships can reference it directly.",
+      "target_element_kind": "feature"
+    },
+    {
+      "rule_id": "J2_ELEMENT_012",
+      "model_area": "subsystem.physical",
+      "element_type": "physical_component",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_004",
+      "production_generation_allowed": true,
+      "rationale": "An IEM component is an individual reviewed structural element. It maps to a Part Usage/Feature so allocation and other feature-oriented relationships can reference it directly.",
+      "target_element_kind": "feature"
+    }
+  ],
+  "relationship_mappings": [
+    {
+      "rule_id": "J2_REL_001",
+      "semantic_intent": "allocated_to",
+      "relationship_family": "allocation",
+      "directionality": "source_to_target",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_014",
+      "endpoint_rendering": "source_to_target",
+      "production_generation_allowed": true,
+      "rationale": "The allocation syntax was manually opened and visualized without observed errors in SYSIDE during J1.",
+      "source_endpoint_kinds": [
+        "feature"
+      ],
+      "target_endpoint_kinds": [
+        "feature"
+      ],
+      "source_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006"
+      ],
+      "target_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006"
+      ]
+    },
+    {
+      "rule_id": "J2_REL_002",
+      "semantic_intent": "dependency",
+      "relationship_family": "dependency",
+      "directionality": "source_to_target",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_013",
+      "endpoint_rendering": "source_to_target",
+      "production_generation_allowed": true,
+      "rationale": "The dependency syntax was manually opened and visualized without observed errors in SYSIDE during J1.",
+      "source_endpoint_kinds": [
+        "feature",
+        "definition"
+      ],
+      "target_endpoint_kinds": [
+        "feature",
+        "definition"
+      ],
+      "source_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006",
+        "TN_008",
+        "TN_012"
+      ],
+      "target_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006",
+        "TN_008",
+        "TN_012"
+      ]
+    },
+    {
+      "rule_id": "J2_REL_003",
+      "semantic_intent": "depends_on",
+      "relationship_family": "dependency",
+      "directionality": "source_to_target",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_013",
+      "endpoint_rendering": "source_to_target",
+      "production_generation_allowed": true,
+      "rationale": "The canonical depends_on intent is explicitly mapped to the validated directed dependency construct; this is an explicit rule and not a generic fallback.",
+      "source_endpoint_kinds": [
+        "feature",
+        "definition"
+      ],
+      "target_endpoint_kinds": [
+        "feature",
+        "definition"
+      ],
+      "source_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006",
+        "TN_008",
+        "TN_012"
+      ],
+      "target_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006",
+        "TN_008",
+        "TN_012"
+      ]
+    },
+    {
+      "rule_id": "J2_REL_004",
+      "semantic_intent": "derives_from",
+      "relationship_family": "derivation",
+      "directionality": "source_to_target",
+      "mapping_status": "unsupported_pending_syntax_validation",
+      "target_construct_id": null,
+      "endpoint_rendering": null,
+      "production_generation_allowed": false,
+      "rationale": "No J1 SYSIDE syntax evidence exists for derivation; generation shall block rather than substitute dependency.",
+      "source_endpoint_kinds": [],
+      "target_endpoint_kinds": [],
+      "source_endpoint_construct_ids": [],
+      "target_endpoint_construct_ids": []
+    },
+    {
+      "rule_id": "J2_REL_005",
+      "semantic_intent": "flows_to",
+      "relationship_family": "flow",
+      "directionality": "source_to_target",
+      "mapping_status": "unsupported_pending_syntax_validation",
+      "target_construct_id": null,
+      "endpoint_rendering": null,
+      "production_generation_allowed": false,
+      "rationale": "Formal flow syntax remains outside the validated J1 subset.",
+      "source_endpoint_kinds": [],
+      "target_endpoint_kinds": [],
+      "source_endpoint_construct_ids": [],
+      "target_endpoint_construct_ids": []
+    },
+    {
+      "rule_id": "J2_REL_006",
+      "semantic_intent": "interacts_with",
+      "relationship_family": "interaction",
+      "directionality": "bidirectional",
+      "mapping_status": "unsupported_pending_semantic_mapping",
+      "target_construct_id": null,
+      "endpoint_rendering": null,
+      "production_generation_allowed": false,
+      "rationale": "No accepted bidirectional interaction serialization rule exists; generation shall block.",
+      "source_endpoint_kinds": [],
+      "target_endpoint_kinds": [],
+      "source_endpoint_construct_ids": [],
+      "target_endpoint_construct_ids": []
+    },
+    {
+      "rule_id": "J2_REL_007",
+      "semantic_intent": "refines",
+      "relationship_family": "refinement",
+      "directionality": "source_to_target",
+      "mapping_status": "unsupported_pending_syntax_validation",
+      "target_construct_id": null,
+      "endpoint_rendering": null,
+      "production_generation_allowed": false,
+      "rationale": "Refinement syntax has not yet been validated in the J1 target subset.",
+      "source_endpoint_kinds": [],
+      "target_endpoint_kinds": [],
+      "source_endpoint_construct_ids": [],
+      "target_endpoint_construct_ids": []
+    },
+    {
+      "rule_id": "J2_REL_008",
+      "semantic_intent": "satisfies",
+      "relationship_family": "refinement",
+      "directionality": "source_to_target",
+      "mapping_status": "supported",
+      "target_construct_id": "TN_015",
+      "endpoint_rendering": "target_by_source",
+      "production_generation_allowed": true,
+      "rationale": "The canonical IEM verb convention reads source satisfies target. SysML renders this as satisfy TARGET by SOURCE. Manual SYSIDE integration validation confirmed both PartUsage and ActionUsage satisfiers against a RequirementUsage target.",
+      "source_endpoint_kinds": [
+        "feature"
+      ],
+      "target_endpoint_kinds": [
+        "feature"
+      ],
+      "source_endpoint_construct_ids": [
+        "TN_004",
+        "TN_006"
+      ],
+      "target_endpoint_construct_ids": [
+        "TN_008"
+      ]
+    },
+    {
+      "rule_id": "J2_REL_009",
+      "semantic_intent": "traces_to",
+      "relationship_family": "traceability",
+      "directionality": "source_to_target",
+      "mapping_status": "unsupported_pending_syntax_validation",
+      "target_construct_id": null,
+      "endpoint_rendering": null,
+      "production_generation_allowed": false,
+      "rationale": "Formal traceability syntax has not yet been validated in the J1 target subset.",
+      "source_endpoint_kinds": [],
+      "target_endpoint_kinds": [],
+      "source_endpoint_construct_ids": [],
+      "target_endpoint_construct_ids": []
+    }
+  ],
+  "attribute_policy": {
+    "default_generic_attribute_projection": "documentation_or_machine_traceability",
+    "formal_attribute_rules": [],
+    "raw_attribute_to_formal_sysml_allowed": false,
+    "unsupported_semantic_attribute_behavior": "blocking_if_omission_would_lose_engineering_meaning"
+  },
+  "documentation_policy": {
+    "description_projection": "doc_block",
+    "generic_metadata_projection": "documentation_or_machine_traceability",
+    "raw_text_injection_allowed": false,
+    "documentation_is_semantic_fallback": false
+  },
+  "unsupported_behavior": "blocking"
+}

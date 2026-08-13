@@ -41,7 +41,7 @@
       "path": "context/sysml/sysml_v2_target_notation.json",
       "role": "allowed_sysml_v2_target_notation",
       "referenced_id": "CTX_SYSML_V2_TARGET_NOTATION",
-      "referenced_version": "0.1.0"
+      "referenced_version": "0.2.0"
     },
     {
       "source_reference_id": "SRC_TURING_CORE_SYSML_REFERENCE",
@@ -93,7 +93,7 @@
   },
   "sysml_v2_mapping_policy": {
     "target_notation_id": "CTX_SYSML_V2_TARGET_NOTATION",
-    "target_notation_version": "0.1.0",
+    "target_notation_version": "0.2.0",
     "allowed_relation": "candidate_representation",
     "unknown_construct_behavior": "reject",
     "automatic_model_generation_allowed": false,

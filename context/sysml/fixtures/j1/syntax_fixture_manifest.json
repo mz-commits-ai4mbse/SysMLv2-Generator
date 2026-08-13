@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0.0",
+  "manifest_id": "SYSIDE_SYNTAX_FIXTURES_J1",
+  "status": "syside_validation_passed",
+  "purpose": "Records small Phase-J syntax experiments derived from the pinned SysML v2 Release reference. Pending fixtures do not grant generator permission until they are manually validated in SYSIDE and the Target Notation Profile is intentionally extended.",
+  "target_environment": "SYSIDE",
+  "reference_baseline": {
+    "sysml_v2_release_repository": "external/sysml-v2-release/",
+    "sysml_v2_release_commit": "ee25530ed24b8c93a0e3e4b8d5fbfaa5a8d8ffb4",
+    "apollo11_repository": "external/apollo11-sysml-v2/",
+    "apollo11_commit": "6e9c93fe7d80c5ca3534bb14b10ab374a643ef2d",
+    "apollo_role": "non_normative_example_reference"
+  },
+  "activation_rule": "A passed fixture may authorize the corresponding syntax construct in the Target Notation Profile. Production IEM-to-SysML generation permission remains false until J2 adds an explicit Generation Profile mapping for the applicable reviewed IEM semantic.",
+  "fixtures": [
+    {
+      "fixture_id": "SFX-J1-001",
+      "semantic": "use_case",
+      "candidate_construct": "use case def",
+      "fixture_path": "context/sysml/fixtures/j1/use_case_definition.sysml",
+      "source_reference_path": "sysml/src/training/35. Use Cases/Use Case Definition Example.sysml",
+      "source_reference_blob_sha": "785e6fbb1077a3155d1fdc78e7e84b4541225dcd",
+      "validation_status": "passed",
+      "generation_permission": false,
+      "validation_environment": "SYSIDE",
+      "validation_method": "manual_open_and_visualization",
+      "validation_observation": "Opened and visualized in SYSIDE; reviewer reported no observed errors.",
+      "validated_on": "2026-08-13",
+      "target_notation_authorized": true,
+      "target_notation_construct_id": "TN_012"
+    },
+    {
+      "fixture_id": "SFX-J1-002",
+      "semantic": "dependency",
+      "candidate_construct": "dependency from ... to ...;",
+      "fixture_path": "context/sysml/fixtures/j1/dependency.sysml",
+      "source_reference_path": "sysml/src/training/37. Dependencies/Dependency Example.sysml",
+      "source_reference_blob_sha": "32a93d1a902d0a5a0bbc26c1b6297e6bc7bc1beb",
+      "validation_status": "passed",
+      "generation_permission": false,
+      "validation_environment": "SYSIDE",
+      "validation_method": "manual_open_and_visualization",
+      "validation_observation": "Opened and visualized in SYSIDE; reviewer reported no observed errors.",
+      "validated_on": "2026-08-13",
+      "target_notation_authorized": true,
+      "target_notation_construct_id": "TN_013"
+    },
+    {
+      "fixture_id": "SFX-J1-003",
+      "semantic": "allocated_to",
+      "candidate_construct": "allocate ... to ...;",
+      "fixture_path": "context/sysml/fixtures/j1/allocation.sysml",
+      "source_reference_path": "sysml/src/training/38. Allocation/Allocation Usage Example.sysml",
+      "source_reference_blob_sha": "4f44d44c3b3d4626bbc623d504181c4ca5c56401",
+      "validation_status": "passed",
+      "generation_permission": false,
+      "validation_environment": "SYSIDE",
+      "validation_method": "manual_open_and_visualization",
+      "validation_observation": "Opened and visualized in SYSIDE; reviewer reported no observed errors.",
+      "validated_on": "2026-08-13",
+      "target_notation_authorized": true,
+      "target_notation_construct_id": "TN_014"
+    },
+    {
+      "fixture_id": "SFX-J1-004",
+      "semantic": "satisfies",
+      "candidate_construct": "satisfy ... by ...;",
+      "fixture_path": "context/sysml/fixtures/j1/satisfaction.sysml",
+      "source_reference_path": "sysml/src/validation/08-Requirements/8-Requirements.sysml",
+      "source_reference_blob_sha": "36964242a4be558e62f0a4c33cad5f130869ac34",
+      "validation_status": "passed",
+      "generation_permission": false,
+      "validation_environment": "SYSIDE",
+      "validation_method": "manual_open_and_visualization",
+      "validation_observation": "Opened and visualized in SYSIDE; reviewer reported no observed errors.",
+      "validated_on": "2026-08-13",
+      "target_notation_authorized": true,
+      "target_notation_construct_id": "TN_015"
+    }
+  ],
+  "manual_validation_summary": {
+    "date": "2026-08-13",
+    "environment": "SYSIDE",
+    "method": "opened_and_visualized",
+    "reported_result": "no_observed_errors"
+  }
+}

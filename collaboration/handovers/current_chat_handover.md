@@ -3,7 +3,7 @@
 ## Purpose
 
 This document is the authoritative starting point for the next implementation
-chat after H9 hybrid target-projection completion.
+chat after Phase J — SysML v2 Code Generator completion.
 
 Use it together with the committed repository, the Collaboration Knowledge Base
 and the authoritative CATIA SysML v2 model.
@@ -26,27 +26,27 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — H9 controlled Phase-H extension completion
+`commit containing this SSOT update` — Phase J completion
 
 Last Prior Committed Checkpoint
 
-`027269e94df0ec586a8fd489e78c92fddd0a3aa5` — Phase I completion baseline
+`af6953486a71c3073c0169ef5052dbcabb49c4fc` — accepted Phase-J architecture checkpoint
 
 Architecture Version
 
-1.7
+1.8
 
 Knowledge Base Version
 
-1.14
+1.15
 
 Implementation Version
 
-0.16
+0.17
 
 Roadmap Version
 
-1.14
+1.15
 
 Last SSOT Update
 
@@ -54,26 +54,23 @@ Last SSOT Update
 
 Current Phase
 
-Phase J — SysML v2 Code Generator
+Phase K — Validation Layer
 
 Current Status
 
-Phase I remains completed and verified. H9 hybrid target projection is completed and verified. Phase J is next.
+Phase J is completed and verified. Phase K is next.
 
 Verified Automated Test Baseline
 
 ```text
-Focused H9 regression:
-61 passed in 0.69s
+Targeted Turing Core synchronization regression:
+191 passed in 0.19s
 
 Complete repository regression:
-5120 passed in 13.12s
+5239 passed in 13.77s
 
 git diff --check:
 PASS
-
-Bounded live H9 LLM smoke:
-PASS — 1 call, 0 retries, 1345 total tokens
 ```
 
 Closed Vertical-slice Target
@@ -98,16 +95,18 @@ Read in this order:
 2. `collaboration/roadmap.md`
 3. `collaboration/working_rules.md`
 4. `collaboration/model_registry.json`
-5. `collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
-6. `collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
-7. `collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
-8. `collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
-9. `context/sysml/sysml_v2_target_notation.json`
-10. `collaboration/change_log.md`
-11. this handover
+5. `collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
+6. `collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
+7. `collaboration/decisions/ADR-021-syside-compatible-sysml-v2-generation-architecture.md`
+8. `context/sysml/sysml_v2_target_notation.json`
+9. `context/sysml/turing_sysml_v2_generation_profile.json`
+10. `context/sysml/turing_sysml_v2_artifact_structure.json`
+11. `context/sysml/turing_sysml_v2_generator_rules.json`
+12. `collaboration/change_log.md`
+13. this handover
 
-Then inspect the committed Phase-I implementation and existing target-notation
-configuration only as required for the Phase-J architecture discussion.
+Then inspect the committed Phase-J implementation only as required for Phase-K
+architecture and validation work.
 
 ---
 
@@ -120,12 +119,10 @@ Authority order:
 3. Collaboration Knowledge Base for coordination and accepted decisions
 4. chat history and temporary generated artifacts
 
-The temporary SYSIDE shadow model may supplement missing CATIA information
-until Phase N.
+Generated SysML v2 output is a derived implementation artifact. It does not
+replace CATIA engineering authority.
 
-It shall never override or contradict CATIA.
-
-Implementation observations may become Model Element Change Candidates only.
+Implementation observations may become Phase-N2 reconciliation candidates only.
 They do not silently create normative engineering knowledge.
 
 ---
@@ -133,14 +130,6 @@ They do not silently create normative engineering knowledge.
 # Repository Collaboration Workflow
 
 GitHub remains passive for the AI assistant.
-
-The AI assistant shall not:
-
-- directly edit GitHub content
-- commit or push
-- stage the local working tree
-- use broad staging commands
-- destructively clean unrelated files
 
 Required workflow:
 
@@ -162,230 +151,16 @@ git add .
 git add -A
 ```
 
----
-
-# Working-tree Caution
-
-The local tree may contain unrelated/generated files including:
-
-- `.DS_Store`
-- `__pycache__`
-- ingestion reports
-- test Projects
-- team-run artifacts
-- local ZIP / patch files
-
-Do not stage them unless explicitly part of the intended change.
+The local tree may contain unrelated/generated files. Do not stage or clean
+those unless explicitly part of the intended change.
 
 ---
 
-# Phase H — Completed Upstream Authority
+# Phase I — Upstream Internal Engineering Model Authority
 
-Phase H remains complete.
+Phase I remains completed.
 
-Sole production read boundary into Phase I:
-
-```python
-ModelCandidateReadService.load_phase_i_input(
-    project_id,
-    candidate_set_id,
-) -> ModelCandidateAssemblyInput
-```
-
-The gate revalidates active Approved Input authority, exact Candidate review
-authorization, structural-profile bindings, relationship endpoints, accepted
-exceptions and project isolation.
-
-Phase-I implementation enriched this DTO with:
-
-```text
-framework_template_reference
-derivation_rules_reference
-```
-
-These references already existed in the Candidate Set manifest. The enrichment
-keeps Phase I inside the sole H→I authority boundary.
-
----
-
-# Phase H9 — Completed Hybrid Target Projection Extension
-
-Architecture decision:
-
-`collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
-
-H9 preserves the completed Phase-H authority model while adding a selectable
-deterministic-first hybrid target-projection path.
-
-Key behavior:
-
-```text
-Approved Input
-→ deterministic projection coverage
-→ clear mappings stay deterministic
-→ only ambiguous/unmapped inputs may reach the LLM
-→ LLM can select only offered profile rules, remain ambiguous or return unmapped
-→ validated proposals become non-authoritative Model Candidates
-→ existing Human Review remains mandatory
-→ unchanged Phase-I gate
-```
-
-Important implementation components:
-
-```text
-modules/model_candidates/projection_resolver.py
-modules/model_candidates/llm_projection_contract.py
-modules/model_candidates/llm_projection_executor.py
-modules/model_candidates/hybrid_deriver.py
-agents/target_projection_mapper.md
-```
-
-Token/request protection:
-
-- deterministic-first routing
-- compact unresolved-only context
-- default batch size 8
-- bounded maximum calls per run
-- serial execution
-- no automatic retries
-- no repeated interpretation of deterministic mappings
-
-The bounded live smoke used one OpenAI `gpt-5-mini` call with 1345 total tokens
-and selected `ELEMENT_SYSTEM_FUNCTION` for the deliberately ambiguous function
-fixture.
-
-H9 does not make Phase J agentic. Phase J still serializes accepted Internal
-Engineering Model semantics deterministically.
-
-Phase-N2 reconciliation candidates are recorded, but no CATIA SYSR/SF change is
-performed during H9 closeout.
-
----
-
-# Phase I — Completed Baseline
-
-Architecture decision:
-
-`collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
-
-Accepted architecture checkpoint:
-
-`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d`
-
-Completed implementation decomposition:
-
-```text
-I1  IDs + immutable Internal Model domain types
-I2  manifests + fingerprints + H→I contract enrichment
-I3  Framework/Profile resolution + structure materialization
-I4  deterministic MCE/MCR → IME/IMR assembly
-I5  repository + immutable persistence + bundle integrity
-I6  explicit Phase-J read contract + regression
-```
-
-## Internal Model Identities
-
-```text
-IEM-000001  Internal Engineering Model
-IME-000001  Internal Model Element
-IMR-000001  Internal Model Relationship
-```
-
-Identifiers are project-local, six-digit sequential, immutable and never
-gap-reused.
-
-Candidate identity, Internal Model identity and semantic subject identity remain
-separate.
-
-## Assembly Context
-
-Phase I pins:
-
-```text
-TURING_RFLP_FRAMEWORK 1.0.0
-TURING_MODEL_STRUCTURE 1.0.0
-TURING_INTERNAL_MODEL_ASSEMBLY 1.0.0
-exact derivation-rules reference from H→I
-```
-
-Assembly rules:
-
-`context/modeling/turing_internal_model_assembly_rules.json`
-
-Normative behavior:
-
-- deterministic assembly only
-- no semantic reinterpretation
-- complete configured Framework hierarchy materialized
-- empty structural nodes allowed
-- reviewed Phase-H assignment remains authoritative
-- no invented engineering hierarchy
-- exact accepted Candidate authorization required
-- fail closed when new engineering judgement would be necessary
-
-## Deterministic Assembly
-
-Accepted MCEs become separate IMEs while preserving semantic subject identity,
-source Candidate identity/fingerprint, engineering content, structural
-assignment, Approved Input provenance, exact Human Review Decision and accepted
-exception where applicable.
-
-Accepted MCRs become IMRs. Their exact source and target Candidate endpoints are
-rebound to IMEs in the same IEM snapshot.
-
-Phase I preserves unchanged:
-
-```text
-relationship_family
-semantic_intent
-directionality
-```
-
-Phase J owns mapping those engineering semantics to concrete SysML v2 textual
-constructs.
-
-## Exact Assembly Identity
-
-Phase I calculates a deterministic `assembly_input_fingerprint` over the exact
-authority-bearing H→I state.
-
-Exact assembly identity is:
-
-```text
-assembly_input_fingerprint
-+
-assembly_rules_reference
-```
-
-Reassembling the same exact identity is idempotent and returns the existing IEM.
-
-There is no "latest wins" behavior.
-
-## Persistence
-
-```text
-data/projects/<project_id>/internal_models/
-└── IEM-000001/
-    ├── manifest.json
-    ├── structure.json
-    ├── elements/
-    │   ├── IME-000001.json
-    │   └── ...
-    └── relationships/
-        ├── IMR-000001.json
-        └── ...
-```
-
-Persistence is immutable and atomic.
-
-The repository validates project isolation, exact path identity, symlink safety,
-fingerprints, exact structure membership, IMR endpoints, subject-key consistency,
-Review Decision references, accepted exceptions, project-wide ID non-reuse,
-interrupted publication and duplicate exact assembly identity.
-
-## Sole I → J Read Boundary
-
-Phase J shall consume Phase-I output only through:
+Sole I→J production read boundary:
 
 ```python
 InternalModelReadService.load_phase_j_input(
@@ -394,28 +169,212 @@ InternalModelReadService.load_phase_j_input(
 ) -> InternalEngineeringModelSnapshot
 ```
 
-The service scans repository integrity, loads the explicitly requested IEM and
-revalidates the complete bundle.
+There is no implicit latest-IEM selection.
 
-No implicit latest-IEM selection exists.
+The IEM preserves accepted engineering semantics as immutable IMEs and IMRs,
+including exact Candidate, Approved Input, Human Review and accepted-exception
+traceability.
 
-## Phase-I Verification
+---
+
+# Phase J — Completed SysML v2 Code Generator
+
+Architecture decision:
+
+`collaboration/decisions/ADR-021-syside-compatible-sysml-v2-generation-architecture.md`
+
+Accepted architecture checkpoint:
+
+`af6953486a71c3073c0169ef5052dbcabb49c4fc`
+
+## Completed decomposition
 
 ```text
-I6 focused:
-32 passed in 0.70s
+J1  Generation foundation + Target Notation 0.2.0 + SYSIDE syntax evidence
+J2  Generation Profile + Artifact Structure Profile + deterministic preflight
+J3  package/symbol/safe-text/canonical-order projection
+J4  deterministic element renderer
+J5  deterministic relationship renderer + endpoint-role integration
+J6  GeneratedSysMLArtifactSet + traceability + fingerprints/idempotence
+J7  explicit Phase-J service boundary + regression + SSOT closeout
+```
 
-Focused I1–I6 aggregate:
-110 passed in 1.07s
+## Pinned generation policy
+
+```text
+CTX_SYSML_V2_TARGET_NOTATION 0.2.0
+TURING_SYSML_V2_GENERATION 1.0.0
+TURING_SYSML_V2_ARTIFACT_STRUCTURE 1.0.0
+TURING_SYSML_V2_GENERATOR_RULES 1.0.0
+```
+
+The SysML v2 Release repository remains the primary language/syntax reference.
+SYSIDE remains the selected target validation environment. Apollo 11 remains
+non-normative.
+
+## Supported element generation
+
+Production-authorized mappings include:
+
+```text
+stakeholder_requirement  → requirement usage
+system_requirement       → requirement usage
+subsystem_requirement    → requirement usage
+use_case                 → use case definition
+function                 → action usage / Feature
+logical_component        → part usage / Feature
+physical_component       → part usage / Feature
+```
+
+`stakeholder` and `user_need` remain explicitly unsupported rather than
+force-fitted into an unrelated SysML construct.
+
+## Supported relationship generation
+
+Production-authorized relationships include:
+
+```text
+allocated_to  → allocate SOURCE to TARGET;
+dependency    → dependency from SOURCE to TARGET;
+depends_on    → dependency from SOURCE to TARGET;
+satisfies     → satisfy TARGET by SOURCE;
+```
+
+The `satisfies` transformation preserves the IEM semantic convention
+`source satisfies target` while adapting only the SysML textual endpoint order.
+
+Unsupported relationship semantics remain fail-closed. No generic dependency
+fallback is permitted.
+
+## Feature endpoint correction
+
+SYSIDE integration exposed that `allocate` requires Feature endpoints.
+
+The production representation was therefore corrected from reusable
+`ActionDefinition` / `PartDefinition` declarations to individual
+`ActionUsage` / `PartUsage` Features for IEM functions and components.
+
+Preflight now validates both:
+
+- endpoint element kind
+- exact endpoint target construct where required
+
+This prevents invalid allocation or satisfaction combinations before rendering.
+
+## SYSIDE evidence
+
+Controlled SYSIDE checks confirmed:
+
+- Requirement Usage
+- Action Usage / Definition experiments as applicable during J development
+- Part Usage / Definition experiments as applicable during J development
+- Use Case Definition
+- Dependency
+- Allocation
+- Satisfaction
+
+The accepted production forms are the usage/feature forms pinned by the current
+Generation Profile.
+
+## Generated artifact contract
+
+Phase J builds one immutable validation-ready:
+
+`GeneratedSysMLArtifactSet`
+
+MVP unit:
+
+```text
+generated_model.sysml
+```
+
+Root package:
+
+```text
+GeneratedModel
+```
+
+The complete configured Framework hierarchy is projected deterministically to
+nested packages, including configured empty packages.
+
+Relationships are emitted without inventing engineering containment and use
+deterministic qualified references to exact generated endpoints.
+
+## Traceability
+
+Every generated IME/IMR representation retains machine-readable traceability to:
+
+```text
+Generated unit/location
+→ IEM
+→ IME or IMR
+→ MCE or MCR
+→ Approved Input
+→ Human Review Decision
+→ accepted exception where applicable
+```
+
+Generated line locations are one-based and inclusive.
+
+## Identity and idempotence
+
+Phase J pins:
+
+- source IEM content fingerprint
+- Target Notation reference/fingerprint
+- Generation Profile reference/fingerprint
+- Artifact Structure reference/fingerprint
+- Generator Rules reference/fingerprint
+
+The exact generation input receives a deterministic fingerprint.
+
+Unit content and complete artifact-set content also receive SHA-256
+fingerprints. Identical authority/configuration input produces byte-identical
+generated text and identical fingerprints.
+
+## Complete J orchestration boundary
+
+```python
+SysMLGenerationService.generate(
+    project_id,
+    internal_engineering_model_id,
+) -> GeneratedSysMLArtifactSet
+```
+
+The service delegates authority loading only to
+`InternalModelReadService.load_phase_j_input(...)`.
+
+It does not:
+
+- choose a latest IEM
+- read Phase-H Candidates directly
+- perform Phase-K validation
+- publish into `data/output/`
+
+---
+
+# Phase-J Verification
+
+Final verification:
+
+```text
+Targeted Turing Core synchronization regression:
+191 passed in 0.19s
 
 Complete repository regression:
-5087 passed in 26.00s
+5239 passed in 13.77s
 
 git diff --check:
 PASS
 ```
 
-Phase I generates no SysML v2 textual notation.
+During final regression the Turing Core Vocabulary correctly detected that its
+Target Notation reference still pinned version `0.1.0` after J1 had introduced
+Target Notation `0.2.0`.
+
+The stale reference was synchronized to `0.2.0` in both the source reference and
+the Turing Core SysML mapping policy. No weakening of reference validation was
+introduced.
 
 ---
 
@@ -424,83 +383,77 @@ Phase I generates no SysML v2 textual notation.
 ```text
 H  Approved Input → reviewed Model Candidates
 I  reviewed Candidates → immutable Internal Engineering Model
-J  Internal Engineering Model → SysML v2 text
-K  validation
-L  versioned output package
+J  explicit IEM → deterministic GeneratedSysMLArtifactSet
+K  generated artifact set → validation result
+L  validated artifact set → versioned published output
 ```
 
-Conceptual CATIA / implementation reconciliation:
+Phase J does not own full syntax/model validation or publication.
 
-```text
-LC_07 Architecture Synthesis and Validation
-├── Phase I  deterministic synthesis / assembly
-└── Phase K  broader architecture/model validation
+---
 
-LC_08 SysML v2 Artifact Generation
-└── Phase J  SysML v2 textual generation
-```
+# Phase-N2 Reconciliation Candidates from J
 
-Implementation phases therefore do not map one-to-one to CATIA Logical
-Components.
+Phase J records capability/change evidence only. It does not create or modify
+CATIA Requirements, Functions or Logical Components.
+
+Reconcile during Phase N2:
+
+1. deterministic SysML v2 generation from an explicitly selected validated IEM
+2. SYSIDE-compatible, versioned Target Notation generation
+3. separate versioned semantic mapping, artifact structure and generator rules
+4. fail-closed unsupported-semantics and endpoint-compatibility handling
+5. deterministic generated identity, fingerprints and idempotence
+6. machine-readable generated-output traceability back to approved engineering evidence
+7. explicit separation of generation, validation and publication across J/K/L
+
+Exact CATIA element types, wording and allocations remain deferred to N2.
 
 ---
 
 # Exact Next Work Package
 
-## WP-06 / Phase J — SysML v2 Code Generator
+## WP-07 / Phase K — Validation Layer
 
 Objective:
 
-Generate deterministic SysML v2 textual notation from one explicitly selected,
-validated `InternalEngineeringModelSnapshot`.
+Validate the complete `GeneratedSysMLArtifactSet` before publication.
 
-Phase J must begin by inspecting:
+Phase K shall start from the Phase-J result and shall not regenerate or
+reinterpret engineering semantics.
 
-- `InternalEngineeringModelSnapshot`
-- `InternalModelElement`
-- `InternalModelRelationship`
-- `InternalModelStructure`
-- `InternalModelReadService.load_phase_j_input(...)`
-- `context/sysml/sysml_v2_target_notation.json`
-- current SYSIDE-compatible syntax conventions
-- CATIA textual-notation expectations relevant to generated artifacts
+The architecture discussion shall define at least:
 
-The Phase-J architecture discussion shall define at least:
-
-- target-notation profile authority
-- IEM element-type → SysML v2 construct mapping
-- relationship-family / semantic-intent → SysML v2 relationship mapping
-- package / namespace projection from Internal Model Structure
-- identifier and naming policy in generated text
-- deterministic ordering
-- modular output-unit strategy
-- unsupported construct behavior
-- generation diagnostics
-- exact IEM / IME / IMR traceability into generated artifacts
-- target syntax version / profile binding
-- explicit Phase-J → Phase-K validation boundary
-- explicit prohibition on treating generated text as a replacement for CATIA
-  engineering authority
+- exact `SysMLValidationService` boundary
+- syntax validation strategy and SYSIDE integration boundary
+- Target Notation validation
+- Artifact Structure validation
+- relationship and endpoint consistency validation
+- traceability validation
+- deterministic validation findings/report
+- validation identity/fingerprint
+- fail-closed publication gate into Phase L
+- handling of unavailable external validator infrastructure
+- distinction between deterministic internal checks and external parser/tool
+  compatibility checks
 
 Do not:
 
-- read Model Candidates directly for generation
-- bypass `InternalModelReadService`
-- reinterpret rejected/deferred/unreviewed Candidate content
-- invent new engineering relationships
-- perform broad Phase-K validation inside J
-- silently choose a latest IEM
-- mutate an existing IEM
+- mutate the source IEM
+- silently rewrite generated text during validation
+- use validation to invent missing engineering semantics
+- publish invalid output
+- bypass the Phase-J artifact-set contract
+- collapse Phase K into Phase L
 
-No Phase-J implementation begins before the exact Phase-J architecture contract
-has been surfaced, reviewed and explicitly accepted.
+No Phase-K implementation begins before the Phase-K architecture contract is
+surfaced, reviewed and explicitly accepted.
 
 ---
 
 # Remaining Demo Roadmap
 
 ```text
-WP-06  Phase J — SysML v2 Code Generator
 WP-07  Phase K — Validation Layer
 WP-08  Phase L — Output Writer
 WP-09  Guided Workflow UI
@@ -526,42 +479,19 @@ testing, not weaker authority, validation or traceability.
 
 ---
 
-# Mandatory Engineering Boundaries
-
-- CATIA remains engineering authority.
-- The committed repository remains implementation authority.
-- Human Review authority cannot be replaced by confidence or consensus.
-- Only active Approved Inputs may support Phase-H Candidate Sets.
-- Model Candidates remain derived and non-authoritative.
-- Human-accepted Model Candidates authorize Phase-I assembly only.
-- `ModelCandidateReadService` remains the sole H→I production read boundary.
-- Phase-I Internal Models are immutable representation-neutral snapshots.
-- `InternalModelReadService` is the sole I→J production read boundary.
-- No implicit latest-IEM selection is allowed.
-- Phase J shall preserve accepted engineering semantics.
-- Generated SysML v2 text does not replace CATIA engineering authority.
-- Broader architecture/model validation remains Phase K.
-- Failed required validation blocks later publication.
-- Progressive disclosure may hide complexity but may not remove traceability.
-- No frontend technology rewrite before the product demo.
-
----
-
 # Immediate Starting Instruction for the Next Chat
 
-Begin with the Phase-J architecture contract.
+Begin with the Phase-K validation architecture contract.
 
-Do not implement yet.
+First inspect:
 
-First:
+1. `GeneratedSysMLArtifactSet`
+2. `GeneratedSysMLUnit`
+3. `GeneratedSysMLTraceabilityEntry`
+4. `SysMLGenerationService`
+5. Target Notation / Generation / Artifact Structure / Generator Rules profiles
+6. current SYSIDE validation options and existing deterministic validators
+7. Phase-L publication expectations only enough to define the K→L gate
 
-1. inspect the exact `InternalEngineeringModelSnapshot`
-2. inspect the explicit I→J read service
-3. inspect the existing target-notation profile
-4. inspect representative current SYSIDE / CATIA textual notation
-5. surface exact mapping and modularization questions
-6. propose the minimal deterministic Phase-J architecture
-7. define the Phase-K handoff
-8. obtain explicit acceptance
-
-Only after acceptance begin WP-06 implementation.
+Then propose the minimal deterministic Phase-K architecture and obtain explicit
+acceptance before implementation.

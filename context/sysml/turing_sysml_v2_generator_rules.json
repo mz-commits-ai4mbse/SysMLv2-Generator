@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "rules_id": "TURING_SYSML_V2_GENERATOR_RULES",
+  "rules_version": "1.0.0",
+  "status": "active",
+  "purpose": "Pins deterministic Phase-J textual assembly, relationship placement, qualification, indentation, newline and traceability-location rules.",
+  "unit_assembly": {
+    "newline": "LF",
+    "terminal_newline": true,
+    "indentation": "four_spaces",
+    "root_package_from_artifact_structure_profile": true,
+    "framework_packages_from_projection_plan": true,
+    "framework_package_order": "projection_plan_order",
+    "element_order": "projection_plan_order",
+    "relationship_order": "projection_plan_order"
+  },
+  "relationship_placement": {
+    "placement": "root_package_after_framework_packages",
+    "endpoint_reference": "qualified_from_root_package",
+    "qualification_separator": "::",
+    "reason": "Keeps relationship declarations out of engineering containment packages while referencing exact generated endpoints deterministically."
+  },
+  "traceability": {
+    "line_numbers": "one_based_inclusive",
+    "element_entry_per_ime": true,
+    "relationship_entry_per_imr": true,
+    "relationship_generated_symbol_is_machine_trace_symbol": true,
+    "approved_input_references_preserved": true,
+    "review_decision_reference_preserved": true,
+    "accepted_exception_reference_preserved": true
+  },
+  "fingerprints": {
+    "algorithm": "sha256",
+    "json_canonicalization": "utf8_sort_keys_compact",
+    "unit_content": "exact_utf8_bytes",
+    "generation_input_includes": [
+      "source_iem_content_fingerprint",
+      "target_notation_reference",
+      "generation_profile_reference",
+      "artifact_structure_reference",
+      "generator_rules_reference"
+    ]
+  }
+}

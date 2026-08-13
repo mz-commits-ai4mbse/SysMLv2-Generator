@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "TURING_SYSML_V2_ARTIFACT_STRUCTURE",
+  "profile_version": "1.0.0",
+  "status": "active",
+  "purpose": "Defines deterministic one-unit SysML v2 artifact organization for Phase J without inventing engineering containment.",
+  "framework_template_id": "TURING_RFLP_FRAMEWORK",
+  "framework_template_version": "1.0.0",
+  "output_units": [
+    {
+      "unit_id": "GSU-000001",
+      "relative_path": "generated_model.sysml",
+      "role": "complete_generated_model"
+    }
+  ],
+  "root_package": {
+    "package_name": "GeneratedModel",
+    "display_name": "Generated Model",
+    "emit": true
+  },
+  "framework_package_mappings": [
+    {
+      "framework_node_id": "FW_LEVEL_STAKEHOLDER",
+      "mapping_key": "stakeholder_level",
+      "package_name": "StakeholderLevel",
+      "parent_framework_node_id": null,
+      "order": 1,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_STAKEHOLDER_STAKEHOLDERS",
+      "mapping_key": "stakeholder.stakeholders",
+      "package_name": "Stakeholders",
+      "parent_framework_node_id": "FW_LEVEL_STAKEHOLDER",
+      "order": 1,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_STAKEHOLDER_USER_NEEDS",
+      "mapping_key": "stakeholder.user_needs",
+      "package_name": "UserNeeds",
+      "parent_framework_node_id": "FW_LEVEL_STAKEHOLDER",
+      "order": 2,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_STAKEHOLDER_STAKEHOLDER_REQUIREMENTS",
+      "mapping_key": "stakeholder.stakeholder_requirements",
+      "package_name": "StakeholderRequirements",
+      "parent_framework_node_id": "FW_LEVEL_STAKEHOLDER",
+      "order": 3,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_STAKEHOLDER_USE_CASES",
+      "mapping_key": "stakeholder.use_cases",
+      "package_name": "UseCases",
+      "parent_framework_node_id": "FW_LEVEL_STAKEHOLDER",
+      "order": 4,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_LEVEL_SYSTEM",
+      "mapping_key": "system_level",
+      "package_name": "SystemLevel",
+      "parent_framework_node_id": null,
+      "order": 2,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SYSTEM_REQUIREMENTS",
+      "mapping_key": "system.requirements",
+      "package_name": "Requirements",
+      "parent_framework_node_id": "FW_LEVEL_SYSTEM",
+      "order": 1,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SYSTEM_FUNCTIONAL",
+      "mapping_key": "system.functional",
+      "package_name": "Functional",
+      "parent_framework_node_id": "FW_LEVEL_SYSTEM",
+      "order": 2,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SYSTEM_LOGICAL",
+      "mapping_key": "system.logical",
+      "package_name": "Logical",
+      "parent_framework_node_id": "FW_LEVEL_SYSTEM",
+      "order": 3,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SYSTEM_PHYSICAL",
+      "mapping_key": "system.physical",
+      "package_name": "Physical",
+      "parent_framework_node_id": "FW_LEVEL_SYSTEM",
+      "order": 4,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_LEVEL_SUBSYSTEM",
+      "mapping_key": "subsystem_level",
+      "package_name": "SubsystemLevel",
+      "parent_framework_node_id": null,
+      "order": 3,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SUBSYSTEM_REQUIREMENTS",
+      "mapping_key": "subsystem.requirements",
+      "package_name": "Requirements",
+      "parent_framework_node_id": "FW_LEVEL_SUBSYSTEM",
+      "order": 1,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SUBSYSTEM_FUNCTIONAL",
+      "mapping_key": "subsystem.functional",
+      "package_name": "Functional",
+      "parent_framework_node_id": "FW_LEVEL_SUBSYSTEM",
+      "order": 2,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SUBSYSTEM_LOGICAL",
+      "mapping_key": "subsystem.logical",
+      "package_name": "Logical",
+      "parent_framework_node_id": "FW_LEVEL_SUBSYSTEM",
+      "order": 3,
+      "include_empty": true
+    },
+    {
+      "framework_node_id": "FW_SUBSYSTEM_PHYSICAL",
+      "mapping_key": "subsystem.physical",
+      "package_name": "Physical",
+      "parent_framework_node_id": "FW_LEVEL_SUBSYSTEM",
+      "order": 4,
+      "include_empty": true
+    }
+  ],
+  "ordering": {
+    "framework_nodes": "framework_template_order",
+    "elements_within_package": "internal_model_element_id",
+    "relationships": "internal_model_relationship_id"
+  },
+  "empty_package_policy": "include",
+  "naming_policy": {
+    "generated_element_symbol": "internal_model_element_id_with_hyphen_replaced_by_underscore",
+    "generated_relationship_trace_symbol": "internal_model_relationship_id_with_hyphen_replaced_by_underscore",
+    "package_names": "profile_defined_machine_safe_identifiers",
+    "display_names_are_identity": false
+  }
+}
