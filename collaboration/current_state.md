@@ -29,39 +29,39 @@ Current Branch
 
 Verified Implementation Reference
 
-`b598bf04770b08738bbce5c15f2f7dfb671aab01` — Phase G completion
+`commit containing this SSOT update` — Phase H completion
 
 Last Prior Committed Checkpoint
 
-`7209f17a610d3adb359e8b672a28020b71c03333` — G6 completion
+`884d658726d9a5a2ac9f86786ded30db7fe38c68` — ADR-018 accepted Phase-H architecture
 
 Architecture Version
 
-1.4
+1.5
 
 Knowledge Base Version
 
-1.11
+1.12
 
 Implementation Version
 
-0.13
+0.14
 
 Current Roadmap Version
 
-1.11
+1.12
 
 Current Development Phase
 
-Phase H — Model Candidate Layer
+Phase I — Model Generation Agent / Internal Engineering Model
 
 Current Status
 
-Phase G completed and verified; Phase H architecture contract is next.
+Phase H completed and verified; Phase I architecture contract is next.
 
 Verified Automated Test Baseline
 
-4818 passed in the complete repository regression after G7.4.
+4986 passed in 25.80s in the complete repository regression after Phase H.
 
 Phase-G Focused Completion Regression
 
@@ -85,7 +85,7 @@ Product Demo
 
 Last SSOT Update
 
-2026-08-12
+2026-08-13
 
 ---
 
@@ -112,8 +112,7 @@ Source
 The implementation sequence is now:
 
 ```text
-Phase H — Model Candidate Layer
-→ Phase I — Model Generation Agent / Internal Engineering Model
+Phase I — Model Generation Agent / Internal Engineering Model
 → Phase J — SysML v2 Code Generator
 → Phase K — Validation Layer
 → Phase L — Output Writer
@@ -134,13 +133,16 @@ architecture and evidence.
 
 Priority 1
 
-Begin Phase H only after the exact Model Candidate architecture contract has
-been surfaced, discussed and explicitly accepted.
+Begin Phase I only after the exact Internal Engineering Model architecture
+contract has been surfaced, discussed and explicitly accepted.
 
-Phase H shall consume engineering authority only through:
+Phase I shall consume Phase-H authority only through:
 
 ```python
-ApprovedInputRepository.list_active_approved_inputs(project_id)
+ModelCandidateReadService.load_phase_i_input(
+    project_id,
+    candidate_set_id,
+) -> ModelCandidateAssemblyInput
 ```
 
 Priority 2
@@ -625,6 +627,96 @@ The manual acceptance verified:
 - no second Agentic Ingestion write action while a Run is `running`
 
 Phase G does not generate Model Candidates or SysML v2.
+
+---
+
+# Phase H — Model Candidate Layer
+
+Phase H is completed and verified.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
+
+Accepted and committed architecture checkpoint:
+
+`884d658726d9a5a2ac9f86786ded30db7fe38c68`
+
+Implemented work packages:
+
+```text
+H1  Identifiers and error foundation
+H2  Immutable domain types
+H3  Manifests, validation and fingerprints
+H4  Repository, paths and immutable persistence
+H5  Approved Input → Candidate generation pipeline
+H6  Model Structure / Comparability Profile and relationship logic
+H7  Candidate Human Review and Phase-I gate
+H8  deterministic ModelProposalView and presentation projection
+```
+
+Implemented authority path:
+
+```text
+ApprovedInputRepository.list_active_approved_inputs(project_id)
+→ immutable Model Candidate Set
+→ Model Element Candidates / Model Relationship Candidates
+→ exact Candidate Human Review Decisions
+→ ModelCandidateReadService.load_phase_i_input(...)
+→ ModelCandidateAssemblyInput
+```
+
+Implemented capabilities include:
+
+- immutable project-local `MCS`, `MCE`, `MCR` identities
+- exact Approved Input snapshot and fingerprint binding
+- separate Element and Relationship Candidate manifests
+- same-set exact Relationship endpoint resolution
+- explicit relationship family, semantic intent and later-serialization separation
+- versioned Model Structure and Comparability Profile
+- profile-driven conservative candidate derivation
+- advisory relationship priority using ADR-018 P1–P7 criteria
+- structural-comparability impact and explicit deviations
+- immutable Candidate Review Decisions (`MCD`)
+- `accepted`, `rejected`, `deferred` and `accepted_exception` decisions
+- exact Candidate / Candidate Set / profile / Approved Input fingerprint binding
+- stale-decision detection
+- active-Approved-Input revalidation before Phase-I handoff
+- fail-closed unresolved or ambiguous accepted relationships
+- accepted-relationship endpoint authorization checks
+- explicit relationship-choice conflict checks
+- sole validated H→I read contract through `ModelCandidateReadService`
+- deterministic, non-authoritative `ModelProposalView`
+- lightweight structural overview suitable for later UML-/SysML-like UI projection
+- relationship choice groups, comparability summary and profile deviations
+- concise required-human-decision and next-action projection
+- deterministic JSON and Markdown proposal projections
+- no SysML v2 textual generation in Phase H
+
+Phase-H verification:
+
+```text
+Focused H1–H8 regression:
+168 passed in 1.63s
+
+Complete repository regression:
+4986 passed in 25.80s
+
+git diff --check:
+PASS
+```
+
+The technical Model Proposal read model is implemented, but the polished
+Architecture / Model Proposal UX remains WP-11.
+
+Phase H does not assemble the Internal Engineering Model and does not generate
+SysML v2 text.
+
+Immediate next phase:
+
+```text
+Phase I — Model Generation Agent / Internal Engineering Model
+```
 
 ---
 

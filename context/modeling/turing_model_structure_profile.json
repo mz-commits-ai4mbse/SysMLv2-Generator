@@ -1,0 +1,405 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "TURING_MODEL_STRUCTURE",
+  "profile_version": "1.0.0",
+  "name": "Turing Model Structure and Comparability Profile",
+  "status": "active",
+  "framework_template_id": "TURING_RFLP_FRAMEWORK",
+  "framework_template_version": "1.0.0",
+  "model_areas": [
+    {
+      "model_area_id": "stakeholder.stakeholders",
+      "framework_node_id": "FW_STAKEHOLDER_STAKEHOLDERS",
+      "permitted_element_types": [
+        "stakeholder"
+      ],
+      "comparison_anchor_prefix": "stakeholder.stakeholders"
+    },
+    {
+      "model_area_id": "stakeholder.user_needs",
+      "framework_node_id": "FW_STAKEHOLDER_USER_NEEDS",
+      "permitted_element_types": [
+        "user_need"
+      ],
+      "comparison_anchor_prefix": "stakeholder.user_needs"
+    },
+    {
+      "model_area_id": "stakeholder.stakeholder_requirements",
+      "framework_node_id": "FW_STAKEHOLDER_STAKEHOLDER_REQUIREMENTS",
+      "permitted_element_types": [
+        "stakeholder_requirement"
+      ],
+      "comparison_anchor_prefix": "stakeholder.stakeholder_requirements"
+    },
+    {
+      "model_area_id": "stakeholder.use_cases",
+      "framework_node_id": "FW_STAKEHOLDER_USE_CASES",
+      "permitted_element_types": [
+        "use_case"
+      ],
+      "comparison_anchor_prefix": "stakeholder.use_cases"
+    },
+    {
+      "model_area_id": "system.requirements",
+      "framework_node_id": "FW_SYSTEM_REQUIREMENTS",
+      "permitted_element_types": [
+        "system_requirement"
+      ],
+      "comparison_anchor_prefix": "system.requirements"
+    },
+    {
+      "model_area_id": "system.functional",
+      "framework_node_id": "FW_SYSTEM_FUNCTIONAL",
+      "permitted_element_types": [
+        "function"
+      ],
+      "comparison_anchor_prefix": "system.functional"
+    },
+    {
+      "model_area_id": "system.logical",
+      "framework_node_id": "FW_SYSTEM_LOGICAL",
+      "permitted_element_types": [
+        "logical_component"
+      ],
+      "comparison_anchor_prefix": "system.logical"
+    },
+    {
+      "model_area_id": "system.physical",
+      "framework_node_id": "FW_SYSTEM_PHYSICAL",
+      "permitted_element_types": [
+        "physical_component"
+      ],
+      "comparison_anchor_prefix": "system.physical"
+    },
+    {
+      "model_area_id": "subsystem.requirements",
+      "framework_node_id": "FW_SUBSYSTEM_REQUIREMENTS",
+      "permitted_element_types": [
+        "subsystem_requirement"
+      ],
+      "comparison_anchor_prefix": "subsystem.requirements"
+    },
+    {
+      "model_area_id": "subsystem.functional",
+      "framework_node_id": "FW_SUBSYSTEM_FUNCTIONAL",
+      "permitted_element_types": [
+        "function"
+      ],
+      "comparison_anchor_prefix": "subsystem.functional"
+    },
+    {
+      "model_area_id": "subsystem.logical",
+      "framework_node_id": "FW_SUBSYSTEM_LOGICAL",
+      "permitted_element_types": [
+        "logical_component"
+      ],
+      "comparison_anchor_prefix": "subsystem.logical"
+    },
+    {
+      "model_area_id": "subsystem.physical",
+      "framework_node_id": "FW_SUBSYSTEM_PHYSICAL",
+      "permitted_element_types": [
+        "physical_component"
+      ],
+      "comparison_anchor_prefix": "subsystem.physical"
+    }
+  ],
+  "element_derivation_rules": [
+    {
+      "rule_id": "ELEMENT_STAKEHOLDER",
+      "model_area_id": "stakeholder.stakeholders",
+      "element_type": "stakeholder",
+      "classification_values": [
+        "Actor",
+        "Stakeholder"
+      ],
+      "framework_assignment_values": [
+        "FW_STAKEHOLDER_STAKEHOLDERS",
+        "Stakeholders",
+        "stakeholder.stakeholders"
+      ],
+      "information_type_values": [
+        "actor",
+        "stakeholder",
+        "user_role"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_USER_NEED",
+      "model_area_id": "stakeholder.user_needs",
+      "element_type": "user_need",
+      "classification_values": [
+        "Stakeholder Need",
+        "User Need"
+      ],
+      "framework_assignment_values": [
+        "FW_STAKEHOLDER_USER_NEEDS",
+        "User Needs",
+        "stakeholder.user_needs"
+      ],
+      "information_type_values": [
+        "need",
+        "stakeholder_need",
+        "user_need"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_STAKEHOLDER_REQUIREMENT",
+      "model_area_id": "stakeholder.stakeholder_requirements",
+      "element_type": "stakeholder_requirement",
+      "classification_values": [
+        "Stakeholder Requirement"
+      ],
+      "framework_assignment_values": [
+        "FW_STAKEHOLDER_STAKEHOLDER_REQUIREMENTS",
+        "Stakeholder Requirements",
+        "stakeholder.stakeholder_requirements"
+      ],
+      "information_type_values": [
+        "requirement",
+        "stakeholder_requirement"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_USE_CASE",
+      "model_area_id": "stakeholder.use_cases",
+      "element_type": "use_case",
+      "classification_values": [
+        "Use Case",
+        "Workflow"
+      ],
+      "framework_assignment_values": [
+        "FW_STAKEHOLDER_USE_CASES",
+        "Use Cases",
+        "stakeholder.use_cases"
+      ],
+      "information_type_values": [
+        "use_case",
+        "workflow"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SYSTEM_REQUIREMENT",
+      "model_area_id": "system.requirements",
+      "element_type": "system_requirement",
+      "classification_values": [
+        "System Requirement"
+      ],
+      "framework_assignment_values": [
+        "FW_SYSTEM_REQUIREMENTS",
+        "System Requirements",
+        "system.requirements"
+      ],
+      "information_type_values": [
+        "requirement",
+        "system_requirement"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SYSTEM_FUNCTION",
+      "model_area_id": "system.functional",
+      "element_type": "function",
+      "classification_values": [
+        "Capability",
+        "Function",
+        "System Function"
+      ],
+      "framework_assignment_values": [
+        "FW_SYSTEM_FUNCTIONAL",
+        "System Functional",
+        "system.functional"
+      ],
+      "information_type_values": [
+        "capability",
+        "function"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SYSTEM_LOGICAL",
+      "model_area_id": "system.logical",
+      "element_type": "logical_component",
+      "classification_values": [
+        "Logical Component",
+        "Logical Element",
+        "Logical Service"
+      ],
+      "framework_assignment_values": [
+        "FW_SYSTEM_LOGICAL",
+        "System Logical",
+        "system.logical"
+      ],
+      "information_type_values": [
+        "logical_component",
+        "logical_element"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SYSTEM_PHYSICAL",
+      "model_area_id": "system.physical",
+      "element_type": "physical_component",
+      "classification_values": [
+        "Physical Component",
+        "Physical Element"
+      ],
+      "framework_assignment_values": [
+        "FW_SYSTEM_PHYSICAL",
+        "System Physical",
+        "system.physical"
+      ],
+      "information_type_values": [
+        "physical_component",
+        "physical_element"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SUBSYSTEM_REQUIREMENT",
+      "model_area_id": "subsystem.requirements",
+      "element_type": "subsystem_requirement",
+      "classification_values": [
+        "Subsystem Requirement"
+      ],
+      "framework_assignment_values": [
+        "FW_SUBSYSTEM_REQUIREMENTS",
+        "Subsystem Requirements",
+        "subsystem.requirements"
+      ],
+      "information_type_values": [
+        "requirement",
+        "subsystem_requirement"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SUBSYSTEM_FUNCTION",
+      "model_area_id": "subsystem.functional",
+      "element_type": "function",
+      "classification_values": [
+        "Function",
+        "Subsystem Function"
+      ],
+      "framework_assignment_values": [
+        "FW_SUBSYSTEM_FUNCTIONAL",
+        "Subsystem Functional",
+        "subsystem.functional"
+      ],
+      "information_type_values": [
+        "function"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SUBSYSTEM_LOGICAL",
+      "model_area_id": "subsystem.logical",
+      "element_type": "logical_component",
+      "classification_values": [
+        "Logical Component",
+        "Logical Element",
+        "Subsystem Logical Element"
+      ],
+      "framework_assignment_values": [
+        "FW_SUBSYSTEM_LOGICAL",
+        "Subsystem Logical",
+        "subsystem.logical"
+      ],
+      "information_type_values": [
+        "logical_component",
+        "logical_element"
+      ]
+    },
+    {
+      "rule_id": "ELEMENT_SUBSYSTEM_PHYSICAL",
+      "model_area_id": "subsystem.physical",
+      "element_type": "physical_component",
+      "classification_values": [
+        "Physical Component",
+        "Physical Element",
+        "Subsystem Physical Element"
+      ],
+      "framework_assignment_values": [
+        "FW_SUBSYSTEM_PHYSICAL",
+        "Subsystem Physical",
+        "subsystem.physical"
+      ],
+      "information_type_values": [
+        "physical_component",
+        "physical_element"
+      ]
+    }
+  ],
+  "relationship_semantics": [
+    {
+      "semantic_intent": "allocated_to",
+      "relationship_family": "allocation",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "dependency",
+      "relationship_family": "dependency",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "depends_on",
+      "relationship_family": "dependency",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "derives_from",
+      "relationship_family": "derivation",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "flows_to",
+      "relationship_family": "flow",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "interacts_with",
+      "relationship_family": "interaction",
+      "directionality": "bidirectional",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "refines",
+      "relationship_family": "refinement",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "satisfies",
+      "relationship_family": "refinement",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    },
+    {
+      "semantic_intent": "traces_to",
+      "relationship_family": "traceability",
+      "directionality": "source_to_target",
+      "canonical": true,
+      "deviation_id": null
+    }
+  ],
+  "priority_criteria": [
+    "evidence_directness",
+    "semantic_fit",
+    "endpoint_certainty",
+    "structural_profile_preference",
+    "structural_comparability_impact",
+    "assumption_burden",
+    "conformance"
+  ],
+  "exception_policy": {
+    "noncanonical_relationship_requires_exception": true,
+    "intentional_deviation_requires_rationale": true
+  }
+}

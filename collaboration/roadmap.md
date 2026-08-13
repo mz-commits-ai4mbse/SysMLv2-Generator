@@ -22,43 +22,43 @@ have been completed.
 
 Architecture Version
 
-1.4
+1.5
 
 Knowledge Base Version
 
-1.11
+1.12
 
 Implementation Version
 
-0.13
+0.14
 
 Roadmap Version
 
-1.11
+1.12
 
 Last SSOT Update
 
-2026-08-12
+2026-08-13
 
 Current Phase
 
-**Phase H — Model Candidate Layer**
+**Phase I — Model Generation Agent / Internal Engineering Model**
 
 Current Status
 
-Phase G Completed; Phase H architecture contract next.
+Phase H completed and verified; Phase I architecture contract next.
 
 Verified Implementation Reference
 
-`b598bf04770b08738bbce5c15f2f7dfb671aab01` — Phase G completion
+`commit containing this SSOT update` — Phase H completion
 
 Last Prior Committed Checkpoint
 
-`7209f17a610d3adb359e8b672a28020b71c03333` — G6 completion
+`884d658726d9a5a2ac9f86786ded30db7fe38c68` — ADR-018 accepted Phase-H architecture
 
 Verified Automated Test Baseline
 
-4818 passed in the complete repository regression after G7.4.
+4986 passed in 25.80s in the complete repository regression after Phase H.
 
 Phase-G Focused Completion Regression
 
@@ -98,11 +98,10 @@ Source
 → Versioned Output Package
 ```
 
-Phase G is complete. The technical closed vertical slice now follows:
+Phases G and H are complete. The technical closed vertical slice now follows:
 
 ```text
-Phase H
-→ Phase I
+Phase I
 → Phase J
 → Phase K
 → Phase L
@@ -816,9 +815,48 @@ Human Review shall authorize accepted relationship candidates and exceptions.
 - no SysML v2 code is generated
 - automated tests pass
 
+## Implementation Verification
+
+Architecture:
+
+`collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
+
+Completed implementation slices:
+
+```text
+H1  Identifiers / Errors
+H2  Immutable Domain Types
+H3  Manifests / Validation / Fingerprints
+H4  Repository / Paths / Persistence
+H5  Approved Input → Candidate Pipeline
+H6  Profile / Relationship Logic
+H7  Human Review / Phase-I Gate
+H8  ModelProposalView / Phase-H completion
+```
+
+Verification:
+
+```text
+Focused H1–H8 regression:
+168 passed in 1.63s
+
+Complete repository regression:
+4986 passed in 25.80s
+
+git diff --check:
+PASS
+```
+
+Technical Phase-H output includes persisted Model Candidate Sets, explicit
+Element and Relationship Candidates, structural-comparability evidence,
+Candidate Human Review, the validated Phase-I read boundary and a deterministic
+non-authoritative Model Proposal projection.
+
+The polished Architecture / Model Proposal UX remains WP-11.
+
 ## Status
 
-Next — architecture contract required before implementation
+Completed
 
 Depends on:
 
@@ -859,7 +897,7 @@ Planned
 
 Depends on:
 
-Phase H
+Phase H — Satisfied
 
 ---
 

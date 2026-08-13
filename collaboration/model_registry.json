@@ -1,6 +1,6 @@
 {
-  "version": "1.11",
-  "last_updated": "2026-08-12",
+  "version": "1.12",
+  "last_updated": "2026-08-13",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -22,10 +22,10 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "b598bf04770b08738bbce5c15f2f7dfb671aab01",
+      "verified_commit": "commit_containing_this_phase_h_completion_ssot_update",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 4818,
+        "complete_automated_test_count": 4986,
         "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
@@ -38,7 +38,7 @@
         "g4_2_a_to_c_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
         "g4_2_a_to_c_focused_test_count": 208,
         "g4_2_a_to_c_complete_automated_test_count": 4463,
-        "verified_passing_test_count": 4818,
+        "verified_passing_test_count": 4986,
         "complete_regression_passed_count": 4552,
         "complete_regression_stale_test_expectation_count": 1,
         "targeted_post_regression_passed_count": 1,
@@ -71,9 +71,17 @@
         "g7_git_diff_check": "passed",
         "g7_manual_acceptance_report": "collaboration/audits/phase_g_manual_acceptance_test_report.md",
         "g7_findings_report": "collaboration/audits/phase_g_manual_acceptance_findings.md",
-        "phase_g_verification_note": "Phase G completed with manual acceptance PASS, a focused 65-test completion regression, a complete 4818-test repository regression, and a clean git diff check."
+        "phase_g_verification_note": "Phase G completed with manual acceptance PASS, a focused 65-test completion regression, a complete 4818-test repository regression, and a clean git diff check.",
+        "phase_h_architecture_commit": "884d658726d9a5a2ac9f86786ded30db7fe38c68",
+        "phase_h_focused_test_count": 168,
+        "phase_h_focused_test_duration_seconds": 1.63,
+        "phase_h_complete_repository_test_count": 4986,
+        "phase_h_complete_repository_duration_seconds": 25.8,
+        "phase_h_git_diff_check": "passed",
+        "phase_h_completion_note": "Phase H completed H1-H8 with a clean 168-test focused regression, a clean 4986-test complete repository regression, and a clean git diff check.",
+        "phase_h_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
       },
-      "last_prior_committed_checkpoint": "7209f17a610d3adb359e8b672a28020b71c03333"
+      "last_prior_committed_checkpoint": "884d658726d9a5a2ac9f86786ded30db7fe38c68"
     },
     "collaboration": {
       "location": "collaboration/",
@@ -103,16 +111,15 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.4",
-    "knowledge_base_version": "1.11",
-    "implementation_version": "0.13",
-    "roadmap_version": "1.11"
+    "architecture_version": "1.5",
+    "knowledge_base_version": "1.12",
+    "implementation_version": "0.14",
+    "roadmap_version": "1.12"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
     "scope": "closed_vertical_slice_then_demo_hardening",
     "critical_path": [
-      "H",
       "I",
       "J",
       "K",
@@ -741,49 +748,94 @@
     "manual_acceptance_report": "collaboration/audits/phase_g_manual_acceptance_test_report.md"
   },
   "model_candidate_layer": {
-    "status": "next_architecture_contract_required",
+    "status": "implemented_verified",
     "implementation_phase": "H",
-    "depends_on_phase": "G_completed",
-    "architecture_accepted": false,
-    "shall_generate_sysml_v2": false,
-    "relationship_prioritization_required": true,
-    "human_review_required": true,
-    "relationship_concepts_in_scope": [
-      "dependency",
-      "allocation",
-      "flow",
-      "refinement_related",
-      "derivation_related",
-      "framework_specific"
-    ],
-    "required_candidate_evidence": [
-      "source_element",
-      "target_element",
-      "relationship_semantic_intent",
-      "supporting_evidence",
-      "priority",
-      "prioritization_rationale",
-      "comparability_impact",
-      "profile_conformance",
-      "human_review_status"
-    ],
-    "comparability_profile": {
-      "status": "planned",
-      "name": "Model Structure and Comparability Profile",
-      "versioned": true,
-      "purpose": "Support consistent model structures across related products, product variants, independently generated models and repeated generation runs.",
-      "shall_define": [
-        "Preferred Model Structure",
-        "Canonical Relationship Choices",
-        "Required Comparison Anchors",
-        "Allowed Structural Variation",
-        "Prioritization Criteria",
-        "Permitted Exceptions",
-        "Review Requirements for Deviations"
-      ]
+    "architecture_decision": "collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md",
+    "architecture_checkpoint": "884d658726d9a5a2ac9f86786ded30db7fe38c68",
+    "upstream_authority_contract": "ApprovedInputRepository.list_active_approved_inputs(project_id)",
+    "candidate_identity": {
+      "candidate_set": "MCS-six_digit_numeric",
+      "element_candidate": "MCE-six_digit_numeric",
+      "relationship_candidate": "MCR-six_digit_numeric",
+      "review_decision": "MCD-six_digit_numeric",
+      "scope": "project_local_sequential_immutable",
+      "gap_reuse_allowed": false
     },
-    "implementation_blocked_until_architecture_acceptance": true,
-    "upstream_authority_contract": "ApprovedInputRepository.list_active_approved_inputs(project_id)"
+    "repository_layout": "data/projects/<project_id>/model_candidates/sets/<candidate_set_id>/",
+    "model_structure_profile": {
+      "path": "context/modeling/turing_model_structure_profile.json",
+      "profile_id": "TURING_MODEL_STRUCTURE",
+      "profile_version": "1.0.0",
+      "authority": "versioned_phase_h_structure_and_comparability_profile"
+    },
+    "derivation_rules_context": {
+      "path": "context/mapping/sysml_model_derivation_rules.json",
+      "context_id": "CTX_SYSML_MODEL_DERIVATION_RULES",
+      "context_version": "0.1.0"
+    },
+    "candidate_set_contract": {
+      "approved_input_snapshot_bound": true,
+      "immutable": true,
+      "explicit_predecessor_supported": true,
+      "implicit_latest_wins_allowed": false
+    },
+    "relationship_contract": {
+      "element_and_relationship_candidates_separate": true,
+      "same_set_exact_endpoint_resolution_required_for_phase_i": true,
+      "relationship_family_separate_from_semantic_intent": true,
+      "sysml_v2_serialization_deferred_to_phase_j": true,
+      "alternatives_preserved_by_relationship_choice_key": true,
+      "priority_is_advisory": true
+    },
+    "human_review": {
+      "decisions": [
+        "accepted",
+        "rejected",
+        "deferred",
+        "accepted_exception"
+      ],
+      "decision_authority": "human",
+      "exact_fingerprint_binding": true,
+      "accepted_exception_requires_rationale": true,
+      "stale_decisions_block_phase_i": true
+    },
+    "phase_i_read_contract": "ModelCandidateReadService.load_phase_i_input(project_id, candidate_set_id) -> ModelCandidateAssemblyInput",
+    "phase_i_gate": {
+      "active_approved_inputs_revalidated": true,
+      "candidate_fingerprints_revalidated": true,
+      "profile_binding_revalidated": true,
+      "terminal_review_required_for_every_candidate": true,
+      "accepted_relationship_endpoints_must_be_accepted": true,
+      "unresolved_or_ambiguous_accepted_relationships_block": true,
+      "multiple_accepted_relationship_alternatives_block": true
+    },
+    "model_proposal_view": {
+      "status": "implemented_technical_projection",
+      "authority": "non_authoritative_presentation_projection",
+      "contains": [
+        "proposed_elements",
+        "proposed_relationships",
+        "structural_overview",
+        "relationship_choice_groups",
+        "comparability_summary",
+        "profile_deviations",
+        "required_human_decisions",
+        "blocking_issues",
+        "generation_rationale_summary",
+        "phase_i_gate_status",
+        "next_action"
+      ],
+      "deterministic_json_projection": true,
+      "deterministic_markdown_projection": true,
+      "polished_ui_deferred_to": "WP-11"
+    },
+    "verification": {
+      "focused_h1_to_h8_test_count": 168,
+      "complete_repository_test_count": 4986,
+      "complete_repository_duration_seconds": 25.8,
+      "git_diff_check": "passed"
+    },
+    "next_phase": "I"
   },
   "model_generation": {
     "status": "planned",

@@ -1,5 +1,95 @@
 # Change Log
 
+## 2026-08-13 — Phase H Completion and Phase I Transition
+
+Versions after this update:
+
+- Architecture Version: 1.5
+- Knowledge Base Version: 1.12
+- Implementation Version: 0.14
+- Roadmap Version: 1.12
+
+Implementation reference:
+
+- Phase-H completion: the commit containing this SSOT update
+- Accepted Phase-H architecture:
+  `884d658726d9a5a2ac9f86786ded30db7fe38c68`
+- Phase-G implementation baseline:
+  `b598bf04770b08738bbce5c15f2f7dfb671aab01`
+
+Architecture decision:
+
+`collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
+
+Phase-H completion:
+
+```text
+H1  Identifiers and error foundation
+H2  Immutable domain types
+H3  Manifests, validation and fingerprints
+H4  Repository, paths and immutable persistence
+H5  Approved Input → Candidate generation pipeline
+H6  Model Structure / Comparability Profile and relationship logic
+H7  Candidate Human Review and Phase-I gate
+H8  ModelProposalView and Phase-H completion
+```
+
+Implemented capabilities:
+
+- immutable project-local MCS/MCE/MCR contracts
+- exact Approved Input snapshot and provenance binding
+- explicit relationship endpoints and semantic intent
+- versioned Model Structure and Comparability Profile
+- conservative profile-driven candidate derivation
+- advisory relationship priority and comparability assessment
+- immutable Candidate Human Review Decisions (`MCD`)
+- exact fingerprint-bound accepted/rejected/deferred/exception decisions
+- stale-decision and current-authority validation
+- fail-closed Phase-I gate
+- sole H→I read contract:
+  `ModelCandidateReadService.load_phase_i_input(...)`
+- deterministic non-authoritative `ModelProposalView`
+- structural overview, relationship-choice groups, comparability summary,
+  profile deviations, required decisions and next action
+- deterministic JSON and Markdown proposal projections
+- no Phase-H SysML v2 serialization
+
+Verification:
+
+```text
+Focused H1–H8 regression:
+168 passed in 1.63s
+
+Complete repository regression:
+4986 passed in 25.80s
+
+git diff --check:
+PASS
+```
+
+Phase-H authority boundary:
+
+```text
+Approved Input
+→ Model Candidates
+→ Candidate Human Review
+→ validated ModelCandidateAssemblyInput
+```
+
+The Model Proposal remains a presentation projection and is not model authority.
+
+Phase transition:
+
+```text
+Phase H: COMPLETE
+Phase I: NEXT — architecture contract required before implementation
+```
+
+The polished Architecture / Model Proposal UI remains WP-11 and is not part of
+the technical Phase-H completion gate.
+
+---
+
 ## 2026-08-12 — Phase G Completion, ADR-017 and Phase H Transition
 
 Versions after this update:
