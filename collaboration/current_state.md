@@ -29,27 +29,27 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase I completion
+`commit containing this SSOT update` — H9 controlled Phase-H extension completion
 
 Last Prior Committed Checkpoint
 
-`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d` — ADR-019 accepted Phase-I architecture
+`027269e94df0ec586a8fd489e78c92fddd0a3aa5` — Phase I completion baseline
 
 Architecture Version
 
-1.6
+1.7
 
 Knowledge Base Version
 
-1.13
+1.14
 
 Implementation Version
 
-0.15
+0.16
 
 Current Roadmap Version
 
-1.13
+1.14
 
 Current Development Phase
 
@@ -57,11 +57,32 @@ Phase J — SysML v2 Code Generator
 
 Current Status
 
-Phase I completed and verified; Phase J is next.
+Phase I remains completed and verified. H9 hybrid target projection is completed and verified; Phase J is next.
 
 Verified Automated Test Baseline
 
-5087 passed in 26.00s in the complete repository regression after Phase I.
+5120 passed in 13.12s in the complete repository regression after H9.
+
+Phase-H9 Focused Regression
+
+61 passed in 0.69s.
+
+Phase-H9 Live LLM Smoke Test
+
+PASS — one bounded OpenAI call using `gpt-5-mini`.
+
+Observed usage:
+
+```text
+input_tokens: 711
+output_tokens: 634
+reasoning_tokens: 512
+total_tokens: 1345
+```
+
+The live result selected `ELEMENT_SYSTEM_FUNCTION`, producing
+`system.functional` / `function` with `partially_supported` semantic support.
+No retry and no Candidate Set persistence were used.
 
 Phase-G Focused Completion Regression
 
@@ -712,6 +733,97 @@ Architecture / Model Proposal UX remains WP-11.
 
 Phase H does not assemble the Internal Engineering Model and does not generate
 SysML v2 text.
+
+# Phase H9 — Hybrid Target Projection Extension
+
+H9 is completed and verified as a controlled extension of the completed
+Phase-H Model Candidate Layer.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
+
+The H9 projection architecture is:
+
+```text
+Approved Input snapshot
+→ deterministic profile-resolution coverage
+→ mapped / ambiguous / unmapped / intentionally_not_projected
+→ strict deterministic path OR unresolved-only LLM assistance
+→ profile-controlled structured proposal validation
+→ merged Model Candidate drafts
+→ existing Candidate Human Review
+→ unchanged Phase-I gate
+```
+
+Implemented capabilities include:
+
+- complete explicit projection coverage for every active Approved Input
+- strict deterministic quick/dry-run projection retained
+- shared deterministic profile resolver
+- deterministic-first hybrid routing
+- LLM execution only for `ambiguous` / `unmapped` inputs
+- compact profile-controlled request context
+- bounded serial batching with a configured call ceiling
+- no automatic LLM retry loop
+- structured `proposed_mapping` / `ambiguous` / `unmapped` response contract
+- fail-closed rejection of hallucinated or non-offered target rules
+- no forced framework mapping
+- no SysML v2 generation by the H9 LLM
+- preserved original Approved-Input evidence
+- LLM-assisted Candidates remain subject to the existing Human Review boundary
+- hybrid generation provenance with provider/model and semantic
+  request/response fingerprints
+- unchanged sole H→I production boundary
+- Phase J remains deterministic serialization of accepted Internal Model
+  semantics
+
+Verification:
+
+```text
+Focused H9 regression:
+61 passed in 0.69s
+
+Complete repository regression:
+5120 passed in 13.12s
+
+git diff --check:
+PASS
+
+Live bounded LLM smoke:
+PASS
+provider: openai
+model: gpt-5-mini
+calls: 1
+retries: 0
+total_tokens: 1345
+selected_rule_id: ELEMENT_SYSTEM_FUNCTION
+candidate_model_area: system.functional
+candidate_element_type: function
+support_level: partially_supported
+```
+
+The live smoke was intentionally non-persistent and used one unresolved input,
+`batch_size=1` and `max_calls_per_run=1`.
+
+## Phase-N2 Reconciliation Candidates from H9
+
+H9 records capability/change evidence only. It does not create or modify CATIA
+Requirements or Functions.
+
+The following capabilities shall be reconciled during Phase N2:
+
+- selectable strict deterministic and LLM-assisted target projection
+- complete target-projection coverage with explicit unresolved states
+- deterministic-first routing that limits AI execution to unresolved cases
+- profile-controlled LLM proposals with explicit no-forced-fit behavior
+- traceable LLM target-projection provenance while preserving Human Review
+  authority
+
+Exact CATIA element types, Requirement wording, Function wording and allocation
+remain explicitly deferred to Phase N2.
+
+---
 
 # Phase I — Internal Engineering Model
 

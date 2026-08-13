@@ -3,7 +3,7 @@
 ## Purpose
 
 This document is the authoritative starting point for the next implementation
-chat after Phase-I completion.
+chat after H9 hybrid target-projection completion.
 
 Use it together with the committed repository, the Collaboration Knowledge Base
 and the authoritative CATIA SysML v2 model.
@@ -26,27 +26,27 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase I completion
+`commit containing this SSOT update` — H9 controlled Phase-H extension completion
 
 Last Prior Committed Checkpoint
 
-`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d` — ADR-019 accepted Phase-I architecture
+`027269e94df0ec586a8fd489e78c92fddd0a3aa5` — Phase I completion baseline
 
 Architecture Version
 
-1.6
+1.7
 
 Knowledge Base Version
 
-1.13
+1.14
 
 Implementation Version
 
-0.15
+0.16
 
 Roadmap Version
 
-1.13
+1.14
 
 Last SSOT Update
 
@@ -58,19 +58,22 @@ Phase J — SysML v2 Code Generator
 
 Current Status
 
-Phase I completed and verified. Phase J is next.
+Phase I remains completed and verified. H9 hybrid target projection is completed and verified. Phase J is next.
 
 Verified Automated Test Baseline
 
 ```text
-Focused I1–I6 regression:
-110 passed in 1.07s
+Focused H9 regression:
+61 passed in 0.69s
 
 Complete repository regression:
-5087 passed in 26.00s
+5120 passed in 13.12s
 
 git diff --check:
 PASS
+
+Bounded live H9 LLM smoke:
+PASS — 1 call, 0 retries, 1345 total tokens
 ```
 
 Closed Vertical-slice Target
@@ -98,9 +101,10 @@ Read in this order:
 5. `collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
 6. `collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
 7. `collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
-8. `context/sysml/sysml_v2_target_notation.json`
-9. `collaboration/change_log.md`
-10. this handover
+8. `collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
+9. `context/sysml/sysml_v2_target_notation.json`
+10. `collaboration/change_log.md`
+11. this handover
 
 Then inspect the committed Phase-I implementation and existing target-notation
 configuration only as required for the Phase-J architecture discussion.
@@ -201,6 +205,60 @@ derivation_rules_reference
 
 These references already existed in the Candidate Set manifest. The enrichment
 keeps Phase I inside the sole H→I authority boundary.
+
+---
+
+# Phase H9 — Completed Hybrid Target Projection Extension
+
+Architecture decision:
+
+`collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
+
+H9 preserves the completed Phase-H authority model while adding a selectable
+deterministic-first hybrid target-projection path.
+
+Key behavior:
+
+```text
+Approved Input
+→ deterministic projection coverage
+→ clear mappings stay deterministic
+→ only ambiguous/unmapped inputs may reach the LLM
+→ LLM can select only offered profile rules, remain ambiguous or return unmapped
+→ validated proposals become non-authoritative Model Candidates
+→ existing Human Review remains mandatory
+→ unchanged Phase-I gate
+```
+
+Important implementation components:
+
+```text
+modules/model_candidates/projection_resolver.py
+modules/model_candidates/llm_projection_contract.py
+modules/model_candidates/llm_projection_executor.py
+modules/model_candidates/hybrid_deriver.py
+agents/target_projection_mapper.md
+```
+
+Token/request protection:
+
+- deterministic-first routing
+- compact unresolved-only context
+- default batch size 8
+- bounded maximum calls per run
+- serial execution
+- no automatic retries
+- no repeated interpretation of deterministic mappings
+
+The bounded live smoke used one OpenAI `gpt-5-mini` call with 1345 total tokens
+and selected `ELEMENT_SYSTEM_FUNCTION` for the deliberately ambiguous function
+fixture.
+
+H9 does not make Phase J agentic. Phase J still serializes accepted Internal
+Engineering Model semantics deterministically.
+
+Phase-N2 reconciliation candidates are recorded, but no CATIA SYSR/SF change is
+performed during H9 closeout.
 
 ---
 

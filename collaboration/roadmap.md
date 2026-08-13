@@ -22,19 +22,19 @@ have been completed.
 
 Architecture Version
 
-1.6
+1.7
 
 Knowledge Base Version
 
-1.13
+1.14
 
 Implementation Version
 
-0.15
+0.16
 
 Roadmap Version
 
-1.13
+1.14
 
 Last SSOT Update
 
@@ -46,19 +46,19 @@ Current Phase
 
 Current Status
 
-Phase I completed and verified; Phase J implementation is next.
+Phase I remains completed and verified. H9 hybrid target projection is completed and verified; Phase J implementation is next.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase I completion
+`commit containing this SSOT update` — H9 controlled Phase-H extension completion
 
 Last Prior Committed Checkpoint
 
-`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d` — ADR-019 accepted Phase-I architecture
+`027269e94df0ec586a8fd489e78c92fddd0a3aa5` — Phase I completion baseline
 
 Verified Automated Test Baseline
 
-5087 passed in 26.00s in the complete repository regression after Phase I.
+5120 passed in 13.12s in the complete repository regression after H9.
 
 Phase-G Focused Completion Regression
 
@@ -98,7 +98,7 @@ Source
 → Versioned Output Package
 ```
 
-Phases G, H and I are complete. The technical closed vertical slice now follows:
+Phases G, H and I are complete. The controlled H9 extension is also complete. The technical closed vertical slice now follows:
 
 ```text
 Phase J
@@ -860,6 +860,88 @@ Completed
 Depends on:
 
 Phase G — Satisfied
+
+---
+
+# Phase H9 — Hybrid Target Projection Extension
+
+## Objective
+
+Extend the completed Phase-H Candidate Layer so heterogeneous Approved Inputs
+are not silently lost or forced into the selected Framework when deterministic
+profile projection is ambiguous or unsupported.
+
+## Architecture Decision
+
+`collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
+
+## Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| H9.1 | Projection disposition and complete coverage model | Completed |
+| H9.2 | Shared deterministic profile resolver | Completed |
+| H9.3 | Strict deterministic deriver migrated to resolver | Completed |
+| H9.4 | Structured LLM projection contract | Completed |
+| H9.5 | Bounded unresolved-only LLM executor | Completed |
+| H9.6 | Hybrid Model Candidate Deriver | Completed |
+| H9.7 | Generation provenance and H→I integration regression | Completed |
+| H9.8 | SSOT closeout and Phase-N2 reconciliation candidate recording | Completed |
+
+## Verified Behavior
+
+- deterministic projection remains the quick / reproducible path
+- every active Approved Input receives an explicit projection disposition
+- no silent omission is permitted
+- only `ambiguous` / `unmapped` cases may reach the LLM
+- requests use compact Approved-Input and profile context
+- LLM output is structured Candidate-level modeling, never SysML v2 text
+- only profile-offered target rules are accepted
+- `unmapped` remains an allowed result; no forced mapping
+- Human Review and the H→I authority boundary remain unchanged
+- LLM usage and semantic request/response provenance remain traceable
+- Phase J remains deterministic serialization
+
+## Verification
+
+```text
+Focused H9 regression:
+61 passed in 0.69s
+
+Complete repository regression:
+5120 passed in 13.12s
+
+git diff --check:
+PASS
+
+Bounded live LLM smoke:
+PASS
+calls: 1
+retries: 0
+model: gpt-5-mini
+total_tokens: 1345
+```
+
+## Phase-N2 Reconciliation Candidates
+
+H9 records these capabilities for final CATIA reconciliation in N2 without
+creating preliminary SYSR/SF elements now:
+
+1. selectable deterministic and LLM-assisted target projection
+2. complete projection-coverage assessment with explicit unresolved states
+3. deterministic-first unresolved-only AI routing
+4. profile-controlled AI proposal validation and no-forced-fit behavior
+5. AI projection provenance with unchanged Human Review authority
+
+Exact CATIA model elements and wording are determined only during N2.
+
+## Status
+
+Completed on 2026-08-13
+
+Depends on:
+
+Phase H — Satisfied
 
 ---
 

@@ -101,7 +101,7 @@ class ModelCandidateGenerationService:
             ModelStructureProfileReference
         ),
         derivation_rules_reference: ModelDerivationRulesReference,
-        generation_provenance: ModelCandidateGenerationProvenance,
+        generation_provenance: ModelCandidateGenerationProvenance | None = None,
         predecessor_candidate_set_id: str | None = None,
         regeneration_reason: str | None = None,
     ) -> ModelCandidateSetSnapshot:
@@ -137,6 +137,10 @@ class ModelCandidateGenerationService:
             predecessor_candidate_set=predecessor,
         )
         plan = self._derive(deriver, request)
+        resolved_generation_provenance = self._resolve_generation_provenance(
+            deriver,
+            generation_provenance,
+        )
         element_drafts = self._validate_element_drafts(
             plan.element_drafts,
             predecessor,
@@ -220,7 +224,7 @@ class ModelCandidateGenerationService:
                 model_structure_profile_reference
             ),
             derivation_rules_reference=derivation_rules_reference,
-            generation_provenance=generation_provenance,
+            generation_provenance=resolved_generation_provenance,
             element_candidate_ids=tuple(
                 item.model_element_candidate_id
                 for item in elements
@@ -237,6 +241,44 @@ class ModelCandidateGenerationService:
             element_candidates=elements,
             relationship_candidates=relationships,
         )
+
+    def _resolve_generation_provenance(
+        self,
+        deriver: ModelCandidateDeriver,
+        explicit: ModelCandidateGenerationProvenance | None,
+    ) -> ModelCandidateGenerationProvenance:
+        """Resolve explicit or post-derivation strategy provenance."""
+
+        if explicit is not None:
+            if not isinstance(
+                explicit,
+                ModelCandidateGenerationProvenance,
+            ):
+                raise ModelCandidateValidationError(
+                    "generation_provenance has invalid type."
+                )
+            return explicit
+
+        provider = getattr(deriver, "generation_provenance", None)
+        if provider is None or not callable(provider):
+            raise ModelCandidateValidationError(
+                "generation_provenance is required unless the deriver "
+                "provides callable generation_provenance()."
+            )
+        try:
+            value = provider()
+        except ModelCandidateDerivationError:
+            raise
+        except Exception as exc:
+            raise ModelCandidateDerivationError(
+                "Deriver generation provenance resolution failed."
+            ) from exc
+        if not isinstance(value, ModelCandidateGenerationProvenance):
+            raise ModelCandidateValidationError(
+                "deriver generation_provenance() must return "
+                "ModelCandidateGenerationProvenance."
+            )
+        return value
 
     def _derive(
         self,

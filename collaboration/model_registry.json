@@ -1,5 +1,5 @@
 {
-  "version": "1.13",
+  "version": "1.14",
   "last_updated": "2026-08-13",
   "authoritative_sources": {
     "engineering_model": {
@@ -22,10 +22,10 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "commit_containing_this_phase_i_completion_ssot_update",
+      "verified_commit": "commit_containing_this_h9_completion_ssot_update",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 4986,
+        "complete_automated_test_count": 5120,
         "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
@@ -38,7 +38,7 @@
         "g4_2_a_to_c_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
         "g4_2_a_to_c_focused_test_count": 208,
         "g4_2_a_to_c_complete_automated_test_count": 4463,
-        "verified_passing_test_count": 4986,
+        "verified_passing_test_count": 5120,
         "complete_regression_passed_count": 4552,
         "complete_regression_stale_test_expectation_count": 1,
         "targeted_post_regression_passed_count": 1,
@@ -89,9 +89,27 @@
         "phase_i_complete_repository_duration_seconds": 26.0,
         "phase_i_git_diff_check": "passed",
         "phase_i_completion_note": "Phase I completed I1-I6 with a clean 110-test focused regression, a clean 5087-test complete repository regression, and a clean git diff check.",
-        "phase_i_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
+        "phase_i_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed",
+        "phase_h9_architecture_decision": "collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md",
+        "phase_h9_focused_test_count": 61,
+        "phase_h9_focused_test_duration_seconds": 0.69,
+        "phase_h9_complete_repository_test_count": 5120,
+        "phase_h9_complete_repository_duration_seconds": 13.12,
+        "phase_h9_git_diff_check": "passed",
+        "phase_h9_live_llm_smoke": "passed",
+        "phase_h9_live_llm_provider": "openai",
+        "phase_h9_live_llm_model": "gpt-5-mini",
+        "phase_h9_live_llm_call_count": 1,
+        "phase_h9_live_llm_retry_count": 0,
+        "phase_h9_live_llm_input_tokens": 711,
+        "phase_h9_live_llm_output_tokens": 634,
+        "phase_h9_live_llm_reasoning_tokens": 512,
+        "phase_h9_live_llm_total_tokens": 1345,
+        "phase_h9_live_selected_rule_id": "ELEMENT_SYSTEM_FUNCTION",
+        "phase_h9_completion_note": "H9 completed the deterministic-first hybrid target-projection extension with complete projection coverage, unresolved-only LLM routing, strict profile-controlled structured responses, preserved Human Review authority, a clean 61-test focused regression, a clean 5120-test repository regression, git diff check PASS, and one bounded successful live OpenAI smoke call.",
+        "phase_h9_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
       },
-      "last_prior_committed_checkpoint": "ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d"
+      "last_prior_committed_checkpoint": "027269e94df0ec586a8fd489e78c92fddd0a3aa5"
     },
     "collaboration": {
       "location": "collaboration/",
@@ -121,10 +139,10 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.6",
-    "knowledge_base_version": "1.13",
-    "implementation_version": "0.15",
-    "roadmap_version": "1.13"
+    "architecture_version": "1.7",
+    "knowledge_base_version": "1.14",
+    "implementation_version": "0.16",
+    "roadmap_version": "1.14"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
@@ -1524,5 +1542,50 @@
       "complete_repository_duration_seconds": 26.0,
       "git_diff_check": "passed"
     }
+  },
+  "hybrid_target_projection": {
+    "status": "implemented_verified",
+    "implementation_phase": "H9",
+    "architecture_decision": "collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md",
+    "deterministic_mode_retained": true,
+    "projection_dispositions": [
+      "mapped",
+      "ambiguous",
+      "unmapped",
+      "intentionally_not_projected"
+    ],
+    "coverage_rule": "Every active Approved Input in the derivation snapshot receives exactly one projection disposition; silent omission is forbidden.",
+    "llm_eligibility": [
+      "ambiguous",
+      "unmapped"
+    ],
+    "llm_output_scope": "structured_model_candidate_projection_only",
+    "sysml_v2_generation_by_llm": false,
+    "forced_mapping_allowed": false,
+    "profile_rule_allow_list_required": true,
+    "automatic_retry_allowed": false,
+    "human_review_boundary_unchanged": true,
+    "phase_i_contract_changed": false,
+    "phase_j_remains_deterministic_serialization": true,
+    "live_smoke": {
+      "status": "passed",
+      "provider": "openai",
+      "model": "gpt-5-mini",
+      "call_count": 1,
+      "retry_count": 0,
+      "total_tokens": 1345,
+      "selected_rule_id": "ELEMENT_SYSTEM_FUNCTION",
+      "candidate_model_area": "system.functional",
+      "candidate_element_type": "function",
+      "support_level": "partially_supported"
+    },
+    "phase_n2_reconciliation_candidates": [
+      "selectable deterministic and LLM-assisted target projection",
+      "complete projection coverage with explicit unresolved states",
+      "deterministic-first unresolved-only AI routing",
+      "profile-controlled AI proposals with no forced mapping",
+      "AI projection provenance under unchanged Human Review authority"
+    ],
+    "catia_update_deferred_to_phase_n2": true
   }
 }

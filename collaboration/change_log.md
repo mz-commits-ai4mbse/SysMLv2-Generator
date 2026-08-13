@@ -1,5 +1,113 @@
 # Change Log
 
+## 2026-08-13 — H9 Hybrid Target Projection Completion
+
+Versions after this update:
+
+- Architecture Version: 1.7
+- Knowledge Base Version: 1.14
+- Implementation Version: 0.16
+- Roadmap Version: 1.14
+
+Implementation reference:
+
+- H9 completion: the commit containing this SSOT update
+- Phase-I completion baseline:
+  `027269e94df0ec586a8fd489e78c92fddd0a3aa5`
+
+Architecture decision:
+
+`collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
+
+Completed H9 decomposition:
+
+```text
+H9.1  Projection disposition and coverage model
+H9.2  shared deterministic profile resolver
+H9.3  strict deterministic projection on shared resolver
+H9.4  structured LLM projection contract
+H9.5  bounded unresolved-only LLM executor
+H9.6  HybridModelCandidateDeriver
+H9.7  generation provenance + Human Review / Phase-I integration
+H9.8  SSOT closeout + Phase-N2 reconciliation candidate recording
+```
+
+Implemented capabilities:
+
+- complete `mapped` / `ambiguous` / `unmapped` /
+  `intentionally_not_projected` coverage
+- preserved strict deterministic quick/dry-run path
+- deterministic-first hybrid projection
+- unresolved-only LLM routing
+- compact profile-controlled LLM context
+- bounded serial batching and pre-execution call limit
+- no automatic retry loop
+- strict JSON response validation
+- rejection of hallucinated/non-offered rules
+- explicit no-forced-fit behavior
+- Candidate-level LLM proposals only; no SysML v2 generation
+- hybrid element and relationship Candidate derivation
+- preserved original Approved-Input evidence
+- semantic uncertainty represented through support/rationale rather than false
+  structural-profile exceptions
+- generation provenance for deterministic and LLM-assisted paths
+- unchanged Candidate Human Review and sole H→I read boundary
+- Phase J remains deterministic serialization
+
+Verification:
+
+```text
+Focused H9 regression:
+61 passed in 0.69s
+
+Complete repository regression:
+5120 passed in 13.12s
+
+git diff --check:
+PASS
+```
+
+Bounded live LLM smoke:
+
+```text
+provider: openai
+model: gpt-5-mini
+calls: 1
+retries: 0
+input_tokens: 711
+output_tokens: 634
+reasoning_tokens: 512
+total_tokens: 1345
+result: proposed_mapping
+selected_rule_id: ELEMENT_SYSTEM_FUNCTION
+candidate_model_area: system.functional
+candidate_element_type: function
+support_level: partially_supported
+```
+
+The live smoke was non-persistent and used one unresolved Approved Input with
+`batch_size=1` and `max_calls_per_run=1`.
+
+Phase-N2 reconciliation candidates were recorded for:
+
+- selectable deterministic / LLM-assisted projection
+- complete target-projection coverage
+- deterministic-first unresolved-only AI routing
+- profile-controlled no-forced-fit AI proposals
+- AI projection provenance under unchanged Human Review authority
+
+No CATIA Requirement or Function was created or modified during H9. Exact model
+reconciliation remains deferred to Phase N2.
+
+Phase transition:
+
+```text
+H9 controlled extension: COMPLETE
+Phase J: NEXT — SysML v2 Code Generator architecture contract
+```
+
+---
+
 ## 2026-08-13 — Phase I Completion and Phase J Transition
 
 Versions after this update:

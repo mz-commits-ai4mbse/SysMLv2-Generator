@@ -10,10 +10,8 @@ from modules.approved_input.types import (
     ApprovedInputRelationshipRepresentation,
 )
 
-from .errors import (
-    ModelCandidateDerivationError,
-    ModelCandidateReferenceError,
-)
+from .errors import ModelCandidateReferenceError
+from .projection_resolver import ProfileProjectionResolver
 from .structure_profile import (
     RELATIONSHIP_PRIORITY_CRITERIA,
     model_structure_profile_reference,
@@ -23,6 +21,7 @@ from .types import (
     ModelCandidateAttribute,
     ModelCandidateDerivationPlan,
     ModelCandidateDerivationRequest,
+    ModelCandidateProjectionCoverage,
     ModelDerivationRulesReference,
     ModelElementCandidateDraft,
     ModelElementDerivationRule,
@@ -52,10 +51,9 @@ class ProfileDrivenModelCandidateDeriver:
             item.model_area_id: item
             for item in profile.model_areas
         }
-        self._relationship_rules = {
-            item.semantic_intent: item
-            for item in profile.relationship_semantics
-        }
+        self._resolver = ProfileProjectionResolver(
+            profile=profile,
+        )
 
     def derive(
         self,
@@ -63,7 +61,8 @@ class ProfileDrivenModelCandidateDeriver:
     ) -> ModelCandidateDerivationPlan:
         """Interpret the complete active snapshot without inventing semantics."""
 
-        self._validate_request_bindings(request)
+        coverage = self.assess_projection_coverage(request)
+        self._resolver.require_strict_coverage(coverage)
 
         element_drafts = tuple(
             self._derive_element(item)
@@ -89,6 +88,18 @@ class ProfileDrivenModelCandidateDeriver:
         return ModelCandidateDerivationPlan(
             element_drafts=element_drafts,
             relationship_drafts=relationship_drafts,
+        )
+
+    def assess_projection_coverage(
+        self,
+        request: ModelCandidateDerivationRequest,
+    ) -> ModelCandidateProjectionCoverage:
+        """Assess every Approved Input without forcing a target mapping."""
+
+        self._validate_request_bindings(request)
+        return self._resolver.assess_snapshot(
+            project_id=request.project_id,
+            approved_inputs=request.approved_inputs,
         )
 
     def _validate_request_bindings(
@@ -205,38 +216,22 @@ class ProfileDrivenModelCandidateDeriver:
         tuple[str, ...],
         tuple[str, ...],
     ]:
-        classification = approved_input.selected_classification
-        framework = approved_input.selected_framework_assignment
-        information_type = (
-            approved_input.canonical_content.information_type
+        resolution = self._resolver.require_element_mapping(
+            approved_input
         )
-
-        classification_matches = self._rules_matching(
-            "classification_values",
-            classification,
-        )
-        framework_matches = self._rules_matching(
-            "framework_assignment_values",
-            framework,
-        )
-        information_matches = self._rules_matching(
-            "information_type_values",
-            information_type,
-        )
-
-        selected = self._select_consistent_rule(
-            classification_matches,
-            framework_matches,
-            information_matches,
-            approved_input_id=approved_input.approved_input_id,
-        )
+        selected = resolution.selected_rule
+        if selected is None:
+            raise AssertionError(
+                "Mapped element resolution must contain a selected rule."
+            )
 
         classification_exact = (
-            classification is not None
-            and selected in classification_matches
+            approved_input.selected_classification is not None
+            and selected.rule_id in resolution.classification_rule_ids
         )
         framework_exact = (
-            framework is None or selected in framework_matches
+            approved_input.selected_framework_assignment is None
+            or selected.rule_id in resolution.framework_rule_ids
         )
 
         if classification_exact and framework_exact:
@@ -245,7 +240,7 @@ class ProfileDrivenModelCandidateDeriver:
         missing = []
         if not classification_exact:
             missing.append("explicit_profile_classification")
-        if framework is None:
+        if approved_input.selected_framework_assignment is None:
             missing.append("explicit_framework_assignment")
         findings = ("PROFILE_PARTIAL_ELEMENT_MAPPING",)
         return (
@@ -254,75 +249,6 @@ class ProfileDrivenModelCandidateDeriver:
             findings,
             tuple(sorted(set(missing))),
         )
-
-    def _rules_matching(
-        self,
-        field: str,
-        value: str | None,
-    ) -> tuple[ModelElementDerivationRule, ...]:
-        if value is None:
-            return ()
-        return tuple(
-            rule
-            for rule in self.profile.element_derivation_rules
-            if value in getattr(rule, field)
-        )
-
-    def _select_consistent_rule(
-        self,
-        classification_matches,
-        framework_matches,
-        information_matches,
-        *,
-        approved_input_id: str,
-    ) -> ModelElementDerivationRule:
-        # Prefer explicit reviewed classification; use framework to
-        # disambiguate intentionally shared labels such as "Function".
-        selected_pool = classification_matches
-        if len(selected_pool) > 1 and framework_matches:
-            selected_pool = tuple(
-                rule
-                for rule in selected_pool
-                if rule in framework_matches
-            )
-
-        if not selected_pool:
-            selected_pool = framework_matches
-        if len(selected_pool) > 1 and information_matches:
-            selected_pool = tuple(
-                rule
-                for rule in selected_pool
-                if rule in information_matches
-            )
-
-        if not selected_pool:
-            selected_pool = information_matches
-
-        if len(selected_pool) != 1:
-            if not selected_pool:
-                raise ModelCandidateDerivationError(
-                    "No profile-supported Element mapping exists for "
-                    f"{approved_input_id}."
-                )
-            raise ModelCandidateDerivationError(
-                "Element mapping is ambiguous for "
-                f"{approved_input_id}: "
-                f"{sorted(rule.rule_id for rule in selected_pool)}."
-            )
-
-        selected = selected_pool[0]
-
-        # If an explicit framework assignment is recognized by the profile,
-        # it must not contradict the selected classification rule.
-        if (
-            framework_matches
-            and selected not in framework_matches
-        ):
-            raise ModelCandidateDerivationError(
-                "Reviewed classification and framework assignment "
-                f"conflict for {approved_input_id}."
-            )
-        return selected
 
     def _element_attributes(
         self,
@@ -363,23 +289,11 @@ class ProfileDrivenModelCandidateDeriver:
     ) -> tuple[ModelRelationshipCandidateDraft, ...]:
         grouped = {}
         for approved_input in approved_inputs:
-            representation = (
-                approved_input.selected_relationship_representation
-            )
-            if representation is None:
-                raise ModelCandidateDerivationError(
-                    "Approved relationship input has no exact relationship "
-                    f"representation: {approved_input.approved_input_id}."
+            representation, semantic_rule = (
+                self._resolver.require_relationship_mapping(
+                    approved_input
                 )
-            semantic_rule = self._relationship_rules.get(
-                representation.semantic_intent
             )
-            if semantic_rule is None:
-                raise ModelCandidateDerivationError(
-                    "Relationship semantic intent is not defined by the "
-                    "Model Structure Profile: "
-                    f"{representation.semantic_intent!r}."
-                )
             key = self._relationship_group_key(
                 representation
             )

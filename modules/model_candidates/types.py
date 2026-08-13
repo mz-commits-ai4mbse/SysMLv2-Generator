@@ -46,6 +46,83 @@ RELATIONSHIP_ENDPOINT_RESOLUTION_STATUSES = frozenset(
 )
 
 
+MODEL_CANDIDATE_PROJECTION_DISPOSITIONS = frozenset(
+    {
+        "mapped",
+        "ambiguous",
+        "unmapped",
+        "intentionally_not_projected",
+    }
+)
+
+
+@dataclass(frozen=True, slots=True)
+class ModelCandidateProjectionDisposition:
+    """One explicit target-projection outcome for one Approved Input."""
+
+    approved_input_id: str
+    approved_input_kind: str
+    disposition: str
+    reason_code: str
+    selected_rule_id: str | None
+    candidate_rule_ids: tuple[str, ...]
+    rationale: str
+
+
+@dataclass(frozen=True, slots=True)
+class ModelCandidateProjectionCoverage:
+    """Complete non-persistent projection coverage for one input snapshot."""
+
+    project_id: str
+    model_structure_profile_reference: ModelStructureProfileReference
+    entries: tuple[ModelCandidateProjectionDisposition, ...]
+
+    @property
+    def total_count(self) -> int:
+        return len(self.entries)
+
+    def count(self, disposition: str) -> int:
+        return sum(
+            1
+            for item in self.entries
+            if item.disposition == disposition
+        )
+
+    @property
+    def mapped_count(self) -> int:
+        return self.count("mapped")
+
+    @property
+    def ambiguous_count(self) -> int:
+        return self.count("ambiguous")
+
+    @property
+    def unmapped_count(self) -> int:
+        return self.count("unmapped")
+
+    @property
+    def intentionally_not_projected_count(self) -> int:
+        return self.count("intentionally_not_projected")
+
+    @property
+    def unresolved_approved_input_ids(self) -> tuple[str, ...]:
+        return tuple(
+            item.approved_input_id
+            for item in self.entries
+            if item.disposition in {"ambiguous", "unmapped"}
+        )
+
+    @property
+    def is_complete(self) -> bool:
+        return (
+            self.mapped_count
+            + self.ambiguous_count
+            + self.unmapped_count
+            + self.intentionally_not_projected_count
+            == self.total_count
+        )
+
+
 @dataclass(frozen=True, slots=True)
 class ModelCandidateApprovedInputReference:
     """Exact Approved-Input provenance retained by one Candidate artifact."""

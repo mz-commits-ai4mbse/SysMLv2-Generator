@@ -77,6 +77,7 @@ from .generation import (
     ModelCandidateDeriver,
     ModelCandidateGenerationService,
 )
+from .hybrid_deriver import HybridModelCandidateDeriver
 from .identifiers import (
     MAX_MODEL_CANDIDATE_SEQUENCE,
     MIN_MODEL_CANDIDATE_SEQUENCE,
@@ -124,6 +125,7 @@ from .paths import (
 )
 from .repository import ModelCandidateRepository
 from .profile_deriver import ProfileDrivenModelCandidateDeriver
+from .projection_resolver import ProfileProjectionResolver
 from .phase_i_read_service import ModelCandidateReadService
 from .relationship_manifest import (
     MODEL_RELATIONSHIP_CANDIDATE_SCHEMA_VERSION,
@@ -147,6 +149,7 @@ from .structure_profile import (
     validate_model_structure_profile,
 )
 from .types import (
+    MODEL_CANDIDATE_PROJECTION_DISPOSITIONS,
     MODEL_CANDIDATE_REVIEW_DECISIONS,
     MODEL_CANDIDATE_REVIEW_TARGET_TYPES,
     MODEL_CANDIDATE_SUPPORT_LEVELS,
@@ -162,6 +165,8 @@ from .types import (
     ModelCandidateDerivationPlan,
     ModelCandidateDerivationRequest,
     ModelCandidateGenerationProvenance,
+    ModelCandidateProjectionCoverage,
+    ModelCandidateProjectionDisposition,
     ModelCandidateRepositoryIssue,
     ModelCandidateRepositoryScanResult,
     ModelCandidateReviewDecision,
@@ -205,6 +210,7 @@ __all__ = [
     "MAX_MODEL_CANDIDATE_SEQUENCE",
     "MIN_MODEL_CANDIDATE_SEQUENCE",
     "MODEL_CANDIDATE_SET_ID_PATTERN",
+    "MODEL_CANDIDATE_PROJECTION_DISPOSITIONS",
     "MODEL_CANDIDATE_SET_SCHEMA_VERSION",
     "MODEL_CANDIDATE_SUPPORT_LEVELS",
     "MODEL_ELEMENT_CANDIDATE_ID_PATTERN",
@@ -216,6 +222,8 @@ __all__ = [
     "ModelCandidateAttribute",
     "ModelCandidateError",
     "ModelCandidateGenerationProvenance",
+    "ModelCandidateProjectionCoverage",
+    "ModelCandidateProjectionDisposition",
     "ModelCandidateIntegrityError",
     "ModelCandidatePersistenceError",
     "ModelCandidateReferenceError",
@@ -302,6 +310,7 @@ __all__ = [
     "ModelCandidateDeriver",
     "ModelCandidateGenerationBlockedError",
     "ModelCandidateGenerationService",
+    "HybridModelCandidateDeriver",
     "ModelElementCandidateDraft",
     "ModelRelationshipCandidateDraft",
     "DEFAULT_MODEL_DERIVATION_RULES_PATH",
@@ -314,6 +323,7 @@ __all__ = [
     "ModelStructureAreaDefinition",
     "ModelStructureProfile",
     "ProfileDrivenModelCandidateDeriver",
+    "ProfileProjectionResolver",
     "calculate_model_structure_profile_fingerprint",
     "load_model_derivation_rules_reference",
     "load_model_structure_profile",
