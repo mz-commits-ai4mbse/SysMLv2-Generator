@@ -1,5 +1,5 @@
 {
-  "version": "1.12",
+  "version": "1.13",
   "last_updated": "2026-08-13",
   "authoritative_sources": {
     "engineering_model": {
@@ -22,7 +22,7 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "commit_containing_this_phase_h_completion_ssot_update",
+      "verified_commit": "commit_containing_this_phase_i_completion_ssot_update",
       "status": "authoritative_for_committed_implementation",
       "verification": {
         "complete_automated_test_count": 4986,
@@ -79,9 +79,19 @@
         "phase_h_complete_repository_duration_seconds": 25.8,
         "phase_h_git_diff_check": "passed",
         "phase_h_completion_note": "Phase H completed H1-H8 with a clean 168-test focused regression, a clean 4986-test complete repository regression, and a clean git diff check.",
-        "phase_h_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
+        "phase_h_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed",
+        "phase_i_architecture_commit": "ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d",
+        "phase_i_i6_focused_test_count": 32,
+        "phase_i_i6_focused_test_duration_seconds": 0.7,
+        "phase_i_focused_test_count": 110,
+        "phase_i_focused_test_duration_seconds": 1.07,
+        "phase_i_complete_repository_test_count": 5087,
+        "phase_i_complete_repository_duration_seconds": 26.0,
+        "phase_i_git_diff_check": "passed",
+        "phase_i_completion_note": "Phase I completed I1-I6 with a clean 110-test focused regression, a clean 5087-test complete repository regression, and a clean git diff check.",
+        "phase_i_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
       },
-      "last_prior_committed_checkpoint": "884d658726d9a5a2ac9f86786ded30db7fe38c68"
+      "last_prior_committed_checkpoint": "ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d"
     },
     "collaboration": {
       "location": "collaboration/",
@@ -111,16 +121,15 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.5",
-    "knowledge_base_version": "1.12",
-    "implementation_version": "0.14",
-    "roadmap_version": "1.12"
+    "architecture_version": "1.6",
+    "knowledge_base_version": "1.13",
+    "implementation_version": "0.15",
+    "roadmap_version": "1.13"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
     "scope": "closed_vertical_slice_then_demo_hardening",
     "critical_path": [
-      "I",
       "J",
       "K",
       "L",
@@ -1456,5 +1465,64 @@
     "backend_traceability_remains_persisted": true,
     "streamlit_retained_through_product_demo": true,
     "frontend_rewrite_before_demo": false
+  },
+  "internal_engineering_model": {
+    "status": "implemented_verified",
+    "implementation_phase": "I",
+    "architecture_decision": "collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md",
+    "architecture_checkpoint": "ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d",
+    "sole_upstream_read_contract": "ModelCandidateReadService.load_phase_i_input(project_id, candidate_set_id)",
+    "identities": {
+      "internal_engineering_model": "IEM-six_digit_numeric",
+      "internal_model_element": "IME-six_digit_numeric",
+      "internal_model_relationship": "IMR-six_digit_numeric",
+      "scope": "project_local_sequential_immutable_no_gap_reuse"
+    },
+    "assembly_rules": {
+      "rules_id": "TURING_INTERNAL_MODEL_ASSEMBLY",
+      "rules_version": "1.0.0",
+      "path": "context/modeling/turing_internal_model_assembly_rules.json",
+      "normative_behavior": "deterministic_no_semantic_reinterpretation"
+    },
+    "structure": {
+      "framework_template": "TURING_RFLP_FRAMEWORK 1.0.0",
+      "model_structure_profile": "TURING_MODEL_STRUCTURE 1.0.0",
+      "complete_framework_hierarchy_materialized": true,
+      "empty_structure_nodes_allowed": true,
+      "engineering_hierarchy_invention_allowed": false,
+      "membership_authority": "reviewed Phase-H model_area / element_type / framework_assignment"
+    },
+    "persistence": {
+      "root": "data/projects/<project_id>/internal_models/<IEM-id>/",
+      "manifest": "manifest.json",
+      "structure": "structure.json",
+      "elements": "elements/<IME-id>.json",
+      "relationships": "relationships/<IMR-id>.json",
+      "atomic_publication": true,
+      "symlink_rejection": true,
+      "bundle_integrity_validation": true,
+      "exact_reassembly_idempotent": true
+    },
+    "traceability": {
+      "approved_input_preserved": true,
+      "model_candidate_preserved": true,
+      "human_review_preserved": true,
+      "accepted_exception_preserved": true,
+      "relationship_semantics_preserved": [
+        "relationship_family",
+        "semantic_intent",
+        "directionality"
+      ]
+    },
+    "phase_j_read_contract": "InternalModelReadService.load_phase_j_input(project_id, internal_engineering_model_id)",
+    "implicit_latest_selection_allowed": false,
+    "sysml_v2_textual_serialization_in_phase_i": false,
+    "verification": {
+      "focused_test_count": 110,
+      "focused_duration_seconds": 1.07,
+      "complete_repository_test_count": 5087,
+      "complete_repository_duration_seconds": 26.0,
+      "git_diff_check": "passed"
+    }
   }
 }

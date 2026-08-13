@@ -3,10 +3,10 @@
 ## Purpose
 
 This document is the authoritative starting point for the next implementation
-chat after Phase-H completion.
+chat after Phase-I completion.
 
-Use it together with the committed repository, the remaining Collaboration
-Knowledge Base and the authoritative CATIA SysML v2 model.
+Use it together with the committed repository, the Collaboration Knowledge Base
+and the authoritative CATIA SysML v2 model.
 
 ---
 
@@ -26,27 +26,27 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase H completion
+`commit containing this SSOT update` — Phase I completion
 
 Last Prior Committed Checkpoint
 
-`884d658726d9a5a2ac9f86786ded30db7fe38c68` — ADR-018 accepted Phase-H architecture
+`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d` — ADR-019 accepted Phase-I architecture
 
 Architecture Version
 
-1.5
+1.6
 
 Knowledge Base Version
 
-1.12
+1.13
 
 Implementation Version
 
-0.14
+0.15
 
 Roadmap Version
 
-1.12
+1.13
 
 Last SSOT Update
 
@@ -54,20 +54,20 @@ Last SSOT Update
 
 Current Phase
 
-Phase I — Model Generation Agent / Internal Engineering Model
+Phase J — SysML v2 Code Generator
 
 Current Status
 
-Phase H completed and verified. Phase I architecture contract is next.
+Phase I completed and verified. Phase J is next.
 
 Verified Automated Test Baseline
 
 ```text
-Phase-H focused H1–H8 regression:
-168 passed in 1.63s
+Focused I1–I6 regression:
+110 passed in 1.07s
 
 Complete repository regression:
-4986 passed in 25.80s
+5087 passed in 26.00s
 
 git diff --check:
 PASS
@@ -95,14 +95,15 @@ Read in this order:
 2. `collaboration/roadmap.md`
 3. `collaboration/working_rules.md`
 4. `collaboration/model_registry.json`
-5. `collaboration/decisions/ADR-016-human-review-workspace-and-approved-input-promotion-architecture.md`
-6. `collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
-7. `collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
-8. `collaboration/change_log.md`
-9. this handover
+5. `collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
+6. `collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
+7. `collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
+8. `context/sysml/sysml_v2_target_notation.json`
+9. `collaboration/change_log.md`
+10. this handover
 
-Then inspect the committed Phase-H implementation only as required for the
-Phase-I architecture discussion.
+Then inspect the committed Phase-I implementation and existing target-notation
+configuration only as required for the Phase-J architecture discussion.
 
 ---
 
@@ -174,198 +175,11 @@ Do not stage them unless explicitly part of the intended change.
 
 ---
 
-# Phase G — Completed Baseline
+# Phase H — Completed Upstream Authority
 
-Phase G remains complete.
+Phase H remains complete.
 
-Authority chain:
-
-```text
-Original Source
-→ Processing Evidence
-→ Human Review Workspace
-→ Finalized Reviewed Document
-→ Approved Input
-```
-
-Phase-G completion:
-
-`b598bf04770b08738bbce5c15f2f7dfb671aab01`
-
-Phase-G verification:
-
-```text
-G7.3 manual acceptance:
-PASS
-
-G7.4 focused completion regression:
-65 passed in 8.95s
-
-Complete Phase-G repository regression:
-4818 passed in 24.50s
-
-git diff --check:
-PASS
-```
-
----
-
-# Phase H — Completed Baseline
-
-Architecture decision:
-
-`collaboration/decisions/ADR-018-model-candidate-layer-and-structural-comparability.md`
-
-Accepted architecture checkpoint:
-
-`884d658726d9a5a2ac9f86786ded30db7fe38c68`
-
-Completed implementation decomposition:
-
-```text
-H1  Identifiers / Errors
-H2  Immutable Domain Types
-H3  Manifests / Validation / Fingerprints
-H4  Repository / Paths / Persistence
-H5  Approved Input → Candidate Pipeline
-H6  Profile / Relationship Logic
-H7  Human Review / Phase-I Gate
-H8  ModelProposalView / Phase-H completion
-```
-
-Phase-H focused verification:
-
-```text
-168 passed in 1.63s
-```
-
-Complete repository verification:
-
-```text
-4986 passed in 25.80s
-git diff --check: PASS
-```
-
-## Upstream Authority
-
-Production Phase-H input is exclusively:
-
-```python
-ApprovedInputRepository.list_active_approved_inputs(
-    project_id,
-) -> tuple[ApprovedInputManifest, ...]
-```
-
-Phase H must not derive authority from Draft Review state, original Review
-Reports, Agent confidence, Consensus, inactive Approved Inputs or UI state.
-
-## Candidate Artifacts
-
-Identifiers:
-
-```text
-MCS-000001  Model Candidate Set
-MCE-000001  Model Element Candidate
-MCR-000001  Model Relationship Candidate
-MCD-000001  Model Candidate Review Decision
-```
-
-Candidate IDs are project-local, sequential and immutable. Gaps are not reused.
-
-Persistence:
-
-```text
-data/projects/<project_id>/model_candidates/sets/
-└── MCS-000001/
-    ├── manifest.json
-    ├── elements/
-    │   └── MCE-000001.json
-    └── relationships/
-        └── MCR-000001.json
-```
-
-Candidate Review Decisions are separate immutable evidence:
-
-```text
-data/projects/<project_id>/semantics/model_candidate_reviews/
-└── MCD-000001.json
-```
-
-## Structure and Relationship Semantics
-
-Versioned Phase-H profile:
-
-`context/modeling/turing_model_structure_profile.json`
-
-Profile:
-
-```text
-TURING_MODEL_STRUCTURE 1.0.0
-```
-
-Existing derivation-rules context:
-
-`context/mapping/sysml_model_derivation_rules.json`
-
-Relationship family, semantic intent and later SysML v2 serialization remain
-separate concerns.
-
-Materially different relationship interpretations remain separate MCRs and may
-share one `relationship_choice_key`.
-
-Automated relationship priority is advisory only.
-
-Priority order:
-
-```text
-P1 evidence directness
-P2 semantic fit
-P3 endpoint certainty
-P4 structural profile preference
-P5 comparability impact
-P6 assumption burden
-P7 conformance
-```
-
-Comparability impact:
-
-```text
-improves
-neutral
-reduces
-unknown
-```
-
-## Candidate Human Review
-
-Decisions:
-
-```text
-accepted
-rejected
-deferred
-accepted_exception
-```
-
-`accepted_exception` requires explicit rationale.
-
-Review Decisions bind the exact:
-
-- Candidate Set
-- Candidate
-- Candidate fingerprint
-- Model Structure Profile
-- structure-profile conformance fingerprint
-- Approved Input snapshot fingerprint
-
-Stale review evidence does not authorize Phase I.
-
-The existing Phase-G `modules/human_review` contract was not weakened or
-repurposed. Phase-H Candidate Review is a separate compatible authority layer.
-
-## Sole H → I Read Boundary
-
-Phase I shall consume reviewed Phase-H content only through:
+Sole production read boundary into Phase I:
 
 ```python
 ModelCandidateReadService.load_phase_i_input(
@@ -374,151 +188,260 @@ ModelCandidateReadService.load_phase_i_input(
 ) -> ModelCandidateAssemblyInput
 ```
 
-The gate revalidates:
+The gate revalidates active Approved Input authority, exact Candidate review
+authorization, structural-profile bindings, relationship endpoints, accepted
+exceptions and project isolation.
 
-- exact Candidate Set integrity
-- current active Approved Input authority
-- Approved Input fingerprints and stable subject keys
-- exact latest Candidate Review Decisions
-- profile and conformance bindings
-- accepted Relationship endpoint resolution
-- authorization of accepted Relationship endpoints
-- relationship choice conflicts
-- project isolation
+Phase-I implementation enriched this DTO with:
 
-Unreviewed or deferred Candidates block Phase I.
-
-Accepted unresolved or ambiguous Relationships block Phase I.
-
-A Relationship cannot enter Phase I when an endpoint Element is rejected or
-otherwise unauthorized.
-
-No implicit latest-Candidate-Set selection exists.
-
-## Model Proposal Projection
-
-Technical Phase-H presentation service:
-
-```python
-ModelProposalReadService.load_model_proposal(
-    project_id,
-    candidate_set_id,
-) -> ModelProposalView
+```text
+framework_template_reference
+derivation_rules_reference
 ```
 
-The Model Proposal is deterministic and non-authoritative.
+These references already existed in the Candidate Set manifest. The enrichment
+keeps Phase I inside the sole H→I authority boundary.
 
-It projects:
+---
 
-- proposed Elements
-- proposed Relationships
-- lightweight structural overview
-- Relationship choice groups
-- comparability summary
-- profile deviations
-- required Human Review decisions
-- blocking issues
-- generation rationale summary
-- Phase-I gate state
-- next action
+# Phase I — Completed Baseline
 
-Deterministic JSON and Markdown projections are implemented.
+Architecture decision:
 
-The Model Proposal does not replace Candidate artifacts, Human Review authority
-or CATIA.
+`collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
 
-The polished Architecture / Model Proposal UX remains WP-11.
+Accepted architecture checkpoint:
 
-## Phase Boundaries
+`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d`
+
+Completed implementation decomposition:
+
+```text
+I1  IDs + immutable Internal Model domain types
+I2  manifests + fingerprints + H→I contract enrichment
+I3  Framework/Profile resolution + structure materialization
+I4  deterministic MCE/MCR → IME/IMR assembly
+I5  repository + immutable persistence + bundle integrity
+I6  explicit Phase-J read contract + regression
+```
+
+## Internal Model Identities
+
+```text
+IEM-000001  Internal Engineering Model
+IME-000001  Internal Model Element
+IMR-000001  Internal Model Relationship
+```
+
+Identifiers are project-local, six-digit sequential, immutable and never
+gap-reused.
+
+Candidate identity, Internal Model identity and semantic subject identity remain
+separate.
+
+## Assembly Context
+
+Phase I pins:
+
+```text
+TURING_RFLP_FRAMEWORK 1.0.0
+TURING_MODEL_STRUCTURE 1.0.0
+TURING_INTERNAL_MODEL_ASSEMBLY 1.0.0
+exact derivation-rules reference from H→I
+```
+
+Assembly rules:
+
+`context/modeling/turing_internal_model_assembly_rules.json`
+
+Normative behavior:
+
+- deterministic assembly only
+- no semantic reinterpretation
+- complete configured Framework hierarchy materialized
+- empty structural nodes allowed
+- reviewed Phase-H assignment remains authoritative
+- no invented engineering hierarchy
+- exact accepted Candidate authorization required
+- fail closed when new engineering judgement would be necessary
+
+## Deterministic Assembly
+
+Accepted MCEs become separate IMEs while preserving semantic subject identity,
+source Candidate identity/fingerprint, engineering content, structural
+assignment, Approved Input provenance, exact Human Review Decision and accepted
+exception where applicable.
+
+Accepted MCRs become IMRs. Their exact source and target Candidate endpoints are
+rebound to IMEs in the same IEM snapshot.
+
+Phase I preserves unchanged:
+
+```text
+relationship_family
+semantic_intent
+directionality
+```
+
+Phase J owns mapping those engineering semantics to concrete SysML v2 textual
+constructs.
+
+## Exact Assembly Identity
+
+Phase I calculates a deterministic `assembly_input_fingerprint` over the exact
+authority-bearing H→I state.
+
+Exact assembly identity is:
+
+```text
+assembly_input_fingerprint
++
+assembly_rules_reference
+```
+
+Reassembling the same exact identity is idempotent and returns the existing IEM.
+
+There is no "latest wins" behavior.
+
+## Persistence
+
+```text
+data/projects/<project_id>/internal_models/
+└── IEM-000001/
+    ├── manifest.json
+    ├── structure.json
+    ├── elements/
+    │   ├── IME-000001.json
+    │   └── ...
+    └── relationships/
+        ├── IMR-000001.json
+        └── ...
+```
+
+Persistence is immutable and atomic.
+
+The repository validates project isolation, exact path identity, symlink safety,
+fingerprints, exact structure membership, IMR endpoints, subject-key consistency,
+Review Decision references, accepted exceptions, project-wide ID non-reuse,
+interrupted publication and duplicate exact assembly identity.
+
+## Sole I → J Read Boundary
+
+Phase J shall consume Phase-I output only through:
+
+```python
+InternalModelReadService.load_phase_j_input(
+    project_id,
+    internal_engineering_model_id,
+) -> InternalEngineeringModelSnapshot
+```
+
+The service scans repository integrity, loads the explicitly requested IEM and
+revalidates the complete bundle.
+
+No implicit latest-IEM selection exists.
+
+## Phase-I Verification
+
+```text
+I6 focused:
+32 passed in 0.70s
+
+Focused I1–I6 aggregate:
+110 passed in 1.07s
+
+Complete repository regression:
+5087 passed in 26.00s
+
+git diff --check:
+PASS
+```
+
+Phase I generates no SysML v2 textual notation.
+
+---
+
+# Phase Boundaries
 
 ```text
 H  Approved Input → reviewed Model Candidates
-I  reviewed Candidates → Internal Engineering Model
+I  reviewed Candidates → immutable Internal Engineering Model
 J  Internal Engineering Model → SysML v2 text
 K  validation
 L  versioned output package
 ```
 
-Phase H generates no SysML v2 text.
-
----
-
-# Accepted Interaction Architecture
-
-ADR:
-
-`collaboration/decisions/ADR-017-simple-by-default-interaction-and-progressive-disclosure.md`
-
-Principle:
+Conceptual CATIA / implementation reconciliation:
 
 ```text
-Simple by default.
-Explainable on demand.
-Fully traceable underneath.
+LC_07 Architecture Synthesis and Validation
+├── Phase I  deterministic synthesis / assembly
+└── Phase K  broader architecture/model validation
+
+LC_08 SysML v2 Artifact Generation
+└── Phase J  SysML v2 textual generation
 ```
 
-Primary workflow:
-
-- engineering result
-- material uncertainty
-- required human decision
-- next action
-
-Detailed evidence and audit information remain available on demand.
-
-Streamlit remains the prototype UI technology through the product demo.
-
-No React, Vue or FastAPI rewrite is on the demo critical path.
+Implementation phases therefore do not map one-to-one to CATIA Logical
+Components.
 
 ---
 
 # Exact Next Work Package
 
-## WP-05 / Phase I — Model Generation Agent / Internal Engineering Model
-
-Phase I is next.
+## WP-06 / Phase J — SysML v2 Code Generator
 
 Objective:
 
-Create a deterministic Internal Engineering Model from the exact reviewed
-Candidate selection delivered by `ModelCandidateReadService`.
+Generate deterministic SysML v2 textual notation from one explicitly selected,
+validated `InternalEngineeringModelSnapshot`.
 
-The Phase-I architecture discussion shall cover at least:
+Phase J must begin by inspecting:
 
-- Internal Engineering Model identity
-- immutable versus rebuildable model snapshot boundary
-- accepted MCE → internal Element mapping
-- accepted MCR → internal Relationship mapping
-- model hierarchy / containment representation
-- RFLP structural representation
-- preservation of relationship semantic intent
-- accepted-exception representation
-- exact H Candidate and MCD traceability
-- exact Approved Input traceability
-- structural-consistency validation owned by I
-- deterministic serialization of the internal representation
-- repository and persistence boundaries
-- handoff contract to Phase J
-- explicit prohibition of SysML v2 textual serialization in Phase I
+- `InternalEngineeringModelSnapshot`
+- `InternalModelElement`
+- `InternalModelRelationship`
+- `InternalModelStructure`
+- `InternalModelReadService.load_phase_j_input(...)`
+- `context/sysml/sysml_v2_target_notation.json`
+- current SYSIDE-compatible syntax conventions
+- CATIA textual-notation expectations relevant to generated artifacts
 
-Do not derive new engineering semantics from rejected, deferred or unreviewed
-Candidates.
+The Phase-J architecture discussion shall define at least:
 
-Do not bypass:
+- target-notation profile authority
+- IEM element-type → SysML v2 construct mapping
+- relationship-family / semantic-intent → SysML v2 relationship mapping
+- package / namespace projection from Internal Model Structure
+- identifier and naming policy in generated text
+- deterministic ordering
+- modular output-unit strategy
+- unsupported construct behavior
+- generation diagnostics
+- exact IEM / IME / IMR traceability into generated artifacts
+- target syntax version / profile binding
+- explicit Phase-J → Phase-K validation boundary
+- explicit prohibition on treating generated text as a replacement for CATIA
+  engineering authority
 
-```python
-ModelCandidateReadService.load_phase_i_input(...)
-```
+Do not:
 
-No Phase-I implementation begins before the exact architecture contract has been
-surfaced, reviewed and explicitly accepted.
+- read Model Candidates directly for generation
+- bypass `InternalModelReadService`
+- reinterpret rejected/deferred/unreviewed Candidate content
+- invent new engineering relationships
+- perform broad Phase-K validation inside J
+- silently choose a latest IEM
+- mutate an existing IEM
+
+No Phase-J implementation begins before the exact Phase-J architecture contract
+has been surfaced, reviewed and explicitly accepted.
 
 ---
 
 # Remaining Demo Roadmap
 
 ```text
-WP-05  Phase I — Model Generation Agent / Internal Engineering Model
 WP-06  Phase J — SysML v2 Code Generator
 WP-07  Phase K — Validation Layer
 WP-08  Phase L — Output Writer
@@ -550,14 +473,16 @@ testing, not weaker authority, validation or traceability.
 - CATIA remains engineering authority.
 - The committed repository remains implementation authority.
 - Human Review authority cannot be replaced by confidence or consensus.
-- Original Processing evidence remains immutable.
-- Finalized Review evidence remains exact and mutually bound.
 - Only active Approved Inputs may support Phase-H Candidate Sets.
-- Model Candidates are derived and non-authoritative.
+- Model Candidates remain derived and non-authoritative.
 - Human-accepted Model Candidates authorize Phase-I assembly only.
-- `ModelCandidateReadService` is the sole H→I production read boundary.
-- Phase I must not create new semantics from rejected or unreviewed Candidates.
-- SysML v2 textual generation belongs to Phase J, not Phase I.
+- `ModelCandidateReadService` remains the sole H→I production read boundary.
+- Phase-I Internal Models are immutable representation-neutral snapshots.
+- `InternalModelReadService` is the sole I→J production read boundary.
+- No implicit latest-IEM selection is allowed.
+- Phase J shall preserve accepted engineering semantics.
+- Generated SysML v2 text does not replace CATIA engineering authority.
+- Broader architecture/model validation remains Phase K.
 - Failed required validation blocks later publication.
 - Progressive disclosure may hide complexity but may not remove traceability.
 - No frontend technology rewrite before the product demo.
@@ -566,18 +491,19 @@ testing, not weaker authority, validation or traceability.
 
 # Immediate Starting Instruction for the Next Chat
 
-Begin with the Phase-I architecture contract.
+Begin with the Phase-J architecture contract.
 
 Do not implement yet.
 
 First:
 
-1. inspect `ModelCandidateAssemblyInput` and the exact H→I read contract
-2. inspect accepted CATIA structural expectations relevant to Internal Model
-3. surface the exact Internal Engineering Model architecture questions
-4. propose the minimal modular Phase-I target architecture
-5. define persistence, identity and traceability boundaries
-6. define the J handoff without implementing SysML v2 serialization
-7. obtain explicit acceptance
+1. inspect the exact `InternalEngineeringModelSnapshot`
+2. inspect the explicit I→J read service
+3. inspect the existing target-notation profile
+4. inspect representative current SYSIDE / CATIA textual notation
+5. surface exact mapping and modularization questions
+6. propose the minimal deterministic Phase-J architecture
+7. define the Phase-K handoff
+8. obtain explicit acceptance
 
-Only after acceptance begin WP-05 implementation.
+Only after acceptance begin WP-06 implementation.

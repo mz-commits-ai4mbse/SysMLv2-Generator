@@ -1,5 +1,98 @@
 # Change Log
 
+## 2026-08-13 — Phase I Completion and Phase J Transition
+
+Versions after this update:
+
+- Architecture Version: 1.6
+- Knowledge Base Version: 1.13
+- Implementation Version: 0.15
+- Roadmap Version: 1.13
+
+Implementation reference:
+
+- Phase-I completion: the commit containing this SSOT update
+- Accepted Phase-I architecture:
+  `ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d`
+- Phase-H implementation baseline:
+  `294bb5c75835f82807b88de0a779301a17e1cb2c`
+
+Architecture decision:
+
+`collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
+
+Phase-I completion:
+
+```text
+I1  IDs + immutable Internal Model domain types
+I2  manifests + fingerprints + H→I contract enrichment
+I3  Framework/Profile resolution + structure materialization
+I4  deterministic MCE/MCR → IME/IMR assembly
+I5  repository + immutable persistence + bundle integrity
+I6  explicit Phase-J read contract + regression
+```
+
+Implemented capabilities:
+
+- enriched sole H→I authority transfer with Framework Template and derivation rules
+- deterministic exact `assembly_input_fingerprint`
+- immutable `IEM`, `IME` and `IMR` contracts
+- deterministic manifest serialization and content fingerprints
+- versioned `TURING_INTERNAL_MODEL_ASSEMBLY 1.0.0` rules
+- exact Framework Template and Structure Profile resolution
+- complete structural-skeleton materialization including empty configured nodes
+- reviewed MCE → IME assembly without semantic reinterpretation
+- reviewed MCR → IMR assembly with exact same-snapshot endpoint rebinding
+- preserved relationship family, semantic intent and directionality
+- exact Approved Input, Candidate and Human Review traceability
+- explicit accepted-exception preservation
+- fail-closed deterministic assembly boundary
+- immutable project-local IEM persistence
+- atomic temporary publication and recovery diagnostics
+- safe-path / symlink rejection and project isolation
+- project-wide IEM/IME/IMR identity no-reuse
+- bundle-level integrity across manifest, structure, elements and relationships
+- idempotent exact reassembly
+- explicit I→J read contract:
+  `InternalModelReadService.load_phase_j_input(...)`
+- no implicit latest-IEM selection
+- no SysML v2 textual generation in Phase I
+
+Verification:
+
+```text
+Focused I1–I6 regression:
+110 passed in 1.07s
+
+Complete repository regression:
+5087 passed in 26.00s
+
+git diff --check:
+PASS
+```
+
+Phase-I authority boundary:
+
+```text
+validated ModelCandidateAssemblyInput
+→ deterministic Internal Engineering Model assembly
+→ immutable IEM persistence
+→ validated explicit InternalEngineeringModelSnapshot
+```
+
+Phase transition:
+
+```text
+Phase I: COMPLETE
+Phase J: NEXT — SysML v2 Code Generator
+```
+
+No CATIA engineering element is silently changed by this implementation
+closeout. ADR-019 records implementation architecture and CATIA alignment; CATIA
+remains the engineering authority.
+
+---
+
 ## 2026-08-13 — Phase H Completion and Phase I Transition
 
 Versions after this update:

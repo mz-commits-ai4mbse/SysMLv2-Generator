@@ -1,0 +1,22 @@
+{
+  "framework_template_id": "TURING_RFLP_FRAMEWORK",
+  "framework_template_version": "1.0.0",
+  "model_structure_profile_id": "TURING_MODEL_STRUCTURE",
+  "model_structure_profile_version": "1.0.0",
+  "policies": {
+    "allow_empty_structure_nodes": true,
+    "candidate_framework_assignment_authority": "phase_h",
+    "element_membership_cardinality": "exactly_one",
+    "element_membership_ordering": "internal_model_element_id",
+    "invent_engineering_hierarchy_allowed": false,
+    "materialize_complete_framework_hierarchy": true,
+    "profile_mismatch_behavior": "reject",
+    "structure_node_ordering": "template_order",
+    "unknown_framework_assignment_behavior": "reject",
+    "unreviewed_reclassification_allowed": false
+  },
+  "rules_id": "TURING_INTERNAL_MODEL_ASSEMBLY",
+  "rules_version": "1.0.0",
+  "schema_version": "1.0.0",
+  "status": "active"
+}

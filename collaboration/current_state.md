@@ -29,39 +29,39 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase H completion
+`commit containing this SSOT update` — Phase I completion
 
 Last Prior Committed Checkpoint
 
-`884d658726d9a5a2ac9f86786ded30db7fe38c68` — ADR-018 accepted Phase-H architecture
+`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d` — ADR-019 accepted Phase-I architecture
 
 Architecture Version
 
-1.5
+1.6
 
 Knowledge Base Version
 
-1.12
+1.13
 
 Implementation Version
 
-0.14
+0.15
 
 Current Roadmap Version
 
-1.12
+1.13
 
 Current Development Phase
 
-Phase I — Model Generation Agent / Internal Engineering Model
+Phase J — SysML v2 Code Generator
 
 Current Status
 
-Phase H completed and verified; Phase I architecture contract is next.
+Phase I completed and verified; Phase J is next.
 
 Verified Automated Test Baseline
 
-4986 passed in 25.80s in the complete repository regression after Phase H.
+5087 passed in 26.00s in the complete repository regression after Phase I.
 
 Phase-G Focused Completion Regression
 
@@ -112,8 +112,7 @@ Source
 The implementation sequence is now:
 
 ```text
-Phase I — Model Generation Agent / Internal Engineering Model
-→ Phase J — SysML v2 Code Generator
+Phase J — SysML v2 Code Generator
 → Phase K — Validation Layer
 → Phase L — Output Writer
 → Guided Workflow UI
@@ -133,17 +132,19 @@ architecture and evidence.
 
 Priority 1
 
-Begin Phase I only after the exact Internal Engineering Model architecture
-contract has been surfaced, discussed and explicitly accepted.
+Begin Phase J from the explicit validated Internal Engineering Model boundary.
 
-Phase I shall consume Phase-H authority only through:
+Phase J shall consume Phase-I output only through:
 
 ```python
-ModelCandidateReadService.load_phase_i_input(
+InternalModelReadService.load_phase_j_input(
     project_id,
-    candidate_set_id,
-) -> ModelCandidateAssemblyInput
+    internal_engineering_model_id,
+) -> InternalEngineeringModelSnapshot
 ```
+
+No implicit latest-IEM selection is allowed, and Phase J shall not bypass the
+validated Phase-I repository boundary.
 
 Priority 2
 
@@ -712,10 +713,111 @@ Architecture / Model Proposal UX remains WP-11.
 Phase H does not assemble the Internal Engineering Model and does not generate
 SysML v2 text.
 
+# Phase I — Internal Engineering Model
+
+Phase I is completed and verified.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
+
+Accepted and committed architecture checkpoint:
+
+`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d`
+
+Implemented work packages:
+
+```text
+I1  IDs + immutable Internal Model domain types
+I2  manifests + fingerprints + H→I contract enrichment
+I3  Framework/Profile resolution + structure materialization
+I4  deterministic MCE/MCR → IME/IMR assembly
+I5  repository + immutable persistence + bundle integrity
+I6  explicit Phase-J read contract + regression
+```
+
+Implemented authority path:
+
+```text
+ModelCandidateReadService.load_phase_i_input(...)
+→ validated ModelCandidateAssemblyInput
+→ deterministic InternalModelAssemblyService
+→ immutable InternalEngineeringModelSnapshot
+→ atomic InternalModelRepository persistence
+→ InternalModelReadService.load_phase_j_input(...)
+```
+
+Implemented identities:
+
+```text
+IEM-000001  Internal Engineering Model
+IME-000001  Internal Model Element
+IMR-000001  Internal Model Relationship
+```
+
+IDs are project-local, sequential, immutable and never gap-reused.
+
+Persistence:
+
+```text
+data/projects/<project_id>/internal_models/
+└── IEM-000001/
+    ├── manifest.json
+    ├── structure.json
+    ├── elements/
+    │   └── IME-000001.json
+    └── relationships/
+        └── IMR-000001.json
+```
+
+Implemented capabilities include:
+
+- enriched sole H→I transfer with exact Framework Template and derivation-rules references
+- deterministic `assembly_input_fingerprint` over the authorized H→I state
+- immutable IEM, IME and IMR contracts with deterministic fingerprints
+- explicit assembly-rules artifact `TURING_INTERNAL_MODEL_ASSEMBLY 1.0.0`
+- exact Framework Template and Model Structure Profile resolution
+- materialization of the complete configured framework hierarchy
+- exact IME placement from reviewed Phase-H `model_area`, `element_type` and
+  `framework_assignment`
+- no inferred engineering containment beyond explicit reviewed semantics
+- deterministic accepted MCE → IME assembly
+- deterministic accepted MCR → IMR assembly
+- exact relationship endpoint rebinding to same-snapshot IMEs
+- preservation of relationship family, semantic intent and directionality
+- exact Approved Input, Candidate and Human Review traceability
+- explicit preservation of `accepted_exception`
+- fail-closed behavior where deterministic assembly would require new semantics
+- immutable project-local persistence with safe-path and symlink rejection
+- complete bundle-integrity validation across manifest, structure, IMEs and IMRs
+- project-wide no-reuse checks for IEM/IME/IMR identities
+- interrupted-publication diagnostics and atomic temporary publication
+- idempotent exact reassembly for identical assembly input plus assembly rules
+- explicit Phase-I → Phase-J read contract through `InternalModelReadService`
+- no implicit latest-IEM selection
+- no SysML v2 textual serialization in Phase I
+
+Phase-I verification:
+
+```text
+Focused I1–I6 regression:
+110 passed in 1.07s
+
+Complete repository regression:
+5087 passed in 26.00s
+
+git diff --check:
+PASS
+```
+
+Phase I corresponds to the deterministic synthesis / assembly portion of the
+CATIA architecture-derivation responsibility. It does not replace broader Phase-K
+validation and does not generate SysML v2 textual notation.
+
 Immediate next phase:
 
 ```text
-Phase I — Model Generation Agent / Internal Engineering Model
+Phase J — SysML v2 Code Generator
 ```
 
 ---

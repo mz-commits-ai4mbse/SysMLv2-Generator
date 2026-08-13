@@ -22,19 +22,19 @@ have been completed.
 
 Architecture Version
 
-1.5
+1.6
 
 Knowledge Base Version
 
-1.12
+1.13
 
 Implementation Version
 
-0.14
+0.15
 
 Roadmap Version
 
-1.12
+1.13
 
 Last SSOT Update
 
@@ -42,23 +42,23 @@ Last SSOT Update
 
 Current Phase
 
-**Phase I — Model Generation Agent / Internal Engineering Model**
+**Phase J — SysML v2 Code Generator**
 
 Current Status
 
-Phase H completed and verified; Phase I architecture contract next.
+Phase I completed and verified; Phase J implementation is next.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase H completion
+`commit containing this SSOT update` — Phase I completion
 
 Last Prior Committed Checkpoint
 
-`884d658726d9a5a2ac9f86786ded30db7fe38c68` — ADR-018 accepted Phase-H architecture
+`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d` — ADR-019 accepted Phase-I architecture
 
 Verified Automated Test Baseline
 
-4986 passed in 25.80s in the complete repository regression after Phase H.
+5087 passed in 26.00s in the complete repository regression after Phase I.
 
 Phase-G Focused Completion Regression
 
@@ -98,11 +98,10 @@ Source
 → Versioned Output Package
 ```
 
-Phases G and H are complete. The technical closed vertical slice now follows:
+Phases G, H and I are complete. The technical closed vertical slice now follows:
 
 ```text
-Phase I
-→ Phase J
+Phase J
 → Phase K
 → Phase L
 ```
@@ -864,36 +863,81 @@ Phase G — Satisfied
 
 ---
 
-# Phase I — Model Generation Agent
+# Phase I — Model Generation Agent / Internal Engineering Model
 
 ## Objective
 
-Create an internal engineering model from reviewed model candidates.
+Create an immutable, deterministic Internal Engineering Model from the exact
+reviewed model-candidate selection authorized by Phase H.
 
-## Deliverables
+## Architecture Decision
 
-- Model Generation Agent
-- internal model representation
-- model-element assembly
-- relationship assembly
-- structural-profile application
-- accepted exception handling
-- source and Approved Input traceability
-- candidate and Human Review traceability
-- deterministic model serialization contract
+`collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
+
+Accepted architecture checkpoint:
+
+`ff4ee4e038942f9ee267eb2ad6a6daa600b09e6d`
+
+## Completed Implementation Slices
+
+```text
+I1  IDs + immutable Internal Model domain types
+I2  manifests + fingerprints + H→I contract enrichment
+I3  Framework/Profile resolution + structure materialization
+I4  deterministic MCE/MCR → IME/IMR assembly
+I5  repository + immutable persistence + bundle integrity
+I6  explicit Phase-J read contract + regression
+```
+
+## Implemented Deliverables
+
+- deterministic Internal Model assembly service
+- immutable `IEM`, `IME` and `IMR` identities and manifests
+- exact H→I authority fingerprint
+- pinned Framework Template, Model Structure Profile, derivation rules and
+  assembly rules
+- complete configured framework hierarchy materialization
+- deterministic model-element assembly
+- deterministic relationship assembly with exact IME endpoint rebinding
+- preserved relationship family, semantic intent and directionality
+- accepted-exception preservation
+- source / Approved Input traceability
+- Model Candidate and Human Review traceability
+- immutable project-local IEM repository
+- atomic publication and recovery diagnostics
+- project-wide IEM/IME/IMR no-reuse checks
+- exact reassembly idempotence
+- complete bundle-integrity validation
+- explicit Phase-J read boundary:
+  `InternalModelReadService.load_phase_j_input(...)`
+- representation-neutral Internal Engineering Model; no SysML v2 text
+
+## Verification
+
+```text
+Focused I1–I6 regression:
+110 passed in 1.07s
+
+Complete repository regression:
+5087 passed in 26.00s
+
+git diff --check:
+PASS
+```
 
 ## Exit Criteria
 
-- reviewed candidates are assembled into an internal model
-- selected relationship semantics are preserved
-- structural consistency checks pass
-- complete traceability remains available
-- no SysML v2 serialization occurs before Phase J
-- automated tests pass
+- reviewed candidates are assembled into an internal model — satisfied
+- selected relationship semantics are preserved — satisfied
+- structural consistency checks pass — satisfied
+- complete traceability remains available — satisfied
+- no SysML v2 serialization occurs before Phase J — satisfied
+- automated tests pass — satisfied
+- SSOT synchronized — satisfied by the Phase-I completion commit
 
 ## Status
 
-Planned
+Completed on 2026-08-13
 
 Depends on:
 
@@ -932,7 +976,7 @@ Planned
 
 Depends on:
 
-Phase I
+Phase I — Satisfied
 
 ---
 

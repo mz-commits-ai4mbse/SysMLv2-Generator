@@ -174,8 +174,14 @@ class ModelCandidateReadService:
             approved_input_references=(
                 manifest.approved_input_references
             ),
+            framework_template_reference=(
+                manifest.framework_template_reference
+            ),
             model_structure_profile_reference=(
                 manifest.model_structure_profile_reference
+            ),
+            derivation_rules_reference=(
+                manifest.derivation_rules_reference
             ),
             generation_provenance=manifest.generation_provenance,
             accepted_element_candidates=tuple(selected_elements),

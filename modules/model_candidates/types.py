@@ -491,7 +491,9 @@ class ModelCandidateAssemblyInput:
         ModelCandidateApprovedInputReference,
         ...,
     ]
+    framework_template_reference: FrameworkTemplateReference
     model_structure_profile_reference: ModelStructureProfileReference
+    derivation_rules_reference: ModelDerivationRulesReference
     generation_provenance: ModelCandidateGenerationProvenance
     accepted_element_candidates: tuple[ModelElementCandidate, ...]
     accepted_relationship_candidates: tuple[
