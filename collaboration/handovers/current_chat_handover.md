@@ -3,7 +3,7 @@
 ## Purpose
 
 This document is the authoritative starting point for the next implementation
-chat after Phase J — SysML v2 Code Generator completion.
+chat after Phase K — Validation Layer completion.
 
 Use it together with the committed repository, the Collaboration Knowledge Base
 and the authoritative CATIA SysML v2 model.
@@ -26,51 +26,54 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase J completion
+`commit containing this SSOT update` — Phase K completion
 
 Last Prior Committed Checkpoint
 
-`af6953486a71c3073c0169ef5052dbcabb49c4fc` — accepted Phase-J architecture checkpoint
+`601b2134fcb227b114b4c50ad14d09ca920c81c5` — accepted Phase-K architecture checkpoint
 
 Architecture Version
 
-1.8
+1.9
 
 Knowledge Base Version
 
-1.15
+1.16
 
 Implementation Version
 
-0.17
+0.18
 
 Roadmap Version
 
-1.15
+1.16
 
 Last SSOT Update
 
-2026-08-13
+2026-08-14
 
 Current Phase
 
-Phase K — Validation Layer
+Phase L — Output Writer
 
 Current Status
 
-Phase J is completed and verified. Phase K is next.
+Phase K implementation is completed and verified. Phase L is next. The verification workstation still lacks the required SYSIDE CLI, so live publication remains fail-closed.
 
 Verified Automated Test Baseline
 
 ```text
-Targeted Turing Core synchronization regression:
-191 passed in 0.19s
+Focused Phase-K K1–K6 regression:
+65 passed in 1.41s
 
 Complete repository regression:
-5239 passed in 13.77s
+5304 passed in 25.97s
 
 git diff --check:
 PASS
+
+SYSIDE runtime on verification workstation:
+unavailable
 ```
 
 Closed Vertical-slice Target
@@ -95,18 +98,20 @@ Read in this order:
 2. `collaboration/roadmap.md`
 3. `collaboration/working_rules.md`
 4. `collaboration/model_registry.json`
-5. `collaboration/decisions/ADR-019-internal-engineering-model-assembly-architecture.md`
-6. `collaboration/decisions/ADR-020-hybrid-target-projection-and-coverage-architecture.md`
-7. `collaboration/decisions/ADR-021-syside-compatible-sysml-v2-generation-architecture.md`
-8. `context/sysml/sysml_v2_target_notation.json`
-9. `context/sysml/turing_sysml_v2_generation_profile.json`
-10. `context/sysml/turing_sysml_v2_artifact_structure.json`
-11. `context/sysml/turing_sysml_v2_generator_rules.json`
-12. `collaboration/change_log.md`
-13. this handover
+5. `collaboration/decisions/ADR-021-syside-compatible-sysml-v2-generation-architecture.md`
+6. `collaboration/decisions/ADR-022-sysml-v2-validation-layer-architecture.md`
+7. `context/sysml/sysml_v2_target_notation.json`
+8. `context/sysml/turing_sysml_v2_generation_profile.json`
+9. `context/sysml/turing_sysml_v2_artifact_structure.json`
+10. `context/sysml/turing_sysml_v2_generator_rules.json`
+11. `context/sysml/turing_sysml_v2_validation_profile.json`
+12. `modules/sysml_validation/service.py`
+13. `modules/sysml_validation/phase_l_gate.py`
+14. `collaboration/change_log.md`
+15. this handover
 
-Then inspect the committed Phase-J implementation only as required for Phase-K
-architecture and validation work.
+Then inspect the committed Phase-K implementation only as required for Phase-L
+publication architecture and output-package work.
 
 ---
 
@@ -378,6 +383,86 @@ introduced.
 
 ---
 
+# Phase K — Validation Layer
+
+Phase K implementation is completed and verified.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-022-sysml-v2-validation-layer-architecture.md`
+
+Accepted architecture checkpoint:
+
+`601b2134fcb227b114b4c50ad14d09ca920c81c5`
+
+Completed implementation slices:
+
+```text
+K1  Validation domain foundation + Validation Profile
+K2  Artifact/context/Target-Notation/Structure/Traceability validators
+K3  Relationship + endpoint consistency validator
+K4  SYSIDE CLI adapter + deterministic diagnostic normalization
+K5  SysMLValidationService + status/gate/fingerprint assembly
+K6  J→K→L boundary regression + status hardening + closeout
+```
+
+Implemented capabilities include:
+
+- immutable `SysMLValidationResult`
+- versioned `TURING_SYSML_V2_VALIDATION 1.0.0` Validation Profile
+- exact Phase-J generation-policy reference and fingerprint resolution
+- standalone GeneratedSysMLArtifactSet integrity validation
+- deterministic Target Notation subset validation
+- deterministic Artifact Structure validation
+- generated relationship and endpoint consistency validation
+- exact generated traceability validation
+- Model Structure / Comparability policy-chain consistency validation
+- isolated non-mutating SYSIDE CLI adapter
+- runtime SYSIDE version/identity discovery
+- deterministic external diagnostic normalization
+- explicit `valid` / `invalid` / `incomplete` status model
+- fail-closed `passed` / `blocked` publication gate
+- unavailable external validator represented as `incomplete / blocked`
+- infrastructure findings remain publication-blocking without being
+  misclassified as model invalidity
+- deterministic validation-input and result fingerprints
+- exact artifact-fingerprint-bound K→L handoff validation
+- no IEM/Candidate semantic reinterpretation in Phase K
+- no generated-text repair, mutation, regeneration or publication in Phase K
+
+Verification:
+
+```text
+Focused K1–K6 regression:
+65 passed in 1.41s
+
+Complete repository regression:
+5304 passed in 25.97s
+
+git diff --check:
+PASS
+```
+
+Runtime external-validator readiness on the verification workstation:
+
+```text
+SYSIDE CLI: unavailable
+```
+
+This is not a Phase-K unit/regression failure. The implemented fail-closed
+runtime behavior therefore produces `incomplete / blocked` until the required
+SYSIDE Modeler CLI is installed and executable. A live `valid / passed`
+publication-ready run remains a prerequisite for Phase-L operational
+acceptance.
+
+Immediate next phase:
+
+```text
+Phase L — Output Writer
+```
+
+---
+
 # Phase Boundaries
 
 ```text
@@ -413,48 +498,54 @@ Exact CATIA element types, wording and allocations remain deferred to N2.
 
 # Exact Next Work Package
 
-## WP-07 / Phase K — Validation Layer
+## WP-08 / Phase L — Output Writer
 
 Objective:
 
-Validate the complete `GeneratedSysMLArtifactSet` before publication.
+Publish only the exact `GeneratedSysMLArtifactSet` authorized by a successful
+`SysMLValidationResult` as an immutable, versioned output package.
 
-Phase K shall start from the Phase-J result and shall not regenerate or
-reinterpret engineering semantics.
+Phase L shall start from the explicit K→L boundary:
+
+```python
+OutputWriter.publish(
+    artifact_set: GeneratedSysMLArtifactSet,
+    validation_result: SysMLValidationResult,
+)
+```
 
 The architecture discussion shall define at least:
 
-- exact `SysMLValidationService` boundary
-- syntax validation strategy and SYSIDE integration boundary
-- Target Notation validation
-- Artifact Structure validation
-- relationship and endpoint consistency validation
-- traceability validation
-- deterministic validation findings/report
-- validation identity/fingerprint
-- fail-closed publication gate into Phase L
-- handling of unavailable external validator infrastructure
-- distinction between deterministic internal checks and external parser/tool
-  compatibility checks
+- exact versioned output-package identity
+- deterministic output directory/layout
+- artifact-set fingerprint verification
+- `valid` + `passed` publication gate enforcement
+- persistence of generated `.sysml` units
+- persistence/projection of the validation result/report
+- output manifest and content fingerprints
+- immutable publication / atomicity / recovery behavior
+- idempotence and version-allocation policy
+- project isolation and safe paths
+- read contract for later Guided Workflow UI presentation
+- handling of unavailable SYSIDE infrastructure before live publication
 
 Do not:
 
-- mutate the source IEM
-- silently rewrite generated text during validation
-- use validation to invent missing engineering semantics
-- publish invalid output
-- bypass the Phase-J artifact-set contract
-- collapse Phase K into Phase L
+- publish `invalid` or `incomplete` validation results
+- accept a validation result for a different artifact fingerprint
+- alter generated SysML during publication
+- rerun semantic interpretation in Phase L
+- introduce implicit latest-artifact selection
 
-No Phase-K implementation begins before the Phase-K architecture contract is
-surfaced, reviewed and explicitly accepted.
+No Phase-L production implementation begins before the Phase-L architecture
+contract is surfaced, reviewed and explicitly accepted.
 
 ---
 
 # Remaining Demo Roadmap
 
 ```text
-WP-07  Phase K — Validation Layer
+WP-07  Phase K — Validation Layer — COMPLETE
 WP-08  Phase L — Output Writer
 WP-09  Guided Workflow UI
 WP-10  Ingestion + Human Review UX Simplification
@@ -481,17 +572,18 @@ testing, not weaker authority, validation or traceability.
 
 # Immediate Starting Instruction for the Next Chat
 
-Begin with the Phase-K validation architecture contract.
+Begin with the Phase-L Output Writer architecture contract.
 
 First inspect:
 
 1. `GeneratedSysMLArtifactSet`
-2. `GeneratedSysMLUnit`
-3. `GeneratedSysMLTraceabilityEntry`
-4. `SysMLGenerationService`
-5. Target Notation / Generation / Artifact Structure / Generator Rules profiles
-6. current SYSIDE validation options and existing deterministic validators
-7. Phase-L publication expectations only enough to define the K→L gate
+2. `SysMLValidationResult`
+3. `SysMLValidationService`
+4. `validate_phase_l_handoff(...)`
+5. ADR-022 K→L fingerprint/publication-gate requirements
+6. existing project-local persistence, atomic publication and recovery patterns
+7. current `data/output/` expectations
+8. SYSIDE CLI runtime prerequisite for a live `valid / passed` publication
 
-Then propose the minimal deterministic Phase-K architecture and obtain explicit
+Then propose the minimal deterministic Phase-L architecture and obtain explicit
 acceptance before implementation.

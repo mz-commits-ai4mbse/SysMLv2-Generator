@@ -1,5 +1,104 @@
 # Change Log
 
+## 2026-08-14 — Phase K Validation Layer Completion
+
+Versions after this update:
+
+- Architecture Version: 1.9
+- Knowledge Base Version: 1.16
+- Implementation Version: 0.18
+- Roadmap Version: 1.16
+
+Implementation reference:
+
+- Phase-K completion: the commit containing this SSOT update
+- Accepted Phase-K architecture:
+  `601b2134fcb227b114b4c50ad14d09ca920c81c5`
+- Prior Phase-J completion:
+  `c57945e2c93613d4f55096118d7858edc41dd7e2`
+
+Architecture decision:
+
+`collaboration/decisions/ADR-022-sysml-v2-validation-layer-architecture.md`
+
+Completed Phase-K decomposition:
+
+```text
+K1  Validation domain foundation + Validation Profile
+K2  Artifact/context/Target-Notation/Structure/Traceability validators
+K3  Relationship + endpoint consistency validator
+K4  SYSIDE CLI adapter + deterministic diagnostic normalization
+K5  SysMLValidationService + status/gate/fingerprint assembly
+K6  J→K→L boundary regression + status hardening + closeout
+```
+
+Implemented capabilities:
+
+- versioned `TURING_SYSML_V2_VALIDATION 1.0.0`
+- immutable `SysMLValidationResult`
+- exact Phase-J generation-policy reference resolution
+- standalone artifact-set and fingerprint integrity validation
+- Target Notation constrained-subset validation
+- Artifact Structure validation
+- relationship and endpoint target-model consistency validation
+- traceability and comparability-policy consistency validation
+- isolated non-mutating SYSIDE CLI adapter
+- runtime external-validator identity/version discovery
+- deterministic diagnostic normalization
+- explicit `valid`, `invalid` and `incomplete` statuses
+- fail-closed `passed` / `blocked` publication gate
+- infrastructure unavailability represented as `incomplete / blocked`
+- deterministic validation-input and result fingerprints
+- exact artifact-fingerprint-bound K→L handoff contract
+- no IEM/Candidate reread for semantic reinterpretation
+- no generated-text repair, regeneration or publication in K
+
+Final verification:
+
+```text
+Focused K1–K6 regression:
+65 passed in 1.41s
+
+Complete repository regression:
+5304 passed in 25.97s
+
+git diff --check:
+PASS
+```
+
+Runtime external-validator probe on the verification workstation:
+
+```text
+SYSIDE CLI: unavailable
+```
+
+The unavailable CLI is deliberately fail-closed and does not invalidate the
+model. Until SYSIDE is installed and executable, validation returns
+`incomplete / blocked`; a live `valid / passed` run remains required before
+Phase-L operational acceptance.
+
+Phase-N2 reconciliation candidates are recorded for:
+
+- deterministic dual-layer generated-model validation
+- explicit external-validator infrastructure boundary
+- immutable validation result and validation identity
+- fail-closed publication gate
+- exact generated-artifact/validation fingerprint binding
+- strict J/K/L responsibility separation
+
+No CATIA Requirement, Function or Logical Component was created or modified
+during Phase-K closeout.
+
+Phase transition:
+
+```text
+Phase K implementation: COMPLETE
+Phase L: NEXT — Output Writer architecture contract
+Live K→L publication acceptance: BLOCKED until SYSIDE CLI is available
+```
+
+---
+
 ## 2026-08-13 — Phase J SysML v2 Code Generator Completion
 
 Versions after this update:

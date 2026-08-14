@@ -29,39 +29,43 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase J completion
+`commit containing this SSOT update` — Phase K completion
 
 Last Prior Committed Checkpoint
 
-`af6953486a71c3073c0169ef5052dbcabb49c4fc` — accepted Phase-J architecture checkpoint
+`601b2134fcb227b114b4c50ad14d09ca920c81c5` — accepted Phase-K architecture checkpoint
 
 Architecture Version
 
-1.8
+1.9
 
 Knowledge Base Version
 
-1.15
+1.16
 
 Implementation Version
 
-0.17
+0.18
 
 Current Roadmap Version
 
-1.15
+1.16
 
 Current Development Phase
 
-Phase K — Validation Layer
+Phase L — Output Writer
 
 Current Status
 
-Phase J is completed and verified; Phase K validation is next.
+Phase K implementation is completed and verified; Phase L output publication is next. Live publication remains fail-closed until the required SYSIDE CLI is available.
 
 Verified Automated Test Baseline
 
-5239 passed in 13.77s in the complete repository regression after Phase J.
+5304 passed in 25.97s in the complete repository regression after Phase K.
+
+Phase-K Focused Regression
+
+65 passed in 1.41s.
 
 Phase-H9 Focused Regression
 
@@ -106,7 +110,7 @@ Product Demo
 
 Last SSOT Update
 
-2026-08-13
+2026-08-14
 
 ---
 
@@ -133,8 +137,7 @@ Source
 The implementation sequence is now:
 
 ```text
-Phase K — Validation Layer
-→ Phase L — Output Writer
+Phase L — Output Writer
 → Guided Workflow UI
 → targeted UX simplification
 → end-to-end demo hardening
@@ -152,19 +155,21 @@ architecture and evidence.
 
 Priority 1
 
-Begin Phase K from the immutable GeneratedSysMLArtifactSet boundary.
+Begin Phase L from the exact Phase-K publication gate.
 
-Phase J shall consume Phase-I output only through:
+Phase L shall accept only an explicit `GeneratedSysMLArtifactSet` together with
+the exact `SysMLValidationResult` covering that artifact fingerprint.
 
-```python
-InternalModelReadService.load_phase_j_input(
-    project_id,
-    internal_engineering_model_id,
-) -> InternalEngineeringModelSnapshot
+Publication remains blocked unless:
+
+```text
+validation_status == valid
+publication_gate == passed
+validation_result.source_artifact_set_fingerprint == artifact_set.content_fingerprint
 ```
 
-No implicit latest-IEM selection is allowed, and Phase J shall not bypass the
-validated Phase-I repository boundary.
+No implicit latest artifact selection and no publication of `incomplete` or
+`invalid` validation results is allowed.
 
 Priority 2
 
@@ -1035,10 +1040,82 @@ Reconcile during Phase N2:
 
 Exact CATIA element types, wording and allocations remain deferred to Phase N2.
 
+# Phase K — Validation Layer
+
+Phase K implementation is completed and verified.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-022-sysml-v2-validation-layer-architecture.md`
+
+Accepted architecture checkpoint:
+
+`601b2134fcb227b114b4c50ad14d09ca920c81c5`
+
+Completed implementation slices:
+
+```text
+K1  Validation domain foundation + Validation Profile
+K2  Artifact/context/Target-Notation/Structure/Traceability validators
+K3  Relationship + endpoint consistency validator
+K4  SYSIDE CLI adapter + deterministic diagnostic normalization
+K5  SysMLValidationService + status/gate/fingerprint assembly
+K6  J→K→L boundary regression + status hardening + closeout
+```
+
+Implemented capabilities include:
+
+- immutable `SysMLValidationResult`
+- versioned `TURING_SYSML_V2_VALIDATION 1.0.0` Validation Profile
+- exact Phase-J generation-policy reference and fingerprint resolution
+- standalone GeneratedSysMLArtifactSet integrity validation
+- deterministic Target Notation subset validation
+- deterministic Artifact Structure validation
+- generated relationship and endpoint consistency validation
+- exact generated traceability validation
+- Model Structure / Comparability policy-chain consistency validation
+- isolated non-mutating SYSIDE CLI adapter
+- runtime SYSIDE version/identity discovery
+- deterministic external diagnostic normalization
+- explicit `valid` / `invalid` / `incomplete` status model
+- fail-closed `passed` / `blocked` publication gate
+- unavailable external validator represented as `incomplete / blocked`
+- infrastructure findings remain publication-blocking without being
+  misclassified as model invalidity
+- deterministic validation-input and result fingerprints
+- exact artifact-fingerprint-bound K→L handoff validation
+- no IEM/Candidate semantic reinterpretation in Phase K
+- no generated-text repair, mutation, regeneration or publication in Phase K
+
+Verification:
+
+```text
+Focused K1–K6 regression:
+65 passed in 1.41s
+
+Complete repository regression:
+5304 passed in 25.97s
+
+git diff --check:
+PASS
+```
+
+Runtime external-validator readiness on the verification workstation:
+
+```text
+SYSIDE CLI: unavailable
+```
+
+This is not a Phase-K unit/regression failure. The implemented fail-closed
+runtime behavior therefore produces `incomplete / blocked` until the required
+SYSIDE Modeler CLI is installed and executable. A live `valid / passed`
+publication-ready run remains a prerequisite for Phase-L operational
+acceptance.
+
 Immediate next phase:
 
 ```text
-Phase K — Validation Layer
+Phase L — Output Writer
 ```
 
 ---

@@ -22,43 +22,47 @@ have been completed.
 
 Architecture Version
 
-1.8
+1.9
 
 Knowledge Base Version
 
-1.15
+1.16
 
 Implementation Version
 
-0.17
+0.18
 
 Roadmap Version
 
-1.15
+1.16
 
 Last SSOT Update
 
-2026-08-13
+2026-08-14
 
 Current Phase
 
-**Phase K — Validation Layer**
+**Phase L — Output Writer**
 
 Current Status
 
-Phase J is completed and verified; Phase K validation is next.
+Phase K implementation is completed and verified; Phase L is next. Live publication remains blocked until SYSIDE CLI is available for a required external validation run.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase J completion
+`commit containing this SSOT update` — Phase K completion
 
 Last Prior Committed Checkpoint
 
-`af6953486a71c3073c0169ef5052dbcabb49c4fc` — accepted Phase-J architecture checkpoint
+`601b2134fcb227b114b4c50ad14d09ca920c81c5` — accepted Phase-K architecture checkpoint
 
 Verified Automated Test Baseline
 
-5239 passed in 13.77s in the complete repository regression after Phase J.
+5304 passed in 25.97s in the complete repository regression after Phase K.
+
+Phase-K Focused Regression
+
+65 passed in 1.41s.
 
 Phase-G Focused Completion Regression
 
@@ -98,11 +102,10 @@ Source
 → Versioned Output Package
 ```
 
-Phases G, H, I and J are complete. The controlled H9 extension is also complete. The technical closed vertical slice now follows:
+Phases G, H, I, J and K are complete. The controlled H9 extension is also complete. The technical closed vertical slice now follows:
 
 ```text
-Phase K
-→ Phase L
+Phase L
 ```
 
 The demo hardening sequence follows the vertical slice:
@@ -1131,39 +1134,81 @@ Phase I — Satisfied
 
 ## Objective
 
-Validate generated engineering models before publication and export.
+Validate the exact immutable `GeneratedSysMLArtifactSet` before publication
+without regenerating, repairing or semantically reinterpreting the source model.
 
-## Deliverables
+## Architecture Decision
 
-- syntax validation
-- target-notation validation
-- target-artifact structure validation
-- structural validation
-- relationship consistency validation
-- relationship semantic validation
-- constraint validation
-- traceability validation
-- comparability-profile validation
-- larger-context compatibility checks where available
-- deterministic validation report
+`collaboration/decisions/ADR-022-sysml-v2-validation-layer-architecture.md`
+
+Accepted architecture checkpoint:
+
+`601b2134fcb227b114b4c50ad14d09ca920c81c5`
+
+## Completed Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| K1 | Validation domain foundation + Validation Profile | Completed |
+| K2 | Artifact/context/Target-Notation/Structure/Traceability validators | Completed |
+| K3 | Relationship + endpoint consistency validator | Completed |
+| K4 | SYSIDE CLI adapter + deterministic diagnostic normalization | Completed |
+| K5 | Validation service + status/gate/fingerprint assembly | Completed |
+| K6 | J→K→L boundary regression + hardening + closeout | Completed |
+
+## Implemented Deliverables
+
+- immutable deterministic validation result
+- versioned Validation Profile 1.0.0
+- exact generation-policy resolution
+- standalone artifact-set integrity checks
+- Target Notation and Artifact Structure validation
+- relationship/endpoint target-model validation
+- traceability and comparability-policy validation
+- isolated non-mutating SYSIDE CLI adapter
+- deterministic diagnostic normalization
+- `valid` / `invalid` / `incomplete` status model
 - fail-closed publication gate
+- deterministic validation fingerprints
+- exact fingerprint-bound K→L handoff contract
+
+## Verification
+
+```text
+Focused K1–K6 regression:
+65 passed in 1.41s
+
+Complete repository regression:
+5304 passed in 25.97s
+
+git diff --check:
+PASS
+
+Verification workstation SYSIDE runtime:
+unavailable
+```
+
+The missing CLI is treated as required-validator infrastructure unavailability:
+`incomplete / blocked`, never as PASS and never as model invalidity. A live
+external validation run remains required before Phase-L operational acceptance.
 
 ## Exit Criteria
 
-- invalid models are detected automatically
-- validation findings are traceable to model elements and generation evidence
-- relationship conflicts and semantic inconsistencies are reported
-- comparability-profile deviations are reported
-- failed validation blocks publication
-- automated tests pass
+- invalid generated artifacts are detected deterministically — satisfied
+- findings remain traceable to generated symbols and evidence — satisfied
+- relationship conflicts are reported — satisfied
+- comparability/profile consistency is validated without Candidate reinterpretation — satisfied
+- failed or incomplete validation blocks publication — satisfied
+- automated tests pass — satisfied
+- live external-validator availability on verification workstation — pending environment setup
 
 ## Status
 
-Planned
+Implementation completed on 2026-08-14.
 
 Depends on:
 
-Phase J
+Phase J — Satisfied
 
 ---
 

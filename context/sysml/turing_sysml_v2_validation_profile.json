@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "TURING_SYSML_V2_VALIDATION",
+  "profile_version": "1.0.0",
+  "status": "active",
+  "purpose": "Define the deterministic Phase-K validation policy and fail-closed publication gate for complete GeneratedSysMLArtifactSet instances.",
+  "required_internal_validators": [
+    {
+      "validator_id": "artifact_set_integrity",
+      "category": "artifact_integrity",
+      "required": true
+    },
+    {
+      "validator_id": "generation_context",
+      "category": "validation_context",
+      "required": true
+    },
+    {
+      "validator_id": "target_notation",
+      "category": "target_notation",
+      "required": true
+    },
+    {
+      "validator_id": "artifact_structure",
+      "category": "artifact_structure",
+      "required": true
+    },
+    {
+      "validator_id": "traceability",
+      "category": "traceability",
+      "required": true
+    },
+    {
+      "validator_id": "model_structure_comparability",
+      "category": "validation_context",
+      "required": true
+    },
+    {
+      "validator_id": "relationship_consistency",
+      "category": "relationship_consistency",
+      "required": true
+    }
+  ],
+  "external_validator": {
+    "validator_id": "SYSIDE_CLI",
+    "tool_name": "SYSIDE Modeler CLI",
+    "required": true,
+    "command_contract_id": "SYSIDE_CHECK_NONMUTATING_V1",
+    "unavailable_validation_status": "incomplete",
+    "unavailable_publication_gate": "blocked"
+  },
+  "severity_policy": {
+    "allowed_severities": [
+      "info",
+      "warning",
+      "error"
+    ],
+    "default_blocking_by_severity": {
+      "info": false,
+      "warning": false,
+      "error": true
+    },
+    "external_warning_blocking": false
+  },
+  "publication_policy": {
+    "pass_validation_status": "valid",
+    "pass_publication_gate": "passed",
+    "blocking_finding_gate": "blocked",
+    "incomplete_validation_status": "incomplete",
+    "incomplete_publication_gate": "blocked"
+  },
+  "diagnostic_normalization": {
+    "strip_ansi": true,
+    "path_mode": "generated_unit_relative",
+    "discard_fields": [
+      "wall_clock_timestamp",
+      "temporary_workspace_path",
+      "execution_duration",
+      "ansi_formatting",
+      "machine_absolute_path"
+    ],
+    "canonical_finding_order": [
+      "blocking_desc",
+      "category",
+      "generated_unit_id",
+      "start_line",
+      "start_column",
+      "code",
+      "message"
+    ]
+  },
+  "fingerprint_policy": {
+    "algorithm": "sha256",
+    "encoding": "utf-8",
+    "canonical_json": true,
+    "validation_input_components": [
+      "source_artifact_set_fingerprint",
+      "validation_profile_reference",
+      "external_validator_identity",
+      "external_validator_configuration_fingerprint",
+      "command_contract_id"
+    ],
+    "validation_result_excluded_fields": [
+      "wall_clock_timestamp",
+      "temporary_workspace_path",
+      "execution_duration",
+      "ansi_formatting",
+      "machine_absolute_path"
+    ]
+  }
+}
