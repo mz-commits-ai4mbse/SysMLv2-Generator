@@ -1,5 +1,5 @@
 {
-  "version": "1.16",
+  "version": "1.17",
   "last_updated": "2026-08-14",
   "authoritative_sources": {
     "engineering_model": {
@@ -22,10 +22,10 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "commit_containing_this_phase_k_completion_ssot_update",
+      "verified_commit": "commit_containing_this_phase_l_completion_ssot_update",
       "status": "authoritative_for_committed_implementation",
       "verification": {
-        "complete_automated_test_count": 5304,
+        "complete_automated_test_count": 5451,
         "manual_p9_acceptance_audit": "passed",
         "own_source_diff_check": "passed",
         "external_ontology_integrity_check": "passed",
@@ -38,7 +38,7 @@
         "g4_2_a_to_c_implementation_commit": "782b75a94f7008de9b08fc9724480f0786e6af01",
         "g4_2_a_to_c_focused_test_count": 208,
         "g4_2_a_to_c_complete_automated_test_count": 4463,
-        "verified_passing_test_count": 5304,
+        "verified_passing_test_count": 5451,
         "complete_regression_passed_count": 4552,
         "complete_regression_stale_test_expectation_count": 1,
         "targeted_post_regression_passed_count": 1,
@@ -135,9 +135,24 @@
         "phase_k_syside_runtime_on_verification_workstation": "unavailable",
         "phase_k_runtime_unavailable_behavior": "incomplete_blocked",
         "phase_k_completion_note": "Phase K completed deterministic generated-artifact validation, versioned Validation Profile, isolated SYSIDE CLI integration, normalized findings, valid/invalid/incomplete status, fail-closed publication gating, deterministic validation fingerprints and exact K-to-L artifact binding. Focused regression: 65 passed in 1.41s; complete repository regression: 5304 passed in 25.97s; git diff --check PASS. SYSIDE CLI was unavailable on the verification workstation, so a live publication-ready valid/passed run remains pending environment setup.",
-        "phase_k_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
+        "phase_k_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed",
+        "phase_l_architecture_decision": "collaboration/decisions/ADR-023-final-model-review-and-output-publication-architecture.md",
+        "phase_l_architecture_commit": "72974bb63c92c37baac5eef6b740ee91bacedd01",
+        "phase_l_output_profile_version": "1.0.0",
+        "phase_l_focused_test_count": 147,
+        "phase_l_focused_skipped_test_count": 1,
+        "phase_l_focused_test_duration_seconds": 1.63,
+        "phase_l_complete_repository_test_count": 5451,
+        "phase_l_complete_repository_skipped_test_count": 1,
+        "phase_l_complete_repository_duration_seconds": 26.84,
+        "phase_l_git_diff_check": "passed",
+        "phase_l_syside_runtime_on_verification_workstation": "unavailable",
+        "phase_l_live_syside_acceptance": "blocked_missing_cli",
+        "phase_l_automated_vertical_slice": "passed",
+        "phase_l_completion_note": "Phase L completed Final Model Review, immutable review revisions, code/model/validation/traceability read projection, Change Proposals with controlled authority routing and optional bounded agent re-proposal, an exact Human release gate, versioned output publication, atomic/idempotent OUT packages and an automated IEM-to-J-to-K-to-Human-Release-to-OUT vertical slice. Focused regression: 147 passed, 1 skipped in 1.63s; complete repository regression: 5451 passed, 1 skipped in 26.84s; git diff --check PASS. The skipped test is the deliberate live SYSIDE acceptance test; SYSIDE CLI is unavailable on the verification workstation.",
+        "phase_l_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
       },
-      "last_prior_committed_checkpoint": "601b2134fcb227b114b4c50ad14d09ca920c81c5"
+      "last_prior_committed_checkpoint": "72974bb63c92c37baac5eef6b740ee91bacedd01"
     },
     "collaboration": {
       "location": "collaboration/",
@@ -167,17 +182,18 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.9",
-    "knowledge_base_version": "1.16",
-    "implementation_version": "0.18",
-    "roadmap_version": "1.16"
+    "architecture_version": "1.10",
+    "knowledge_base_version": "1.17",
+    "implementation_version": "0.19",
+    "roadmap_version": "1.17"
   },
   "prototype_target": {
     "target_date": "2026-08-14",
-    "scope": "closed_vertical_slice_then_demo_hardening",
+    "scope": "closed_vertical_slice_implemented_then_guided_ui_and_demo_hardening",
     "critical_path": [
-      "L",
       "Guided Workflow UI",
+      "Ingestion + Human Review UX Simplification",
+      "Architecture / Model Proposal UX",
       "Demo Hardening",
       "Functional Freeze",
       "Product Demo"
@@ -191,6 +207,8 @@
       "Internal Engineering Model",
       "SysML v2 Generation",
       "Validation",
+      "Final Model Human Review",
+      "Human Release Approval",
       "Versioned Output Package"
     ],
     "integrity_controls_not_to_be_weakened": [

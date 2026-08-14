@@ -1,5 +1,119 @@
 # Change Log
 
+## 2026-08-14 — Phase L Final Model Review and Output Publication Completion
+
+Versions after this update:
+
+- Architecture Version: 1.10
+- Knowledge Base Version: 1.17
+- Implementation Version: 0.19
+- Roadmap Version: 1.17
+
+Implementation reference:
+
+- Phase-L completion: the commit containing this SSOT update
+- Accepted Phase-L architecture:
+  `72974bb63c92c37baac5eef6b740ee91bacedd01`
+- Prior Phase-K completion:
+  `1fec1db815997c15b83e068ffb4bd03b93106170`
+
+Architecture decision:
+
+`collaboration/decisions/ADR-023-final-model-review-and-output-publication-architecture.md`
+
+Completed Phase-L decomposition:
+
+```text
+L1  Final Model Review domain foundation
+L2  project-local immutable Final Model Review repository
+L3  Final Model Review read model and UI projection
+L4  Change Proposal and controlled revision / agent-reproposal loop
+L5  exact Human release gate
+L6  Output Publication repository + OutputWriter
+L7  J→K→Final Review→Human Release→OUT integration
+```
+
+Implemented capabilities:
+
+- generated-but-not-released SysML persisted as project-local review evidence
+- immutable review/revision/item/Human-decision contracts
+- deterministic model/code/validation/traceability/proposal review view
+- Human code/diagram edits represented as immutable Change Proposals
+- authority-aware change routing back to H/J/K or L presentation ownership
+- optional bounded agent/LLM re-proposal with unchanged Human authority
+- exact `valid / passed` + Human release gate
+- stale/superseded review rejection
+- versioned `TURING_SYSML_V2_OUTPUT 1.0.0`
+- immutable sequential project-local `OUT-xxxxxx` packages
+- byte-identical publication of the reviewed generated SysML
+- generation summary, validation result/report and traceability projections
+- deterministic package/file/publication-input fingerprints
+- atomic fail-closed publication, recovery and integrity scanning
+- exact re-publication idempotence
+- no implicit latest-artifact or latest-review authority
+
+Verification:
+
+```text
+Focused L1–L7 regression:
+147 passed, 1 skipped in 1.63s
+
+Complete repository regression:
+5451 passed, 1 skipped in 26.84s
+
+git diff --check:
+PASS
+```
+
+The single skip is the intentional live real-SYSIDE L7 vertical-slice acceptance test.
+
+Runtime probe:
+
+```text
+command -v syside
+→ unavailable
+
+syside --version
+→ command not found
+```
+
+The automated IEM→J→K→Final Model Review→Human Release→OUT vertical slice is
+green with a deterministic completed external-validator test adapter.
+
+A real SYSIDE-backed publication remains fail-closed until the SYSIDE CLI is
+installed, licensed and executable. This is retained as an operational
+acceptance blocker, not an open Phase-L implementation defect.
+
+The accepted project flow is now:
+
+```text
+Source
+→ Processing Run
+→ Human Review
+→ Approved Input
+→ Model Candidates
+→ Internal Engineering Model
+→ SysML v2 Generation
+→ Validation
+→ Final Model Human Review
+→ Human Release Approval
+→ Versioned Output Package
+```
+
+Phase transition:
+
+```text
+Phase L implementation: COMPLETE
+Live SYSIDE publication acceptance: BLOCKED — missing CLI
+WP-09 Guided Workflow UI: NEXT
+```
+
+No CATIA Requirement, Function or Logical Component was silently created or
+modified during Phase-L closeout. Final implementation-to-CATIA reconciliation
+remains deferred to the planned CATIA / SSOT checkpoint.
+
+---
+
 ## 2026-08-14 — Phase K Validation Layer Completion
 
 Versions after this update:

@@ -22,19 +22,19 @@ have been completed.
 
 Architecture Version
 
-1.9
+1.10
 
 Knowledge Base Version
 
-1.16
+1.17
 
 Implementation Version
 
-0.18
+0.19
 
 Roadmap Version
 
-1.16
+1.17
 
 Last SSOT Update
 
@@ -42,23 +42,27 @@ Last SSOT Update
 
 Current Phase
 
-**Phase L — Output Writer**
+**WP-09 — Guided Workflow UI**
 
 Current Status
 
-Phase K implementation is completed and verified; Phase L is next. Live publication remains blocked until SYSIDE CLI is available for a required external validation run.
+Phase L Final Model Review and Output Publication implementation is completed and verified. WP-09 Guided Workflow UI is next. Live real-SYSIDE publication acceptance remains blocked because the verification workstation has no SYSIDE CLI.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase K completion
+`commit containing this SSOT update` — Phase L implementation completion
 
 Last Prior Committed Checkpoint
 
-`601b2134fcb227b114b4c50ad14d09ca920c81c5` — accepted Phase-K architecture checkpoint
+`72974bb63c92c37baac5eef6b740ee91bacedd01` — accepted Phase-L architecture checkpoint (ADR-023)
 
 Verified Automated Test Baseline
 
-5304 passed in 25.97s in the complete repository regression after Phase K.
+5451 passed, 1 skipped in 26.84s in the complete repository regression after Phase L.
+
+Phase-L Focused Regression
+
+147 passed, 1 skipped in 1.63s.
 
 Phase-K Focused Regression
 
@@ -99,14 +103,12 @@ Source
 → Internal Engineering Model
 → SysML v2 Generation
 → Validation
+→ Final Model Human Review
+→ Human Release Approval
 → Versioned Output Package
 ```
 
-Phases G, H, I, J and K are complete. The controlled H9 extension is also complete. The technical closed vertical slice now follows:
-
-```text
-Phase L
-```
+Phases G, H, I, J, K and the Phase-L implementation are complete. The controlled H9 extension is also complete. The automated technical vertical slice reaches immutable published output. Live operational acceptance remains blocked only by the missing SYSIDE CLI.
 
 The demo hardening sequence follows the vertical slice:
 
@@ -1212,40 +1214,99 @@ Phase J — Satisfied
 
 ---
 
-# Phase L — Output Writer
+# Phase L — Final Model Review and Output Publication
 
 ## Objective
 
-Publish validated engineering artifacts as a complete versioned output package.
+Provide an explicit Human-in-the-Loop release boundary over the actual generated
+SysML v2 result and publish only the exact validated, Human-approved revision as
+an immutable versioned project output.
 
-## Deliverables
+## Architecture Decision
 
-- SysML v2 output files
-- versioned output directory
-- validation report
-- generation summary
-- traceability package
-- export metadata
-- artifact fingerprints
-- immutable published output references
-- downloadable or inspectable output package
+`collaboration/decisions/ADR-023-final-model-review-and-output-publication-architecture.md`
 
-## Exit Criteria
+Accepted at:
 
-- a complete versioned output package is generated automatically
-- only validated output can be published
-- every output file is fingerprinted
-- every output remains traceable to Project, Source, Approved Input and decisions
-- the package can be inspected through the application
-- automated tests and end-to-end manual acceptance pass
+`72974bb63c92c37baac5eef6b740ee91bacedd01`
+
+## Work Breakdown
+
+| Step | Deliverable | Status |
+|---|---|---|
+| L1 | Final Model Review domain foundation | Completed |
+| L2 | project-local immutable Review Repository | Completed |
+| L3 | Review read model / UI projection | Completed |
+| L4 | Change Proposal + revision / agent-reproposal loop | Completed |
+| L5 | Final Human release gate | Completed |
+| L6 | Output Publication repository + OutputWriter | Completed |
+| L7 | end-to-end integration and acceptance | Implementation completed; live SYSIDE acceptance blocked by environment |
+
+## Implemented Deliverables
+
+- persisted generated-but-not-approved `.sysml` as project-local review evidence
+- immutable `FMR` / `FRV` / `FRI` / `FRD` review contracts
+- exact code/model/validation/traceability/proposal review projection
+- immutable Human Change Proposals and authority-aware routing
+- optional bounded agent/LLM re-proposal without AI release authority
+- exact fingerprint-bound Human release approval
+- stale/superseded review rejection
+- versioned `TURING_SYSML_V2_OUTPUT 1.0.0` Output Profile
+- immutable project-local `OUT-xxxxxx` publication identities
+- byte-identical SysML publication
+- deterministic generation/validation/traceability package projections
+- atomic fail-closed persistence, integrity scanning and recovery
+- idempotent exact re-publication
+- explicit read boundary for Guided Workflow UI
+
+## Verification
+
+```text
+Focused L1–L7:
+147 passed, 1 skipped in 1.63s
+
+Complete repository:
+5451 passed, 1 skipped in 26.84s
+
+git diff --check:
+PASS
+```
+
+The skip is the deliberate real-SYSIDE L7 acceptance test.
+
+Runtime verification:
+
+```text
+SYSIDE CLI: unavailable
+```
+
+The automated vertical slice with a deterministic completed external-validator
+test adapter passes from IEM through J, K, Final Model Review, explicit Human
+release and `OUT-000001`.
+
+A real SYSIDE-backed `valid / passed → Human approval → OUT-000001` run remains
+pending environment setup and shall continue to fail closed until `syside` is
+installed, licensed and executable.
+
+## Exit Status
+
+```text
+Architecture: COMPLETE
+Implementation: COMPLETE
+Automated integration: COMPLETE
+Live external-validator operational acceptance: BLOCKED — missing SYSIDE CLI
+```
 
 ## Status
 
-Planned
+Implementation completed on 2026-08-14.
+
+WP-09 Guided Workflow UI may proceed without weakening the unresolved live
+SYSIDE acceptance prerequisite.
 
 Depends on:
 
-Phase K
+Phase K — Satisfied
 
 ---
 

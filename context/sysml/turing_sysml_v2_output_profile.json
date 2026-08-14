@@ -1,0 +1,21 @@
+{
+  "archive_policy": "derived_non_authoritative",
+  "generated_unit_placement": "preserve_relative_path",
+  "idempotence_policy": "same_publication_input_returns_existing_package",
+  "manifest_filename": "manifest.json",
+  "name": "Turing SysML v2 Output Publication Profile",
+  "output_root": "data/output",
+  "package_id_pattern": "^OUT-[0-9]{6}$",
+  "profile_fingerprint": "8634cc434c096898a0206643cb01a67b169190767b706b98f7b5977610cd0bb7",
+  "profile_id": "TURING_SYSML_V2_OUTPUT",
+  "profile_version": "1.0.0",
+  "required_file_roles": [
+    "generation_summary",
+    "sysml_unit",
+    "traceability",
+    "validation_report",
+    "validation_result"
+  ],
+  "schema_version": "1.0.0",
+  "status": "accepted"
+}

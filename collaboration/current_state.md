@@ -29,39 +29,43 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase K completion
+`commit containing this SSOT update` — Phase L implementation completion
 
 Last Prior Committed Checkpoint
 
-`601b2134fcb227b114b4c50ad14d09ca920c81c5` — accepted Phase-K architecture checkpoint
+`72974bb63c92c37baac5eef6b740ee91bacedd01` — accepted Phase-L architecture checkpoint (ADR-023)
 
 Architecture Version
 
-1.9
+1.10
 
 Knowledge Base Version
 
-1.16
+1.17
 
 Implementation Version
 
-0.18
+0.19
 
 Current Roadmap Version
 
-1.16
+1.17
 
 Current Development Phase
 
-Phase L — Output Writer
+WP-09 — Guided Workflow UI
 
 Current Status
 
-Phase K implementation is completed and verified; Phase L output publication is next. Live publication remains fail-closed until the required SYSIDE CLI is available.
+Phase L Final Model Review and Output Publication implementation is completed and verified. WP-09 Guided Workflow UI is next. The real SYSIDE-backed publication acceptance remains fail-closed because the SYSIDE CLI is not installed on the verification workstation.
 
 Verified Automated Test Baseline
 
-5304 passed in 25.97s in the complete repository regression after Phase K.
+5451 passed, 1 skipped in 26.84s in the complete repository regression after Phase L.
+
+Phase-L Focused Regression
+
+147 passed, 1 skipped in 1.63s.
 
 Phase-K Focused Regression
 
@@ -131,17 +135,19 @@ Source
 → Internal Engineering Model
 → SysML v2 Generation
 → Validation
+→ Final Model Human Review
+→ Human Release Approval
 → Versioned Output Package
 ```
 
 The implementation sequence is now:
 
 ```text
-Phase L — Output Writer
-→ Guided Workflow UI
-→ targeted UX simplification
-→ end-to-end demo hardening
-→ functional freeze
+WP-09 — Guided Workflow UI
+→ WP-10 Ingestion + Human Review UX Simplification
+→ WP-11 Architecture / Model Proposal UX
+→ WP-12 End-to-End Demo Hardening
+→ WP-13 Functional Freeze + Rehearsal
 → product demo
 ```
 
@@ -155,7 +161,7 @@ architecture and evidence.
 
 Priority 1
 
-Begin Phase L from the exact Phase-K publication gate.
+Begin WP-09 Guided Workflow UI from the completed Phase-L read/release/publication boundaries.
 
 Phase L shall accept only an explicit `GeneratedSysMLArtifactSet` together with
 the exact `SysMLValidationResult` covering that artifact fingerprint.
@@ -234,6 +240,112 @@ Priority 8
 Continue Model Element Change Candidate tracking. CATIA remains the engineering
 authority and no implementation observation becomes an accepted CATIA change
 without explicit engineering review.
+
+---
+
+# Phase L — Final Model Review and Output Publication
+
+Phase L implementation is completed and verified.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-023-final-model-review-and-output-publication-architecture.md`
+
+Accepted architecture checkpoint:
+
+`72974bb63c92c37baac5eef6b740ee91bacedd01`
+
+Completed implementation slices:
+
+```text
+L1  Final Model Review domain foundation
+L2  project-local immutable Final Model Review repository
+L3  Final Model Review read model and UI projection
+L4  immutable Change Proposal and controlled revision / agent-reproposal loop
+L5  exact Human release gate
+L6  atomic idempotent Output Publication repository and OutputWriter
+L7  J→K→Final Review→Human Release→OUT end-to-end integration
+```
+
+Implemented authority path:
+
+```text
+IEM
+→ deterministic GeneratedSysMLArtifactSet
+→ SysMLValidationResult
+→ immutable Final Model Review Revision
+→ Human review of model/code/validation/traceability/proposals
+→ explicit fingerprint-bound Human release approval
+→ immutable versioned OUT package
+```
+
+Generated but unreleased `.sysml` remains project-local review evidence. Only
+the exact Human-approved `valid / passed` revision may enter:
+
+```text
+data/output/<project_id>/OUT-xxxxxx/
+```
+
+Implemented capabilities include:
+
+- project-local `FMR`, `FRV`, `FRI`, `FRD` review identities
+- immutable review revisions containing exact generated SysML and K evidence
+- deterministic review read model for model structure, exact SysML code,
+  validation findings, traceability and available proposal/agent evidence
+- explicit code/diagram edits as immutable Change Proposals rather than direct
+  mutation of generated or authoritative model state
+- deterministic change routing to Phase H, J, K or L presentation ownership
+- optional bounded agent/LLM re-proposal request without AI approval authority
+- stale-review and successor-revision protection
+- mandatory exact Human release approval
+- publication re-check of the current K and Human release gates
+- versioned `TURING_SYSML_V2_OUTPUT 1.0.0` Output Profile
+- project-local immutable sequential `OUT-xxxxxx` identities
+- exact byte preservation of Human-reviewed Phase-J SysML during publication
+- deterministic generation summary, validation result/report and traceability
+  package projections
+- package/file fingerprints and publication-input fingerprint
+- idempotent exact re-publication
+- atomic fail-closed publication and recovery diagnostics
+- no implicit latest-artifact/revision selection
+
+Phase-L focused verification:
+
+```text
+147 passed, 1 skipped in 1.63s
+git diff --check: PASS
+```
+
+Complete repository verification:
+
+```text
+5451 passed, 1 skipped in 26.84s
+```
+
+The single skip is the intentional live SYSIDE vertical-slice acceptance test.
+
+Runtime probe:
+
+```text
+command -v syside
+→ unavailable
+
+syside --version
+→ command not found
+```
+
+Therefore:
+
+```text
+Phase L implementation: COMPLETE
+Automated J→K→Human Review→Human Release→OUT vertical slice: PASS
+Live real-SYSIDE publication acceptance: BLOCKED by missing SYSIDE CLI
+Next work package: WP-09 Guided Workflow UI
+```
+
+The unavailable SYSIDE CLI does not weaken or bypass the release gate. A real
+publication continues to fail closed until external validation can complete as
+`valid / passed`.
 
 ---
 
