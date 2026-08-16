@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
@@ -338,6 +339,7 @@ def test_open_run_queues_dashboard_sources_transition():
         "failure_reason": None,
         "recovery_required": False,
     }
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = FakeExecutionService()
 
     render_project_ingestion_execution(

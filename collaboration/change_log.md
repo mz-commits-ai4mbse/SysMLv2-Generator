@@ -1,5 +1,92 @@
 # Change Log
 
+## 2026-08-16 — WP-10 Ingestion + Human Review UX Simplification Completion
+
+Versions after this update:
+
+- Architecture Version: 1.12
+- Knowledge Base Version: 1.19
+- Implementation Version: 0.21
+- Roadmap Version: 1.19
+
+Implementation reference:
+
+- WP-10 completion: the commit containing this SSOT update
+- Prior WP-09 completion:
+  `23fab6ab597a922b3c2c18d0088fa6c270e2629e`
+- Accepted / extended UX architecture:
+  `collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+Completed WP-10 decomposition:
+
+```text
+WP-10.1  presentation foundation
+WP-10.2  Processing UX
+WP-10.3  Human Review Workspace UX
+WP-10.4  Review lifecycle + advanced actions UX
+WP-10.5  visual acceptance + closeout
+```
+
+Implemented capabilities:
+
+- UX-16 Processing and Human Review projection contract
+- deterministic content-first Processing and Human Review read-side adapters
+- filename-first Source inventory
+- readable Processing status and direct Human Review continuation
+- Focused / Technical presentation split without parallel workflow authority
+- engineering-content-first Human Review Queue and Review Items
+- Persona grouping and side-by-side proposal comparison
+- repeated runs retained under their Persona rather than counted as new votes
+- consensus / variance display sourced only from persisted consensus evidence
+- one-Persona result guard preventing false inter-Persona agreement claims
+- progressive disclosure of evidence and advanced Review operations
+- clearer Finalization, Human confirmation, Approved Input Promotion and Reopen
+  lifecycle interaction
+- immutable predecessor semantics preserved during Reopen
+- exact technical traceability retained on demand
+- top-level Workspace widget aligned to one Session State authority
+
+Verification:
+
+```text
+Complete repository regression:
+5563 passed, 1 skipped in 13.91s
+
+Final targeted shell / Human Review regression:
+43 passed in 0.53s
+
+git diff --check:
+PASS
+```
+
+Manual live acceptance:
+
+```text
+Focused Processing: PASS
+Ready-to-process state: PASS
+live LLM Processing → 15 unreviewed outputs: PASS
+Processing → Human Review transition: PASS
+Human Review Queue / Review Items: PASS
+Finalization state presentation: PASS
+```
+
+The inspected Human Review fixture exposed one Persona per inspected Review Item.
+Multi-Persona visual acceptance is intentionally retained for the populated
+WP-12 end-to-end demo Project; automated tests cover grouping and side-by-side
+presentation.
+
+Phase transition:
+
+```text
+WP-10 Ingestion + Human Review UX Simplification: COMPLETE
+WP-11 Architecture / Model Proposal UX: ACTIVE
+```
+
+No CATIA engineering authority or normative Processing / Review / Approved Input
+authority was transferred to the UI.
+
+---
+
 ## 2026-08-16 — WP-09 Guided Workflow UI Completion
 
 Versions after this update:

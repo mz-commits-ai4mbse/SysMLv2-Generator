@@ -8,6 +8,7 @@ import pytest
 
 from modules.project_sources import DuplicateSourceContentError
 
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 from app.turing_generator_navigation import (
     APP_VIEW_WORKFLOW,
     APP_VIEW_DASHBOARD,
@@ -65,8 +66,8 @@ class FakeStreamlit:
         label,
         *,
         options,
-        index,
-        format_func,
+        index=0,
+        format_func=lambda value: value,
         horizontal,
         key,
     ):
@@ -141,7 +142,27 @@ class FakeStreamlit:
             self.session_state[key] = selected
             return selected
 
-        return self.selected_source_role
+        if key == "turing_generator.source_role":
+            return self.selected_source_role
+
+        return options[index]
+
+    def number_input(
+        self,
+        label,
+        *,
+        min_value,
+        max_value,
+        value,
+        step,
+        key,
+    ):
+        self.calls.append(("number_input", label, key))
+        return value
+
+    def checkbox(self, label, *, value, key):
+        self.calls.append(("checkbox", label, key))
+        return value
 
     def table(self, rows):
         self.calls.append(("table", rows))
@@ -362,7 +383,12 @@ def test_valid_ingestion_entry_shows_project_and_returns_to_dashboard():
     assert workspace.calls == ["123456"]
     assert any(
         call[0] == "caption"
-        and "Example Project · 123456" in call[1]
+        and call[1] == "Project: Example Project"
+        for call in st.calls
+    )
+    assert not any(
+        call[0] == "caption"
+        and "123456" in call[1]
         for call in st.calls
     )
     assert st.session_state[SESSION_APP_VIEW] == APP_VIEW_INGESTION
@@ -549,8 +575,43 @@ def test_registered_source_inventory_contains_no_paths():
         if call[0] == "table"
     ]
     assert len(tables) == 1
-    assert tables[0][0]["Source ID"] == "SRC-000004"
+    assert tables[0][0]["Filename"] == "system.json"
+    assert "Source ID" not in tables[0][0]
+    assert "SHA-256" not in tables[0][0]
     assert "path" not in {
         key.lower()
         for key in tables[0][0]
     }
+
+def test_registered_source_inventory_technical_view_exposes_traceability():
+    source = SimpleNamespace(
+        project_id="123456",
+        source_id="SRC-000004",
+        source_role="engineering_source",
+        original_filename="system.json",
+        media_type="application/json",
+        size_bytes=128,
+        sha256="b" * 64,
+        registered_at="2026-07-27T12:00:00Z",
+    )
+    st = FakeStreamlit()
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_INGESTION
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
+    ingestion_service = FakeIngestionService(sources=(source,))
+
+    render_project_source_registration(
+        st,
+        ingestion_service=ingestion_service,
+        navigation=read_navigation_state(st.session_state),
+    )
+
+    tables = [
+        call[1]
+        for call in st.calls
+        if call[0] == "table"
+    ]
+    assert len(tables) == 1
+    assert tables[0][0]["Filename"] == "system.json"
+    assert tables[0][0]["Source ID"] == "SRC-000004"
+    assert tables[0][0]["SHA-256"] == "b" * 12

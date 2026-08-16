@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from app.human_review_promotion_ui import (
     render_approved_input_promotion_ui,
 )
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 
 
 class FakeStreamlit:
@@ -16,6 +17,7 @@ class FakeStreamlit:
         clicked_keys=(),
         checkbox_values=None,
     ):
+        self.session_state = {}
         self.clicked_keys = set(clicked_keys)
         self.checkbox_values = dict(
             checkbox_values or {}
@@ -219,6 +221,7 @@ def test_draft_workspace_does_not_offer_promotion():
 
 def test_blocked_promotion_shows_reason_and_no_promote_button():
     st = FakeStreamlit()
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = FakeService(
         assessment=_assessment(
             eligible=False,
@@ -247,7 +250,7 @@ def test_blocked_promotion_shows_reason_and_no_promote_button():
         for call in st.calls
         if (
             call[0] == "button"
-            and call[1] == "Promote to Approved Inputs"
+            and call[1] == "Promote to Approved Input"
         )
     ]
     assert promote_buttons == []
@@ -303,6 +306,7 @@ def test_successful_promotion_shows_created_reused_skipped_and_events():
             "human_review_promotion.confirm.RVV-000001": True,
         },
     )
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = FakeService(
         promotion_result=result,
     )
@@ -344,6 +348,7 @@ def test_successful_promotion_shows_created_reused_skipped_and_events():
 def test_authority_view_exposes_phase_h_active_state_and_event_lineage():
     event = _event()
     st = FakeStreamlit()
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = FakeService(
         traceability=(
             _trace(
@@ -394,3 +399,25 @@ def test_authority_view_exposes_phase_h_active_state_and_event_lineage():
             "Event fingerprint": "e" * 64,
         }
     ]
+
+
+def test_focused_promotion_hides_authority_identifiers():
+    st = FakeStreamlit()
+    service = FakeService()
+
+    render_approved_input_promotion_ui(
+        st,
+        service=service,
+        project_id="123456",
+        workspace_view=_workspace(),
+    )
+
+    rendered = repr(st.calls)
+    assert "AIN-000001" not in rendered
+    assert "RVR-000001" not in rendered
+    assert "HRD-000001" not in rendered
+    assert any(
+        call[0] == "success"
+        and "active Approved Input" in call[1]
+        for call in st.calls
+    )

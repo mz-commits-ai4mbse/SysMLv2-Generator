@@ -25,6 +25,7 @@ class FakeStreamlit:
         text_values=None,
         multiselect_values=None,
     ):
+        self.session_state = {}
         self.clicked_keys = set(clicked_keys)
         self.text_values = dict(text_values or {})
         self.multiselect_values = dict(
@@ -33,12 +34,37 @@ class FakeStreamlit:
         self.calls = []
         self.rerun_count = 0
 
+    def columns(self, spec):
+        count = spec if isinstance(spec, int) else len(spec)
+        self.calls.append(("columns", count))
+
+        class Context:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+        return tuple(Context() for _ in range(count))
+
+    def expander(self, label, *, expanded=False):
+        self.calls.append(("expander", label, expanded))
+
+        class Context:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+        return Context()
+
     def radio(
         self,
         label,
         *,
         options,
-        index,
+        index=0,
         format_func,
         horizontal,
         key,
@@ -64,11 +90,11 @@ class FakeStreamlit:
     def warning(self, text):
         self.calls.append(("warning", text))
 
-    def error(self, text):
-        self.calls.append(("error", text))
-
     def success(self, text):
         self.calls.append(("success", text))
+
+    def error(self, text):
+        self.calls.append(("error", text))
 
     def text_input(
         self,
@@ -98,6 +124,8 @@ class FakeStreamlit:
         options,
         index,
         key,
+        format_func=None,
+        **kwargs,
     ):
         self.calls.append(("selectbox", label, key))
         return options[index]
@@ -194,12 +222,18 @@ def _proposal_reference():
     )
 
 
-def _detail():
+def _detail(
+    *,
+    proposal_id="CAND-001",
+    persona_id="systems_engineer",
+    agent_id="AGENT-001",
+):
     return SimpleNamespace(
-        proposal_id="CAND-001",
-        proposal_key="AGENT-001:CAND-001",
-        agent_id="AGENT-001",
-        persona_id="systems_engineer",
+        review_item_id="RIT-000001",
+        proposal_id=proposal_id,
+        proposal_key=f"{agent_id}:{proposal_id}",
+        agent_id=agent_id,
+        persona_id=persona_id,
         proposed_title="Proposal title",
         proposed_primary_text="Proposal statement.",
         proposed_description="Proposal rationale.",
@@ -210,6 +244,28 @@ def _detail():
         confidence="high",
         generation_readiness="ready",
         review_state="available",
+        supporting_evidence=("source-1",),
+        missing_evidence=(),
+    )
+
+
+def _fact(
+    *,
+    item_id="RIT-000001",
+    consensus=("full_agreement",),
+):
+    return SimpleNamespace(
+        review_item_id=item_id,
+        item_content_fingerprint="a" * 64,
+        consensus_states=tuple(consensus),
+        agent_disagreement_state=(
+            "absent"
+            if consensus == ("full_agreement",)
+            else "present"
+        ),
+        human_modification_state="unmodified",
+        evidence_sufficiency_state="sufficient",
+        relationship_validation_status="not_applicable",
     )
 
 
@@ -230,16 +286,21 @@ def _view(item):
 
 
 class FakeService:
-    def __init__(self):
+    def __init__(self, *, details=None):
         self.accept_calls = []
         self.reject_calls = []
         self.save_calls = []
+        self.details = (
+            (_detail(),)
+            if details is None
+            else tuple(details)
+        )
 
     def review_filter_facts(self, *args):
-        return ()
+        return (_fact(),)
 
     def proposal_details(self, *args):
-        return (_detail(),)
+        return self.details
 
     def accept_proposal(self, *args, **kwargs):
         self.accept_calls.append((args, kwargs))
@@ -376,4 +437,68 @@ def test_edit_and_accept_uses_item_edit_command_with_selected_proposal():
     assert (
         request.updated_content.primary_text
         == "Human refined statement."
+    )
+
+def test_persona_results_are_grouped_into_side_by_side_columns():
+    reference = _proposal_reference()
+    item = _item(proposals=(reference,))
+    details = (
+        _detail(
+            proposal_id="CAND-001",
+            persona_id="systems_engineer",
+            agent_id="AGENT-001",
+        ),
+        _detail(
+            proposal_id="CAND-002",
+            persona_id="critical_reviewer",
+            agent_id="AGENT-002",
+        ),
+    )
+    st = FakeStreamlit()
+    service = FakeService(details=details)
+
+    render_review_item_editor(
+        st,
+        service=service,
+        project_id="123456",
+        workspace_view=_view(item),
+        reviewer_identity="Reviewer A",
+    )
+
+    assert any(
+        call[0] == "columns"
+        and call[1] == 2
+        for call in st.calls
+    )
+    assert any(
+        call[0] == "success"
+        and "Agreement: Unanimous" in call[1]
+        and "Human decision required" in call[1]
+        for call in st.calls
+    )
+
+
+def test_focused_review_item_does_not_lead_with_item_identity():
+    reference = _proposal_reference()
+    item = _item(proposals=(reference,))
+    st = FakeStreamlit()
+    service = FakeService()
+
+    render_review_item_editor(
+        st,
+        service=service,
+        project_id="123456",
+        workspace_view=_view(item),
+        reviewer_identity="Reviewer A",
+    )
+
+    subheaders = [
+        call[1]
+        for call in st.calls
+        if call[0] == "subheader"
+    ]
+    assert "Current title" in subheaders
+    assert not any(
+        value.startswith("RIT-")
+        for value in subheaders
     )

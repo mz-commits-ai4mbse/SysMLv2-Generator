@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from app.human_review_finalization_ui import (
     render_review_finalization_ui,
 )
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 
 
 class FakeStreamlit:
@@ -18,6 +19,7 @@ class FakeStreamlit:
         text_values=None,
         checkbox_values=None,
     ):
+        self.session_state = {}
         self.clicked_keys = set(clicked_keys)
         self.select_values = dict(select_values or {})
         self.text_values = dict(text_values or {})
@@ -58,6 +60,7 @@ class FakeStreamlit:
         options,
         index,
         key,
+        format_func=None,
     ):
         self.calls.append(
             ("selectbox", label, tuple(options), key)
@@ -253,7 +256,7 @@ def test_blocked_draft_shows_findings_and_does_not_offer_confirm():
         for call in st.calls
         if (
             call[0] == "selectbox"
-            and call[1] == "Human Review Decision"
+            and call[1] == "Decision"
         )
     ]
     assert decision_calls[0][2] == (
@@ -261,10 +264,8 @@ def test_blocked_draft_shows_findings_and_does_not_offer_confirm():
         "reject",
     )
     assert any(
-        call[0] == "table"
-        and call[1]
-        and call[1][0].get("Blocking finding")
-        == "review_item_open:RIT-000001"
+        call[0] == "warning"
+        and "blocked by 1 finding" in call[1]
         for call in st.calls
     )
 
@@ -370,6 +371,7 @@ def test_finalization_is_separate_confirmed_action():
 
 def test_finalized_view_loads_exact_artifact_set_and_renders_report():
     st = FakeStreamlit()
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = FakeService(
         artifact_set=_artifact_set()
     )

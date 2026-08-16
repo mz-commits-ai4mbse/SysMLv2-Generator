@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from app.presentation_preferences import technical_details_enabled
 from modules.review_workspace.errors import ReviewWorkspaceError
 
 
@@ -14,12 +15,15 @@ def render_approved_input_promotion_ui(
     project_id: str,
     workspace_view,
 ) -> None:
-    """Render fresh promotion eligibility and immutable AIN/AIE authority."""
+    """Render focused Approved Input promotion over exact persisted authority."""
 
     if workspace_view.version.version_state != "finalized":
         return
 
-    st.subheader("Approved Input Promotion")
+    technical = technical_details_enabled(
+        getattr(st, "session_state", {})
+    )
+    st.subheader("Approved Input")
 
     try:
         assessment = service.promotion_preview(
@@ -47,14 +51,16 @@ def render_approved_input_promotion_ui(
     _render_promotion_assessment(
         st,
         assessment,
+        technical=technical,
     )
 
     if assessment.eligible_for_promotion:
+        st.success(
+            f"{len(assessment.promotable_item_ids)} finalized Review Item(s) "
+            "are ready to become Approved Input."
+        )
         confirmation = st.checkbox(
-            (
-                "Promote every currently eligible finalized Review Item "
-                "using the exact current authority snapshot"
-            ),
+            "Promote every currently eligible finalized Review Item.",
             value=False,
             key=(
                 "human_review_promotion.confirm."
@@ -63,7 +69,7 @@ def render_approved_input_promotion_ui(
         )
 
         if st.button(
-            "Promote to Approved Inputs",
+            "Promote to Approved Input",
             key=(
                 "human_review_promotion.promote."
                 f"{workspace_view.version.review_document_version_id}"
@@ -93,12 +99,13 @@ def render_approved_input_promotion_ui(
                     )
                 else:
                     st.success(
-                        "Approved Input promotion completed and authority "
-                        "was reloaded from immutable manifests and events."
+                        "Approved Input promotion completed. "
+                        "Authority was reloaded from immutable evidence."
                     )
                     _render_promotion_result(
                         st,
                         result,
+                        technical=technical,
                     )
                     traceability = result.traceability
     else:
@@ -109,13 +116,37 @@ def render_approved_input_promotion_ui(
     _render_authority_traceability(
         st,
         traceability,
+        technical=technical,
     )
 
 
 def _render_promotion_assessment(
     st: Any,
     assessment,
+    *,
+    technical: bool,
 ) -> None:
+    st.table(
+        [
+            {
+                "Status": (
+                    "Ready for promotion"
+                    if assessment.eligible_for_promotion
+                    else "Promotion blocked"
+                ),
+                "Eligible items": len(
+                    assessment.promotable_item_ids
+                ),
+                "Blocking findings": len(
+                    assessment.blocking_issue_codes
+                ),
+            }
+        ]
+    )
+
+    if not technical:
+        return
+
     st.table(
         [
             {
@@ -126,9 +157,6 @@ def _render_promotion_assessment(
                 "Eligible": assessment.eligible_for_promotion,
                 "Promotable Items": len(
                     assessment.promotable_item_ids
-                ),
-                "Blocking findings": len(
-                    assessment.blocking_issue_codes
                 ),
                 "Finalization Decision": (
                     assessment.finalization_decision_id
@@ -176,7 +204,22 @@ def _render_promotion_assessment(
 def _render_promotion_result(
     st: Any,
     result,
+    *,
+    technical: bool,
 ) -> None:
+    if not technical:
+        st.table(
+            [
+                {
+                    "Created": len(result.created_approved_input_ids),
+                    "Reused": len(result.reused_approved_input_ids),
+                    "Skipped": len(result.skipped_review_item_ids),
+                    "Lifecycle events": len(result.lifecycle_event_ids),
+                }
+            ]
+        )
+        return
+
     rows = []
 
     for approved_input_id in result.created_approved_input_ids:
@@ -223,30 +266,57 @@ def _render_promotion_result(
 def _render_authority_traceability(
     st: Any,
     traceability,
+    *,
+    technical: bool,
 ) -> None:
-    st.subheader("Approved Input Authority & Traceability")
+    st.subheader("Approved engineering input")
 
-    active_ids = tuple(
-        item.approved_input_id
+    active = tuple(
+        item
         for item in traceability
         if item.is_active
     )
 
+    if not traceability:
+        st.info(
+            "No Approved Input is currently associated with this Review."
+        )
+        return
+
+    if active:
+        st.success(
+            f"{len(active)} active Approved Input item(s) are available "
+            "for downstream model proposal work."
+        )
+        st.table(
+            [
+                {
+                    "Title": item.canonical_title,
+                    "Kind": item.approved_input_kind,
+                    "Authority": item.authority_state,
+                }
+                for item in active
+            ]
+        )
+    else:
+        st.info(
+            "No active Approved Input remains for this Review."
+        )
+
+    if not technical:
+        return
+
     st.caption(
         "Phase H authoritative inputs: "
         + (
-            ", ".join(active_ids)
-            if active_ids
+            ", ".join(
+                item.approved_input_id
+                for item in active
+            )
+            if active
             else "None"
         )
     )
-
-    if not traceability:
-        st.info(
-            "No Approved Input manifests are currently associated with "
-            "this Review Document."
-        )
-        return
 
     st.table(
         [

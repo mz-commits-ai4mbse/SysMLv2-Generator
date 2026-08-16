@@ -7,6 +7,7 @@ from types import SimpleNamespace
 from app.human_review_finalization_ui import (
     render_review_finalization_ui,
 )
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 
 
 class FakeStreamlit:
@@ -17,6 +18,7 @@ class FakeStreamlit:
         text_values=None,
         checkbox_values=None,
     ):
+        self.session_state = {}
         self.clicked_keys = set(clicked_keys)
         self.text_values = dict(text_values or {})
         self.checkbox_values = dict(
@@ -229,6 +231,7 @@ def test_reopen_calls_service_with_exact_predecessor_actor_and_reason():
             "RVV-000001": True,
         },
     )
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = FakeService()
 
     render_review_finalization_ui(

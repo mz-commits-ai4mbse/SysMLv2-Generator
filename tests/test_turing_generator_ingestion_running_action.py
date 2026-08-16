@@ -89,11 +89,17 @@ class _RetryService:
             dry_run=True,
         )
         self._state = SimpleNamespace(
+            project_id="000001",
+            source_id="SRC-000001",
             processing_run_id="RUN-000001",
             attempt_id="ATT-000002",
             run_state="failed",
             processing_stage="agentic_ingestion",
+            failure_reason="llm_provider_unavailable",
+            blocked_reason=None,
+            pending_review=False,
             recovery_required=False,
+            can_start_new=False,
             can_retry=True,
             configuration_fingerprint=(
                 calculate_ingestion_configuration_fingerprint(configuration)
@@ -107,6 +113,9 @@ class _RetryService:
                     source_id="SRC-000001",
                     original_filename="fixture.md",
                     source_role="engineering_source",
+                    media_type="text/markdown",
+                    size_bytes=128,
+                    sha256="a" * 64,
                 )
             ]
         )
@@ -163,17 +172,26 @@ class _RunningService:
                     source_id="SRC-000001",
                     original_filename="fixture.md",
                     source_role="engineering_source",
+                    media_type="text/markdown",
+                    size_bytes=128,
+                    sha256="a" * 64,
                 )
             ]
         )
 
     def source_execution_state(self, project_id, source_id):
         return SimpleNamespace(
+            project_id="000001",
+            source_id="SRC-000001",
             processing_run_id="RUN-000001",
             attempt_id="ATT-000003",
             run_state="running",
             processing_stage="agentic_ingestion",
+            failure_reason=None,
+            blocked_reason=None,
+            pending_review=False,
             recovery_required=False,
+            can_start_new=False,
             can_retry=False,
             configuration_fingerprint=None,
         )

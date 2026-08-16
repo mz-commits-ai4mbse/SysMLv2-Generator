@@ -9,6 +9,7 @@ from modules.review_workspace.types import ReviewItemContent
 from app.human_review_approval_ui import (
     render_human_review_approval_ui,
 )
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
     APP_VIEW_REVIEW,
@@ -57,7 +58,7 @@ class FakeStreamlit:
         label,
         *,
         options,
-        index,
+        index=0,
         format_func,
         horizontal,
         key,
@@ -218,12 +219,34 @@ def _queue_item(*, with_workspace=False):
             "RVV-000001" if with_workspace else None
         ),
         review_item_count=(3 if with_workspace else 0),
+        review_outcome_counts=(
+            (
+                ("open", 1),
+                ("deferred", 1),
+                ("accepted", 1),
+            )
+            if with_workspace
+            else ()
+        ),
         workflow_status=(
             "draft_review"
             if with_workspace
             else "awaiting_workspace"
         ),
         active_approved_input_ids=(),
+        issue_codes=(),
+    )
+
+
+def _review_fact():
+    return SimpleNamespace(
+        review_item_id="RIT-000001",
+        item_content_fingerprint="a" * 64,
+        consensus_states=("not_available",),
+        agent_disagreement_state="not_available",
+        human_modification_state="unmodified",
+        evidence_sufficiency_state="not_assessed",
+        relationship_validation_status="not_applicable",
     )
 
 
@@ -311,6 +334,9 @@ class FakeWorkflowService:
             (project_id, review_document_id)
         )
         return _workspace_view()
+
+    def review_filter_facts(self, *args):
+        return (_review_fact(),)
 
     def proposal_details(
         self,
@@ -452,7 +478,7 @@ def test_review_queue_creates_initial_workspace_with_reviewer_identity(
     assert st.rerun_count == 1
     assert any(
         call[0] == "success"
-        and "created" in call[1]
+        and "Human Review started" in call[1]
         for call in st.calls
     )
 
@@ -542,3 +568,57 @@ def test_review_return_control_preserves_project_and_dashboard_view(
     assert state.active_view == APP_VIEW_DASHBOARD
     assert state.project_id == "123456"
     assert state.return_view == "attention"
+
+def test_focused_review_queue_is_filename_and_work_first(tmp_path):
+    st = FakeStreamlit()
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_REVIEW
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    workflow = FakeWorkflowService(
+        items=(_queue_item(with_workspace=True),)
+    )
+
+    render_human_review_approval_ui(
+        tmp_path,
+        streamlit_module=st,
+        project_workspace=FakeWorkspace(),
+        workflow_service=workflow,
+    )
+
+    tables = [
+        call[1]
+        for call in st.calls
+        if call[0] == "table"
+    ]
+    queue = tables[0][0]
+    assert queue["Source"] == "requirements.md"
+    assert queue["Decisions required"] == 2
+    assert "Source ID" not in queue
+    assert "Processing Run" not in queue
+    assert "Review Document" not in queue
+
+
+def test_technical_review_queue_restores_exact_identities(tmp_path):
+    st = FakeStreamlit()
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_REVIEW
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
+    workflow = FakeWorkflowService(
+        items=(_queue_item(with_workspace=True),)
+    )
+
+    render_human_review_approval_ui(
+        tmp_path,
+        streamlit_module=st,
+        project_workspace=FakeWorkspace(),
+        workflow_service=workflow,
+    )
+
+    tables = [
+        call[1]
+        for call in st.calls
+        if call[0] == "table"
+    ]
+    queue = tables[0][0]
+    assert queue["Source ID"] == "SRC-000001"
+    assert queue["Processing Run"] == "PRN-000001"
+    assert queue["Review Document"] == "RVD-000001"

@@ -14,11 +14,16 @@ from app.human_review_promotion_ui import (
 from app.human_review_item_editor_ui import (
     render_review_item_editor,
 )
+from app.presentation_preferences import technical_details_enabled
 from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
     SESSION_SELECTED_ENTITY_ID,
     queue_app_view,
     read_navigation_state,
+)
+from modules.guided_workflow import (
+    GuidedWorkflowValidationError,
+    build_review_queue_item_view,
 )
 from modules.project_workspace import (
     ProjectWorkspace,
@@ -43,11 +48,12 @@ def render_human_review_approval_ui(
     project_workspace: ProjectWorkspace | None = None,
     workflow_service: ReviewApprovalWorkflowService | None = None,
 ) -> None:
-    """Render the project-bound Human Review and Approval workspace."""
+    """Render the project-bound Human Review workspace."""
 
     st = streamlit_module
     root = Path(project_root)
     navigation = read_navigation_state(st.session_state)
+    technical = technical_details_enabled(st.session_state)
     workspace = (
         ProjectWorkspace(root=root / "data" / "projects")
         if project_workspace is None
@@ -62,12 +68,12 @@ def render_human_review_approval_ui(
         else workflow_service
     )
 
-    st.header("Human Review & Approval")
+    st.header("Human Review")
 
     if navigation.project_id is None:
         st.error(
-            "No valid Project is selected. Open the Project Dashboard "
-            "and select a Project before starting Human Review."
+            "No valid Project is selected. Select a Project before "
+            "starting Human Review."
         )
         _render_dashboard_return(
             st,
@@ -101,13 +107,16 @@ def render_human_review_approval_ui(
         )
         return
 
+    if technical:
+        st.caption(
+            f"Project: {manifest.display_name} · {manifest.project_id}"
+        )
+    else:
+        st.caption(f"Project: {manifest.display_name}")
+
     st.caption(
-        f"Selected Project: {manifest.display_name} · {manifest.project_id}"
-    )
-    st.caption(
-        "Human Review creates immutable Review Revisions and explicit "
-        "approval evidence. Agent Outputs and Consensus remain evidence, "
-        "not approval authority."
+        "Compare the independent engineering interpretations, resolve "
+        "open decisions and prepare reviewed content for Approved Input."
     )
 
     try:
@@ -134,12 +143,17 @@ def render_human_review_approval_ui(
         )
         return
 
-    _render_project_issues(st, project_view)
+    _render_project_issues(
+        st,
+        project_view,
+        technical=technical,
+    )
     reviewer_identity = _render_review_queue(
         st,
         service=service,
         project_view=project_view,
         project_id=manifest.project_id,
+        technical=technical,
     )
 
     selected_document_id = st.session_state.get(
@@ -149,12 +163,22 @@ def render_human_review_approval_ui(
         isinstance(selected_document_id, str)
         and selected_document_id.startswith("RVD-")
     ):
+        queue_item = next(
+            (
+                item
+                for item in project_view.items
+                if item.review_document_id == selected_document_id
+            ),
+            None,
+        )
         _render_selected_workspace(
             st,
             service=service,
             project_id=manifest.project_id,
             review_document_id=selected_document_id,
             reviewer_identity=reviewer_identity,
+            queue_item=queue_item,
+            technical=technical,
         )
 
     _render_dashboard_return(
@@ -164,7 +188,12 @@ def render_human_review_approval_ui(
     )
 
 
-def _render_project_issues(st: Any, project_view) -> None:
+def _render_project_issues(
+    st: Any,
+    project_view,
+    *,
+    technical: bool,
+) -> None:
     if not project_view.issues:
         return
 
@@ -183,6 +212,9 @@ def _render_project_issues(st: Any, project_view) -> None:
             f"{len(project_view.issues)} Human Review workflow warning(s) "
             "are present."
         )
+
+    if not technical:
+        return
 
     st.table(
         [
@@ -203,6 +235,7 @@ def _render_review_queue(
     service: ReviewApprovalWorkflowService,
     project_view,
     project_id: str,
+    technical: bool = False,
 ) -> str:
     st.subheader("Review Queue")
 
@@ -220,31 +253,51 @@ def _render_review_queue(
         st.info("No Human Review work is currently available.")
         return reviewer_identity
 
-    st.table(
-        [
-            {
-                "Source": item.source_id,
-                "Filename": item.original_filename,
-                "Processing Run": item.processing_run_id,
-                "Run state": item.run_state or "Unavailable",
-                "Review Document": item.review_document_id or "Not created",
-                "Review Version": (
-                    item.review_document_version_id or "Not created"
-                ),
-                "Review items": item.review_item_count,
-                "Workflow": item.workflow_status,
-                "Active Approved Inputs": len(
-                    item.active_approved_input_ids
-                ),
-            }
-            for item in project_view.items
-        ]
-    )
+    queue_views = []
+    try:
+        for item in project_view.items:
+            queue_views.append(
+                (item, build_review_queue_item_view(item))
+            )
+    except GuidedWorkflowValidationError:
+        st.error(
+            "Human Review queue presentation could not be reconstructed "
+            "from the authoritative workflow state."
+        )
+        return reviewer_identity
 
-    for item in project_view.items:
+    rows = []
+    for item, view in queue_views:
+        row = {
+            "Source": view.source_filename,
+            "Status": view.status_label,
+            "Decisions required": view.decisions_required,
+            "Review items": view.review_item_count,
+            "Approved inputs": view.active_approved_input_count,
+        }
+        if technical:
+            row.update(
+                {
+                    "Source ID": view.source_id,
+                    "Processing Run": view.processing_run_id,
+                    "Run state": view.run_state or "Unavailable",
+                    "Review Document": (
+                        view.review_document_id or "Not created"
+                    ),
+                    "Review Version": (
+                        view.review_document_version_id or "Not created"
+                    ),
+                    "Workflow": view.workflow_status,
+                }
+            )
+        rows.append(row)
+
+    st.table(rows)
+
+    for item, view in queue_views:
         if item.review_document_id is None:
             if st.button(
-                f"Create Review for {item.processing_run_id}",
+                f"Start review · {view.source_filename}",
                 key=(
                     "human_review_approval.create."
                     f"{item.processing_run_id}"
@@ -282,18 +335,23 @@ def _render_review_queue(
                         SESSION_SELECTED_ENTITY_ID
                     ] = result.review_document_id
                     st.success(
-                        "Initial Review Workspace created."
+                        "Human Review started."
                         if result.created
-                        else "Existing Review Workspace opened."
+                        else "Existing Human Review opened."
                     )
                     _rerun(st)
             continue
 
         if st.button(
-            f"Open {item.review_document_id}",
+            f"Open review · {view.source_filename}",
             key=(
                 "human_review_approval.open."
                 f"{item.review_document_id}"
+            ),
+            type=(
+                "primary"
+                if view.decisions_required > 0
+                else None
             ),
         ):
             st.session_state[
@@ -311,6 +369,8 @@ def _render_selected_workspace(
     project_id: str,
     review_document_id: str,
     reviewer_identity: str,
+    queue_item,
+    technical: bool,
 ) -> None:
     try:
         view = service.workspace_view(
@@ -330,13 +390,21 @@ def _render_selected_workspace(
         )
         return
 
-    st.subheader(f"Selected Review · {view.document.review_document_id}")
-    st.caption(
-        f"Version {view.version.version_number} · "
-        f"{view.version.review_document_version_id} · "
-        f"{view.version.version_state} · "
-        f"Revision {view.revision.review_revision_id}"
+    source_label = (
+        queue_item.original_filename
+        if queue_item is not None
+        else "Selected source"
     )
+    st.subheader(f"Review · {source_label}")
+
+    if technical:
+        st.caption(
+            f"{view.document.review_document_id} · "
+            f"Version {view.version.version_number} / "
+            f"{view.version.review_document_version_id} · "
+            f"{view.version.version_state} · "
+            f"Revision {view.revision.review_revision_id}"
+        )
 
     outcome_counts = {}
     for item in view.revision.review_items:
@@ -344,23 +412,38 @@ def _render_selected_workspace(
             outcome_counts.get(item.effective_review_outcome, 0) + 1
         )
 
-    st.table(
-        [
+    decisions_required = sum(
+        outcome_counts.get(outcome, 0)
+        for outcome in ("open", "deferred", "unresolved")
+    )
+    if view.version.version_state == "finalized":
+        status = "Review finalized"
+    elif decisions_required:
+        status = "Human decisions required"
+    elif view.can_finalize:
+        status = "Ready to finalize"
+    else:
+        status = "Review ready for completion"
+
+    summary = {
+        "Status": status,
+        "Decisions required": decisions_required,
+        "Review items": len(view.revision.review_items),
+        "Approved inputs": len(view.active_approved_input_ids),
+    }
+    if technical:
+        summary.update(
             {
-                "Review items": len(view.revision.review_items),
                 "Scoped actions": len(view.scoped_actions),
                 "Can finalize": view.can_finalize,
                 "Can promote": view.can_promote,
-                "Active Approved Inputs": len(
-                    view.active_approved_input_ids
-                ),
                 "Outcomes": ", ".join(
                     f"{key}: {value}"
                     for key, value in sorted(outcome_counts.items())
                 ),
             }
-        ]
-    )
+        )
+    st.table([summary])
 
     if view.has_blocking_issues:
         st.warning(

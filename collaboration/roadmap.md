@@ -22,19 +22,19 @@ have been completed.
 
 Architecture Version
 
-1.11
+1.12
 
 Knowledge Base Version
 
-1.18
+1.19
 
 Implementation Version
 
-0.20
+0.21
 
 Roadmap Version
 
-1.18
+1.19
 
 Last SSOT Update
 
@@ -42,26 +42,26 @@ Last SSOT Update
 
 Current Phase
 
-**WP-10 — Ingestion + Human Review UX Simplification**
+**WP-11 — Architecture / Model Proposal UX**
 
 Current Status
 
-WP-09 Guided Workflow UI is completed and verified. WP-10 is active. Live
-real-SYSIDE publication acceptance remains blocked because the verification
-workstation has no SYSIDE CLI; this remains fail-closed and does not weaken the
-implemented release path.
+WP-10 Ingestion + Human Review UX Simplification is completed and verified.
+WP-11 Architecture / Model Proposal UX is active. Live real-SYSIDE publication
+acceptance remains blocked because the verification workstation has no SYSIDE
+CLI; this remains fail-closed and does not weaken the implemented release path.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — WP-09 Guided Workflow UI completion
+`commit containing this SSOT update` — WP-10 Ingestion + Human Review UX Simplification completion
 
 Last Prior Committed Checkpoint
 
-`24957252f82d8f440ba8eccb0c571c906d78a858` — Guided Engineering Workspace and global UX shell checkpoint
+`23fab6ab597a922b3c2c18d0088fa6c270e2629e` — WP-09 Guided Workflow UI completion
 
 Verified Automated Test Baseline
 
-5542 passed, 1 skipped in 13.36s in the complete repository regression after WP-09.
+5563 passed, 1 skipped in 13.91s in the complete repository regression after WP-10.
 
 WP-09 Focused Regression
 
@@ -115,7 +115,7 @@ Source
 → Versioned Output Package
 ```
 
-Phases G, H, I, J, K, L and WP-09 are complete. The controlled H9
+Phases G, H, I, J, K, L, WP-09 and WP-10 are complete. The controlled H9
 extension is also complete. The automated technical vertical slice reaches
 immutable published output and the engineer-facing global workflow shell is now
 operational. Live real-SYSIDE acceptance remains blocked only by the missing CLI.
@@ -124,8 +124,8 @@ The remaining demo hardening sequence is:
 
 ```text
 WP-09 Guided Workflow UI                     COMPLETE
-→ WP-10 Ingestion + Human Review UX Simplification
-→ WP-11 Architecture / Model Proposal UX
+→ WP-10 Ingestion + Human Review UX Simplification COMPLETE
+→ WP-11 Architecture / Model Proposal UX          ACTIVE
 → WP-12 End-to-End Demo Hardening
 → WP-13 Functional Freeze + Rehearsal
 → Product Demo 2026-08-18
@@ -210,9 +210,64 @@ Completed on 2026-08-16
 
 ## Objective
 
-Apply the accepted Guided Engineering Workflow principles to the ingestion and
-Human Review surfaces while preserving all existing processing and Human
+Apply the accepted Guided Engineering Workflow principles to the Processing and
+Human Review surfaces while preserving all existing Processing and Human
 authority contracts.
+
+## Completed Deliverables
+
+- UX-16 Processing and Human Review projection contract in ADR-024
+- deterministic Processing presentation model
+- deterministic Human Review queue / item / Persona / variance presentation
+- filename-first Source inventory and Processing interaction
+- Focused / Technical Processing projection
+- direct Processing → Human Review next action
+- engineering-content-first Human Review Queue and Review Item presentation
+- Persona grouping and side-by-side comparison
+- consensus / variance display without invented agreement
+- one-Persona agreement guard
+- progressive disclosure of evidence, scoped actions, split / merge and
+  technical traceability
+- clearer Finalization / Human confirmation lifecycle
+- clearer Approved Input Promotion and active-authority presentation
+- immutable Reopen-as-successor interaction retained
+- single Session State authority for the top-level Workspace widget
+
+## Verification
+
+```text
+Complete repository regression:
+5563 passed, 1 skipped in 13.91s
+
+Final targeted shell / Human Review regression:
+43 passed in 0.53s
+
+git diff --check:
+PASS
+```
+
+Manual live acceptance covered Focused Processing, a live LLM Processing result,
+direct Human Review continuation, Human Review Queue / Review Items and
+Finalization state.
+
+The available acceptance fixture exposed one Persona for the inspected Review
+Items. Multi-Persona visual acceptance remains part of the populated WP-12 demo
+project; automated tests already cover Persona grouping and side-by-side layout.
+
+## Status
+
+Completed on 2026-08-16
+
+---
+
+# WP-11 — Architecture / Model Proposal UX
+
+## Objective
+
+Refine Model Proposal and Architecture interaction so that the engineer can
+understand proposed model structure, alternatives, variance, review state and
+next action without weakening Candidate, Approved Input or Internal Engineering
+Model authority.
 
 ## Status
 

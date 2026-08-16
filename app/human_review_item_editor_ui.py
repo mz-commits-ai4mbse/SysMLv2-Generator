@@ -2,9 +2,15 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import replace
 from typing import Any
 
+from app.presentation_preferences import technical_details_enabled
+from modules.guided_workflow import (
+    GuidedWorkflowValidationError,
+    build_review_item_view,
+)
 from modules.review_workspace.errors import ReviewWorkspaceError
 from modules.review_workspace.workflow_editing import (
     ReviewItemEditRequest,
@@ -46,9 +52,13 @@ def render_review_item_editor(
     workspace_view,
     reviewer_identity: str,
 ) -> None:
-    """Render the draft Review Item editor over verified G6 commands."""
+    """Render content-first Human Review over verified G6 commands."""
 
     revision = workspace_view.revision
+    technical = technical_details_enabled(
+        getattr(st, "session_state", {})
+    )
+
     if workspace_view.version.version_state != "draft":
         st.info(
             "This Review Version is finalized and read-only. "
@@ -56,13 +66,42 @@ def render_review_item_editor(
         )
         return
 
-    render_scoped_review_actions_ui(
+    with _expander(
         st,
-        service=service,
-        project_id=project_id,
-        workspace_view=workspace_view,
-        reviewer_identity=reviewer_identity,
-    )
+        "Advanced review actions",
+        expanded=technical,
+    ):
+        render_scoped_review_actions_ui(
+            st,
+            service=service,
+            project_id=project_id,
+            workspace_view=workspace_view,
+            reviewer_identity=reviewer_identity,
+        )
+
+    try:
+        facts = service.review_filter_facts(
+            project_id,
+            workspace_view.document.review_document_id,
+            workspace_view.version.review_document_version_id,
+        )
+    except ReviewWorkspaceError:
+        st.error(
+            "Human Review comparison facts could not be reconstructed "
+            "from the exact current Review Revision."
+        )
+        return
+    except Exception:
+        st.error(
+            "Human Review comparison facts are unavailable. "
+            "No fallback interpretation was inferred."
+        )
+        return
+
+    fact_by_id = {
+        fact.review_item_id: fact
+        for fact in facts
+    }
 
     section = st.radio(
         "Review section",
@@ -89,6 +128,14 @@ def render_review_item_editor(
         return
 
     for item in items:
+        fact = fact_by_id.get(item.review_item_id)
+        if fact is None:
+            st.error(
+                "The current Review Item is missing its exact comparison "
+                "facts. The item is not rendered as an inferred fallback."
+            )
+            continue
+
         _render_item(
             st,
             service=service,
@@ -96,17 +143,24 @@ def render_review_item_editor(
             workspace_view=workspace_view,
             item=item,
             reviewer_identity=reviewer_identity,
+            filter_fact=fact,
+            technical=technical,
         )
 
-    if section != "rejected_content":
-        _render_merge_controls(
+    if section != "rejected_content" and len(items) >= 2:
+        with _expander(
             st,
-            service=service,
-            project_id=project_id,
-            workspace_view=workspace_view,
-            items=items,
-            reviewer_identity=reviewer_identity,
-        )
+            "Advanced merge operation",
+            expanded=False,
+        ):
+            _render_merge_controls(
+                st,
+                service=service,
+                project_id=project_id,
+                workspace_view=workspace_view,
+                items=items,
+                reviewer_identity=reviewer_identity,
+            )
 
 
 def _items_for_section(
@@ -138,23 +192,9 @@ def _render_item(
     workspace_view,
     item,
     reviewer_identity: str,
+    filter_fact,
+    technical: bool,
 ) -> None:
-    st.subheader(
-        f"{item.review_item_id} · {item.current_content.title}"
-    )
-    st.caption(
-        f"Kind: {item.review_item_kind} · "
-        f"Outcome: {item.effective_review_outcome} · "
-        f"Lineage: {item.lineage_operation}"
-    )
-    st.markdown(item.current_content.primary_text)
-
-    if item.current_content.description:
-        st.caption(item.current_content.description)
-
-    _render_effective_dimensions(st, item)
-    _render_evidence(st, item)
-
     details = ()
     if item.proposal_references:
         try:
@@ -169,21 +209,82 @@ def _render_item(
                 "Exact Agent proposal content could not be loaded "
                 "for this Review Item."
             )
+            return
         except Exception:
             st.error(
                 "Agent proposal content is unavailable. "
                 "No fallback proposal state was inferred."
             )
+            return
 
-    for detail in details:
-        _render_proposal(
+    try:
+        presentation = build_review_item_view(
+            item,
+            proposal_details=details,
+            filter_fact=filter_fact,
+        )
+    except GuidedWorkflowValidationError:
+        st.error(
+            "This Review Item could not be projected from its exact "
+            "content, proposal and consensus bindings."
+        )
+        return
+
+    if technical:
+        st.subheader(
+            f"{item.review_item_id} · {presentation.subject.title}"
+        )
+        st.caption(
+            f"Kind: {item.review_item_kind} · "
+            f"Outcome: {item.effective_review_outcome} · "
+            f"Lineage: {item.lineage_operation}"
+        )
+    else:
+        st.subheader(presentation.subject.title)
+
+    _render_variance_summary(
+        st,
+        presentation,
+    )
+
+    st.markdown(presentation.subject.primary_text)
+    if presentation.subject.secondary_text:
+        st.caption(presentation.subject.secondary_text)
+
+    with _expander(
+        st,
+        "Engineering details",
+        expanded=False,
+    ):
+        _render_effective_dimensions(st, item)
+
+    with _expander(
+        st,
+        "Source evidence",
+        expanded=False,
+    ):
+        _render_evidence(
+            st,
+            item,
+            technical=technical,
+        )
+
+    if details:
+        st.markdown("**Independent perspectives**")
+        _render_persona_proposals(
             st,
             service=service,
             project_id=project_id,
             workspace_view=workspace_view,
             item=item,
-            detail=detail,
+            details=details,
             reviewer_identity=reviewer_identity,
+            technical=technical,
+        )
+    else:
+        st.info(
+            "No independent Agent proposals are attached to this "
+            "Review Item."
         )
 
     _render_item_outcome_controls(
@@ -195,14 +296,19 @@ def _render_item(
         reviewer_identity=reviewer_identity,
     )
 
-    _render_split_controls(
+    with _expander(
         st,
-        service=service,
-        project_id=project_id,
-        workspace_view=workspace_view,
-        item=item,
-        reviewer_identity=reviewer_identity,
-    )
+        "Advanced item operations",
+        expanded=False,
+    ):
+        _render_split_controls(
+            st,
+            service=service,
+            project_id=project_id,
+            workspace_view=workspace_view,
+            item=item,
+            reviewer_identity=reviewer_identity,
+        )
 
 
 def _render_effective_dimensions(
@@ -230,7 +336,20 @@ def _render_effective_dimensions(
 def _render_evidence(
     st: Any,
     item,
+    *,
+    technical: bool,
 ) -> None:
+    source_count = len(item.source_evidence_references)
+    consensus_count = len(item.consensus_evidence_references)
+
+    st.caption(
+        f"{source_count} source evidence reference(s) · "
+        f"{consensus_count} consensus evidence reference(s)"
+    )
+
+    if not technical:
+        return
+
     rows = []
 
     for reference in item.source_evidence_references:
@@ -276,52 +395,82 @@ def _render_proposal(
     item,
     detail,
     reviewer_identity: str,
+    technical: bool = False,
 ) -> None:
-    st.caption(
-        f"Proposal {detail.proposal_id} · "
-        f"{detail.agent_id} / {detail.persona_id}"
-    )
+    if technical:
+        st.caption(
+            f"Proposal {detail.proposal_id} · "
+            f"{detail.agent_id} / {detail.persona_id}"
+        )
+
     st.markdown(detail.proposed_primary_text)
 
-    st.table(
-        [
-            {
-                "Classification": detail.proposed_information_type,
-                "Confidence": detail.confidence,
-                "Generation readiness": (
-                    detail.generation_readiness
-                    or "Not provided"
-                ),
-                "Framework assignment": (
-                    ", ".join(
-                        detail.framework_assignment_values
-                    )
-                    or "Not provided by P9"
-                ),
-                "Review state": detail.review_state,
-            }
-        ]
-    )
+    confidence = getattr(detail, "confidence", None)
+    if confidence:
+        st.caption(f"Confidence: {confidence}")
 
-    if detail.source_assignments:
-        st.table(
-            [
-                {
-                    "Source": assignment.source_info_id,
-                    "Assignment": assignment.assignment_type,
-                    "Confidence": assignment.confidence,
-                    "Statement": assignment.source_statement,
-                }
-                for assignment in detail.source_assignments
-            ]
+    with _expander(
+        st,
+        "Why this proposal?",
+        expanded=False,
+    ):
+        if detail.rationale:
+            st.markdown(detail.rationale)
+        supporting = len(
+            tuple(getattr(detail, "supporting_evidence", ()))
         )
+        missing = len(
+            tuple(getattr(detail, "missing_evidence", ()))
+        )
+        st.caption(
+            f"{supporting} supporting evidence item(s) · "
+            f"{missing} missing evidence item(s)"
+        )
+
+        if technical:
+            st.table(
+                [
+                    {
+                        "Proposal ID": detail.proposal_id,
+                        "Agent": detail.agent_id,
+                        "Persona": detail.persona_id,
+                        "Classification": (
+                            detail.proposed_information_type
+                        ),
+                        "Generation readiness": (
+                            detail.generation_readiness
+                            or "Not provided"
+                        ),
+                        "Framework assignment": (
+                            ", ".join(
+                                detail.framework_assignment_values
+                            )
+                            or "Not provided by P9"
+                        ),
+                        "Review state": detail.review_state,
+                    }
+                ]
+            )
+
+            if detail.source_assignments:
+                st.table(
+                    [
+                        {
+                            "Source": assignment.source_info_id,
+                            "Assignment": assignment.assignment_type,
+                            "Confidence": assignment.confidence,
+                            "Statement": assignment.source_statement,
+                        }
+                        for assignment in detail.source_assignments
+                    ]
+                )
 
     rationale_key = (
         "human_review_item_editor.proposal_rationale."
         f"{item.review_item_id}.{detail.proposal_key}"
     )
     rationale = st.text_input(
-        "Proposal rationale",
+        "Decision rationale",
         value="",
         key=rationale_key,
         help=(
@@ -331,82 +480,91 @@ def _render_proposal(
     )
     rationale_value = _optional_text(rationale)
 
-    if st.button(
-        f"Accept proposal · {detail.proposal_id}",
-        key=(
-            "human_review_item_editor.accept."
-            f"{item.review_item_id}.{detail.proposal_key}"
-        ),
-    ):
-        if not _reviewer_ready(st, reviewer_identity):
-            return
-        _execute(
-            st,
-            lambda: service.accept_proposal(
-                project_id,
-                workspace_view.document.review_document_id,
-                workspace_view.version.review_document_version_id,
-                item.review_item_id,
-                request=ReviewProposalActionRequest(
-                    expected_revision_id=(
-                        workspace_view.revision.review_revision_id
-                    ),
-                    expected_item_content_fingerprint=(
-                        item.item_content_fingerprint
-                    ),
-                    proposal_key=detail.proposal_key,
-                    rationale=rationale_value,
-                ),
-                actor_identity=reviewer_identity,
+    actions = _columns(st, 2)
+    with actions[0]:
+        if st.button(
+            "Accept",
+            key=(
+                "human_review_item_editor.accept."
+                f"{item.review_item_id}.{detail.proposal_key}"
             ),
-            "Agent proposal accepted.",
-        )
-
-    _render_edit_and_accept(
-        st,
-        service=service,
-        project_id=project_id,
-        workspace_view=workspace_view,
-        item=item,
-        detail=detail,
-        reviewer_identity=reviewer_identity,
-        rationale=rationale_value,
-    )
-
-    if st.button(
-        f"Reject proposal · {detail.proposal_id}",
-        key=(
-            "human_review_item_editor.reject_proposal."
-            f"{item.review_item_id}.{detail.proposal_key}"
-        ),
-    ):
-        if not _reviewer_ready(st, reviewer_identity):
-            return
-        if rationale_value is None:
-            st.error(
-                "A rationale is required to reject an Agent proposal."
+            type="primary",
+        ):
+            if not _reviewer_ready(st, reviewer_identity):
+                return
+            _execute(
+                st,
+                lambda: service.accept_proposal(
+                    project_id,
+                    workspace_view.document.review_document_id,
+                    workspace_view.version.review_document_version_id,
+                    item.review_item_id,
+                    request=ReviewProposalActionRequest(
+                        expected_revision_id=(
+                            workspace_view.revision.review_revision_id
+                        ),
+                        expected_item_content_fingerprint=(
+                            item.item_content_fingerprint
+                        ),
+                        proposal_key=detail.proposal_key,
+                        rationale=rationale_value,
+                    ),
+                    actor_identity=reviewer_identity,
+                ),
+                "Agent proposal accepted.",
             )
-            return
-        _execute(
-            st,
-            lambda: service.reject_proposal(
-                project_id,
-                workspace_view.document.review_document_id,
-                workspace_view.version.review_document_version_id,
-                item.review_item_id,
-                request=ReviewProposalActionRequest(
-                    expected_revision_id=(
-                        workspace_view.revision.review_revision_id
-                    ),
-                    expected_item_content_fingerprint=(
-                        item.item_content_fingerprint
-                    ),
-                    proposal_key=detail.proposal_key,
-                    rationale=rationale_value,
-                ),
-                actor_identity=reviewer_identity,
+
+    with actions[1]:
+        if st.button(
+            "Reject",
+            key=(
+                "human_review_item_editor.reject_proposal."
+                f"{item.review_item_id}.{detail.proposal_key}"
             ),
-            "Agent proposal rejected. The Review Item remains independent.",
+        ):
+            if not _reviewer_ready(st, reviewer_identity):
+                return
+            if rationale_value is None:
+                st.error(
+                    "A rationale is required to reject an Agent proposal."
+                )
+                return
+            _execute(
+                st,
+                lambda: service.reject_proposal(
+                    project_id,
+                    workspace_view.document.review_document_id,
+                    workspace_view.version.review_document_version_id,
+                    item.review_item_id,
+                    request=ReviewProposalActionRequest(
+                        expected_revision_id=(
+                            workspace_view.revision.review_revision_id
+                        ),
+                        expected_item_content_fingerprint=(
+                            item.item_content_fingerprint
+                        ),
+                        proposal_key=detail.proposal_key,
+                        rationale=rationale_value,
+                    ),
+                    actor_identity=reviewer_identity,
+                ),
+                "Agent proposal rejected. The Review Item remains independent.",
+            )
+
+    with _expander(
+        st,
+        "Edit before accepting",
+        expanded=False,
+    ):
+        _render_edit_and_accept(
+            st,
+            service=service,
+            project_id=project_id,
+            workspace_view=workspace_view,
+            item=item,
+            detail=detail,
+            reviewer_identity=reviewer_identity,
+            rationale=rationale_value,
         )
 
 
@@ -527,6 +685,8 @@ def _render_item_outcome_controls(
     item,
     reviewer_identity: str,
 ) -> None:
+    st.markdown("**Review item decision**")
+
     rationale = st.text_input(
         "Item rationale",
         value="",
@@ -541,23 +701,27 @@ def _render_item_outcome_controls(
     rationale_value = _optional_text(rationale)
 
     actions = (
-        (
-            "Reject all proposals / Review Item",
-            "rejected",
-            True,
-        ),
-        ("Defer Review Item", "deferred", False),
-        ("Mark Review Item out of scope", "out_of_scope", False),
+        ("Defer", "deferred", False),
+        ("Reject item", "rejected", True),
+        ("Out of scope", "out_of_scope", False),
     )
+    columns = _columns(st, len(actions))
 
-    for label, outcome, requires_rationale in actions:
-        if st.button(
-            label,
-            key=(
-                "human_review_item_editor.item_outcome."
-                f"{item.review_item_id}.{outcome}"
-            ),
-        ):
+    for column, (
+        label,
+        outcome,
+        requires_rationale,
+    ) in zip(columns, actions):
+        with column:
+            if not st.button(
+                label,
+                key=(
+                    "human_review_item_editor.item_outcome."
+                    f"{item.review_item_id}.{outcome}"
+                ),
+            ):
+                continue
+
             if not _reviewer_ready(st, reviewer_identity):
                 return
             if requires_rationale and rationale_value is None:
@@ -896,6 +1060,110 @@ def _render_merge_controls(
             ),
             "Review Items merged into a new lineage identity.",
         )
+
+
+def _render_variance_summary(
+    st: Any,
+    presentation,
+) -> None:
+    label = presentation.variance.label
+    decision = presentation.decision_label
+
+    if presentation.variance.semantic == "positive":
+        st.success(
+            f"Agreement: {label}. {decision}."
+        )
+    elif presentation.variance.semantic == "attention":
+        st.warning(
+            f"Variance: {label}. {decision}."
+        )
+    elif presentation.variance.semantic == "blocking":
+        st.error(
+            f"Variance: {label}. {decision}."
+        )
+    else:
+        st.info(
+            f"Consensus: {label}. {decision}."
+        )
+
+
+def _render_persona_proposals(
+    st: Any,
+    *,
+    service,
+    project_id: str,
+    workspace_view,
+    item,
+    details,
+    reviewer_identity: str,
+    technical: bool,
+) -> None:
+    grouped = {}
+    for detail in details:
+        grouped.setdefault(detail.persona_id, []).append(detail)
+
+    persona_ids = tuple(sorted(grouped))
+    for offset in range(0, len(persona_ids), 3):
+        batch = persona_ids[offset:offset + 3]
+        columns = _columns(st, len(batch))
+
+        for column, persona_id in zip(columns, batch):
+            with column:
+                st.markdown(
+                    f"**{_humanize_identifier(persona_id)}**"
+                )
+                persona_details = sorted(
+                    grouped[persona_id],
+                    key=lambda value: (
+                        value.proposal_id,
+                        value.proposal_key,
+                    ),
+                )
+                if len(persona_details) > 1:
+                    st.caption(
+                        f"{len(persona_details)} runs grouped under "
+                        "this Persona"
+                    )
+
+                for index, detail in enumerate(
+                    persona_details,
+                    start=1,
+                ):
+                    if len(persona_details) > 1:
+                        st.caption(f"Run {index}")
+                    _render_proposal(
+                        st,
+                        service=service,
+                        project_id=project_id,
+                        workspace_view=workspace_view,
+                        item=item,
+                        detail=detail,
+                        reviewer_identity=reviewer_identity,
+                        technical=technical,
+                    )
+
+
+def _columns(st: Any, count: int):
+    factory = getattr(st, "columns", None)
+    if callable(factory):
+        return factory(count)
+    return tuple(nullcontext() for _ in range(count))
+
+
+def _expander(
+    st: Any,
+    label: str,
+    *,
+    expanded: bool,
+):
+    factory = getattr(st, "expander", None)
+    if callable(factory):
+        return factory(label, expanded=expanded)
+    return nullcontext()
+
+
+def _humanize_identifier(value: str) -> str:
+    return value.replace("_", " ").replace("-", " ").strip().title()
 
 
 def _reviewer_ready(

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from contextlib import nullcontext
 import os
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,7 @@ from app.human_review_approval_ui import (
     render_human_review_approval_ui,
 )
 from app.project_dashboard_ui import render_project_dashboard_ui
+from app.presentation_preferences import technical_details_enabled
 from app.turing_generator_navigation import (
     APP_VIEW_WORKFLOW,
     APP_VIEW_DASHBOARD,
@@ -34,6 +36,10 @@ from app.turing_generator_navigation import (
     apply_pending_app_view,
     queue_app_view,
     read_navigation_state,
+)
+from modules.guided_workflow import (
+    GuidedWorkflowValidationError,
+    build_processing_source_view,
 )
 from modules.project_ingestion import (
     DEFAULT_MODEL,
@@ -230,10 +236,12 @@ def render_application_navigation(
 ) -> str:
     """Render the stable top-level application navigation."""
 
+    if SESSION_APP_VIEW not in st.session_state:
+        st.session_state[SESSION_APP_VIEW] = current_view
+
     selected = st.radio(
         "Workspace",
         options=APP_VIEWS,
-        index=APP_VIEWS.index(current_view),
         format_func=lambda item: _APP_VIEW_LABELS[item],
         horizontal=True,
         key=SESSION_APP_VIEW,
@@ -248,14 +256,15 @@ def render_project_bound_ingestion_entry(
     ingestion_service: ProjectBoundIngestionService,
     navigation: ApplicationNavigationState,
 ) -> None:
-    """Render the project-bound P9 Source registration entry."""
+    """Render the project-bound Processing workspace."""
 
-    st.header("Project-bound Agentic Ingestion")
+    technical = technical_details_enabled(st.session_state)
+    st.header("Processing")
 
     if navigation.project_id is None:
         st.error(
-            "No valid Project is selected. Open the Project Dashboard "
-            "and select or create a Project before starting ingestion."
+            "No valid Project is selected. Select or create a Project "
+            "before processing engineering sources."
         )
         render_dashboard_return_control(
             st,
@@ -292,13 +301,16 @@ def render_project_bound_ingestion_entry(
         )
         return
 
+    if technical:
+        st.caption(
+            f"Project: {manifest.display_name} · {manifest.project_id}"
+        )
+    else:
+        st.caption(f"Project: {manifest.display_name}")
+
     st.caption(
-        f"Selected Project: {manifest.display_name} · "
-        f"{manifest.project_id}"
-    )
-    st.warning(
-        "Registered Sources remain unreviewed. Registration preserves "
-        "traceability but does not approve engineering content."
+        "Add a source, run processing, then continue with Human Review. "
+        "Processing results remain unreviewed engineering evidence."
     )
 
     render_project_source_registration(
@@ -310,14 +322,14 @@ def render_project_bound_ingestion_entry(
     render_project_ingestion_execution(
         st,
         ingestion_service=ingestion_service,
-        navigation=navigation,
+        navigation=read_navigation_state(st.session_state),
     )
 
     render_dashboard_return_control(
         st,
         project_id=manifest.project_id,
         return_view=navigation.return_view,
-        label="Return to Project Dashboard",
+        label="Open Project Dashboard",
     )
 
 
@@ -332,15 +344,21 @@ def render_project_source_registration(
     if navigation.project_id is None:
         return
 
-    st.subheader("1. Register Source")
+    technical = technical_details_enabled(st.session_state)
+
+    st.subheader("Add source")
     st.caption(
-        "Supported Source containers: Markdown, text, JSON, CSV, TSV and PDF. "
-        "PDF processing is limited to machine-readable text layers; "
-        "OCR and image-only content remain outside the MVP."
+        "Upload an engineering source or supporting context for this Project."
     )
+    if technical:
+        st.caption(
+            "Supported containers: Markdown, text, JSON, CSV, TSV and PDF. "
+            "PDF processing requires a machine-readable text layer; "
+            "OCR and image-only content remain outside the MVP."
+        )
 
     uploaded_file = st.file_uploader(
-        "Upload legacy Source",
+        "Upload source",
         type=list(_P9_UPLOAD_TYPES),
         key="turing_generator.source_upload",
     )
@@ -353,31 +371,29 @@ def render_project_source_registration(
     )
 
     if uploaded_file is None:
-        st.info("Upload a Source file to enable registration.")
+        st.info("Upload a source file to enable registration.")
     else:
         uploaded_size = getattr(uploaded_file, "size", None)
         size_text = (
-            f"{uploaded_size} bytes"
+            _format_source_size(uploaded_size)
             if isinstance(uploaded_size, int)
             else "size unavailable"
         )
         st.caption(
-            f"Prepared upload: {uploaded_file.name} · {size_text}"
+            f"Ready to add: {uploaded_file.name} · {size_text}"
         )
 
         if st.button(
-            "Register Source",
+            "Add source",
             key="turing_generator.register_source",
             type="primary",
         ):
             try:
-                result = (
-                    ingestion_service.register_uploaded_source(
-                        navigation.project_id,
-                        original_filename=uploaded_file.name,
-                        content=_uploaded_file_bytes(uploaded_file),
-                        source_role=source_role,
-                    )
+                result = ingestion_service.register_uploaded_source(
+                    navigation.project_id,
+                    original_filename=uploaded_file.name,
+                    content=_uploaded_file_bytes(uploaded_file),
+                    source_role=source_role,
                 )
             except DuplicateSourceContentError:
                 st.error(
@@ -400,10 +416,15 @@ def render_project_source_registration(
                 st.session_state[
                     SESSION_SELECTED_ENTITY_ID
                 ] = result.source_id
-                st.success(
-                    f"Source registered: {result.original_filename} · "
-                    f"{result.source_id}"
-                )
+                if technical:
+                    st.success(
+                        f"Source added: {result.original_filename} · "
+                        f"{result.source_id}"
+                    )
+                else:
+                    st.success(
+                        f"Source added: {result.original_filename}"
+                    )
 
     render_registered_source_inventory(
         st,
@@ -418,9 +439,10 @@ def render_registered_source_inventory(
     ingestion_service: ProjectBoundIngestionService,
     project_id: str,
 ) -> None:
-    """Render safe project-local Source metadata without filesystem paths."""
+    """Render registered Sources content-first with optional technical detail."""
 
-    st.subheader("Registered Sources")
+    technical = technical_details_enabled(st.session_state)
+    st.subheader("Sources")
 
     try:
         inventory = ingestion_service.list_registered_sources(
@@ -445,28 +467,34 @@ def render_registered_source_inventory(
         )
 
     if not inventory.sources:
-        st.info("No registered Sources are currently available.")
+        st.info("No sources have been added yet.")
         return
 
-    rows = [
-        {
-            "Source ID": source.source_id,
+    rows = []
+    for source in inventory.sources:
+        row = {
             "Filename": source.original_filename,
             "Role": _SOURCE_ROLE_LABELS.get(
                 source.source_role,
                 source.source_role,
             ),
-            "Media type": source.media_type,
-            "Size": source.size_bytes,
-            "SHA-256": source.sha256[:12],
+            "Size": _format_source_size(source.size_bytes),
         }
-        for source in inventory.sources
-    ]
+        if technical:
+            row.update(
+                {
+                    "Source ID": source.source_id,
+                    "Media type": source.media_type,
+                    "SHA-256": source.sha256[:12],
+                }
+            )
+        rows.append(row)
+
     st.table(rows)
 
     for source in inventory.sources:
         if st.button(
-            f"Select {source.source_id} for execution",
+            f"Use {source.original_filename}",
             key=(
                 "turing_generator.select_source."
                 f"{source.source_id}"
@@ -489,10 +517,15 @@ def render_registered_source_inventory(
         None,
     )
     if selected_source is not None:
-        st.caption(
-            f"Selected Source: {selected_source.original_filename} · "
-            f"{selected_source.source_id}"
-        )
+        if technical:
+            st.caption(
+                f"Selected source: {selected_source.original_filename} · "
+                f"{selected_source.source_id}"
+            )
+        else:
+            st.caption(
+                f"Selected source: {selected_source.original_filename}"
+            )
 
 
 def render_project_ingestion_execution(
@@ -501,12 +534,13 @@ def render_project_ingestion_execution(
     ingestion_service: ProjectBoundIngestionService,
     navigation: ApplicationNavigationState,
 ) -> None:
-    """Configure, execute or retry one project-bound Agentic Ingestion."""
+    """Configure, execute or retry one project-bound Processing operation."""
 
     if navigation.project_id is None:
         return
 
-    st.subheader("2. Run Agentic Ingestion")
+    technical = technical_details_enabled(st.session_state)
+    st.subheader("Process selected source")
 
     try:
         inventory = ingestion_service.list_registered_sources(
@@ -532,17 +566,22 @@ def render_project_ingestion_execution(
             st,
             project_id=navigation.project_id,
         )
-        st.info(
-            "Select a registered Source above to configure "
-            "Agentic Ingestion."
-        )
+        st.info("Select a source above to continue.")
         return
 
-    st.caption(
-        f"Execution Source: {selected_source.original_filename} · "
-        f"{selected_source.source_id} · "
-        f"{_SOURCE_ROLE_LABELS.get(selected_source.source_role, selected_source.source_role)}"
+    role_label = _SOURCE_ROLE_LABELS.get(
+        selected_source.source_role,
+        selected_source.source_role,
     )
+    if technical:
+        st.caption(
+            f"Source: {selected_source.original_filename} · "
+            f"{selected_source.source_id} · {role_label}"
+        )
+    else:
+        st.caption(
+            f"Source: {selected_source.original_filename} · {role_label}"
+        )
 
     local_execution = st.session_state.get(
         _SESSION_INGESTION_IN_PROGRESS
@@ -555,8 +594,7 @@ def render_project_ingestion_execution(
         == selected_source.source_id
     ):
         st.info(
-            "Agentic Ingestion is already executing in this "
-            "application session."
+            "Processing is already running in this application session."
         )
         return
 
@@ -587,14 +625,26 @@ def render_project_ingestion_execution(
     else:
         execution_state = None
 
+    try:
+        processing_view = build_processing_source_view(
+            selected_source,
+            execution_state,
+        )
+    except GuidedWorkflowValidationError:
+        st.error(
+            "The Processing presentation could not be bound to the "
+            "selected Source and current Processing state."
+        )
+        return
+
+    _render_processing_state_summary(
+        st,
+        processing_view,
+        technical=technical,
+    )
+
     if execution_state is not None:
         if execution_state.run_state == "running":
-            st.info(
-                "Agentic Ingestion is recorded as running · "
-                f"{execution_state.processing_run_id} · "
-                f"{execution_state.attempt_id or 'attempt unavailable'} · "
-                f"{execution_state.processing_stage or 'stage unavailable'}."
-            )
             render_last_ingestion_result(
                 st,
                 project_id=navigation.project_id,
@@ -602,24 +652,18 @@ def render_project_ingestion_execution(
             return
 
         if execution_state.run_state == "awaiting_review":
-            st.success(
-                "Agentic Ingestion has completed and this Source is "
-                "awaiting Human Review · "
-                f"{execution_state.processing_run_id} · "
-                f"{execution_state.attempt_id or 'attempt unavailable'}."
-            )
             render_last_ingestion_result(
                 st,
                 project_id=navigation.project_id,
             )
+            _render_human_review_transition(
+                st,
+                project_id=navigation.project_id,
+                run_id=execution_state.processing_run_id,
+            )
             return
 
         if execution_state.recovery_required:
-            st.error(
-                "The current Processing Run requires explicit recovery "
-                "before Agentic Ingestion can continue · "
-                f"{execution_state.processing_run_id}."
-            )
             render_last_ingestion_result(
                 st,
                 project_id=navigation.project_id,
@@ -627,10 +671,6 @@ def render_project_ingestion_execution(
             return
 
         if execution_state.run_state == "completed":
-            st.info(
-                "The current Processing Run is completed. A new Run "
-                "requires an explicit successor workflow."
-            )
             return
 
     retry_mode = bool(
@@ -638,68 +678,82 @@ def render_project_ingestion_execution(
         and execution_state.can_retry
     )
 
-    model = st.selectbox(
-        "Model",
-        options=_P9_MODEL_OPTIONS,
-        index=_P9_MODEL_OPTIONS.index(DEFAULT_MODEL),
-        key="turing_generator.execution_model",
-    )
-    team_scope = st.selectbox(
-        "Maximum team members per stage",
-        options=("1", "all"),
-        index=0,
-        key="turing_generator.execution_team_scope",
-    )
-    runs_per_member = st.number_input(
-        "Runs per team member",
-        min_value=1,
-        max_value=5,
-        value=1,
-        step=1,
-        key="turing_generator.execution_runs_per_member",
-    )
-    dry_run = st.checkbox(
-        "Dry run — no LLM calls",
-        value=True,
-        key="turing_generator.execution_dry_run",
-    )
-
-    api_key: str | None = None
-    live_confirmation = False
-
-    if dry_run:
-        st.info(
-            "Dry run is enabled. No external LLM request will be sent."
-        )
-    else:
-        st.warning(
-            "Live execution sends the normalized Source text to the "
-            "selected LLM provider and may incur costs."
-        )
-        live_confirmation = st.checkbox(
-            "I confirm this live LLM execution.",
-            value=False,
-            key="turing_generator.execution_live_confirmation",
+    if not technical:
+        st.caption(
+            "Default processing settings are ready. "
+            "Open Processing options to change them."
         )
 
-        environment_key = os.getenv("OPENAI_API_KEY")
-        if environment_key:
-            api_key = None
-            st.caption(
-                "OPENAI_API_KEY is available from the process environment."
-            )
+    with _processing_options_context(
+        st,
+        expanded=technical,
+    ):
+        model = st.selectbox(
+            "Model",
+            options=_P9_MODEL_OPTIONS,
+            index=_P9_MODEL_OPTIONS.index(DEFAULT_MODEL),
+            key="turing_generator.execution_model",
+        )
+        team_scope = st.selectbox(
+            "Maximum team members per stage",
+            options=("1", "all"),
+            index=0,
+            key="turing_generator.execution_team_scope",
+        )
+        runs_per_member = st.number_input(
+            "Runs per team member",
+            min_value=1,
+            max_value=5,
+            value=1,
+            step=1,
+            key="turing_generator.execution_runs_per_member",
+        )
+        dry_run = st.checkbox(
+            "Dry run — no LLM calls",
+            value=True,
+            key="turing_generator.execution_dry_run",
+        )
+
+        api_key: str | None = None
+        live_confirmation = False
+
+        if dry_run:
+            if technical:
+                st.info(
+                    "Dry run is enabled. No external LLM request "
+                    "will be sent."
+                )
         else:
-            entered_key = st.text_input(
-                "OpenAI API key for this run",
-                value="",
-                type="password",
-                key="turing_generator.execution_api_key",
-                help=(
-                    "Used only for this execution. The key is not "
-                    "persisted in project evidence."
-                ),
+            st.warning(
+                "Live execution sends the normalized Source text to the "
+                "selected LLM provider and may incur costs."
             )
-            api_key = entered_key.strip() or None
+            live_confirmation = st.checkbox(
+                "I confirm this live LLM execution.",
+                value=False,
+                key="turing_generator.execution_live_confirmation",
+            )
+
+            environment_key = os.getenv("OPENAI_API_KEY")
+            if environment_key:
+                api_key = None
+                if technical:
+                    st.caption(
+                        "OPENAI_API_KEY is available from the process "
+                        "environment."
+                    )
+            else:
+                entered_key = st.text_input(
+                    "OpenAI API key for this run",
+                    value="",
+                    type="password",
+                    key="turing_generator.execution_api_key",
+                    help=(
+                        "Used only for this execution. The key is not "
+                        "persisted in project evidence."
+                    ),
+                )
+                api_key = entered_key.strip() or None
 
     configuration = ProjectIngestionConfiguration(
         provider=DEFAULT_PROVIDER,
@@ -719,11 +773,18 @@ def render_project_ingestion_execution(
                 configuration
             )
         )
-        st.warning(
-            "The previous Processing Attempt failed. Retry preserves "
-            f"{execution_state.processing_run_id} and creates a new "
-            "immutable Attempt."
-        )
+        if technical:
+            st.warning(
+                "The previous Processing Attempt failed. Retry preserves "
+                f"{execution_state.processing_run_id} and creates a new "
+                "immutable Attempt."
+            )
+        else:
+            st.warning(
+                "The previous processing attempt failed. "
+                "Retry creates a new traceable attempt."
+            )
+
         if not configuration_matches:
             st.warning(
                 "Retry requires the exact material configuration of "
@@ -737,9 +798,9 @@ def render_project_ingestion_execution(
         else "turing_generator.run_agentic_ingestion"
     )
     action_label = (
-        "Retry Agentic Ingestion"
+        "Retry processing"
         if retry_mode
-        else "Run Agentic Ingestion"
+        else "Run processing"
     )
 
     action_placeholder = None
@@ -754,7 +815,6 @@ def render_project_ingestion_execution(
                 type="primary",
             )
         else:
-            # Compatibility path for existing Streamlit test doubles.
             clicked = st.button(
                 action_label,
                 key=action_key,
@@ -763,10 +823,6 @@ def render_project_ingestion_execution(
 
     if clicked:
         if action_placeholder is not None:
-            # Remove the write action immediately in the same Streamlit
-            # render before the synchronous ingestion call starts. This
-            # prevents a visible Retry/Run button while the observer reports
-            # the Processing Attempt as running.
             action_placeholder.empty()
 
         if not dry_run and not live_confirmation:
@@ -789,18 +845,21 @@ def render_project_ingestion_execution(
                 "source_id": selected_source.source_id,
             }
             st.info(
-                "Retrying Agentic Ingestion…"
+                "Retrying processing…"
                 if retry_mode
-                else "Starting Agentic Ingestion…"
+                else "Starting processing…"
             )
 
             def render_started(snapshot) -> None:
-                st.info(
-                    "Agentic Ingestion is running · "
-                    f"{snapshot.processing_run_id} · "
-                    f"{snapshot.attempt_id or 'attempt unavailable'} · "
-                    f"{snapshot.processing_stage or 'stage unavailable'}."
-                )
+                if technical:
+                    st.info(
+                        "Processing is running · "
+                        f"{snapshot.processing_run_id} · "
+                        f"{snapshot.attempt_id or 'attempt unavailable'} · "
+                        f"{snapshot.processing_stage or 'stage unavailable'}."
+                    )
+                else:
+                    st.info("Processing is running…")
 
             try:
                 if retry_mode:
@@ -821,7 +880,6 @@ def render_project_ingestion_execution(
                         execution_observer=render_started,
                     )
                 else:
-                    # Compatibility path for existing test doubles only.
                     result = ingestion_service.execute_registered_source(
                         navigation.project_id,
                         selected_source.source_id,
@@ -846,12 +904,12 @@ def render_project_ingestion_execution(
                 )
             except ProjectIngestionError:
                 st.error(
-                    "Agentic Ingestion failed safely. No successful "
+                    "Processing failed safely. No successful "
                     "Processing state was inferred."
                 )
             except Exception:
                 st.error(
-                    "Agentic Ingestion failed unexpectedly. "
+                    "Processing failed unexpectedly. "
                     "No success state was inferred."
                 )
             else:
@@ -941,7 +999,7 @@ def render_last_ingestion_result(
     *,
     project_id: str,
 ) -> None:
-    """Render the last safe execution identity and dashboard transition."""
+    """Render the last safe Processing result using the current presentation depth."""
 
     payload = st.session_state.get(
         _SESSION_LAST_INGESTION_RESULT
@@ -956,31 +1014,47 @@ def render_last_ingestion_result(
     if not isinstance(run_id, str):
         return
 
-    st.table(
-        [
+    technical = technical_details_enabled(st.session_state)
+    row = {
+        "Status": _processing_result_label(
+            payload.get("run_state")
+        ),
+        "Mode": (
+            "Dry run"
+            if payload.get("dry_run") is True
+            else "Live LLM"
+        ),
+        "Published outputs": payload.get(
+            "artifact_count",
+            0,
+        ),
+    }
+    if technical:
+        row.update(
             {
                 "Processing Run": run_id,
                 "Attempt": payload.get("attempt_id", "—"),
-                "State": payload.get("run_state", "unknown"),
                 "Stage": payload.get(
                     "processing_stage",
                     "unknown",
                 ),
-                "Mode": (
-                    "Dry run"
-                    if payload.get("dry_run") is True
-                    else "Live LLM"
-                ),
-                "Published files": payload.get(
-                    "artifact_count",
-                    0,
-                ),
             }
-        ]
-    )
+        )
+
+    st.table([row])
+
+    if payload.get("run_state") == "awaiting_review":
+        _render_human_review_transition(
+            st,
+            project_id=project_id,
+            run_id=run_id,
+        )
+
+    if not technical:
+        return
 
     if not st.button(
-        "Open Processing Run in Project Dashboard",
+        "Open Processing details",
         key=(
             "turing_generator.open_processing_run."
             f"{run_id}"
@@ -996,6 +1070,104 @@ def render_last_ingestion_result(
         selected_entity_id=run_id,
     )
     request_streamlit_rerun(st)
+
+
+def _render_processing_state_summary(
+    st: Any,
+    view,
+    *,
+    technical: bool,
+) -> None:
+    """Render human-readable Processing state before technical identity."""
+
+    if view.run_state is None:
+        st.info(view.status_label)
+    elif view.run_state == "running":
+        st.info("Processing is running.")
+    elif view.run_state == "awaiting_review":
+        st.info(
+            "Processing completed. Human Review is required before "
+            "the result can become approved engineering input."
+        )
+    elif view.recovery_required or view.run_state in {"blocked", "failed"}:
+        st.error(view.status_label)
+    elif view.run_state == "completed":
+        st.success("Processing is complete.")
+    else:
+        st.info(view.status_label)
+
+    if technical and view.processing_run_id is not None:
+        st.caption(
+            f"Run: {view.processing_run_id} · "
+            f"Attempt: {view.attempt_id or 'unavailable'} · "
+            f"State: {view.run_state or 'unavailable'}"
+        )
+        if view.failure_reason:
+            st.caption(f"Failure reason: {view.failure_reason}")
+        if view.blocked_reason:
+            st.caption(f"Blocked reason: {view.blocked_reason}")
+
+
+def _processing_options_context(
+    st: Any,
+    *,
+    expanded: bool,
+):
+    """Collapse optional execution tuning in the Focused presentation."""
+
+    expander = getattr(st, "expander", None)
+    if callable(expander):
+        return expander(
+            "Processing options",
+            expanded=expanded,
+        )
+    return nullcontext()
+
+
+def _render_human_review_transition(
+    st: Any,
+    *,
+    project_id: str,
+    run_id: str | None,
+) -> None:
+    """Queue Human Review without carrying stale entity navigation."""
+
+    suffix = run_id or "current"
+    if not st.button(
+        "Continue to Human Review",
+        key=f"turing_generator.continue_human_review.{suffix}",
+        type="primary",
+    ):
+        return
+
+    queue_app_view(
+        st.session_state,
+        active_view=APP_VIEW_REVIEW,
+        project_id=project_id,
+        selected_entity_id=None,
+    )
+    request_streamlit_rerun(st)
+
+
+def _processing_result_label(value: object) -> str:
+    labels = {
+        "created": "Prepared",
+        "running": "Processing",
+        "awaiting_review": "Ready for Human Review",
+        "blocked": "Recovery required",
+        "failed": "Failed",
+        "completed": "Complete",
+        "superseded": "Superseded",
+    }
+    return labels.get(value, "Unknown")
+
+
+def _format_source_size(value: int) -> str:
+    if value < 1024:
+        return f"{value} B"
+    if value < 1024 * 1024:
+        return f"{value / 1024:.1f} KB"
+    return f"{value / (1024 * 1024):.1f} MB"
 
 
 def _safe_ingestion_result(

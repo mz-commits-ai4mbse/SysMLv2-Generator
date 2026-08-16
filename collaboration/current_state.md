@@ -29,42 +29,42 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — WP-09 Guided Workflow UI completion
+`commit containing this SSOT update` — WP-10 Ingestion + Human Review UX Simplification completion
 
 Last Prior Committed Checkpoint
 
-`24957252f82d8f440ba8eccb0c571c906d78a858` — Guided Engineering Workspace and global UX shell checkpoint
+`23fab6ab597a922b3c2c18d0088fa6c270e2629e` — WP-09 Guided Workflow UI completion
 
 Architecture Version
 
-1.11
+1.12
 
 Knowledge Base Version
 
-1.18
+1.19
 
 Implementation Version
 
-0.20
+0.21
 
 Current Roadmap Version
 
-1.18
+1.19
 
 Current Development Phase
 
-WP-10 — Ingestion + Human Review UX Simplification
+WP-11 — Architecture / Model Proposal UX
 
 Current Status
 
-WP-09 Guided Workflow UI is completed and verified. The common application shell,
-Focused / Technical presentation model, detail workspaces and authority-preserving
-Human write interactions are implemented. WP-10 now applies the accepted UX
-principles to Ingestion and Human Review.
+WP-10 Ingestion + Human Review UX Simplification is completed and verified.
+Processing and Human Review now use deterministic engineering-content-first
+Focused projections with complete Technical traceability underneath. WP-11 is
+active and refines Architecture / Model Proposal interaction.
 
 Verified Automated Test Baseline
 
-5542 passed, 1 skipped in 13.36s in the complete repository regression after WP-09.
+5563 passed, 1 skipped in 13.91s in the complete repository regression after WP-10.
 
 WP-09 Focused Regression
 
@@ -128,9 +128,9 @@ Last SSOT Update
 # Current Objective
 
 Complete the remaining demo-critical UX work packages without weakening the
-already closed engineering authority chain. WP-10 simplifies Ingestion and Human
-Review, WP-11 hardens Architecture / Model Proposal interaction, and WP-12
-executes end-to-end demo hardening for the product demo on 2026-08-18.
+already closed engineering authority chain. WP-10 is complete. WP-11 now hardens
+Architecture / Model Proposal interaction, and WP-12 executes end-to-end demo
+hardening for the product demo on 2026-08-18.
 
 The accepted executable path remains:
 
@@ -152,8 +152,8 @@ The implementation sequence is now:
 
 ```text
 WP-09 — Guided Workflow UI                     COMPLETE
-→ WP-10 Ingestion + Human Review UX Simplification
-→ WP-11 Architecture / Model Proposal UX
+→ WP-10 Ingestion + Human Review UX Simplification COMPLETE
+→ WP-11 Architecture / Model Proposal UX          ACTIVE
 → WP-12 End-to-End Demo Hardening
 → WP-13 Functional Freeze + Rehearsal
 → product demo
@@ -169,8 +169,9 @@ architecture and evidence.
 
 Priority 1
 
-Complete WP-10 Ingestion + Human Review UX Simplification on top of the accepted
-WP-09 Guided Engineering Workflow and unchanged domain authority boundaries.
+Complete WP-11 Architecture / Model Proposal UX on top of the accepted Guided
+Engineering Workflow and unchanged Candidate / Approved Input / IEM authority
+boundaries.
 
 Phase L shall accept only an explicit `GeneratedSysMLArtifactSet` together with
 the exact `SysMLValidationResult` covering that artifact fingerprint.
@@ -334,6 +335,86 @@ streamlit run app/turing_generator_app.py
 ```
 
 `app/ui_app.py` remains only the legacy early-MVP two-tab ingestion skeleton.
+
+# WP-10 — Ingestion + Human Review UX Simplification
+
+WP-10 is completed and verified.
+
+Architecture:
+
+`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+WP-10 extends ADR-024 with UX-16 while preserving the existing Processing and
+Human Review authority boundaries.
+
+Completed work:
+
+```text
+WP-10.1  Processing + Human Review presentation foundation
+WP-10.2  filename-first Processing UX and direct Human Review transition
+WP-10.3  engineering-content-first Human Review with Persona comparison
+WP-10.4  Review lifecycle, Finalization, Reopen and Approved Input UX
+WP-10.5  visual acceptance, semantic polish and closeout verification
+```
+
+Implemented capabilities include:
+
+- deterministic read-side Processing and Human Review presentation adapters
+- Focused Processing centered on filename, Source role, status and next action
+- Technical Processing retaining Source / Run / Attempt identities, hashes and
+  diagnostics on demand
+- optional Processing configuration through progressive disclosure
+- direct `Continue to Human Review` transition after Processing
+- Human Review Queue centered on Source, required decisions and lifecycle status
+- engineering statement before technical metadata
+- Persona proposals grouped by Persona and shown side-by-side where available
+- repeated runs under one Persona do not become independent votes
+- consensus / variance projected only from persisted consensus evidence
+- one-Persona results explicitly reported as not sufficient to assess
+  inter-Persona agreement
+- exact proposal / evidence / fingerprint bindings retained underneath Focused
+  presentation
+- advanced scoped actions, split / merge and evidence retained through
+  progressive disclosure
+- clearer Finalization, Human confirmation, Approved Input Promotion and Reopen
+  lifecycle presentation
+- Reopen remains successor creation; finalized predecessors remain immutable
+- Approved Input authority and lifecycle details remain available in Technical
+  View
+- top-level Streamlit navigation uses one Session State authority rather than a
+  competing widget default
+
+Verification:
+
+```text
+WP-10 final repository regression:
+5563 passed, 1 skipped in 13.91s
+
+Final shell / Human Review targeted regression:
+43 passed in 0.53s
+
+git diff --check:
+PASS
+```
+
+Manual live acceptance verified:
+
+- filename-first Processing inventory
+- readable Ready-to-process and Ready-for-Human-Review states
+- live LLM Processing completion with 15 published unreviewed outputs
+- direct Processing → Human Review continuation
+- Human Review Queue focused on engineering work
+- engineering-content-first Review Items
+- progressive disclosure of technical and advanced Review information
+- understandable Finalization blocking / confirmation state
+
+The available acceptance fixture contained only one Persona for the inspected
+Review Items. Therefore a visual multi-Persona side-by-side acceptance case is
+intentionally exercised with the prepared end-to-end demo data in WP-12.
+Automated presentation tests cover Persona grouping and side-by-side behavior.
+
+No Processing, Human Review, Approved Input or CATIA authority was moved into UI
+session state during WP-10.
 
 ---
 

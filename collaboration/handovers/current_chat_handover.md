@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This document is the authoritative implementation starting point after Phase L
-Final Model Review and Output Publication completion.
+This document is the authoritative implementation starting point after WP-10
+Ingestion + Human Review UX Simplification completion.
 
 Use it together with the committed repository, Collaboration Knowledge Base and
 authoritative CATIA SysML v2 model.
@@ -26,27 +26,27 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — WP-09 Guided Workflow UI completion
+`commit containing this SSOT update` — WP-10 Ingestion + Human Review UX Simplification completion
 
 Last Prior Committed Checkpoint
 
-`24957252f82d8f440ba8eccb0c571c906d78a858` — Guided Engineering Workspace and global UX shell checkpoint
+`23fab6ab597a922b3c2c18d0088fa6c270e2629e` — WP-09 Guided Workflow UI completion
 
 Architecture Version
 
-1.11
+1.12
 
 Knowledge Base Version
 
-1.18
+1.19
 
 Implementation Version
 
-0.20
+0.21
 
 Roadmap Version
 
-1.18
+1.19
 
 Last SSOT Update
 
@@ -54,13 +54,14 @@ Last SSOT Update
 
 Current Work Package
 
-WP-10 — Ingestion + Human Review UX Simplification
+WP-11 — Architecture / Model Proposal UX
 
 Current Status
 
-WP-09 Guided Workflow UI is complete and verified. The common engineer-facing
-workflow shell, downstream detail workspaces and authority-preserving write
-delegation are implemented.
+WP-10 Ingestion + Human Review UX Simplification is complete and verified.
+Processing and Human Review now use content-first Focused projections with
+Technical traceability underneath. WP-11 Architecture / Model Proposal UX is
+active.
 
 The real SYSIDE-backed publication acceptance remains blocked because the
 verification workstation does not have the `syside` CLI installed. The gate
@@ -69,11 +70,11 @@ continues to fail closed.
 Verification baseline:
 
 ```text
-Focused WP-09:
-111 passed in 0.63s
+Final targeted shell / Human Review:
+43 passed in 0.53s
 
 Complete repository:
-5542 passed, 1 skipped in 13.36s
+5563 passed, 1 skipped in 13.91s
 
 git diff --check:
 PASS
@@ -326,49 +327,45 @@ test and retain the result as acceptance evidence.
 
 # Exact Next Work Package
 
-## WP-09 — Guided Workflow UI
+## WP-11 — Architecture / Model Proposal UX
 
 Objective:
 
-Expose the already implemented authority chain through one focused,
-simple-by-default guided workflow without duplicating model or review authority.
+Refine the already implemented Model Proposal workspace so an engineer can
+understand the proposed architecture and make Candidate Review decisions without
+having to interpret repository or manifest internals.
 
-Use existing read/write boundaries rather than adding a parallel workflow model.
-
-Priority surfaces:
-
-```text
-Project / Source
-→ Processing
-→ Human Review / Approved Input
-→ Model Proposal / Candidate Review
-→ Final Model Review
-→ Published Output
-```
-
-For Final Model Review, use the existing L3/L4/L5/L6 boundaries to show:
-
-- diagram/model structure
-- exact `.sysml` code
-- validation findings
-- traceability
-- agent/personality proposals where available
-- Human feedback / Change Proposal creation
-- release readiness
-- explicit Human approval
-- published OUT package
-
-The default path follows ADR-017:
+Use the existing authoritative boundaries:
 
 ```text
-Simple by default.
-Explainable on demand.
-Fully traceable underneath.
+Approved Input
+→ Model Candidate Sets
+→ Candidate Human Review
+→ Internal Engineering Model
 ```
 
-Do not recreate engineering state inside Streamlit session state, directly
-mutate generated SysML, let an LLM become approval authority, publish without K
-+ Human release gates, or introduce implicit latest-artifact authority.
+Primary WP-11 presentation priorities:
+
+```text
+proposed model / architecture content
+→ alternatives and material variance
+→ Human decision / review state
+→ accepted model result
+→ next action
+```
+
+Preserve:
+
+- exact Candidate Set / Candidate identity
+- no implicit latest write target
+- immutable Candidate Review decisions
+- Approved Input authority
+- deterministic Internal Engineering Model assembly
+- complete traceability on demand
+- CATIA as engineering authority
+
+Do not add a second model authority, directly mutate generated SysML or make an
+LLM an approval authority.
 
 ---
 
@@ -378,9 +375,9 @@ mutate generated SysML, let an LLM become approval authority, publish without K
 WP-07  Phase K — Validation Layer — COMPLETE
 WP-08  Phase L — Final Model Review + Output Publication — COMPLETE
        live real-SYSIDE acceptance remains blocked by missing CLI
-WP-09  Guided Workflow UI — NEXT
-WP-10  Ingestion + Human Review UX Simplification
-WP-11  Architecture / Model Proposal UX
+WP-09  Guided Workflow UI — COMPLETE
+WP-10  Ingestion + Human Review UX Simplification — COMPLETE
+WP-11  Architecture / Model Proposal UX — ACTIVE
 WP-12  End-to-End Demo Hardening
 WP-13  Demo Freeze + Rehearsal
 WP-14  CATIA / SSOT Checkpoint
@@ -389,10 +386,8 @@ WP-14  CATIA / SSOT Checkpoint
 Schedule:
 
 ```text
-2026-08-14  H–L implementation vertical slice complete
-2026-08-15  Guided Workflow UI
-2026-08-16  Demo hardening
-2026-08-17  Functional freeze / rehearsal
+2026-08-16  WP-09→WP-12 UX and demo hardening
+2026-08-17  Functional freeze / rehearsal / presentation preparation
 2026-08-18  Product demo
 ```
 
@@ -403,11 +398,11 @@ verification, not weaker authority, validation or traceability.
 
 # Immediate Starting Instruction for the Next Chat
 
-Begin WP-09 by inspecting the current common Streamlit application shell and the
-existing Phase-G Human Review / Project Dashboard navigation.
+Begin WP-11 by inspecting the current Model Proposal read model, Candidate Review
+write service and the WP-09 Model Proposal detail workspace.
 
-Then map the existing read/write boundaries onto one guided workflow. Do not
-implement a new parallel workflow state machine.
+Define the smallest deterministic presentation refinement that exposes proposed
+architecture content, alternatives, variance, Human review state and next action
+while preserving the existing Candidate / Approved Input / IEM authority chain.
 
-The Phase-L Final Model Review UI shall consume the existing L3 read model and
-L4/L5/L6 action services rather than directly reading/writing persistence files.
+Do not implement before the WP-11 architecture is explicitly accepted.

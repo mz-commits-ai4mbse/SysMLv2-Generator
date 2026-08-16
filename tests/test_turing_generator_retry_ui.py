@@ -6,6 +6,8 @@ from types import SimpleNamespace
 
 from app.turing_generator_navigation import (
     APP_VIEW_INGESTION,
+    APP_VIEW_REVIEW,
+    SESSION_PENDING_NAVIGATION,
     ApplicationNavigationState,
     SESSION_APP_VIEW,
     SESSION_PROJECT_ID,
@@ -138,6 +140,9 @@ class FakeService:
             source_id=SOURCE_ID,
             source_role="engineering_source",
             original_filename="requirements.md",
+            media_type="text/markdown",
+            size_bytes=128,
+            sha256="a" * 64,
         )
 
     def list_registered_sources(self, project_id):
@@ -201,8 +206,12 @@ def test_running_state_is_visible_and_has_no_start_button() -> None:
 
     assert any(
         call[0] == "info"
+        and "Processing is running" in call[1]
+        for call in st.calls
+    )
+    assert not any(
+        call[0] in {"info", "caption"}
         and "RUN-000001" in call[1]
-        and "ATT-000001" in call[1]
         for call in st.calls
     )
     assert not any(
@@ -245,6 +254,11 @@ def test_failed_run_offers_retry_when_configuration_matches() -> None:
     ]
     assert any(
         call[0] == "info"
+        and "Processing is running" in call[1]
+        for call in st.calls
+    )
+    assert not any(
+        call[0] in {"info", "caption"}
         and "ATT-000002" in call[1]
         for call in st.calls
     )
@@ -293,3 +307,22 @@ def test_authentication_failure_message_is_actionable() -> None:
         and "credentials" in call[1].lower()
         for call in st.calls
     )
+
+def test_awaiting_review_offers_direct_human_review_transition() -> None:
+    st = FakeStreamlit(
+        clicked_keys={
+            "turing_generator.continue_human_review.RUN-000001"
+        }
+    )
+    service = FakeService(_state("awaiting_review"))
+
+    render_project_ingestion_execution(
+        st,
+        ingestion_service=service,
+        navigation=navigation(),
+    )
+
+    pending = st.session_state[SESSION_PENDING_NAVIGATION]
+    assert pending["active_view"] == APP_VIEW_REVIEW
+    assert pending["project_id"] == PROJECT_ID
+    assert pending["selected_entity_id"] is None

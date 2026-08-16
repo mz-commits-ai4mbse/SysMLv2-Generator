@@ -655,6 +655,88 @@ reconstruct the visible state from persisted authoritative evidence.
 
 ---
 
+### UX-16 — Processing and Human Review projection
+
+WP-10 shall adapt Processing and Human Review to the same deterministic
+dual-layer presentation architecture established by this ADR.
+
+The default Processing projection shall prioritize:
+
+```text
+Source filename / readable Source identity
+→ current Processing status
+→ relevant result / attention state
+→ next engineering action
+```
+
+The default Processing surface shall not require the engineer to interpret
+Source IDs, Processing Run IDs, Attempt IDs, configuration fingerprints,
+artifact fingerprints or SHA-256 values to perform normal work. Those facts
+remain available in Technical View.
+
+The default Human Review projection shall prioritize:
+
+```text
+engineering statement
+→ independent Persona proposals
+→ consensus / material variance
+→ required Human decision
+→ accepted / approved result
+```
+
+All Persona proposals remain individually inspectable. Repeated executions
+associated with one Persona remain grouped beneath that Persona and shall not be
+displayed as additional independent votes.
+
+Consensus and variance shall be projected only from existing persisted consensus
+evidence. The presentation layer shall not infer semantic agreement when
+authoritative consensus evidence is absent. Relationship Review Items for which
+the existing Consensus Analyzer provides no explicit relationship consensus
+shall therefore present consensus as unavailable rather than inventing an
+agreement state.
+
+The following distinction is normative:
+
+```text
+Focused Processing
+→ filename / Source role
+→ Processing status
+→ result or required attention
+→ next action
+
+Focused Human Review
+→ engineering content
+→ Persona alternatives
+→ consensus / variance
+→ Human decision
+→ review / approval lifecycle state
+
+Technical View
+→ Source / Run / Attempt identities
+→ Review Document / Version / Revision identities
+→ artifact references
+→ fingerprints
+→ evidence locators
+→ provenance and lifecycle diagnostics
+```
+
+Processing and Human Review projection adapters are read-side presentation
+components only. They shall not own Source Registry authority, Processing Run
+state, Review Revision state, Human Review Decision authority, Approved Input
+authority, consensus authority or write validation.
+
+Existing services remain normative, including:
+
+```text
+ProjectBoundIngestionService
+ReviewApprovalWorkflowService
+```
+
+Human write actions continue to operate on exact immutable targets and shall be
+followed by read-side reconstruction.
+
+---
+
 ## Formative usability evaluation
 
 The UX redesign follows a formative evaluation of the functionally complete

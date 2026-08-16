@@ -37,7 +37,7 @@ def render_global_controls(
 
     st.session_state[SESSION_GLOBAL_CONTROLS_ACTIVE] = True
 
-    columns = st.columns([4, 1])
+    columns = st.columns([5, 2])
 
     # ------------------------------------------------------------------
     # Presentation depth
