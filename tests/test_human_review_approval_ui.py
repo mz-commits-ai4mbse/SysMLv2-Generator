@@ -351,6 +351,9 @@ def test_review_remains_stable_top_level_application_view():
         APP_VIEW_DASHBOARD,
         "ingestion",
         APP_VIEW_REVIEW,
+        "model_proposal",
+        "final_review",
+        "published_output",
     )
     assert normalize_app_view(APP_VIEW_REVIEW) == APP_VIEW_REVIEW
 

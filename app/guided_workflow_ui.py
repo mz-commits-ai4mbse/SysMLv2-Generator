@@ -11,7 +11,10 @@ from app.presentation_preferences import (
 )
 from app.turing_generator_navigation import (
     APP_VIEW_DASHBOARD,
+    APP_VIEW_FINAL_REVIEW,
     APP_VIEW_INGESTION,
+    APP_VIEW_MODEL_PROPOSAL,
+    APP_VIEW_OUTPUT,
     APP_VIEW_REVIEW,
     DASHBOARD_VIEW_OVERVIEW,
     DASHBOARD_VIEW_SOURCES,
@@ -46,6 +49,18 @@ _STAGE_ROUTES = {
     ),
     "human_review": (
         APP_VIEW_REVIEW,
+        DASHBOARD_VIEW_OVERVIEW,
+    ),
+    "model_proposal": (
+        APP_VIEW_MODEL_PROPOSAL,
+        DASHBOARD_VIEW_OVERVIEW,
+    ),
+    "final_model_review": (
+        APP_VIEW_FINAL_REVIEW,
+        DASHBOARD_VIEW_OVERVIEW,
+    ),
+    "published_output": (
+        APP_VIEW_OUTPUT,
         DASHBOARD_VIEW_OVERVIEW,
     ),
 }
@@ -180,8 +195,9 @@ def _render_next_action(st: Any, view) -> None:
         route = _STAGE_ROUTES.get(stage.stage_id)
         if route is None:
             st.info(
-                f"{view.next_action or stage.action_label or 'Continue'} — "
-                "the dedicated detail view is introduced in WP-09.3."
+                view.next_action
+                or stage.action_label
+                or "No dedicated action is available."
             )
             return
 
@@ -301,7 +317,8 @@ def _render_technical_views(st: Any) -> None:
             "and traceability information over the same Project state."
         )
         st.caption(
-            "Project Dashboard · Processing · Human Review"
+            "Project Dashboard · Processing · Human Review · "
+            "Model Proposal · Final Model Review · Published Output"
         )
 
 

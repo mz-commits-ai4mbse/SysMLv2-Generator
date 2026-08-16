@@ -299,6 +299,62 @@ What did this processing step derive and what must I decide here?
 
 ---
 
+## Authority-preserving Human actions
+
+Human decisions are initiated from the engineering working surface but are
+persisted only through the established domain authority.
+
+The recurring interaction is:
+
+```text
+engineering content
+↓
+Human decision control
+↓
+explicit immutable target
+↓
+domain write service
+↓
+persisted decision
+↓
+UI rerun
+↓
+authoritative read-side reconstruction
+```
+
+Streamlit session state may remember presentation and navigation context.
+
+It shall not represent:
+
+- Candidate approval,
+- Final Model Review approval,
+- publication eligibility,
+- change-request authority,
+- or published-output authority.
+
+Candidate Review presents domain-valid Human actions without reimplementing the
+Candidate Review gate.
+
+Final Model Review visibly separates:
+
+```text
+Request changes
+```
+
+from:
+
+```text
+Approve for publication
+```
+
+because requesting engineering change and authorizing publication are distinct
+Human authority acts.
+
+A successful write is followed by reconstruction from persisted state rather
+than optimistic UI mutation.
+
+---
+
 ## Responsive behavior
 
 Side-by-side comparison is preferred on sufficiently wide screens.

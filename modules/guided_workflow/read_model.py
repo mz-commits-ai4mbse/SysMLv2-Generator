@@ -305,6 +305,7 @@ class GuidedWorkflowReadService:
 
         for item in view.items:
             decisions += self._outcome_count(item, "open")
+            decisions += self._outcome_count(item, "deferred")
             decisions += self._outcome_count(item, "unresolved")
 
             active_approved_inputs.update(

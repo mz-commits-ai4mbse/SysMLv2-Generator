@@ -7,6 +7,7 @@ from .errors import (
     OutputPublicationPersistenceError,
     OutputPublicationValidationError,
 )
+from .final_review_publication import FinalReviewPublicationService
 from .identifiers import (
     format_output_package_id,
     next_output_package_id,
@@ -54,6 +55,7 @@ from .writer import OutputWriter
 
 __all__ = [
     "DEFAULT_OUTPUT_PUBLICATION_PROFILE_PATH",
+    "FinalReviewPublicationService",
     "DEFAULT_OUTPUT_ROOT",
     "OUTPUT_FILE_ROLES",
     "OUTPUT_PUBLICATION_PROFILE_ID",

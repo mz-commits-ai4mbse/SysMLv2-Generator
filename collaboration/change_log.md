@@ -1,5 +1,91 @@
 # Change Log
 
+## 2026-08-16 — WP-09 Guided Workflow UI Completion
+
+Versions after this update:
+
+- Architecture Version: 1.11
+- Knowledge Base Version: 1.18
+- Implementation Version: 0.20
+- Roadmap Version: 1.18
+
+Implementation reference:
+
+- WP-09 completion: the commit containing this SSOT update
+- Prior Guided Engineering Workspace checkpoint:
+  `24957252f82d8f440ba8eccb0c571c906d78a858`
+- Accepted Guided Workflow architecture:
+  `collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+Completed WP-09 decomposition:
+
+```text
+WP-09.1  Guided Engineering View + presentation models
+WP-09.2  global shell, navigation, Engineer Home and Next Action
+WP-09.3  downstream workflow detail workspaces
+WP-09.4  authority-preserving Human writes + exact publication bridge
+```
+
+Implemented capabilities:
+
+- deterministic `GuidedWorkflowReadService`
+- engineer-centered `Your work` and `Next action`
+- common global Project context
+- Focused / Technical presentation modes
+- Model Proposal, Final Model Review and Published Output detail views
+- explicit multiple-head selection without implicit latest write targets
+- Candidate `Accept`, `Reject`, `Defer` and `Accept as exception`
+- immutable Human Final Review Change Proposals
+- explicit exact Human publication approval
+- exact persisted FRV/J/K reconstruction before publication
+- final publication delegated to the existing `OutputWriter`
+- fail-closed application write delegation
+- read-side reconstruction after writes
+- deferred Human Review outcomes counted as unresolved work
+- primary Streamlit entry point clarified as `app/turing_generator_app.py`
+
+Verification:
+
+```text
+WP-09 focused regression:
+111 passed in 0.63s
+
+Complete repository regression:
+5542 passed, 1 skipped in 13.36s
+
+git diff --check:
+PASS
+```
+
+Manual live UI smoke acceptance:
+
+```text
+common application shell: PASS
+Project selection: PASS
+Technical-details toggle: PASS
+seven workspace views reachable: PASS
+empty-state presentation: PASS
+navigation continuity: PASS
+```
+
+The smoke-test Project contained no downstream Candidate / Final Review /
+Published Output evidence. Live exercising of Candidate writes, Final Release
+and Publication is therefore intentionally assigned to the fully populated
+WP-12 end-to-end demo Project. Automated tests cover the exact authority-bound
+write paths.
+
+Phase transition:
+
+```text
+WP-09 Guided Workflow UI: COMPLETE
+WP-10 Ingestion + Human Review UX Simplification: ACTIVE
+```
+
+No CATIA Requirement, Function or Logical Component was silently created or
+modified during WP-09 closeout.
+
+---
+
 ## 2026-08-14 — Phase L Final Model Review and Output Publication Completion
 
 Versions after this update:

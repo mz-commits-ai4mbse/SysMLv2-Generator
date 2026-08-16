@@ -8,6 +8,11 @@ from pathlib import Path
 from typing import Any
 
 from app.global_controls import render_global_controls
+from app.guided_workflow_detail_ui import (
+    render_final_model_review_ui,
+    render_model_proposal_ui,
+    render_published_output_ui,
+)
 from app.guided_workflow_ui import render_guided_workflow_ui
 from app.human_review_approval_ui import (
     render_human_review_approval_ui,
@@ -16,7 +21,10 @@ from app.project_dashboard_ui import render_project_dashboard_ui
 from app.turing_generator_navigation import (
     APP_VIEW_WORKFLOW,
     APP_VIEW_DASHBOARD,
+    APP_VIEW_FINAL_REVIEW,
     APP_VIEW_INGESTION,
+    APP_VIEW_MODEL_PROPOSAL,
+    APP_VIEW_OUTPUT,
     APP_VIEW_REVIEW,
     APP_VIEWS,
     DASHBOARD_VIEW_SOURCES,
@@ -56,6 +64,9 @@ _APP_VIEW_LABELS = {
     APP_VIEW_DASHBOARD: "Project Dashboard",
     APP_VIEW_INGESTION: "Processing",
     APP_VIEW_REVIEW: "Human Review & Approval",
+    APP_VIEW_MODEL_PROPOSAL: "Model Proposal",
+    APP_VIEW_FINAL_REVIEW: "Final Model Review",
+    APP_VIEW_OUTPUT: "Published Output",
 }
 
 _P9_UPLOAD_TYPES = ("md", "txt", "json", "csv", "tsv", "pdf")
@@ -90,6 +101,9 @@ def render_turing_generator_ui(
     workflow_renderer: Callable[..., None] | None = None,
     dashboard_renderer: Callable[..., None] | None = None,
     review_renderer: Callable[..., None] | None = None,
+    model_proposal_renderer: Callable[..., None] | None = None,
+    final_review_renderer: Callable[..., None] | None = None,
+    output_renderer: Callable[..., None] | None = None,
 ) -> None:
     """Render the common application shell and route the selected view."""
 
@@ -127,6 +141,21 @@ def render_turing_generator_ui(
         if review_renderer is None
         else review_renderer
     )
+    render_model_proposal = (
+        render_model_proposal_ui
+        if model_proposal_renderer is None
+        else model_proposal_renderer
+    )
+    render_final_review = (
+        render_final_model_review_ui
+        if final_review_renderer is None
+        else final_review_renderer
+    )
+    render_output = (
+        render_published_output_ui
+        if output_renderer is None
+        else output_renderer
+    )
 
     apply_pending_app_view(st.session_state)
 
@@ -162,6 +191,27 @@ def render_turing_generator_ui(
             root,
             streamlit_module=st,
             project_workspace=workspace,
+        )
+        return
+
+    if active_view == APP_VIEW_MODEL_PROPOSAL:
+        render_model_proposal(
+            root,
+            streamlit_module=st,
+        )
+        return
+
+    if active_view == APP_VIEW_FINAL_REVIEW:
+        render_final_review(
+            root,
+            streamlit_module=st,
+        )
+        return
+
+    if active_view == APP_VIEW_OUTPUT:
+        render_output(
+            root,
+            streamlit_module=st,
         )
         return
 

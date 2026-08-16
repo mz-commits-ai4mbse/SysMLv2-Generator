@@ -1,50 +1,81 @@
-# Turing Generator MVP Skeleton
+# Turing Generator
 
-This skeleton implements the first executable MVP workflow:
+The Turing Generator is a Streamlit-based research prototype for traceable,
+Human-governed transformation of heterogeneous engineering sources into
+validated SysML v2 output.
 
-1. Read a task file.
-2. Read the selected recipe.
-3. Load required context files.
-4. Read raw legacy input artifacts.
-5. Create a human-readable ingestion report.
-6. Create placeholder feedback and traceability artifacts.
-7. Stop before approved input promotion.
+The implemented end-to-end engineering flow is:
 
-The implementation intentionally does not generate SysML v2 output yet.
-
-## Expected existing workspace files
-
-The skeleton expects that these files already exist in your workspace:
-
-- `context/global/project_principles.md`
-- `context/sources/source_manifest.json`
-- `context/sysml/sysml_v2_spec_reference.json`
-- `context/sysml/sysml_v2_target_notation.json`
-- `context/mapping/sysml_model_derivation_rules.json`
-- `agents/systems_engineer.md`
-- `agents/completeness_checker.md`
-- `recipes/ingestion/create_ingestion_artifact.recipe.md`
-- `tasks/task_001_ingest_example_model.json`
-- `legacy/raw/example_legacy_model_description.md`
-
-## Run from workspace root
-
-```bash
-python scripts/run_task.py tasks/task_001_ingest_example_model.json
+```text
+Source
+→ Processing Run
+→ Human Review
+→ Approved Input
+→ Model Candidates
+→ Candidate Human Review
+→ Internal Engineering Model
+→ deterministic SysML v2 Generation
+→ automated Validation
+→ Final Model Human Review
+→ explicit Human Release Approval
+→ immutable Versioned Output Package
 ```
 
-## Optional Streamlit UI
+## Primary Streamlit application
+
+Run from the repository root:
+
+```bash
+streamlit run app/turing_generator_app.py
+```
+
+This opens the common application shell with:
+
+- Engineering Workspace
+- Project Dashboard
+- Processing
+- Human Review & Approval
+- Model Proposal
+- Final Model Review
+- Published Output
+- global Project selection
+- optional Technical details
+
+## Legacy ingestion skeleton
+
+`app/ui_app.py` is retained only as the original early MVP ingestion/review
+skeleton. It is not the primary application entry point.
+
+If the legacy two-tab skeleton is intentionally required:
 
 ```bash
 streamlit run app/ui_app.py
 ```
 
-## Output
+## Published output
 
-The first task should create:
+Human-approved and validation-bound SysML v2 output is written only below:
 
-- `data/ingestion_reports/task_001_ingestion_report.md`
-- `data/feedback/task_001_ingestion_feedback.json`
-- `data/traceability/task_001_ingestion_traceability.json`
+```text
+data/output/<project_id>/<output_package_id>/
+```
 
-It will not create approved input, approved model data or SysML v2 output.
+Generated or reviewed SysML before release remains project-local evidence and is
+not final published output.
+
+## Development state
+
+The authoritative implementation status, roadmap, accepted decisions and current
+work package are maintained under:
+
+```text
+collaboration/
+```
+
+Start with:
+
+```text
+collaboration/current_state.md
+collaboration/roadmap.md
+collaboration/handovers/current_chat_handover.md
+```

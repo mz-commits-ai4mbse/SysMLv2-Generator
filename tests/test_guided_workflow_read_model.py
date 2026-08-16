@@ -258,6 +258,25 @@ def test_human_decisions_are_prioritized_over_ordinary_navigation():
     assert view.next_action == "Resolve 2 Human decisions"
 
 
+def test_deferred_human_review_remains_required_work():
+    review = _review_item(
+        outcomes=(("deferred", 1),),
+    )
+    service = _service(
+        source_view=_source_view(
+            _source(state="awaiting_review")
+        ),
+        review_view=_review_view(review),
+    )
+
+    view = service.load_view("000001")
+    human = view.stages[2]
+
+    assert human.decision_count == 1
+    assert human.presentation_status == "action_required"
+    assert view.next_stage_id == "human_review"
+
+
 def test_review_variance_is_derived_from_existing_consensus_facts():
     review = _review_item()
     facts = (

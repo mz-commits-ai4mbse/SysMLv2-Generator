@@ -29,39 +29,46 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase L implementation completion
+`commit containing this SSOT update` — WP-09 Guided Workflow UI completion
 
 Last Prior Committed Checkpoint
 
-`72974bb63c92c37baac5eef6b740ee91bacedd01` — accepted Phase-L architecture checkpoint (ADR-023)
+`24957252f82d8f440ba8eccb0c571c906d78a858` — Guided Engineering Workspace and global UX shell checkpoint
 
 Architecture Version
 
-1.10
+1.11
 
 Knowledge Base Version
 
-1.17
+1.18
 
 Implementation Version
 
-0.19
+0.20
 
 Current Roadmap Version
 
-1.17
+1.18
 
 Current Development Phase
 
-WP-09 — Guided Workflow UI
+WP-10 — Ingestion + Human Review UX Simplification
 
 Current Status
 
-Phase L Final Model Review and Output Publication implementation is completed and verified. WP-09 Guided Workflow UI is next. The real SYSIDE-backed publication acceptance remains fail-closed because the SYSIDE CLI is not installed on the verification workstation.
+WP-09 Guided Workflow UI is completed and verified. The common application shell,
+Focused / Technical presentation model, detail workspaces and authority-preserving
+Human write interactions are implemented. WP-10 now applies the accepted UX
+principles to Ingestion and Human Review.
 
 Verified Automated Test Baseline
 
-5451 passed, 1 skipped in 26.84s in the complete repository regression after Phase L.
+5542 passed, 1 skipped in 13.36s in the complete repository regression after WP-09.
+
+WP-09 Focused Regression
+
+111 passed in 0.63s.
 
 Phase-L Focused Regression
 
@@ -114,15 +121,16 @@ Product Demo
 
 Last SSOT Update
 
-2026-08-14
+2026-08-16
 
 ---
 
 # Current Objective
 
-Complete the executable closed vertical slice from authoritative Approved Input
-through validated, versioned SysML v2 output, then harden the guided workflow
-for the product demo on 2026-08-18.
+Complete the remaining demo-critical UX work packages without weakening the
+already closed engineering authority chain. WP-10 simplifies Ingestion and Human
+Review, WP-11 hardens Architecture / Model Proposal interaction, and WP-12
+executes end-to-end demo hardening for the product demo on 2026-08-18.
 
 The accepted executable path remains:
 
@@ -143,7 +151,7 @@ Source
 The implementation sequence is now:
 
 ```text
-WP-09 — Guided Workflow UI
+WP-09 — Guided Workflow UI                     COMPLETE
 → WP-10 Ingestion + Human Review UX Simplification
 → WP-11 Architecture / Model Proposal UX
 → WP-12 End-to-End Demo Hardening
@@ -161,7 +169,8 @@ architecture and evidence.
 
 Priority 1
 
-Begin WP-09 Guided Workflow UI from the completed Phase-L read/release/publication boundaries.
+Complete WP-10 Ingestion + Human Review UX Simplification on top of the accepted
+WP-09 Guided Engineering Workflow and unchanged domain authority boundaries.
 
 Phase L shall accept only an explicit `GeneratedSysMLArtifactSet` together with
 the exact `SysMLValidationResult` covering that artifact fingerprint.
@@ -240,6 +249,91 @@ Priority 8
 Continue Model Element Change Candidate tracking. CATIA remains the engineering
 authority and no implementation observation becomes an accepted CATIA change
 without explicit engineering review.
+
+---
+
+# WP-09 — Guided Workflow UI
+
+WP-09 is completed and verified.
+
+Architecture decision:
+
+`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+Accepted interaction principles:
+
+```text
+Engineering Content before Metadata
+Decision-Centered Interaction
+Variance is First-Class Information
+Side-by-Side before Aggregation
+Simple by default.
+Explainable on demand.
+Fully traceable underneath.
+```
+
+Completed slices:
+
+```text
+WP-09.1  Guided Engineering View + presentation models
+WP-09.2  global shell, navigation, Engineer Home and Next Action
+WP-09.3  Model Proposal, Final Model Review and Published Output detail views
+WP-09.4  authority-preserving Human write actions and exact publication bridge
+```
+
+Implemented capabilities include:
+
+- one common Project context across the application
+- global Focused / Technical presentation depth
+- engineer-centered `Your work` and `Next action`
+- deterministic Guided Workflow read model with no parallel authority state
+- explicit selection when multiple Candidate / Review / Output heads exist
+- Model Proposal detail workspace
+- Final Model Review detail workspace with exact generated SysML
+- Published Output detail workspace
+- Candidate `Accept`, `Reject`, `Defer` and `Accept as exception`
+- immutable Final Model Review Change Proposal submission
+- exact Human release approval
+- exact FRV-to-publication bridge through persisted J/K snapshots
+- publication only through the existing `OutputWriter`
+- authoritative read-side reconstruction after writes
+- deferred Human Review outcomes retained as unresolved Human work
+
+Verification:
+
+```text
+WP-09 focused regression:
+111 passed in 0.63s
+
+Complete repository regression:
+5542 passed, 1 skipped in 13.36s
+
+git diff --check:
+PASS
+```
+
+Manual live UI smoke acceptance verified:
+
+- common application shell
+- Project selection
+- Technical-details toggle
+- all seven workspaces reachable
+- understandable empty states
+- responsive navigation without loss of access
+
+The selected smoke-test Project did not contain downstream Candidate, Final Review
+or Published Output data. Therefore live interaction with Candidate decisions,
+Final Release and Publication is intentionally deferred to the prepared end-to-end
+demo Project in WP-12. Those write paths are covered by automated tests and this
+deferral is not an open WP-09 implementation defect.
+
+Primary application entry point:
+
+```bash
+streamlit run app/turing_generator_app.py
+```
+
+`app/ui_app.py` remains only the legacy early-MVP two-tab ingestion skeleton.
 
 ---
 
@@ -340,7 +434,8 @@ Therefore:
 Phase L implementation: COMPLETE
 Automated J→K→Human Review→Human Release→OUT vertical slice: PASS
 Live real-SYSIDE publication acceptance: BLOCKED by missing SYSIDE CLI
-Next work package: WP-09 Guided Workflow UI
+WP-09 Guided Workflow UI: COMPLETE
+Next work package: WP-10 Ingestion + Human Review UX Simplification
 ```
 
 The unavailable SYSIDE CLI does not weaken or bypass the release gate. A real

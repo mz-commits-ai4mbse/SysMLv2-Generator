@@ -557,6 +557,104 @@ adopt the dual-layer presentation architecture.
 
 ---
 
+### UX-15 — Authority-preserving write interaction
+
+The Guided Engineering Workflow may initiate authoritative actions.
+
+It shall never become engineering or workflow authority itself.
+
+Every write initiated from an engineer-facing UI surface shall follow:
+
+```text
+explicit immutable target
++
+explicit Human action
++
+existing domain authority service
++
+immutable authoritative persistence
++
+read-side reconstruction after the write
+```
+
+Conceptually:
+
+```text
+Streamlit interaction
+        ↓
+GuidedWorkflowWriteService
+        ↓
+existing normative domain service
+        ↓
+authoritative immutable persistence
+        ↓
+existing read service / repository
+        ↓
+reconstructed UI state
+```
+
+`GuidedWorkflowWriteService` is an application-level delegation boundary only.
+
+It shall not:
+
+- reproduce Candidate Review rules,
+- reproduce Final Model Review routing rules,
+- reproduce release-gate logic,
+- infer engineering approval,
+- infer a latest authoritative target,
+- mutate generated SysML directly,
+- or store authoritative decisions in Streamlit session state.
+
+The following domain services remain normative:
+
+```text
+ModelCandidateReviewRepository
+FinalModelReviewChangeService
+FinalModelReviewReleaseService
+OutputWriter
+```
+
+Candidate Review writes shall require an explicit:
+
+```text
+Project
+Candidate Set
+Candidate type
+Candidate identity
+Human decision
+Reviewer identity
+```
+
+Final Model Review change requests shall require an explicit:
+
+```text
+Project
+Final Model Review
+Final Model Review revision
+affected review surface
+change classification
+Human feedback
+reviewer identity
+```
+
+Final release approval shall require an explicit:
+
+```text
+Project
+Final Model Review
+Final Model Review revision
+reviewer identity
+```
+
+The UI may simplify labels and interaction controls.
+
+It shall not simplify or weaken the underlying authority contract.
+
+After a successful write, the UI shall discard transient assumptions and
+reconstruct the visible state from persisted authoritative evidence.
+
+---
+
 ## Formative usability evaluation
 
 The UX redesign follows a formative evaluation of the functionally complete

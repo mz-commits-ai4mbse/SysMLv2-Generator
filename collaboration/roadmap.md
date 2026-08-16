@@ -22,43 +22,50 @@ have been completed.
 
 Architecture Version
 
-1.10
+1.11
 
 Knowledge Base Version
 
-1.17
+1.18
 
 Implementation Version
 
-0.19
+0.20
 
 Roadmap Version
 
-1.17
+1.18
 
 Last SSOT Update
 
-2026-08-14
+2026-08-16
 
 Current Phase
 
-**WP-09 — Guided Workflow UI**
+**WP-10 — Ingestion + Human Review UX Simplification**
 
 Current Status
 
-Phase L Final Model Review and Output Publication implementation is completed and verified. WP-09 Guided Workflow UI is next. Live real-SYSIDE publication acceptance remains blocked because the verification workstation has no SYSIDE CLI.
+WP-09 Guided Workflow UI is completed and verified. WP-10 is active. Live
+real-SYSIDE publication acceptance remains blocked because the verification
+workstation has no SYSIDE CLI; this remains fail-closed and does not weaken the
+implemented release path.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase L implementation completion
+`commit containing this SSOT update` — WP-09 Guided Workflow UI completion
 
 Last Prior Committed Checkpoint
 
-`72974bb63c92c37baac5eef6b740ee91bacedd01` — accepted Phase-L architecture checkpoint (ADR-023)
+`24957252f82d8f440ba8eccb0c571c906d78a858` — Guided Engineering Workspace and global UX shell checkpoint
 
 Verified Automated Test Baseline
 
-5451 passed, 1 skipped in 26.84s in the complete repository regression after Phase L.
+5542 passed, 1 skipped in 13.36s in the complete repository regression after WP-09.
+
+WP-09 Focused Regression
+
+111 passed in 0.63s.
 
 Phase-L Focused Regression
 
@@ -108,12 +115,15 @@ Source
 → Versioned Output Package
 ```
 
-Phases G, H, I, J, K and the Phase-L implementation are complete. The controlled H9 extension is also complete. The automated technical vertical slice reaches immutable published output. Live operational acceptance remains blocked only by the missing SYSIDE CLI.
+Phases G, H, I, J, K, L and WP-09 are complete. The controlled H9
+extension is also complete. The automated technical vertical slice reaches
+immutable published output and the engineer-facing global workflow shell is now
+operational. Live real-SYSIDE acceptance remains blocked only by the missing CLI.
 
-The demo hardening sequence follows the vertical slice:
+The remaining demo hardening sequence is:
 
 ```text
-WP-09 Guided Workflow UI
+WP-09 Guided Workflow UI                     COMPLETE
 → WP-10 Ingestion + Human Review UX Simplification
 → WP-11 Architecture / Model Proposal UX
 → WP-12 End-to-End Demo Hardening
@@ -128,15 +138,85 @@ Target dates:
 
 ```text
 2026-08-14  H–L closed vertical slice
-2026-08-15  Guided Workflow UI
-2026-08-16  Demo hardening
-2026-08-17  Functional freeze / rehearsal
+2026-08-16  WP-09→WP-12 UX and demo hardening work
+2026-08-17  Functional freeze / rehearsal / presentation preparation
 2026-08-18  Product demo
 ```
 
 Quality shall not be reduced to save time. Time is saved through decomposition,
 focused verification and deferral of non-critical refinements rather than by
 weakening authority, validation or traceability.
+
+---
+
+# WP-09 — Guided Workflow UI
+
+## Objective
+
+Expose the already implemented engineering authority chain through one
+engineer-centered, deterministic Guided Engineering Workflow without introducing
+a second workflow state machine or weakening traceability.
+
+## Architecture
+
+`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+## Completed Deliverables
+
+- Guided Workflow presentation and read models
+- Engineer Home with `Your work` and `Next action`
+- global Project selector and constrained Project creation
+- global Focused / Technical presentation depth
+- common navigation across seven engineering workspaces
+- Model Proposal detail workspace
+- Final Model Review detail workspace
+- Published Output detail workspace
+- explicit Candidate Review writes
+- immutable Final Review Change Proposal submission
+- explicit Human release approval
+- exact FRV-to-Output publication bridge
+- fail-closed write delegation to existing domain authority services
+- read-side reconstruction after every persisted write
+- deferred Human Review retained as unresolved work
+- primary application entry point clarified as `app/turing_generator_app.py`
+
+## Verification
+
+```text
+Focused WP-09 regression:
+111 passed in 0.63s
+
+Complete repository regression:
+5542 passed, 1 skipped in 13.36s
+
+git diff --check:
+PASS
+```
+
+Manual smoke acceptance verified the common shell, Project selection, Technical
+toggle, all seven workspaces, navigation and empty states.
+
+Live Candidate / Final Review / Publication actions with a fully populated Project
+are deferred to the prepared end-to-end demo Project in WP-12. Automated tests
+cover the exact write paths.
+
+## Status
+
+Completed on 2026-08-16
+
+---
+
+# WP-10 — Ingestion + Human Review UX Simplification
+
+## Objective
+
+Apply the accepted Guided Engineering Workflow principles to the ingestion and
+Human Review surfaces while preserving all existing processing and Human
+authority contracts.
+
+## Status
+
+Active
 
 ---
 

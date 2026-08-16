@@ -26,53 +26,54 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — Phase L implementation completion
+`commit containing this SSOT update` — WP-09 Guided Workflow UI completion
 
 Last Prior Committed Checkpoint
 
-`72974bb63c92c37baac5eef6b740ee91bacedd01` — accepted Phase-L architecture checkpoint / ADR-023
+`24957252f82d8f440ba8eccb0c571c906d78a858` — Guided Engineering Workspace and global UX shell checkpoint
 
 Architecture Version
 
-1.10
+1.11
 
 Knowledge Base Version
 
-1.17
+1.18
 
 Implementation Version
 
-0.19
+0.20
 
 Roadmap Version
 
-1.17
+1.18
 
 Last SSOT Update
 
-2026-08-14
+2026-08-16
 
 Current Work Package
 
-WP-09 — Guided Workflow UI
+WP-10 — Ingestion + Human Review UX Simplification
 
 Current Status
 
-Phase L implementation is complete and verified. The automated vertical slice
-reaches immutable versioned output after exact automated validation and explicit
-Human release approval.
+WP-09 Guided Workflow UI is complete and verified. The common engineer-facing
+workflow shell, downstream detail workspaces and authority-preserving write
+delegation are implemented.
 
-The real SYSIDE-backed L7 publication acceptance remains blocked because the
-verification workstation does not have the `syside` CLI installed.
+The real SYSIDE-backed publication acceptance remains blocked because the
+verification workstation does not have the `syside` CLI installed. The gate
+continues to fail closed.
 
 Verification baseline:
 
 ```text
-Focused Phase-L L1–L7:
-147 passed, 1 skipped in 1.63s
+Focused WP-09:
+111 passed in 0.63s
 
 Complete repository:
-5451 passed, 1 skipped in 26.84s
+5542 passed, 1 skipped in 13.36s
 
 git diff --check:
 PASS
@@ -81,7 +82,7 @@ SYSIDE CLI:
 unavailable
 ```
 
-The skipped test is the deliberate live SYSIDE acceptance test.
+The skipped test remains the deliberate live SYSIDE acceptance test.
 
 Functional Freeze
 
@@ -130,6 +131,78 @@ Never use:
 git add .
 git add -A
 ```
+
+---
+
+# WP-09 — Completed Guided Workflow UI
+
+Architecture:
+
+`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+Normative presentation contract:
+
+```text
+authoritative persisted state
+        ↓
+GuidedWorkflowReadService / GuidedWorkflowDetailReadService
+        ↓
+Focused or Technical presentation
+        ↓
+explicit Human action
+        ↓
+GuidedWorkflowWriteService
+        ↓
+existing normative domain authority
+        ↓
+immutable persistence
+        ↓
+read-side reconstruction
+```
+
+Implemented workspaces:
+
+```text
+Engineering Workspace
+Project Dashboard
+Processing
+Human Review & Approval
+Model Proposal
+Final Model Review
+Published Output
+```
+
+Implemented Human write actions:
+
+```text
+Candidate Review
+→ accepted / rejected / deferred / accepted_exception
+
+Final Model Review
+→ immutable Change Proposal
+→ exact Human release approval
+
+Approved exact FRV
+→ exact persisted J/K snapshot reconstruction
+→ OutputWriter.publish(...)
+→ immutable OUT package
+```
+
+No UI session state is engineering authority. No write action uses an implicit
+latest Candidate Set, Final Review revision or Output package.
+
+Primary UI start command:
+
+```bash
+streamlit run app/turing_generator_app.py
+```
+
+The legacy `app/ui_app.py` two-tab ingestion skeleton is not the main
+application.
+
+Manual live smoke acceptance covered navigation and presentation. A fully
+populated end-to-end Project for exercising all write actions is deliberately
+deferred to WP-12 demo hardening.
 
 ---
 
