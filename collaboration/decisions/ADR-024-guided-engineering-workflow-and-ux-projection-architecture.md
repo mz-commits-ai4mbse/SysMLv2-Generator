@@ -1,0 +1,533 @@
+# ADR-024 — Guided Engineering Workflow and UX Projection Architecture
+
+## Status
+
+Accepted
+
+## Date
+
+2026-08-16
+
+## Context
+
+The Turing Generator has reached a functionally complete prototype baseline through
+Phase L.
+
+Baseline implementation reference:
+
+```text
+0fce9928a04e047e4b39484b421632fb64ed905f
+Complete Phase L final model review and output publication
+```
+
+At this baseline, the implemented workflow covers:
+
+```text
+Source
+→ Processing
+→ Human Review
+→ Approved Input
+→ Model Candidates
+→ Candidate Human Review
+→ Internal Engineering Model
+→ SysML v2 Generation
+→ Validation
+→ Final Model Human Review
+→ Human Release Approval
+→ Published Output
+```
+
+The technical architecture provides immutable evidence, explicit Human authority,
+deterministic read models, validation gates and end-to-end traceability.
+
+However, formative usability evaluation of the functional prototype showed that
+the existing user interface remains too strongly oriented around technical
+artifacts, workflow metadata and implementation structure.
+
+The functionality is available, but the engineer has to spend unnecessary effort
+finding:
+
+- what engineering information was ingested,
+- which processing result is relevant,
+- where Human action is required,
+- where multiple Agent / Persona results agree,
+- where they differ,
+- which alternatives are available,
+- why an Agent proposed a result,
+- and what the next engineering decision should be.
+
+The issue is therefore not missing processing capability.
+
+The issue is the mapping between the implemented processing architecture and the
+daily engineering task.
+
+This ADR defines the UX architecture for WP-09 through WP-12.
+
+---
+
+## Decision
+
+### UX-01 — Engineer-centered interaction
+
+The primary UI shall be organized around the engineer's work rather than the
+internal implementation structure.
+
+The default questions answered by the UI are:
+
+```text
+What was provided?
+What did the system derive?
+Do the independent perspectives agree?
+Where do I need to decide?
+What happens next?
+```
+
+Technical metadata shall remain available but shall not dominate the primary
+working surface.
+
+---
+
+### UX-02 — Guided Workflow is a projection, not authority
+
+The Guided Engineering Workflow shall not create another authoritative workflow
+state machine.
+
+It is a deterministic projection of existing persisted authoritative state.
+
+Conceptually:
+
+```text
+authoritative repositories / read services
+                ↓
+      GuidedWorkflowReadService
+                ↓
+        GuidedWorkflowView
+                ↓
+             Streamlit
+```
+
+The UI may maintain transient navigation state.
+
+It shall not duplicate engineering, review, validation, release or publication
+authority inside Streamlit session state.
+
+---
+
+### UX-03 — Engineering Content before Metadata
+
+Primary views shall present engineering content first.
+
+Examples include:
+
+- source content,
+- extracted engineering statements,
+- proposed elements,
+- proposed relationships,
+- engineering classifications,
+- model structure,
+- validation findings,
+- generated SysML.
+
+Implementation metadata such as:
+
+- internal IDs,
+- hashes,
+- fingerprints,
+- artifact paths,
+- processing-run identifiers,
+- manifest versions,
+
+shall remain available through progressive disclosure for traceability and audit.
+
+The intended hierarchy is:
+
+```text
+Primary layer
+→ What is this?
+
+Decision layer
+→ What do I need to decide?
+
+Explanation layer
+→ Why was this proposed?
+
+Traceability layer
+→ Where exactly did it come from?
+```
+
+---
+
+### UX-04 — Decision-Centered Interaction
+
+Open Human decisions are first-class UI objects.
+
+The Guided Workflow shall prioritize:
+
+```text
+action required
+→ relevant engineering content
+→ alternatives
+→ supporting rationale
+→ Human decision
+```
+
+The engineer shall not have to inspect technical processing state to discover
+that a decision is required.
+
+The project entry view should therefore prioritize work such as:
+
+```text
+Your work
+
+4 decisions required
+2 results contain relevant variance
+11 results are confirmed / ready
+
+Next action
+→ Review extracted engineering information
+```
+
+The exact counts are derived from authoritative persisted state.
+
+---
+
+### UX-05 — Variance is first-class engineering information
+
+Whenever a processing step contains redundant LLM / Agent / Persona execution,
+the UI shall expose the resulting variance explicitly.
+
+Existing consensus concepts shall be reused.
+
+Examples include:
+
+```text
+unanimous
+majority
+single
+none
+incomparable
+incomplete
+```
+
+and:
+
+```text
+low
+medium
+high
+```
+
+variance.
+
+Persona stability and incomplete Agent evidence shall remain distinguishable from
+inter-Persona disagreement.
+
+Repeated executions of one Persona shall not be presented as additional
+independent votes.
+
+---
+
+### UX-06 — Side-by-Side before Aggregation
+
+When multiple Agent / Persona results exist for the same engineering subject,
+the preferred presentation is side-by-side comparison.
+
+Conceptually:
+
+```text
+┌────────────────┬────────────────┬────────────────┐
+│ Persona A      │ Persona B      │ Persona C      │
+│                │                │                │
+│ Proposal A     │ Proposal A     │ Proposal B     │
+│ rationale ▾    │ rationale ▾    │ rationale ▾    │
+└────────────────┴────────────────┴────────────────┘
+
+2 / 3 → Proposal A
+1 / 3 → Proposal B
+
+Human decision required
+```
+
+Consensus summaries complement this comparison.
+
+They shall not hide the individual Agent / Persona results.
+
+---
+
+### UX-07 — Visual consensus language
+
+Agreement and variance shall be visually recognizable at a glance.
+
+The semantic presentation shall follow:
+
+```text
+GREEN
+unanimous / low variance
+
+AMBER
+majority / medium variance
+
+RED
+high variance / no consensus / blocking Human decision
+
+NEUTRAL
+incomplete / unavailable / not yet processed
+```
+
+Color alone shall never carry the meaning.
+
+Every visual state shall also contain an explicit textual label, for example:
+
+```text
+Unanimous · 3 / 3 Personas agree
+Majority · 2 / 3 Personas agree
+High variance · Human decision required
+```
+
+Green means agreement between independent perspectives.
+
+Green does not mean Human approval.
+
+---
+
+### UX-08 — Recurring interaction pattern
+
+The same interaction pattern shall be reused across processing stages:
+
+```text
+INPUT
+↓
+PROPOSED RESULT(S)
+↓
+VARIANCE / CONFIDENCE
+↓
+HUMAN DECISION — where required
+↓
+ACCEPTED RESULT
+```
+
+This applies to:
+
+- ingestion interpretation,
+- semantic extraction,
+- classification,
+- Human Review,
+- Model Candidate review,
+- architecture / Model Proposal review,
+- Final Model Review.
+
+This consistency is intended to reduce cognitive switching between phases.
+
+---
+
+### UX-09 — Guided workflow stages
+
+The engineer-facing workflow shall expose the following conceptual stages:
+
+```text
+1  Project & Sources
+2  Processing
+3  Human Review & Approved Input
+4  Model Proposal & Candidate Review
+5  Final Model Review
+6  Published Output
+```
+
+These stages are presentation concepts.
+
+They do not replace existing Phase/domain authority.
+
+---
+
+### UX-10 — Simple by default, explainable on demand
+
+ADR-017 remains the primary presentation principle:
+
+```text
+Simple by default.
+Explainable on demand.
+Fully traceable underneath.
+```
+
+Default views shall show only information necessary for the current engineering
+task.
+
+Rationale, evidence, technical metadata and complete traceability remain reachable
+without changing authority or losing auditability.
+
+---
+
+### UX-11 — No implicit latest authority
+
+The UI may identify useful display defaults.
+
+It shall not silently select a latest artifact as authority for a write action.
+
+Candidate decisions, review decisions, change proposals, release decisions and
+publication actions must remain bound to explicit immutable artifact identities.
+
+Display convenience shall never weaken authority binding.
+
+---
+
+### UX-12 — Existing services remain normative
+
+The Guided Workflow shall delegate write actions to the already established
+domain services.
+
+Examples include:
+
+```text
+ReviewApprovalWorkflowService
+ModelCandidateReviewRepository
+FinalModelReviewChangeService
+FinalModelReviewReleaseService
+OutputWriter
+```
+
+The UI shall not reproduce their validation or authority rules.
+
+---
+
+## Formative usability evaluation
+
+The UX redesign follows a formative evaluation of the functionally complete
+prototype.
+
+The evaluation is treated as formative engineering feedback, not as a controlled
+quantitative usability study unless separate evidence supports such a claim.
+
+Observed findings and resulting design responses are maintained in:
+
+```text
+collaboration/ux/usability_findings.md
+```
+
+The implemented baseline and redesigned UI are intentionally retained as separate
+development stages for later thesis documentation.
+
+---
+
+## Thesis evidence
+
+The UX iteration shall be documented so that the development process can later be
+reconstructed as:
+
+```text
+technical feasibility
+→ functionally complete prototype
+→ formative usability evaluation
+→ identified usability findings
+→ UX requirements
+→ wireframes
+→ redesigned Guided Engineering Workflow
+→ final demonstrator
+```
+
+Stable wireframe identifiers shall be maintained under:
+
+```text
+collaboration/ux/wireframes/
+```
+
+The intended initial set is:
+
+```text
+WF-01  Engineer Home / Your Work
+WF-02  Ingested Engineering Content
+WF-03  Unanimous Persona Results
+WF-04  Variant Persona Results
+WF-05  Human Decision
+WF-06  Model Proposal Review
+WF-07  Final Model Review
+```
+
+Final thesis figures may be derived from these documented wireframes and from
+before/after screenshots of the actual prototype.
+
+---
+
+## Work-package mapping
+
+### WP-09 — Guided Workflow UI
+
+Establish:
+
+- Guided Engineering Workflow projection,
+- shared navigation,
+- shared Decision presentation,
+- shared Variance presentation,
+- progressive disclosure,
+- reusable side-by-side result comparison.
+
+### WP-10 — Ingestion + Human Review UX Simplification
+
+Apply the UX architecture to:
+
+- Source presentation,
+- processing results,
+- redundant Agent / Persona outputs,
+- Human Review decisions.
+
+### WP-11 — Architecture / Model Proposal UX
+
+Apply the same interaction model to:
+
+- Model Candidate proposals,
+- structural comparison,
+- architecture/model representation,
+- candidate Human decisions.
+
+### WP-12 — End-to-End Demo Hardening
+
+Integrate and harden the complete engineer-facing workflow without weakening any
+existing authority, validation or traceability contract.
+
+---
+
+## Consequences
+
+Positive:
+
+- the UI is organized around daily engineering work,
+- Human decisions become immediately visible,
+- Agent variance becomes useful information instead of hidden processing detail,
+- redundant Agent results can be compared quickly,
+- technical traceability remains fully available,
+- the same interaction language is reused across phases,
+- UX evolution is reproducibly documented for the thesis.
+
+Trade-offs:
+
+- presentation read models become more important,
+- some technical metadata moves behind additional interaction,
+- visual consensus representations require careful accessibility semantics,
+- responsive side-by-side layouts require deliberate UI design.
+
+These trade-offs are accepted.
+
+---
+
+## Prohibited shortcuts
+
+The following are explicitly prohibited:
+
+- replacing engineering authority with UI state,
+- treating consensus as Human approval,
+- hiding dissenting Agent / Persona results behind an aggregate score,
+- counting repeated runs of one Persona as independent votes,
+- presenting color without textual meaning,
+- direct mutation of generated SysML from the UI,
+- implicit latest-artifact authority,
+- bypassing Human Review,
+- bypassing Validation,
+- bypassing Final Human release approval,
+- removing traceability merely to simplify the visible UI.
+
+---
+
+## Final principle
+
+The UI shall minimize the engineer's effort to understand and decide.
+
+It shall not minimize the engineering evidence available to justify that decision.
