@@ -2,11 +2,11 @@
 
 ## 1. Test identification
 
-**Test ID:** WP12-E2E-DRY-001  
-**Test type:** Controlled synthetic multi-document end-to-end dry run  
-**Purpose:** Formal pre-release verification before testing with real test data  
-**Execution mode:** Manual guided workflow + automated regression  
-**Primary application:** `streamlit run app/turing_generator_app.py`  
+**Test ID:** WP12-E2E-DRY-001
+**Test type:** Controlled synthetic multi-document end-to-end dry run
+**Purpose:** Formal pre-release verification before testing with real test data
+**Execution mode:** Manual guided workflow + automated regression
+**Primary application:** `streamlit run app/turing_generator_app.py`
 **Test-design status:** ACCEPTED FOR EXECUTION on 2026-08-16
 
 Related documents:
