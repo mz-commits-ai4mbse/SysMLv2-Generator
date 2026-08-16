@@ -54,6 +54,9 @@ class FakeStreamlit:
     def error(self, value):
         self.calls.append(("error", value))
 
+    def warning(self, value):
+        self.calls.append(("warning", value))
+
     def success(self, value):
         self.calls.append(("success", value))
 
@@ -177,11 +180,50 @@ def element(
     )
 
 
+def relationship(
+    candidate_id="MCR-000001",
+    *,
+    status="pending",
+    priority="preferred",
+):
+    return SimpleNamespace(
+        candidate_id=candidate_id,
+        source_subject_key="system",
+        semantic_intent="controls",
+        target_subject_key="device",
+        priority_class=priority,
+        conformance_status="conformant",
+        review_state=SimpleNamespace(status=status),
+    )
+
+
 def proposal(item):
     return SimpleNamespace(
         candidate_set_id="MCS-000001",
         proposed_elements=(item,),
         proposed_relationships=(),
+    )
+
+
+def decision_presentation(
+    *,
+    target_type="element_candidate",
+    target_ids=("MCE-000001",),
+    title="System",
+    can_assemble=False,
+):
+    return SimpleNamespace(
+        required_decisions=(
+            SimpleNamespace(
+                decision_key="decision:1",
+                target_type=target_type,
+                target_ids=target_ids,
+                title=title,
+                reason="Human review is required.",
+                recommended_action="Review the exact Candidate.",
+            ),
+        ) if target_ids else (),
+        readiness=SimpleNamespace(can_assemble=can_assemble),
     )
 
 
@@ -383,3 +425,108 @@ def test_publication_queues_exact_output_navigation():
         "selected_entity_id": "OUT-000001",
     }
     assert st.rerun_count == 1
+
+def test_decision_first_actions_only_render_exact_presented_target():
+    item_a = element()
+    item_b = SimpleNamespace(
+        candidate_id="MCE-000002",
+        proposed_name="Other",
+        conformance_status="conformant",
+        review_state=SimpleNamespace(status="pending"),
+    )
+    proposal_view = SimpleNamespace(
+        candidate_set_id="MCS-000001",
+        proposed_elements=(item_a, item_b),
+        proposed_relationships=(),
+    )
+    st = FakeStreamlit()
+    writes = WriteService()
+
+    render_model_proposal_actions(
+        st,
+        project_id="123456",
+        proposal=proposal_view,
+        write_service=writes,
+        technical=False,
+        presentation=decision_presentation(),
+    )
+
+    buttons = [
+        call[2]
+        for call in st.calls
+        if call[0] == "button"
+    ]
+    assert "guided_candidate.accept.MCE-000001" in buttons
+    assert "guided_candidate.accept.MCE-000002" not in buttons
+    assert writes.candidate_calls == []
+
+
+def test_relationship_choice_accepts_one_explicit_alternative_target():
+    first = relationship("MCR-000001", priority="preferred")
+    second = relationship("MCR-000002", priority="alternative")
+    proposal_view = SimpleNamespace(
+        candidate_set_id="MCS-000001",
+        proposed_elements=(),
+        proposed_relationships=(first, second),
+    )
+    st = FakeStreamlit(
+        clicked=("guided_candidate.accept.MCR-000001",),
+        text_values={
+            SESSION_GUIDED_REVIEWER_IDENTITY: "Reviewer A",
+        },
+    )
+    writes = WriteService()
+
+    render_model_proposal_actions(
+        st,
+        project_id="123456",
+        proposal=proposal_view,
+        write_service=writes,
+        technical=False,
+        presentation=decision_presentation(
+            target_type="relationship_choice_group",
+            target_ids=("MCR-000001", "MCR-000002"),
+            title="Choose relationship alternative",
+        ),
+    )
+
+    assert writes.candidate_calls == [
+        (
+            "123456",
+            "MCS-000001",
+            {
+                "target_type": "relationship_candidate",
+                "candidate_id": "MCR-000001",
+                "decision": "accepted",
+                "reviewer_identity": "Reviewer A",
+                "rationale": None,
+            },
+        )
+    ]
+    assert st.rerun_count == 1
+
+
+def test_ready_candidate_set_has_no_write_controls():
+    reviewed = element(status="accepted")
+    st = FakeStreamlit()
+    writes = WriteService()
+
+    render_model_proposal_actions(
+        st,
+        project_id="123456",
+        proposal=proposal(reviewed),
+        write_service=writes,
+        technical=False,
+        presentation=decision_presentation(
+            target_ids=(),
+            can_assemble=True,
+        ),
+    )
+
+    assert any(
+        call[0] == "success"
+        and "ready for engineering-model assembly" in call[1]
+        for call in st.calls
+    )
+    assert not any(call[0] == "button" for call in st.calls)
+    assert writes.candidate_calls == []

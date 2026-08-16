@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This document is the authoritative implementation starting point after WP-10
-Ingestion + Human Review UX Simplification completion.
+This document is the authoritative implementation starting point after WP-11
+Architecture / Model Proposal UX completion.
 
 Use it together with the committed repository, Collaboration Knowledge Base and
 authoritative CATIA SysML v2 model.
@@ -26,27 +26,27 @@ Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — WP-10 Ingestion + Human Review UX Simplification completion
+`commit containing this SSOT update` — WP-11 Architecture / Model Proposal UX completion
 
 Last Prior Committed Checkpoint
 
-`23fab6ab597a922b3c2c18d0088fa6c270e2629e` — WP-09 Guided Workflow UI completion
+`63b911dbf5da9b4a2be7013553fd8d47f4e30db4` — WP-10 final formatting checkpoint
 
 Architecture Version
 
-1.12
+1.13
 
 Knowledge Base Version
 
-1.19
+1.20
 
 Implementation Version
 
-0.21
+0.22
 
 Roadmap Version
 
-1.19
+1.20
 
 Last SSOT Update
 
@@ -54,14 +54,14 @@ Last SSOT Update
 
 Current Work Package
 
-WP-11 — Architecture / Model Proposal UX
+WP-12 — End-to-End Demo Hardening
 
 Current Status
 
-WP-10 Ingestion + Human Review UX Simplification is complete and verified.
-Processing and Human Review now use content-first Focused projections with
-Technical traceability underneath. WP-11 Architecture / Model Proposal UX is
-active.
+WP-11 Architecture / Model Proposal UX is complete and verified. Architecture,
+Relationship alternatives, Candidate decisions and Phase-I readiness are now
+presented through the authority-preserving Guided Workflow. WP-12 End-to-End Demo
+Hardening is active.
 
 The real SYSIDE-backed publication acceptance remains blocked because the
 verification workstation does not have the `syside` CLI installed. The gate
@@ -70,11 +70,11 @@ continues to fail closed.
 Verification baseline:
 
 ```text
-Final targeted shell / Human Review:
-43 passed in 0.53s
+WP-11 focused regression:
+40 passed in 0.52s
 
 Complete repository:
-5563 passed, 1 skipped in 13.91s
+5577 passed, 1 skipped in 14.19s
 
 git diff --check:
 PASS
@@ -327,45 +327,73 @@ test and retain the result as acceptance evidence.
 
 # Exact Next Work Package
 
-## WP-11 — Architecture / Model Proposal UX
+## WP-12 — End-to-End Demo Hardening
 
 Objective:
 
-Refine the already implemented Model Proposal workspace so an engineer can
-understand the proposed architecture and make Candidate Review decisions without
-having to interpret repository or manifest internals.
+Prepare and exercise one representative demo Project through the complete
+implemented authority chain and harden only defects that materially affect the
+connected product demonstration.
 
-Use the existing authoritative boundaries:
+Target workflow:
 
 ```text
-Approved Input
-→ Model Candidate Sets
+Source
+→ Processing
+→ Human Review
+→ Approved Input
+→ Model Candidates
 → Candidate Human Review
 → Internal Engineering Model
+→ SysML v2 Generation
+→ Validation
+→ Final Model Human Review
+→ Human Release Approval
+→ Versioned Output Package
 ```
 
-Primary WP-11 presentation priorities:
+The WP-12 run shall also be used as a formative task-based self-evaluation.
+
+For each material observation capture:
 
 ```text
-proposed model / architecture content
-→ alternatives and material variance
-→ Human decision / review state
-→ accepted model result
-→ next action
+Observation
+→ what happened while performing the engineering task?
+
+Impact
+→ why did this create unnecessary effort, ambiguity or risk?
+
+UX / engineering response
+→ what should change, if anything?
+
+Resolution
+→ fixed now / deferred / intentionally accepted
 ```
 
-Preserve:
+Use the test to answer practical workflow questions such as:
 
-- exact Candidate Set / Candidate identity
-- no implicit latest write target
-- immutable Candidate Review decisions
-- Approved Input authority
-- deterministic Internal Engineering Model assembly
-- complete traceability on demand
-- CATIA as engineering authority
+- Is the next engineering action immediately clear?
+- Is engineering content visible before implementation metadata?
+- Are alternatives, uncertainty and Human decisions understandable?
+- Does the engineer understand what an action will change?
+- Are exact authority boundaries retained underneath the simplified UI?
+- Does the complete Source→OUT flow remain reproducible?
 
-Do not add a second model authority, directly mutate generated SysML or make an
-LLM an approval authority.
+The result is formative qualitative design evidence. Do not claim statistical
+usability improvement or independent-user validation from this self-evaluation.
+
+Preserve all existing authority boundaries. Do not introduce bypasses for:
+
+- Human Review
+- Candidate Review
+- Phase-I assembly readiness
+- validation
+- Final Model Human Review
+- explicit Human release approval
+- immutable Output publication
+
+The missing local SYSIDE CLI remains a known operational acceptance blocker for
+the real SYSIDE-backed publication validator. No bypass is permitted.
 
 ---
 
@@ -377,8 +405,8 @@ WP-08  Phase L — Final Model Review + Output Publication — COMPLETE
        live real-SYSIDE acceptance remains blocked by missing CLI
 WP-09  Guided Workflow UI — COMPLETE
 WP-10  Ingestion + Human Review UX Simplification — COMPLETE
-WP-11  Architecture / Model Proposal UX — ACTIVE
-WP-12  End-to-End Demo Hardening
+WP-11  Architecture / Model Proposal UX — COMPLETE
+WP-12  End-to-End Demo Hardening — ACTIVE
 WP-13  Demo Freeze + Rehearsal
 WP-14  CATIA / SSOT Checkpoint
 ```
@@ -386,7 +414,7 @@ WP-14  CATIA / SSOT Checkpoint
 Schedule:
 
 ```text
-2026-08-16  WP-09→WP-12 UX and demo hardening
+2026-08-16  WP-12 connected demo hardening
 2026-08-17  Functional freeze / rehearsal / presentation preparation
 2026-08-18  Product demo
 ```
@@ -398,11 +426,14 @@ verification, not weaker authority, validation or traceability.
 
 # Immediate Starting Instruction for the Next Chat
 
-Begin WP-11 by inspecting the current Model Proposal read model, Candidate Review
-write service and the WP-09 Model Proposal detail workspace.
+Begin WP-12 by defining the representative demo Source and the exact expected
+engineering story it should produce.
 
-Define the smallest deterministic presentation refinement that exposes proposed
-architecture content, alternatives, variance, Human review state and next action
-while preserving the existing Candidate / Approved Input / IEM authority chain.
+Then execute the Project from a clean Source registration through the connected
+workflow while recording formative observations. Distinguish genuine product /
+integration defects from expected Human decisions and from the known external
+SYSIDE CLI blocker.
 
-Do not implement before the WP-11 architecture is explicitly accepted.
+Do not pre-seed authoritative downstream results merely to make the demo look
+complete unless the pre-seeding itself is an explicitly accepted demo-fixture
+mechanism that preserves traceability and authority semantics.

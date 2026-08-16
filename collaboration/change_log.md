@@ -1,5 +1,91 @@
 # Change Log
 
+## 2026-08-16 — WP-11 Architecture / Model Proposal UX Completion
+
+Versions after this update:
+
+- Architecture Version: 1.13
+- Knowledge Base Version: 1.20
+- Implementation Version: 0.22
+- Roadmap Version: 1.20
+
+Implementation reference:
+
+- WP-11 completion: the commit containing this SSOT update
+- Prior WP-10 final checkpoint:
+  `63b911dbf5da9b4a2be7013553fd8d47f4e30db4`
+- Accepted / extended UX architecture:
+  `collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+Completed WP-11 decomposition:
+
+```text
+WP-11.1  Model Proposal presentation foundation
+WP-11.2  Architecture / Model Proposal workspace
+WP-11.3  Candidate Decision workflow
+WP-11.4  acceptance and closeout
+```
+
+Implemented capabilities:
+
+- UX-17 Architecture / Model Proposal projection contract
+- deterministic immutable `GuidedModelProposalPresentation`
+- architecture-first proposed Elements and Relationships
+- model-area grouping for engineer-readable structure
+- Relationship Choice Groups displayed as alternatives rather than votes
+- persisted preferred / accepted alternative state retained
+- profile deviation and structural comparability presentation
+- Candidate Review progress and authoritative Phase-I readiness projection
+- Human decisions colocated with the affected Candidate content
+- exact MCS + Candidate binding for every Candidate Review write
+- unchanged normative Candidate decisions:
+  `accepted`, `rejected`, `deferred`, `accepted_exception`
+- ready Candidate Sets suppress redundant Candidate write controls
+- Focused View reduces visible implementation metadata
+- Technical View retains IDs, fingerprints, Approved Input references,
+  conformance, comparability and traceability
+
+Verification:
+
+```text
+WP-11 focused regression:
+40 passed in 0.52s
+
+Complete repository regression:
+5577 passed, 1 skipped in 14.19s
+
+git diff --check:
+PASS
+```
+
+Live acceptance status:
+
+```text
+WP-11 implementation:         PASS
+WP-11 automated acceptance:   PASS
+populated Model Proposal UI:  DEFERRED → WP-12
+```
+
+The populated live case is deferred because no representative Model Candidate
+data exists yet. WP-12 will create / process the connected demo Project and
+exercise Model Proposal, Candidate Review and all downstream stages in context.
+
+That connected run will also be retained as a formative task-based
+self-evaluation of the demonstrator. Findings are qualitative design evidence;
+they do not constitute an independent quantitative usability study.
+
+Phase transition:
+
+```text
+WP-11 Architecture / Model Proposal UX: COMPLETE
+WP-12 End-to-End Demo Hardening: ACTIVE
+```
+
+No Candidate, Approved Input, Internal Engineering Model or CATIA authority was
+transferred to the UI.
+
+---
+
 ## 2026-08-16 — WP-10 Ingestion + Human Review UX Simplification Completion
 
 Versions after this update:

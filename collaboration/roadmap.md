@@ -22,19 +22,19 @@ have been completed.
 
 Architecture Version
 
-1.12
+1.13
 
 Knowledge Base Version
 
-1.19
+1.20
 
 Implementation Version
 
-0.21
+0.22
 
 Roadmap Version
 
-1.19
+1.20
 
 Last SSOT Update
 
@@ -42,26 +42,30 @@ Last SSOT Update
 
 Current Phase
 
-**WP-11 — Architecture / Model Proposal UX**
+**WP-12 — End-to-End Demo Hardening**
 
 Current Status
 
-WP-10 Ingestion + Human Review UX Simplification is completed and verified.
-WP-11 Architecture / Model Proposal UX is active. Live real-SYSIDE publication
-acceptance remains blocked because the verification workstation has no SYSIDE
-CLI; this remains fail-closed and does not weaken the implemented release path.
+WP-11 Architecture / Model Proposal UX is completed and verified. WP-12
+End-to-End Demo Hardening is active. Live real-SYSIDE publication acceptance
+remains blocked because the verification workstation has no SYSIDE CLI; this
+remains fail-closed and does not weaken the implemented release path.
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — WP-10 Ingestion + Human Review UX Simplification completion
+`commit containing this SSOT update` — WP-11 Architecture / Model Proposal UX completion
 
 Last Prior Committed Checkpoint
 
-`23fab6ab597a922b3c2c18d0088fa6c270e2629e` — WP-09 Guided Workflow UI completion
+`63b911dbf5da9b4a2be7013553fd8d47f4e30db4` — WP-10 final formatting checkpoint
 
 Verified Automated Test Baseline
 
-5563 passed, 1 skipped in 13.91s in the complete repository regression after WP-10.
+5577 passed, 1 skipped in 14.19s in the complete repository regression after WP-11.
+
+WP-11 Focused Regression
+
+40 passed in 0.52s.
 
 WP-09 Focused Regression
 
@@ -115,8 +119,8 @@ Source
 → Versioned Output Package
 ```
 
-Phases G, H, I, J, K, L, WP-09 and WP-10 are complete. The controlled H9
-extension is also complete. The automated technical vertical slice reaches
+Phases G, H, I, J, K, L, WP-09, WP-10 and WP-11 are complete. The controlled
+H9 extension is also complete. The automated technical vertical slice reaches
 immutable published output and the engineer-facing global workflow shell is now
 operational. Live real-SYSIDE acceptance remains blocked only by the missing CLI.
 
@@ -125,8 +129,8 @@ The remaining demo hardening sequence is:
 ```text
 WP-09 Guided Workflow UI                     COMPLETE
 → WP-10 Ingestion + Human Review UX Simplification COMPLETE
-→ WP-11 Architecture / Model Proposal UX          ACTIVE
-→ WP-12 End-to-End Demo Hardening
+→ WP-11 Architecture / Model Proposal UX          COMPLETE
+→ WP-12 End-to-End Demo Hardening                  ACTIVE
 → WP-13 Functional Freeze + Rehearsal
 → Product Demo 2026-08-18
 ```
@@ -268,6 +272,83 @@ Refine Model Proposal and Architecture interaction so that the engineer can
 understand proposed model structure, alternatives, variance, review state and
 next action without weakening Candidate, Approved Input or Internal Engineering
 Model authority.
+
+## Architecture
+
+`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+UX-17 defines the Model Proposal projection contract.
+
+## Completed Deliverables
+
+- deterministic immutable Model Proposal presentation projection
+- architecture-first Model Proposal workspace
+- model-area grouping of proposed elements
+- readable proposed relationship structure
+- Relationship Choice Groups shown as explicit alternatives
+- preferred / accepted relationship alternatives retained from persisted state
+- structural / profile deviation and comparability presentation
+- Candidate Review progress and authoritative Phase-I readiness projection
+- decision-first Candidate Review workspace
+- exact Candidate Set / Candidate write binding
+- Focused / Technical dual-layer presentation
+- progressive technical traceability to Approved Input and Candidate identity
+- ready Candidate Set presentation without redundant write controls
+
+## Verification
+
+```text
+WP-11 focused regression:
+40 passed in 0.52s
+
+Complete repository regression:
+5577 passed, 1 skipped in 14.19s
+
+git diff --check:
+PASS
+```
+
+A populated live Model Proposal test is intentionally deferred to WP-12 because
+no representative Model Candidate data exists yet. WP-12 will execute the real
+demo Project through Model Proposal and Candidate Review and use that connected
+run as a formative task-based self-evaluation.
+
+## Status
+
+Completed on 2026-08-16
+
+---
+
+# WP-12 — End-to-End Demo Hardening
+
+## Objective
+
+Exercise one representative Project through the complete implemented workflow,
+identify and correct demo-critical integration / usability defects, and retain a
+reproducible demonstrator state for the product demo.
+
+The target path is:
+
+```text
+Source
+→ Processing
+→ Human Review
+→ Approved Input
+→ Model Candidates
+→ Candidate Human Review
+→ Internal Engineering Model
+→ SysML v2 Generation
+→ Validation
+→ Final Model Human Review
+→ Human Release Approval
+→ Versioned Output Package
+```
+
+WP-12 also performs a formative task-based self-evaluation of the connected
+demonstrator. The evaluation records concrete workflow observations, their
+engineering / usability impact and any bounded resolution. It is qualitative
+design evidence and shall not be represented as an independent quantitative
+usability study.
 
 ## Status
 

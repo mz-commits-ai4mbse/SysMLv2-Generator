@@ -14,6 +14,17 @@ from .detail_read_model import (
     GuidedWorkflowDetailReadService,
 )
 from .read_model import GuidedWorkflowReadService
+from .model_proposal_presentation import (
+    GuidedModelArchitectureEdgeView,
+    GuidedModelArchitectureNodeView,
+    GuidedModelComparabilityView,
+    GuidedModelDecisionView,
+    GuidedModelDeviationView,
+    GuidedModelProposalPresentation,
+    GuidedModelReadinessView,
+    GuidedModelRelationshipChoiceView,
+    build_model_proposal_presentation,
+)
 from .processing_review_presentation import (
     GuidedProcessingSourceView,
     GuidedReviewItemView,
@@ -70,6 +81,14 @@ __all__ = [
     "GUIDED_DETAIL_STATUSES",
     "GuidedDetailOption",
     "GuidedFinalModelReviewDetail",
+    "GuidedModelArchitectureEdgeView",
+    "GuidedModelArchitectureNodeView",
+    "GuidedModelComparabilityView",
+    "GuidedModelDecisionView",
+    "GuidedModelDeviationView",
+    "GuidedModelProposalPresentation",
+    "GuidedModelReadinessView",
+    "GuidedModelRelationshipChoiceView",
     "GuidedModelProposalDetail",
     "GuidedPublishedOutputDetail",
     "GuidedWorkflowDetailReadService",
@@ -93,6 +112,7 @@ __all__ = [
     "GuidedWorkflowWriteService",
     "GuidedWorkflowView",
     "build_guided_workflow_view",
+    "build_model_proposal_presentation",
     "build_processing_source_view",
     "build_review_item_view",
     "build_review_queue_item_view",

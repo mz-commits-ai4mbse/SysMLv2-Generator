@@ -737,6 +737,104 @@ followed by read-side reconstruction.
 
 ---
 
+### UX-17 — Architecture / Model Proposal projection
+
+WP-11 shall adapt Model Proposal and Candidate Review to the same deterministic,
+dual-layer presentation architecture established by this ADR.
+
+The default Model Proposal projection shall prioritize:
+
+```text
+proposed architecture / model structure
+→ material alternatives and structural variance
+→ required Human Candidate decisions
+→ Candidate Review state
+→ Phase-I readiness
+→ next engineering action
+```
+
+The engineer shall not have to reconstruct the proposed architecture mentally
+from Candidate IDs, repository state or independent technical tables.
+
+The Focused Model Proposal shall therefore expose an engineer-readable structural
+projection of the exact selected Candidate Set, including:
+
+```text
+model elements
+→ readable name
+→ model area / type
+→ support state
+→ Human review state
+
+model relationships
+→ source
+→ semantic intent
+→ target
+→ resolution / priority state
+→ Human review state
+
+relationship choice groups
+→ all alternatives
+→ preferred alternatives where persisted
+→ accepted alternatives where persisted
+→ whether Human review remains required
+
+structural / profile deviations
+→ affected Candidate
+→ conformance / comparability state
+→ whether Human review remains required
+```
+
+Relationship Choice Groups are alternatives, not independent Agent votes.
+The presentation layer shall not translate Candidate alternatives into Persona
+consensus or invent agreement evidence.
+
+Phase-I readiness shall be projected only from the existing Model Proposal /
+Phase-I gate state. The UI shall not infer that a Candidate Set is ready merely
+because all currently visible controls appear resolved.
+
+The following distinction is normative:
+
+```text
+Focused Model Proposal
+→ architecture / proposed model content
+→ alternatives and material deviations
+→ Human decisions
+→ review progress
+→ Phase-I readiness
+→ next action
+
+Technical View
+→ Candidate Set identity / fingerprint
+→ Candidate identities
+→ Approved Input references
+→ structure-profile conformance
+→ comparison anchors / deviation identities
+→ decision identities and exact traceability
+```
+
+Model Proposal presentation adapters are read-side components only. They shall
+not own Candidate authority, Approved Input authority, Candidate Review authority
+or Internal Engineering Model assembly authority.
+
+Existing services remain normative, including:
+
+```text
+ModelProposalReadService
+ModelCandidateReviewRepository
+ModelCandidateReadService / Phase-I gate
+```
+
+Every Candidate Review write remains bound to the explicit immutable Candidate
+Set and Candidate identity currently shown. After a write, the visible proposal
+shall be reconstructed from persisted authoritative state.
+
+No graph or diagram rendering technology is made normative by this decision.
+WP-11 may use the existing structural overview to improve architecture
+readability without introducing a second model representation or model authority.
+
+---
+
 ## Formative usability evaluation
 
 The UX redesign follows a formative evaluation of the functionally complete

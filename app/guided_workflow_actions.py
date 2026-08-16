@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import nullcontext
+from types import SimpleNamespace
 from typing import Any
 
 from app.turing_generator_navigation import (
@@ -36,25 +38,60 @@ def render_model_proposal_actions(
     proposal,
     write_service,
     technical: bool,
+    presentation=None,
 ) -> None:
-    """Render explicit Candidate Review writes against one exact Candidate Set."""
+    """Render decision-first Candidate Review against one exact Candidate Set."""
 
-    actionable = []
+    element_by_id = {
+        item.candidate_id: ("element_candidate", item)
+        for item in proposal.proposed_elements
+    }
+    relationship_by_id = {
+        item.candidate_id: ("relationship_candidate", item)
+        for item in proposal.proposed_relationships
+    }
+    candidate_by_id = {
+        **element_by_id,
+        **relationship_by_id,
+    }
 
-    for item in proposal.proposed_elements:
-        if item.review_state.status in _ACTIONABLE_CANDIDATE_STATES:
-            actionable.append(("element_candidate", item))
+    actionable = {
+        candidate_id: (target_type, item)
+        for candidate_id, (target_type, item) in candidate_by_id.items()
+        if item.review_state.status in _ACTIONABLE_CANDIDATE_STATES
+    }
 
-    for item in proposal.proposed_relationships:
-        if item.review_state.status in _ACTIONABLE_CANDIDATE_STATES:
-            actionable.append(("relationship_candidate", item))
+    if presentation is not None:
+        decisions = tuple(presentation.required_decisions)
+        readiness = presentation.readiness
+    else:
+        decisions = tuple(
+            SimpleNamespace(
+                decision_key=f"{target_type}:{candidate_id}",
+                target_type=target_type,
+                target_ids=(candidate_id,),
+                title=_candidate_title(target_type, item),
+                reason="Candidate requires Human review.",
+                recommended_action="Review this Candidate.",
+            )
+            for candidate_id, (target_type, item) in actionable.items()
+        )
+        readiness = None
 
-    if not actionable:
+    if not decisions:
+        if readiness is not None and readiness.can_assemble:
+            st.success(
+                "Candidate review complete. The exact Candidate Set is ready "
+                "for engineering-model assembly."
+            )
+        elif not actionable:
+            st.success("No open Candidate Review decisions remain.")
         return
 
-    st.subheader("Candidate review")
+    st.subheader("Needs your decision")
     st.caption(
-        "Decisions are recorded against the exact Candidate Set shown above."
+        "Decisions are recorded against the exact Candidate Set shown above. "
+        "The visible state is reconstructed after every write."
     )
 
     reviewer = st.text_input(
@@ -63,119 +100,209 @@ def render_model_proposal_actions(
         placeholder="Reviewer name",
     )
 
-    for target_type, item in actionable:
-        candidate_id = item.candidate_id
-        conformance = item.conformance_status
-        accept_decision = (
-            "accepted"
-            if conformance == "conformant"
-            else "accepted_exception"
-        )
-        accept_label = (
-            "Accept"
-            if accept_decision == "accepted"
-            else "Accept as exception"
+    for decision in decisions:
+        targets = _decision_targets(
+            decision,
+            actionable=actionable,
+            candidate_by_id=candidate_by_id,
         )
 
         with st.container(border=True):
-            st.markdown(f"**{_candidate_title(target_type, item)}**")
-            st.caption(
-                f"{_humanize(target_type)} · "
-                f"{_humanize(item.review_state.status)}"
-            )
+            st.markdown(f"**{decision.title}**")
+            st.caption(decision.reason)
+            st.caption(decision.recommended_action)
+
+            if decision.target_type == "relationship_choice_group":
+                st.caption(
+                    "Resolve the alternatives explicitly. Exactly one "
+                    "relationship must ultimately be accepted."
+                )
 
             if technical:
                 st.caption(
-                    f"Candidate: {candidate_id} · "
-                    f"Conformance: {conformance}"
+                    "Exact targets: " + ", ".join(decision.target_ids)
                 )
 
-            rationale = st.text_area(
-                "Rationale",
-                key=f"guided_candidate.rationale.{candidate_id}",
-                placeholder=(
-                    "Required for Reject, Defer, or acceptance as exception."
-                ),
-            )
-
-            columns = st.columns(3)
-
-            selected_decision = None
-
-            if columns[0].button(
-                accept_label,
-                key=f"guided_candidate.accept.{candidate_id}",
-            ):
-                selected_decision = accept_decision
-
-            if columns[1].button(
-                "Reject",
-                key=f"guided_candidate.reject.{candidate_id}",
-            ):
-                selected_decision = "rejected"
-
-            if columns[2].button(
-                "Defer",
-                key=f"guided_candidate.defer.{candidate_id}",
-            ):
-                selected_decision = "deferred"
-
-            if selected_decision is None:
+            if not targets:
+                st.caption(
+                    "This decision has no currently actionable Candidate. "
+                    "Refresh the authoritative proposal state."
+                )
                 continue
 
-            reviewer_value = reviewer.strip()
-            rationale_value = rationale.strip()
+            columns = (
+                st.columns(min(3, len(targets)))
+                if len(targets) > 1
+                else (None,)
+            )
 
-            if not reviewer_value:
-                st.error("Enter the reviewer identity before recording a decision.")
-                return
-
-            if (
-                selected_decision
-                in {
-                    "rejected",
-                    "deferred",
-                    "accepted_exception",
-                }
-                and not rationale_value
-            ):
-                st.error(
-                    "Provide a rationale for Reject, Defer, or acceptance "
-                    "as exception."
+            for index, (target_type, item) in enumerate(targets):
+                context = (
+                    nullcontext()
+                    if columns[index % len(columns)] is None
+                    else columns[index % len(columns)]
                 )
-                return
+                with context:
+                    if _render_candidate_action_card(
+                        st,
+                        project_id=project_id,
+                        proposal=proposal,
+                        target_type=target_type,
+                        item=item,
+                        reviewer=reviewer,
+                        write_service=write_service,
+                        technical=technical,
+                    ):
+                        return
 
-            try:
-                decision = write_service.record_candidate_review_decision(
-                    project_id,
-                    proposal.candidate_set_id,
-                    target_type=target_type,
-                    candidate_id=candidate_id,
-                    decision=selected_decision,
-                    reviewer_identity=reviewer_value,
-                    rationale=(
-                        rationale_value
-                        if rationale_value
-                        else None
-                    ),
-                )
-            except GuidedWorkflowWriteError:
-                st.error(
-                    "The Candidate Review decision could not be recorded "
-                    "safely. No UI state was treated as authority."
-                )
-                return
 
-            st.success("Candidate Review decision recorded.")
+def _decision_targets(
+    decision,
+    *,
+    actionable,
+    candidate_by_id,
+):
+    targets = []
+    for candidate_id in decision.target_ids:
+        if candidate_id not in candidate_by_id:
+            target_type = getattr(decision, "target_type", "unknown")
+            raise GuidedWorkflowWriteError(
+                "Candidate Review presentation references an unavailable "
+                f"{target_type} target."
+            )
+        if candidate_id in actionable:
+            targets.append(actionable[candidate_id])
+    return tuple(targets)
 
-            if technical:
-                st.caption(
-                    "Decision: "
-                    f"{decision.model_candidate_review_decision_id}"
-                )
 
-            _rerun(st)
-            return
+def _render_candidate_action_card(
+    st: Any,
+    *,
+    project_id: str,
+    proposal,
+    target_type: str,
+    item,
+    reviewer: str,
+    write_service,
+    technical: bool,
+) -> bool:
+    candidate_id = item.candidate_id
+    conformance = item.conformance_status
+    accept_decision = (
+        "accepted"
+        if conformance == "conformant"
+        else "accepted_exception"
+    )
+    accept_label = (
+        "Accept"
+        if accept_decision == "accepted"
+        else "Accept as exception"
+    )
+
+    st.markdown(f"**{_candidate_title(target_type, item)}**")
+    st.caption(
+        f"{_humanize(target_type)} · "
+        f"{_humanize(item.review_state.status)}"
+    )
+
+    if target_type == "relationship_candidate":
+        priority = getattr(item, "priority_class", None)
+        if isinstance(priority, str) and priority:
+            st.caption(f"Priority: {_humanize(priority)}")
+
+    if technical:
+        st.caption(
+            f"Candidate: {candidate_id} · "
+            f"Conformance: {conformance}"
+        )
+
+    rationale = st.text_area(
+        "Rationale",
+        key=f"guided_candidate.rationale.{candidate_id}",
+        placeholder=(
+            "Required for Reject, Defer, or acceptance as exception."
+        ),
+    )
+
+    columns = st.columns(3)
+    selected_decision = None
+
+    if columns[0].button(
+        accept_label,
+        key=f"guided_candidate.accept.{candidate_id}",
+    ):
+        selected_decision = accept_decision
+
+    if columns[1].button(
+        "Reject",
+        key=f"guided_candidate.reject.{candidate_id}",
+    ):
+        selected_decision = "rejected"
+
+    if columns[2].button(
+        "Defer",
+        key=f"guided_candidate.defer.{candidate_id}",
+    ):
+        selected_decision = "deferred"
+
+    if selected_decision is None:
+        return False
+
+    reviewer_value = reviewer.strip()
+    rationale_value = rationale.strip()
+
+    if not reviewer_value:
+        st.error(
+            "Enter the reviewer identity before recording a decision."
+        )
+        return True
+
+    if (
+        selected_decision
+        in {
+            "rejected",
+            "deferred",
+            "accepted_exception",
+        }
+        and not rationale_value
+    ):
+        st.error(
+            "Provide a rationale for Reject, Defer, or acceptance "
+            "as exception."
+        )
+        return True
+
+    try:
+        decision = write_service.record_candidate_review_decision(
+            project_id,
+            proposal.candidate_set_id,
+            target_type=target_type,
+            candidate_id=candidate_id,
+            decision=selected_decision,
+            reviewer_identity=reviewer_value,
+            rationale=(
+                rationale_value
+                if rationale_value
+                else None
+            ),
+        )
+    except GuidedWorkflowWriteError:
+        st.error(
+            "The Candidate Review decision could not be recorded "
+            "safely. No UI state was treated as authority."
+        )
+        return True
+
+    st.success("Candidate Review decision recorded.")
+
+    if technical:
+        st.caption(
+            "Decision: "
+            f"{decision.model_candidate_review_decision_id}"
+        )
+
+    _rerun(st)
+    return True
 
 
 def render_final_review_actions(

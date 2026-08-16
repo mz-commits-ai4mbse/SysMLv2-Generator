@@ -121,38 +121,65 @@ class FakeStreamlit:
 
 
 def proposal_view():
+    element = SimpleNamespace(
+        candidate_id="MCE-000001",
+        proposed_name="System",
+        model_area="system_logical",
+        element_type="part_definition",
+        support_level="supported",
+        conformance_status="conformant",
+        review_state=SimpleNamespace(
+            status="pending"
+        ),
+        approved_input_ids=("AIN-000001",),
+        assumptions=(),
+        missing_information=(),
+        rationale="Derived from Approved Input.",
+    )
+    relationship = SimpleNamespace(
+        candidate_id="MCR-000001",
+        relationship_choice_key=None,
+        source_subject_key="system",
+        semantic_intent="contains",
+        target_subject_key="component",
+        source_resolution_status="resolved",
+        target_resolution_status="resolved",
+        relationship_family="dependency",
+        directionality="directed",
+        priority_class="preferred",
+        comparability_impact="improves",
+        conformance_status="conformant",
+        review_state=SimpleNamespace(
+            status="pending"
+        ),
+        approved_input_ids=("AIN-000002",),
+        assumptions=(),
+        missing_information=(),
+        rationale="Derived relationship.",
+    )
     return SimpleNamespace(
         candidate_set_id="MCS-000001",
         candidate_set_content_fingerprint="a" * 64,
         summary="3 proposed engineering objects.",
-        proposed_elements=(
-            SimpleNamespace(
-                candidate_id="MCE-000001",
-                proposed_name="System",
-                model_area="system_logical",
-                element_type="part_definition",
-                support_level="supported",
-                conformance_status="conformant",
-                review_state=SimpleNamespace(
-                    status="pending"
+        proposed_elements=(element,),
+        proposed_relationships=(relationship,),
+        structural_overview=SimpleNamespace(
+            nodes=(
+                SimpleNamespace(
+                    candidate_id="MCE-000001",
                 ),
             ),
-        ),
-        proposed_relationships=(
-            SimpleNamespace(
-                candidate_id="MCR-000001",
-                source_subject_key="system",
-                semantic_intent="contains",
-                target_subject_key="component",
-                priority_class="preferred",
-                conformance_status="conformant",
-                review_state=SimpleNamespace(
-                    status="pending"
+            edges=(
+                SimpleNamespace(
+                    candidate_id="MCR-000001",
                 ),
             ),
+            model_areas=("system_logical",),
         ),
+        relationship_choice_groups=(),
         required_human_decisions=(
             SimpleNamespace(
+                decision_key="element:MCE-000001",
                 target_type="element_candidate",
                 target_ids=("MCE-000001",),
                 reason="Candidate requires Human review.",
@@ -165,6 +192,8 @@ def proposal_view():
             neutral_count=0,
             reduces_count=0,
             unknown_count=0,
+            comparison_anchor_ids=("ANCHOR-001",),
+            deviation_ids=(),
         ),
         profile_deviations=(),
         next_action="Review the remaining candidate.",
@@ -319,14 +348,104 @@ def test_model_proposal_focused_view_prioritizes_engineering_content():
     )
 
     assert ("header", "Model Proposal") in st.calls
+    assert (
+        "subheader",
+        "Architecture proposal",
+    ) in st.calls
     assert any(
-        call[0] == "table"
-        and call[1][0]["Name"] == "System"
+        call[0] == "markdown"
+        and call[1] == "**System**"
+        for call in st.calls
+    )
+    assert any(
+        call[0] == "markdown"
+        and "system → Contains → component" in call[1]
+        for call in st.calls
+    )
+    assert any(
+        call[0] == "warning"
+        and "Human Candidate review required" in call[1]
         for call in st.calls
     )
     assert not any(
         call[0] == "caption"
         and "MCS-000001" in str(call[1])
+        for call in st.calls
+    )
+
+
+def test_model_proposal_focused_view_surfaces_relationship_alternatives():
+    proposal = proposal_view()
+    second = SimpleNamespace(
+        candidate_id="MCR-000002",
+        relationship_choice_key="control-choice",
+        source_subject_key="consumer",
+        semantic_intent="controls",
+        target_subject_key="device",
+        source_resolution_status="resolved",
+        target_resolution_status="resolved",
+        relationship_family="control",
+        directionality="directed",
+        priority_class="alternative",
+        comparability_impact="neutral",
+        conformance_status="conformant",
+        review_state=SimpleNamespace(status="pending"),
+        approved_input_ids=("AIN-000003",),
+        assumptions=(),
+        missing_information=(),
+        rationale="Alternative relationship.",
+    )
+    first = proposal.proposed_relationships[0]
+    first.relationship_choice_key = "control-choice"
+    proposal.proposed_relationships = (first, second)
+    proposal.structural_overview = SimpleNamespace(
+        nodes=proposal.structural_overview.nodes,
+        edges=(
+            SimpleNamespace(candidate_id="MCR-000001"),
+            SimpleNamespace(candidate_id="MCR-000002"),
+        ),
+        model_areas=("system_logical",),
+    )
+    proposal.relationship_choice_groups = (
+        SimpleNamespace(
+            relationship_choice_key="control-choice",
+            candidate_ids=("MCR-000001", "MCR-000002"),
+            preferred_candidate_ids=("MCR-000001",),
+            accepted_candidate_ids=(),
+            review_required=True,
+        ),
+    )
+    proposal.required_human_decisions = (
+        SimpleNamespace(
+            decision_key="relationship_choice:control-choice",
+            target_type="relationship_choice_group",
+            target_ids=("MCR-000001", "MCR-000002"),
+            reason="Choose one relationship.",
+            recommended_action="Select the intended relationship.",
+        ),
+    )
+
+    st = FakeStreamlit()
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+
+    render_model_proposal_ui(
+        ".",
+        streamlit_module=st,
+        detail_service=Service(proposal=proposal),
+    )
+
+    assert (
+        "subheader",
+        "Relationship alternatives",
+    ) in st.calls
+    assert any(
+        call[0] == "warning"
+        and "2 relationship alternatives" in call[1]
+        for call in st.calls
+    )
+    assert any(
+        call[0] == "markdown"
+        and call[1].startswith("**Preferred:")
         for call in st.calls
     )
 

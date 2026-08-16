@@ -29,42 +29,46 @@ Current Branch
 
 Verified Implementation Reference
 
-`commit containing this SSOT update` — WP-10 Ingestion + Human Review UX Simplification completion
+`commit containing this SSOT update` — WP-11 Architecture / Model Proposal UX completion
 
 Last Prior Committed Checkpoint
 
-`23fab6ab597a922b3c2c18d0088fa6c270e2629e` — WP-09 Guided Workflow UI completion
+`63b911dbf5da9b4a2be7013553fd8d47f4e30db4` — WP-10 final formatting checkpoint
 
 Architecture Version
 
-1.12
+1.13
 
 Knowledge Base Version
 
-1.19
+1.20
 
 Implementation Version
 
-0.21
+0.22
 
 Current Roadmap Version
 
-1.19
+1.20
 
 Current Development Phase
 
-WP-11 — Architecture / Model Proposal UX
+WP-12 — End-to-End Demo Hardening
 
 Current Status
 
-WP-10 Ingestion + Human Review UX Simplification is completed and verified.
-Processing and Human Review now use deterministic engineering-content-first
-Focused projections with complete Technical traceability underneath. WP-11 is
-active and refines Architecture / Model Proposal interaction.
+WP-11 Architecture / Model Proposal UX is completed and verified. The Model
+Proposal now exposes architecture, alternatives, Human Candidate decisions and
+Phase-I readiness through an authority-preserving Focused / Technical projection.
+WP-12 End-to-End Demo Hardening is active.
 
 Verified Automated Test Baseline
 
-5563 passed, 1 skipped in 13.91s in the complete repository regression after WP-10.
+5577 passed, 1 skipped in 14.19s in the complete repository regression after WP-11.
+
+WP-11 Focused Regression
+
+40 passed in 0.52s.
 
 WP-09 Focused Regression
 
@@ -127,10 +131,10 @@ Last SSOT Update
 
 # Current Objective
 
-Complete the remaining demo-critical UX work packages without weakening the
-already closed engineering authority chain. WP-10 is complete. WP-11 now hardens
-Architecture / Model Proposal interaction, and WP-12 executes end-to-end demo
-hardening for the product demo on 2026-08-18.
+Execute WP-12 End-to-End Demo Hardening without weakening the already closed
+engineering authority chain. WP-11 is complete. WP-12 now prepares one connected
+demo Project, exercises the complete Source→OUT workflow and records a formative
+task-based self-evaluation before the product demo on 2026-08-18.
 
 The accepted executable path remains:
 
@@ -153,8 +157,8 @@ The implementation sequence is now:
 ```text
 WP-09 — Guided Workflow UI                     COMPLETE
 → WP-10 Ingestion + Human Review UX Simplification COMPLETE
-→ WP-11 Architecture / Model Proposal UX          ACTIVE
-→ WP-12 End-to-End Demo Hardening
+→ WP-11 Architecture / Model Proposal UX          COMPLETE
+→ WP-12 End-to-End Demo Hardening                  ACTIVE
 → WP-13 Functional Freeze + Rehearsal
 → product demo
 ```
@@ -169,9 +173,9 @@ architecture and evidence.
 
 Priority 1
 
-Complete WP-11 Architecture / Model Proposal UX on top of the accepted Guided
-Engineering Workflow and unchanged Candidate / Approved Input / IEM authority
-boundaries.
+Execute WP-12 End-to-End Demo Hardening with one representative Project and a
+formative task-based self-evaluation while preserving all Source, Human Review,
+Candidate, IEM, validation, release and publication authority boundaries.
 
 Phase L shall accept only an explicit `GeneratedSysMLArtifactSet` together with
 the exact `SysMLValidationResult` covering that artifact fingerprint.
@@ -415,6 +419,74 @@ Automated presentation tests cover Persona grouping and side-by-side behavior.
 
 No Processing, Human Review, Approved Input or CATIA authority was moved into UI
 session state during WP-10.
+
+---
+
+# WP-11 — Architecture / Model Proposal UX
+
+WP-11 is completed and verified.
+
+Architecture:
+
+`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
+
+WP-11 extends ADR-024 with UX-17 while preserving the existing Candidate,
+Approved Input and Internal Engineering Model authority boundaries.
+
+Completed work:
+
+```text
+WP-11.1  Model Proposal presentation foundation
+WP-11.2  architecture-first Model Proposal workspace
+WP-11.3  decision-first Candidate Review interaction
+WP-11.4  automated acceptance and closeout
+```
+
+Implemented capabilities include:
+
+- deterministic immutable `GuidedModelProposalPresentation`
+- architecture-first projection of Model Elements and Relationships
+- engineer-readable grouping by model area
+- Relationship Choice Groups presented as alternatives rather than votes
+- persisted preferred / accepted relationship alternatives retained
+- material profile / comparability deviations surfaced explicitly
+- Human Candidate decisions colocated with the affected engineering content
+- exact Candidate Set and Candidate identities retained for every write
+- `Accept`, `Reject`, `Defer` and `Accept as exception` unchanged as normative
+  Candidate Review decisions
+- repeated UI presentation does not create Candidate, Review or Model authority
+- Phase-I readiness projected only from the existing authoritative gate
+- ready Candidate Sets show no unnecessary Candidate write controls
+- Focused View prioritizes architecture, decisions, readiness and next action
+- Technical View retains Candidate identities, fingerprints, Approved Input
+  references, conformance, comparability and traceability
+
+Verification:
+
+```text
+WP-11 focused regression:
+40 passed in 0.52s
+
+Complete repository regression:
+5577 passed, 1 skipped in 14.19s
+
+git diff --check:
+PASS
+```
+
+A populated live Model Proposal acceptance case was not executed during WP-11
+because no representative Model Candidate data exists yet in the local demo
+Project. This is intentionally deferred to WP-12, where the full end-to-end demo
+Project will exercise Model Proposal, Candidate Review and downstream model
+generation as one connected workflow.
+
+WP-12 will use that run as a formative task-based self-evaluation of the
+demonstrator. Observations may drive bounded UX fixes, but the evaluation is
+qualitative design evidence rather than an independent quantitative usability
+study.
+
+No Candidate, Approved Input, Internal Engineering Model or CATIA authority was
+transferred to the UI during WP-11.
 
 ---
 

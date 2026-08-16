@@ -18,6 +18,7 @@ from modules.guided_workflow import (
     GuidedWorkflowDetailReadService,
     GuidedWorkflowValidationError,
     GuidedWorkflowWriteService,
+    build_model_proposal_presentation,
 )
 
 
@@ -47,8 +48,8 @@ def render_model_proposal_ui(
 
     st.header("Model Proposal")
     st.caption(
-        "Review the proposed engineering model structure before "
-        "authoritative engineering-model assembly."
+        "Review the proposed architecture, resolve material alternatives "
+        "and prepare the exact Candidate Set for engineering-model assembly."
     )
 
     if navigation.project_id is None:
@@ -97,101 +98,54 @@ def render_model_proposal_ui(
         st.error("The selected Model Proposal could not be resolved.")
         return
 
-    st.subheader("Proposal overview")
-    st.write(proposal.summary)
+    try:
+        presentation = build_model_proposal_presentation(proposal)
+    except GuidedWorkflowValidationError:
+        st.error(
+            "The Model Proposal presentation cannot be reconstructed safely "
+            "from the exact Candidate Set."
+        )
+        return
 
+    st.write(presentation.summary)
+
+    readiness = presentation.readiness
     columns = st.columns(4)
     columns[0].metric(
-        "Elements",
-        len(proposal.proposed_elements),
+        "Candidates reviewed",
+        f"{readiness.reviewed_candidates} / {readiness.total_candidates}",
     )
     columns[1].metric(
-        "Relationships",
-        len(proposal.proposed_relationships),
+        "Accepted",
+        readiness.accepted_candidates,
     )
     columns[2].metric(
-        "Human decisions",
-        len(proposal.required_human_decisions),
+        "Decisions required",
+        readiness.decisions_required,
     )
     columns[3].metric(
         "Blocking issues",
-        len(proposal.blocking_issues),
+        readiness.blocking_issues,
     )
 
-    if proposal.blocking_issues:
-        st.error(
-            f"{len(proposal.blocking_issues)} blocking issue"
-            + ("" if len(proposal.blocking_issues) == 1 else "s")
-            + " prevent progression."
-        )
+    _render_model_readiness(st, readiness)
 
-    if proposal.required_human_decisions:
-        st.warning(
-            f"{len(proposal.required_human_decisions)} Human decision"
-            + (
-                ""
-                if len(proposal.required_human_decisions) == 1
-                else "s"
+    st.subheader("Architecture proposal")
+    _render_architecture_proposal(
+        st,
+        presentation,
+        technical=technical,
+    )
+
+    if presentation.relationship_choices:
+        st.subheader("Relationship alternatives")
+        for choice in presentation.relationship_choices:
+            _render_relationship_choice(
+                st,
+                choice,
+                presentation.architecture_edges,
+                technical=technical,
             )
-            + " required."
-        )
-        for decision in proposal.required_human_decisions:
-            with st.container(border=True):
-                st.markdown(
-                    f"**{_humanize(decision.target_type)}**"
-                )
-                st.write(decision.reason)
-                st.caption(decision.recommended_action)
-
-                if technical:
-                    st.caption(
-                        "Targets: "
-                        + ", ".join(decision.target_ids)
-                    )
-
-    st.subheader("Proposed model elements")
-
-    if proposal.proposed_elements:
-        st.table(
-            [
-                {
-                    "Name": item.proposed_name,
-                    "Model area": _humanize(item.model_area),
-                    "Type": _humanize(item.element_type),
-                    "Support": _humanize(item.support_level),
-                    "Review": _humanize(
-                        item.review_state.status
-                    ),
-                }
-                for item in proposal.proposed_elements
-            ]
-        )
-    else:
-        st.info("No model elements are proposed.")
-
-    st.subheader("Proposed relationships")
-
-    if proposal.proposed_relationships:
-        st.table(
-            [
-                {
-                    "Source": item.source_subject_key,
-                    "Relationship": _humanize(
-                        item.semantic_intent
-                    ),
-                    "Target": item.target_subject_key,
-                    "Priority": _humanize(
-                        item.priority_class
-                    ),
-                    "Review": _humanize(
-                        item.review_state.status
-                    ),
-                }
-                for item in proposal.proposed_relationships
-            ]
-        )
-    else:
-        st.info("No model relationships are proposed.")
 
     render_model_proposal_actions(
         st,
@@ -199,44 +153,70 @@ def render_model_proposal_ui(
         proposal=proposal,
         write_service=writes,
         technical=technical,
+        presentation=presentation,
     )
 
-    st.subheader("Structural comparability")
-    comparison = proposal.comparability_summary
-    columns = st.columns(4)
-    columns[0].metric("Improves", comparison.improves_count)
-    columns[1].metric("Neutral", comparison.neutral_count)
-    columns[2].metric("Reduces", comparison.reduces_count)
-    columns[3].metric("Unknown", comparison.unknown_count)
+    if presentation.deviations:
+        st.subheader("Structural attention")
+        for deviation in presentation.deviations:
+            with st.container(border=True):
+                st.markdown(f"**{deviation.title}**")
+                st.caption(
+                    f"{_humanize(deviation.conformance_status)} · "
+                    f"{_humanize(deviation.review_status)}"
+                )
+                if deviation.rationale:
+                    st.write(deviation.rationale)
+                if technical:
+                    st.caption(f"Candidate: {deviation.candidate_id}")
+                    if deviation.finding_ids:
+                        st.caption(
+                            "Findings: "
+                            + ", ".join(deviation.finding_ids)
+                        )
+                    if deviation.deviation_ids:
+                        st.caption(
+                            "Deviations: "
+                            + ", ".join(deviation.deviation_ids)
+                        )
 
-    if proposal.profile_deviations:
-        st.warning(
-            f"{len(proposal.profile_deviations)} structural/profile "
-            "deviation"
-            + (
-                ""
-                if len(proposal.profile_deviations) == 1
-                else "s"
-            )
-            + " require attention."
-        )
+    st.subheader("Structural comparability")
+    comparison = presentation.comparability
+    if comparison.semantic == "positive":
+        st.success(comparison.label)
+    elif comparison.semantic == "attention":
+        st.warning(comparison.label)
+    else:
+        st.info(comparison.label)
+
+    if technical:
+        columns = st.columns(4)
+        columns[0].metric("Improves", comparison.improves_count)
+        columns[1].metric("Neutral", comparison.neutral_count)
+        columns[2].metric("Reduces", comparison.reduces_count)
+        columns[3].metric("Unknown", comparison.unknown_count)
 
     st.subheader("Next engineering step")
-    st.info(proposal.next_action)
+    st.info(presentation.next_action)
 
     if technical:
         with st.expander("Technical details"):
             st.caption(
-                f"Candidate Set: {proposal.candidate_set_id}"
+                f"Candidate Set: {presentation.candidate_set_id}"
             )
             st.caption(
                 "Candidate Set fingerprint: "
-                f"{proposal.candidate_set_content_fingerprint}"
+                f"{presentation.candidate_set_content_fingerprint}"
             )
             st.caption(
-                f"Assembly gate: {proposal.phase_i_gate_status}"
+                f"Assembly gate: {readiness.phase_i_gate_status}"
             )
-            st.write(proposal.generation_rationale_summary)
+            st.write(presentation.generation_rationale_summary)
+
+            _render_model_proposal_traceability(
+                st,
+                presentation,
+            )
 
             if proposal.blocking_issues:
                 st.markdown("**Blocking diagnostics**")
@@ -245,14 +225,187 @@ def render_model_proposal_ui(
                         f"{issue.code}: {issue.message}"
                     )
 
-            if proposal.profile_deviations:
-                st.markdown("**Profile deviations**")
-                for deviation in proposal.profile_deviations:
+
+def _render_model_readiness(st: Any, readiness) -> None:
+    if readiness.semantic == "positive":
+        st.success(readiness.status_label)
+    elif readiness.semantic == "blocking":
+        st.error(readiness.status_label)
+    else:
+        st.warning(readiness.status_label)
+
+
+def _render_architecture_proposal(
+    st: Any,
+    presentation,
+    *,
+    technical: bool,
+) -> None:
+    nodes_by_area = {}
+    for node in presentation.architecture_nodes:
+        nodes_by_area.setdefault(node.model_area, []).append(node)
+
+    if not nodes_by_area:
+        st.info("No model elements are proposed.")
+    else:
+        for model_area in sorted(nodes_by_area):
+            st.markdown(f"**{_humanize(model_area)}**")
+            for node in nodes_by_area[model_area]:
+                with st.container(border=True):
+                    st.markdown(f"**{node.name}**")
                     st.caption(
-                        f"{deviation.candidate_id} · "
-                        f"{deviation.conformance_status} · "
-                        f"{deviation.rationale}"
+                        f"{_humanize(node.element_type)} · "
+                        f"{_humanize(node.support_level)} · "
+                        f"Review: {_humanize(node.review_status)}"
                     )
+                    if node.missing_information:
+                        st.warning(
+                            "Missing information: "
+                            + "; ".join(node.missing_information)
+                        )
+                    if technical:
+                        st.caption(
+                            f"Candidate: {node.candidate_id} · "
+                            f"Conformance: {node.conformance_status}"
+                        )
+                        if node.approved_input_ids:
+                            st.caption(
+                                "Approved Input: "
+                                + ", ".join(node.approved_input_ids)
+                            )
+                        if node.rationale:
+                            st.caption(f"Rationale: {node.rationale}")
+
+    st.markdown("**Relationships**")
+    if not presentation.architecture_edges:
+        st.info("No model relationships are proposed.")
+        return
+
+    for edge in presentation.architecture_edges:
+        with st.container(border=True):
+            st.markdown(
+                f"**{edge.source} → "
+                f"{_humanize(edge.relationship)} → {edge.target}**"
+            )
+            st.caption(
+                f"{_humanize(edge.relationship_family)} · "
+                f"{_humanize(edge.priority_class)} · "
+                f"{_humanize(edge.resolution_status)} · "
+                f"Review: {_humanize(edge.review_status)}"
+            )
+            if edge.missing_information:
+                st.warning(
+                    "Missing information: "
+                    + "; ".join(edge.missing_information)
+                )
+            if technical:
+                st.caption(
+                    f"Candidate: {edge.candidate_id} · "
+                    f"Conformance: {edge.conformance_status} · "
+                    f"Comparability: {edge.comparability_impact}"
+                )
+                if edge.approved_input_ids:
+                    st.caption(
+                        "Approved Input: "
+                        + ", ".join(edge.approved_input_ids)
+                    )
+                if edge.rationale:
+                    st.caption(f"Rationale: {edge.rationale}")
+
+
+def _render_relationship_choice(
+    st: Any,
+    choice,
+    architecture_edges,
+    *,
+    technical: bool,
+) -> None:
+    edge_by_id = {
+        edge.candidate_id: edge
+        for edge in architecture_edges
+    }
+
+    with st.container(border=True):
+        if choice.review_required:
+            st.warning(choice.label)
+        elif choice.semantic == "positive":
+            st.success(choice.label)
+        else:
+            st.info(choice.label)
+
+        for candidate_id in choice.candidate_ids:
+            edge = edge_by_id[candidate_id]
+            markers = []
+            if candidate_id in choice.preferred_candidate_ids:
+                markers.append("Preferred")
+            if candidate_id in choice.accepted_candidate_ids:
+                markers.append("Accepted")
+            status = (
+                " · ".join(markers)
+                if markers
+                else "Alternative"
+            )
+            st.markdown(
+                f"**{status}: {edge.source} → "
+                f"{_humanize(edge.relationship)} → {edge.target}**"
+            )
+            st.caption(
+                f"Review: {_humanize(edge.review_status)} · "
+                f"Comparability: {_humanize(edge.comparability_impact)}"
+            )
+            if technical:
+                st.caption(f"Candidate: {candidate_id}")
+
+
+def _render_model_proposal_traceability(
+    st: Any,
+    presentation,
+) -> None:
+    st.markdown("**Candidate traceability**")
+
+    rows = []
+    for node in presentation.architecture_nodes:
+        rows.append(
+            {
+                "Candidate": node.candidate_id,
+                "Kind": "Element",
+                "Engineering content": node.name,
+                "Review": node.review_status,
+                "Approved Input": ", ".join(node.approved_input_ids),
+            }
+        )
+
+    for edge in presentation.architecture_edges:
+        rows.append(
+            {
+                "Candidate": edge.candidate_id,
+                "Kind": "Relationship",
+                "Engineering content": (
+                    f"{edge.source} → {edge.relationship} → {edge.target}"
+                ),
+                "Review": edge.review_status,
+                "Approved Input": ", ".join(edge.approved_input_ids),
+            }
+        )
+
+    if rows:
+        st.table(rows)
+
+    if presentation.comparability.comparison_anchor_ids:
+        st.caption(
+            "Comparison anchors: "
+            + ", ".join(
+                presentation.comparability.comparison_anchor_ids
+            )
+        )
+
+    if presentation.comparability.deviation_ids:
+        st.caption(
+            "Comparability deviations: "
+            + ", ".join(
+                presentation.comparability.deviation_ids
+            )
+        )
 
 
 def render_final_model_review_ui(
