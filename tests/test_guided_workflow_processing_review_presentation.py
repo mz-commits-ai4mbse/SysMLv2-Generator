@@ -387,4 +387,3 @@ def test_single_persona_does_not_claim_inter_persona_agreement():
         == "Single Persona result · agreement cannot be assessed"
     )
     assert view.decision_required is True
-
