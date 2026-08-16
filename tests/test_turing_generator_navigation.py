@@ -9,6 +9,7 @@ import pytest
 from modules.project_sources import DuplicateSourceContentError
 
 from app.turing_generator_navigation import (
+    APP_VIEW_WORKFLOW,
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
     SESSION_APP_VIEW,
@@ -50,6 +51,14 @@ class FakeStreamlit:
         self.selected_source_role = selected_source_role
         self.calls = []
         self.rerun_count = 0
+
+    def columns(self, spec):
+        count = spec if isinstance(spec, int) else len(spec)
+        return tuple(_Context() for _ in range(count))
+
+    def toggle(self, label, *, key, help=None):
+        self.calls.append(("toggle", label, key, help))
+        return bool(self.session_state.get(key, False))
 
     def radio(
         self,
@@ -110,8 +119,9 @@ class FakeStreamlit:
         *,
         options,
         index,
-        format_func,
+        format_func=None,
         key,
+        on_change=None,
     ):
         self.calls.append(
             (
@@ -122,6 +132,15 @@ class FakeStreamlit:
                 key,
             )
         )
+
+        if key == "turing_generator.global_project_selector":
+            selected = self.session_state.get(
+                key,
+                options[index],
+            )
+            self.session_state[key] = selected
+            return selected
+
         return self.selected_source_role
 
     def table(self, rows):
@@ -218,20 +237,26 @@ class FakeWorkspace:
             raise self.error
         return self.manifest
 
+    def scan_projects(self):
+        return SimpleNamespace(
+            valid_projects=(self.manifest,),
+            workspace_issues=(),
+        )
 
-def test_navigation_defaults_to_dashboard_without_project():
+
+def test_navigation_defaults_to_guided_workflow_without_project():
     state = read_navigation_state({})
 
     assert state == ApplicationNavigationState(
-        active_view=APP_VIEW_DASHBOARD,
+        active_view=APP_VIEW_WORKFLOW,
         project_id=None,
         return_view="overview",
         selected_entity_id=None,
     )
 
 
-def test_invalid_application_view_normalizes_to_dashboard():
-    assert normalize_app_view("unsupported") == APP_VIEW_DASHBOARD
+def test_invalid_application_view_normalizes_to_guided_workflow():
+    assert normalize_app_view("unsupported") == APP_VIEW_WORKFLOW
 
 
 def test_select_app_view_persists_only_stable_navigation_state():
@@ -270,25 +295,26 @@ def test_select_app_view_rejects_filesystem_like_entity_identity():
         )
 
 
-def test_common_shell_routes_dashboard_without_reimplementing_it(
+def test_common_shell_routes_guided_workflow_by_default(
     tmp_path,
 ):
     st = FakeStreamlit()
     workspace = FakeWorkspace()
-    dashboard_calls = []
+    workflow_calls = []
 
-    def dashboard_renderer(root, **kwargs):
-        dashboard_calls.append((root, kwargs))
+    def workflow_renderer(root, **kwargs):
+        workflow_calls.append((root, kwargs))
 
     render_turing_generator_ui(
         tmp_path,
         streamlit_module=st,
         project_workspace=workspace,
-        dashboard_renderer=dashboard_renderer,
+        workflow_renderer=workflow_renderer,
+        dashboard_renderer=lambda *args, **kwargs: None,
     )
 
-    assert len(dashboard_calls) == 1
-    root, kwargs = dashboard_calls[0]
+    assert len(workflow_calls) == 1
+    root, kwargs = workflow_calls[0]
     assert root == tmp_path
     assert kwargs["streamlit_module"] is st
     assert kwargs["project_workspace"] is workspace

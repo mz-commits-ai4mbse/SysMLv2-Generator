@@ -7,11 +7,14 @@ import os
 from pathlib import Path
 from typing import Any
 
+from app.global_controls import render_global_controls
+from app.guided_workflow_ui import render_guided_workflow_ui
 from app.human_review_approval_ui import (
     render_human_review_approval_ui,
 )
 from app.project_dashboard_ui import render_project_dashboard_ui
 from app.turing_generator_navigation import (
+    APP_VIEW_WORKFLOW,
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
     APP_VIEW_REVIEW,
@@ -49,8 +52,9 @@ from modules.project_workspace import (
 
 
 _APP_VIEW_LABELS = {
+    APP_VIEW_WORKFLOW: "Engineering Workspace",
     APP_VIEW_DASHBOARD: "Project Dashboard",
-    APP_VIEW_INGESTION: "Agentic Ingestion",
+    APP_VIEW_INGESTION: "Processing",
     APP_VIEW_REVIEW: "Human Review & Approval",
 }
 
@@ -83,6 +87,7 @@ def render_turing_generator_ui(
     streamlit_module: Any | None = None,
     project_workspace: ProjectWorkspace | None = None,
     ingestion_service: ProjectBoundIngestionService | None = None,
+    workflow_renderer: Callable[..., None] | None = None,
     dashboard_renderer: Callable[..., None] | None = None,
     review_renderer: Callable[..., None] | None = None,
 ) -> None:
@@ -107,6 +112,11 @@ def render_turing_generator_ui(
         if ingestion_service is None
         else ingestion_service
     )
+    render_workflow = (
+        render_guided_workflow_ui
+        if workflow_renderer is None
+        else workflow_renderer
+    )
     render_dashboard = (
         render_project_dashboard_ui
         if dashboard_renderer is None
@@ -119,11 +129,25 @@ def render_turing_generator_ui(
     )
 
     apply_pending_app_view(st.session_state)
+
+    render_global_controls(
+        st,
+        workspace=workspace,
+    )
+
     navigation = read_navigation_state(st.session_state)
     active_view = render_application_navigation(
         st,
         current_view=navigation.active_view,
     )
+
+    if active_view == APP_VIEW_WORKFLOW:
+        render_workflow(
+            root,
+            streamlit_module=st,
+            project_workspace=workspace,
+        )
+        return
 
     if active_view == APP_VIEW_DASHBOARD:
         render_dashboard(
@@ -157,7 +181,7 @@ def render_application_navigation(
     """Render the stable top-level application navigation."""
 
     selected = st.radio(
-        "Turing Generator view",
+        "Workspace",
         options=APP_VIEWS,
         index=APP_VIEWS.index(current_view),
         format_func=lambda item: _APP_VIEW_LABELS[item],

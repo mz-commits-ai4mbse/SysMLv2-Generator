@@ -29,6 +29,9 @@ from modules.project_dashboard.types import (
     EvidenceReference,
     ProjectOverviewView,
 )
+from app.global_controls import (
+    SESSION_GLOBAL_CONTROLS_ACTIVE,
+)
 from app.turing_generator_navigation import (
     SESSION_DASHBOARD_VIEW,
     SESSION_PROJECT_ID,
@@ -155,7 +158,31 @@ def render_project_dashboard_ui(
         )
         return
 
-    selected_project_id = render_project_selector(st, selection)
+    if st.session_state.get(SESSION_GLOBAL_CONTROLS_ACTIVE) is True:
+        valid_project_ids = {
+            project.project_id
+            for project in selection.projects
+        }
+        selected_project_id = st.session_state.get(
+            SESSION_PROJECT_ID
+        )
+
+        if selected_project_id not in valid_project_ids:
+            st.info(
+                "Select a Project in the application header."
+            )
+            render_project_creation(
+                st,
+                workspace,
+                first_project=False,
+            )
+            return
+    else:
+        selected_project_id = render_project_selector(
+            st,
+            selection,
+        )
+
     render_project_creation(
         st,
         workspace,

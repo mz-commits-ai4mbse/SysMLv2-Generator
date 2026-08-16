@@ -10,10 +10,12 @@ from typing import Any
 from modules.project_workspace.identifiers import is_valid_project_id
 
 
+APP_VIEW_WORKFLOW = "workflow"
 APP_VIEW_DASHBOARD = "dashboard"
 APP_VIEW_INGESTION = "ingestion"
 APP_VIEW_REVIEW = "review"
 APP_VIEWS = (
+    APP_VIEW_WORKFLOW,
     APP_VIEW_DASHBOARD,
     APP_VIEW_INGESTION,
     APP_VIEW_REVIEW,
@@ -50,9 +52,9 @@ class ApplicationNavigationState:
 
 
 def normalize_app_view(value: object) -> str:
-    """Return one supported application view or the dashboard fallback."""
+    """Return one supported application view or the Guided Workflow fallback."""
 
-    return value if value in APP_VIEWS else APP_VIEW_DASHBOARD
+    return value if value in APP_VIEWS else APP_VIEW_WORKFLOW
 
 
 def normalize_dashboard_view(value: object) -> str:

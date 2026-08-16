@@ -389,6 +389,174 @@ The UI shall not reproduce their validation or authority rules.
 
 ---
 
+### UX-13 — Dual-layer presentation
+
+Existing functional views shall not be discarded merely because their current
+presentation is technically dense.
+
+Where useful, engineer-facing workflow surfaces shall support two presentation
+depths over the same authoritative state:
+
+```text
+Focused View
+→ engineering content
+→ Agent / Persona alternatives
+→ consensus and variance
+→ open Human decisions
+→ accepted / approved engineering results
+→ next engineering action
+
+Technical View
+→ processing identities
+→ run / attempt state
+→ artifact references
+→ fingerprints
+→ provenance
+→ traceability
+→ diagnostic and lifecycle information
+```
+
+The default presentation shall be the Focused View.
+
+The engineer may explicitly enable technical details when deeper analysis,
+diagnosis or auditability is required.
+
+Conceptually:
+
+```text
+same authoritative state
+          │
+          ├── Focused presentation
+          │     └── task-oriented engineering information
+          │
+          └── Technical presentation
+                └── deeper processing and traceability information
+```
+
+The presentation-depth setting is UI state only.
+
+It may be stored transiently in Streamlit session state because switching the
+presentation depth does not modify:
+
+- engineering content,
+- Agent evidence,
+- Human decisions,
+- Candidate authority,
+- validation state,
+- Final Model Review state,
+- publication eligibility,
+- or published output.
+
+The following distinction is normative:
+
+```text
+Focused ≠ reduced evidence
+Focused = reduced visible complexity
+
+Technical ≠ separate workflow
+Technical = deeper presentation of the same workflow
+```
+
+Views that already provide useful functionality, including Project Dashboard,
+Processing and Human Review, shall therefore be adapted progressively to this
+dual-layer interaction model rather than replaced unnecessarily.
+
+The Project Dashboard retains the distinct engineering purpose:
+
+```text
+Which engineering / model information is already available?
+```
+
+The Guided Engineering Workspace retains the distinct purpose:
+
+```text
+What requires my attention or decision now?
+```
+
+Individual LLM-backed processing steps may remain separate working surfaces when
+this improves clarity. They shall reuse the same content-first, variance-aware and
+Human-decision-centered interaction language.
+
+---
+
+### UX-14 — Global application context
+
+Project selection and presentation depth are application-level context.
+
+They shall therefore remain directly accessible independently of the currently
+selected working surface.
+
+The common application shell shall expose:
+
+```text
+Project
+→ explicit currently selected Project
+
+Technical details
+→ Focused / Technical presentation depth
+```
+
+Conceptually:
+
+```text
+APPLICATION CONTEXT
+Project: [ selected Project ]
+Technical details: [ on / off ]
+
+        ↓ shared by all views
+
+Engineering Workspace
+Project Dashboard
+Processing
+Human Review
+Model Proposal
+Final Model Review
+Published Output
+```
+
+The engineer shall not have to navigate to the Project Dashboard merely to change
+the current Project.
+
+Likewise, the engineer shall not have to return to the Engineering Workspace to
+change presentation depth.
+
+Project selection changes UI working context.
+
+It shall not modify persisted engineering state.
+
+Changing the selected Project shall clear stale entity-level UI navigation from
+the previously selected Project.
+
+No Project shall be silently selected merely because it is the newest or only
+recently used Project when no valid explicit selection exists.
+
+Project creation remains a Project Workspace management function but shall be
+directly accessible from the global application context.
+
+The Project selector and the Project creation action shall therefore be colocated
+in the common application shell:
+
+```text
+Project
+[ Selected Project ▼ ]
++ Create new project
+```
+
+Project creation is an explicit action and shall not be represented as a
+pseudo-Project inside the Project selection list.
+
+After successful creation, the newly created Project becomes the explicitly
+selected Project context.
+
+The Project Dashboard shall not duplicate the creation control when it is rendered
+inside the common application shell.
+
+The presentation-depth control shall use a persistent application-level toggle
+and shall affect all engineer-facing views progressively as WP-09 through WP-11
+adopt the dual-layer presentation architecture.
+
+---
+
 ## Formative usability evaluation
 
 The UX redesign follows a formative evaluation of the functionally complete
@@ -493,6 +661,8 @@ Positive:
 - Human decisions become immediately visible,
 - Agent variance becomes useful information instead of hidden processing detail,
 - redundant Agent results can be compared quickly,
+- existing functional views can be retained and progressively improved,
+- focused and technical work can use the same authoritative backend,
 - technical traceability remains fully available,
 - the same interaction language is reused across phases,
 - UX evolution is reproducibly documented for the thesis.
@@ -522,7 +692,9 @@ The following are explicitly prohibited:
 - bypassing Human Review,
 - bypassing Validation,
 - bypassing Final Human release approval,
-- removing traceability merely to simplify the visible UI.
+- removing traceability merely to simplify the visible UI,
+- maintaining separate engineering authority for Focused and Technical views,
+- changing engineering state merely by switching presentation depth.
 
 ---
 

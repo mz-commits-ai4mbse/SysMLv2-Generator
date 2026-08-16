@@ -37,6 +37,21 @@ class FakeStreamlit:
         self.calls = []
         self.rerun_count = 0
 
+    def columns(self, spec):
+        class Context:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+        count = spec if isinstance(spec, int) else len(spec)
+        return tuple(Context() for _ in range(count))
+
+    def toggle(self, label, *, key, help=None):
+        self.calls.append(("toggle", label, key, help))
+        return bool(self.session_state.get(key, False))
+
     def radio(
         self,
         label,
@@ -107,11 +122,18 @@ class FakeStreamlit:
         options,
         index,
         key,
+        format_func=None,
+        on_change=None,
     ):
         self.calls.append(
             ("selectbox", label, tuple(options), index, key)
         )
-        return options[index]
+        selected = self.session_state.get(
+            key,
+            options[index],
+        )
+        self.session_state[key] = selected
+        return selected
 
     def multiselect(
         self,
@@ -169,6 +191,17 @@ class FakeWorkspace:
         return SimpleNamespace(
             project_id=project_id,
             display_name="Example Project",
+        )
+
+    def scan_projects(self):
+        return SimpleNamespace(
+            valid_projects=(
+                SimpleNamespace(
+                    project_id="123456",
+                    display_name="Example Project",
+                ),
+            ),
+            workspace_issues=(),
         )
 
 
@@ -312,8 +345,9 @@ class FakeWorkflowService:
         )
 
 
-def test_review_is_third_stable_top_level_application_view():
+def test_review_remains_stable_top_level_application_view():
     assert APP_VIEWS == (
+        "workflow",
         APP_VIEW_DASHBOARD,
         "ingestion",
         APP_VIEW_REVIEW,
