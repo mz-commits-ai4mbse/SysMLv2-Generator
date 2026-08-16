@@ -1,5 +1,46 @@
 # Change Log
 
+## 2026-08-16 — WP-12 Stage-A Test Design Accepted and Prepared
+
+This is a preparation checkpoint, not WP-12 completion. Project versions remain
+unchanged:
+
+- Architecture Version: 1.13
+- Knowledge Base Version: 1.20
+- Implementation Version: 0.22
+- Roadmap Version: 1.20
+
+Prepared and explicitly accepted for formal execution:
+
+- four controlled synthetic legacy source documents
+- multi-document Expected Engineering Contract
+- detailed `WP12-E2E-DRY-001` test protocol with expected results and checkboxes
+- formative task-based self-evaluation log
+- controlled Stage-A dry-run → explicit release gate → Stage-B workflow
+
+The accepted validation strategy is:
+
+```text
+controlled synthetic multi-document dry run
+→ documented findings and bounded fixes
+→ full regression
+→ explicit Dry-Run Release Gate
+→ only then representative non-synthetic test data
+```
+
+The Stage-A specification is frozen by the preparation-baseline commit. During
+execution, deviations from the accepted protocol shall be documented rather than
+silently changing the expected result to match observed system behavior.
+
+Formal Stage-A execution is scheduled for 2026-08-17 together with the remaining
+demo-preparation work packages WP-13 and WP-14.
+
+Stage B is not authorized until the explicit Stage-A release gate passes. The
+known missing SYSIDE CLI remains fail-closed and may only be recorded as a
+documented external limitation; it shall not be bypassed.
+
+---
+
 ## 2026-08-16 — WP-11 Architecture / Model Proposal UX Completion
 
 Versions after this update:

@@ -57,10 +57,13 @@ WP-12 — End-to-End Demo Hardening
 
 Current Status
 
-WP-11 Architecture / Model Proposal UX is completed and verified. The Model
-Proposal now exposes architecture, alternatives, Human Candidate decisions and
-Phase-I readiness through an authority-preserving Focused / Technical projection.
-WP-12 End-to-End Demo Hardening is active.
+WP-11 Architecture / Model Proposal UX is completed and verified. WP-12
+End-to-End Demo Hardening is active. The controlled multi-document Stage-A dry-run
+test design, synthetic source fixtures, expected Engineering Contract, detailed
+test protocol, formative self-evaluation log and Stage-A→Stage-B release workflow
+are prepared and explicitly accepted for execution. Formal Stage-A execution is
+scheduled for 2026-08-17; Stage B remains unauthorized until the Dry-Run Release
+Gate is explicitly passed.
 
 Verified Automated Test Baseline
 
@@ -159,7 +162,10 @@ WP-09 — Guided Workflow UI                     COMPLETE
 → WP-10 Ingestion + Human Review UX Simplification COMPLETE
 → WP-11 Architecture / Model Proposal UX          COMPLETE
 → WP-12 End-to-End Demo Hardening                  ACTIVE
+   test specification / fixtures                   ACCEPTED + PREPARED
+   formal Stage-A dry run                          PENDING 2026-08-17
 → WP-13 Functional Freeze + Rehearsal
+→ WP-14 CATIA / SSOT Checkpoint
 → product demo
 ```
 

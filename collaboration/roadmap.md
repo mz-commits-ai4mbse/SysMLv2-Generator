@@ -47,9 +47,12 @@ Current Phase
 Current Status
 
 WP-11 Architecture / Model Proposal UX is completed and verified. WP-12
-End-to-End Demo Hardening is active. Live real-SYSIDE publication acceptance
-remains blocked because the verification workstation has no SYSIDE CLI; this
-remains fail-closed and does not weaken the implemented release path.
+End-to-End Demo Hardening is active. The multi-document synthetic Stage-A test
+specification and fixtures are prepared and accepted; formal execution is pending
+for 2026-08-17. Stage B with representative non-synthetic test data remains gated
+by an explicit successful Stage-A release decision. Live real-SYSIDE publication
+acceptance remains blocked because the verification workstation has no SYSIDE CLI;
+this remains fail-closed and does not weaken the implemented release path.
 
 Verified Implementation Reference
 
@@ -131,7 +134,10 @@ WP-09 Guided Workflow UI                     COMPLETE
 → WP-10 Ingestion + Human Review UX Simplification COMPLETE
 → WP-11 Architecture / Model Proposal UX          COMPLETE
 → WP-12 End-to-End Demo Hardening                  ACTIVE
+   Stage-A specification / fixtures                ACCEPTED + PREPARED
+   formal Stage-A execution                        PENDING
 → WP-13 Functional Freeze + Rehearsal
+→ WP-14 CATIA / SSOT Checkpoint
 → Product Demo 2026-08-18
 ```
 
@@ -142,8 +148,8 @@ Target dates:
 
 ```text
 2026-08-14  H–L closed vertical slice
-2026-08-16  WP-09→WP-12 UX and demo hardening work
-2026-08-17  Functional freeze / rehearsal / presentation preparation
+2026-08-16  WP-09→WP-11 complete; WP-12 Stage-A test prepared and accepted
+2026-08-17  WP-12 formal dry run + WP-13 rehearsal/freeze + WP-14 CATIA/SSOT
 2026-08-18  Product demo
 ```
 

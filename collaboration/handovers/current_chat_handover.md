@@ -58,10 +58,12 @@ WP-12 — End-to-End Demo Hardening
 
 Current Status
 
-WP-11 Architecture / Model Proposal UX is complete and verified. Architecture,
-Relationship alternatives, Candidate decisions and Phase-I readiness are now
-presented through the authority-preserving Guided Workflow. WP-12 End-to-End Demo
-Hardening is active.
+WP-11 Architecture / Model Proposal UX is complete and verified. WP-12 End-to-End
+Demo Hardening is active. WP-12.1 preparation is complete: four synthetic
+multi-document legacy fixtures, the Expected Engineering Contract, detailed
+Stage-A test protocol, formative self-evaluation log and Stage-A→Stage-B release
+workflow are prepared. The planned test design was explicitly accepted on
+2026-08-16. Formal execution has not started and is scheduled for 2026-08-17.
 
 The real SYSIDE-backed publication acceptance remains blocked because the
 verification workstation does not have the `syside` CLI installed. The gate
@@ -426,14 +428,58 @@ verification, not weaker authority, validation or traceability.
 
 # Immediate Starting Instruction for the Next Chat
 
-Begin WP-12 by defining the representative demo Source and the exact expected
-engineering story it should produce.
+Resume with WP-12 formal Stage-A execution. Do not redesign the accepted synthetic
+test fixtures or Expected Engineering Contract merely because an observed result
+differs from expectation.
 
-Then execute the Project from a clean Source registration through the connected
-workflow while recording formative observations. Distinguish genuine product /
-integration defects from expected Human decisions and from the known external
-SYSIDE CLI blocker.
+Before the first formal test action:
 
-Do not pre-seed authoritative downstream results merely to make the demo look
-complete unless the pre-seeding itself is an explicitly accepted demo-fixture
-mechanism that preserves traceability and authority semantics.
+1. record the accepted test-specification baseline commit SHA,
+2. record the System-under-Test commit SHA,
+3. verify the pre-test automated baseline,
+4. create a new isolated dry-run Project,
+5. start `WP12-E2E-DRY-001` at TC-A01.
+
+Execute the four synthetic documents as separate Sources and work through
+`collaboration/audits/wp12_multi_document_dry_run_test_protocol.md` in order.
+
+Record formative observations in:
+`collaboration/ux/wp12_formative_self_evaluation_log.md`.
+
+Classify encountered issues as:
+
+```text
+UX
+INTEGRATION
+ENGINEERING
+EXPECTED_HUMAN_DECISION
+EXTERNAL_BLOCKER
+DEFERRED
+```
+
+Do not silently alter expected results to match observed behavior. Any protocol
+deviation must be recorded together with its impact on result validity.
+
+Stage B with representative non-synthetic test data is forbidden until the
+Dry-Run Release Gate explicitly records either:
+
+```text
+PASS — RELEASED FOR REAL TEST DATA
+```
+
+or:
+
+```text
+PASS WITH DOCUMENTED EXTERNAL LIMITATION — RELEASED FOR REAL TEST DATA
+```
+
+After WP-12 Stage-A execution and disposition of demo-critical findings, continue
+on 2026-08-17 with:
+
+```text
+WP-13 — Functional Freeze + Rehearsal
+WP-14 — CATIA / SSOT Checkpoint
+```
+
+The missing SYSIDE CLI remains a documented external blocker only. No validation,
+release or publication bypass is permitted.
