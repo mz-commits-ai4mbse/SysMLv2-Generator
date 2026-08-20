@@ -1,7 +1,7 @@
 # Turing Generator — Presentation, WP-12 and Demo SSOT Checkpoint
 
-**Checkpoint date:** 2026-08-19  
-**Status:** AUTHORITATIVE EXECUTION CHECKPOINT until superseded  
+**Checkpoint date:** 2026-08-19
+**Status:** AUTHORITATIVE EXECUTION CHECKPOINT until superseded
 **Purpose:** Preserve the immediate work order, presentation plan, WP-12 evidence status, open findings/blockers, additional test plan, demo fallback strategy, and the deferred architectural recovery work.
 
 ---

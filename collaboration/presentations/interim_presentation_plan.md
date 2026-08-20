@@ -75,8 +75,8 @@ start real single-source LLM Processing live
 Do not present prepared/manual data as unmodified live LLM output.
 <!-- END SSOT UPDATE 2026-08-20 -->
 
-**Status:** Working note for presentation preparation  
-**Purpose:** Preserve the agreed presentation concept until the next SSOT update  
+**Status:** Working note for presentation preparation
+**Purpose:** Preserve the agreed presentation concept until the next SSOT update
 **Presentation timing:** Create the actual presentation only after implementation is completed
 
 ## 1. Presentation objective

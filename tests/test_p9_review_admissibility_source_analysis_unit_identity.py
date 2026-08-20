@@ -77,4 +77,3 @@ def test_p9_loader_helper_rejects_malformed_sau_identity() -> None:
         _source_analysis_unit_id_from_wrapper(
             {"source_analysis_unit_id": "SAU-7"}
         )
-

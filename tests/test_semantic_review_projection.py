@@ -948,4 +948,3 @@ def test_historical_run_has_no_semantic_filter_facts(
         proposals,
         repository_root=root,
     ) == ()
-

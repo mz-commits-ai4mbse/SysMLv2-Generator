@@ -217,4 +217,3 @@ def test_unresolved_relationship_endpoint_is_persisted_for_human_review(
     assert finding["endpoint_token"] == "missing element"
     assert finding["resolution_status"] == "unresolved"
     assert finding["candidate_proposal_refs"] == []
-
