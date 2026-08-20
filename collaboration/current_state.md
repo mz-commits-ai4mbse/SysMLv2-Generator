@@ -1,5 +1,92 @@
 # Current Project State
 
+<!-- BEGIN SSOT UPDATE 2026-08-20 -->
+## SSOT Delta — 2026-08-20: WP-12 Demo Readiness and Architecture Recovery
+
+This delta supersedes older WP-12 schedule/status statements below where they conflict with the current state.
+
+Current objective:
+
+```text
+WP-12 Demo Readiness
+→ BLK-003 source-grounding / semantic recovery
+→ one credible real single-source run
+→ downstream live workflow rehearsal
+→ Monday 2026-08-24 presentation/live demo
+```
+
+Formal status:
+
+```text
+WP12-E2E-DRY-001
+Project 308131
+IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION
+```
+
+Blockers:
+
+```text
+BLK-001 corrected / focused validation passed
+BLK-002 OPEN / BLOCKING cross-source identity collision
+BLK-003 OPEN / ACTIVE semantic/source-grounding recovery
+```
+
+Representative real run:
+
+```text
+Project 877791 / RUN-000001
+3 personas × 1 run
+93 element + 41 relationship proposals = 134 raw
+D3 = 109 subjects
+D4 = 109 subjects
+Human Review = 110 items
+```
+
+Technical D4→Review routing works; semantic quality is not accepted.
+
+Proposed architecture recovery:
+
+`collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md`
+
+Core:
+
+```text
+Engineering Source
+→ deterministic Source Projection
+→ source-grounded Evidence Detection
+→ personas interpret the SAME evidence
+→ consensus / variance
+→ optional terminology / ontology alignment
+→ Human Review
+→ Approved Engineering Information
+→ Architecture Derivation
+→ SysML v2
+```
+
+Review Item count is diagnostic, not an optimization objective. Personas and repeated runs must not multiply Engineering Subjects.
+
+P9/D3/D4 responsibilities shall be audited as:
+
+```text
+KEEP / MOVE / REDUCE / BYPASS / REMOVE
+```
+
+No new real LLM run is warranted until the active Source→Human-Review path has been audited and at least one material correction has been made.
+
+Monday demo strategy:
+
+- start the real single-source LLM Processing path live,
+- transparently switch to a genuinely previously processed persisted state if waiting time would interrupt the demo,
+- continue Human Review → Approved Input → Model → SysML live,
+- use single-source because BLK-002 remains open.
+
+The clarified high-level source-grounded lifecycle is intended for CATIA only after implementation alignment and ADR-027 acceptance.
+
+Canonical checkpoint:
+
+`collaboration/checkpoints/2026-08-20_wp12_demo_architecture_recovery_ssot.md`
+<!-- END SSOT UPDATE 2026-08-20 -->
+
 ## Purpose
 
 This document describes the current accepted project status, the committed

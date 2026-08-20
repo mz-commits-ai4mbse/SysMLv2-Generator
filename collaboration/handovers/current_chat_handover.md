@@ -2,131 +2,61 @@
 
 ## Purpose
 
-This document is the authoritative implementation starting point after WP-11
-Architecture / Model Proposal UX completion.
+Authoritative starting point for the next Turing Generator chat after the
+2026-08-20 WP-12 demo-readiness / architecture-recovery checkpoint.
 
-Use it together with the committed repository, Collaboration Knowledge Base and
-authoritative CATIA SysML v2 model.
-
----
-
-# Project
-
-Project
-
-Turing Generator
-
-Repository
-
-`mz-commits-ai4mbse/SysMLv2-Generator`
-
-Branch
-
-`main`
-
-Verified Implementation Reference
-
-`commit containing this SSOT update` — WP-11 Architecture / Model Proposal UX completion
-
-Last Prior Committed Checkpoint
-
-`63b911dbf5da9b4a2be7013553fd8d47f4e30db4` — WP-10 final formatting checkpoint
-
-Architecture Version
-
-1.13
-
-Knowledge Base Version
-
-1.20
-
-Implementation Version
-
-0.22
-
-Roadmap Version
-
-1.20
-
-Last SSOT Update
-
-2026-08-16
-
-Current Work Package
-
-WP-12 — End-to-End Demo Hardening
-
-Current Status
-
-WP-11 Architecture / Model Proposal UX is complete and verified. WP-12 End-to-End
-Demo Hardening is active. WP-12.1 preparation is complete: four synthetic
-multi-document legacy fixtures, the Expected Engineering Contract, detailed
-Stage-A test protocol, formative self-evaluation log and Stage-A→Stage-B release
-workflow are prepared. The planned test design was explicitly accepted on
-2026-08-16. Formal execution has not started and is scheduled for 2026-08-17.
-
-The real SYSIDE-backed publication acceptance remains blocked because the
-verification workstation does not have the `syside` CLI installed. The gate
-continues to fail closed.
-
-Verification baseline:
+Immediate deadline:
 
 ```text
-WP-11 focused regression:
-40 passed in 0.52s
-
-Complete repository:
-5577 passed, 1 skipped in 14.19s
-
-git diff --check:
-PASS
-
-SYSIDE CLI:
-unavailable
+Monday 2026-08-24 presentation + live demonstration
 ```
 
-The skipped test remains the deliberate live SYSIDE acceptance test.
+Repository:
 
-Functional Freeze
+```text
+mz-commits-ai4mbse/SysMLv2-Generator
+branch: main
+```
 
-2026-08-17
+Current Work Package:
 
-Product Demo
+```text
+WP-12 — End-to-End Demo Hardening
+```
 
-2026-08-18
+Primary application:
+
+```bash
+streamlit run app/turing_generator_app.py
+```
 
 ---
 
-# Source Authority
+# Authority and Working Rules
 
 Authority order:
 
-1. CATIA SysML v2 model for engineering knowledge
-2. committed repository for implementation reality
-3. Collaboration Knowledge Base for coordination and accepted decisions
-4. chat history and temporary generated artifacts
+1. CATIA SysML v2 model — accepted engineering knowledge
+2. committed repository — implementation reality
+3. Collaboration Knowledge Base / ADRs / checkpoints — decisions and coordination
+4. chat history / temporary artifacts
 
-Generated/published SysML is derived project output. It does not replace CATIA
-engineering authority.
+GitHub is passive for the assistant.
 
----
+Workflow:
 
-# Repository Collaboration Workflow
-
-GitHub remains passive for the AI assistant.
-
-Required workflow:
-
-1. inspect passively
-2. name exact repository-relative paths
-3. provide deterministic local edits
-4. Moritz applies changes locally
-5. run focused tests
-6. run complete regression at major package completion
-7. run `git diff --check`
-8. stage exact intended paths only
-9. Moritz commits and pushes
-10. verify `HEAD == origin/main`
+```text
+inspect
+→ reason
+→ user review/acceptance
+→ deterministic local patch
+→ focused tests
+→ regression where appropriate
+→ git diff --check
+→ exact staging only
+→ user commit/push
+→ verify HEAD == origin/main
+```
 
 Never use:
 
@@ -135,351 +65,518 @@ git add .
 git add -A
 ```
 
----
-
-# WP-09 — Completed Guided Workflow UI
-
-Architecture:
-
-`collaboration/decisions/ADR-024-guided-engineering-workflow-and-ux-projection-architecture.md`
-
-Normative presentation contract:
-
-```text
-authoritative persisted state
-        ↓
-GuidedWorkflowReadService / GuidedWorkflowDetailReadService
-        ↓
-Focused or Technical presentation
-        ↓
-explicit Human action
-        ↓
-GuidedWorkflowWriteService
-        ↓
-existing normative domain authority
-        ↓
-immutable persistence
-        ↓
-read-side reconstruction
-```
-
-Implemented workspaces:
-
-```text
-Engineering Workspace
-Project Dashboard
-Processing
-Human Review & Approval
-Model Proposal
-Final Model Review
-Published Output
-```
-
-Implemented Human write actions:
-
-```text
-Candidate Review
-→ accepted / rejected / deferred / accepted_exception
-
-Final Model Review
-→ immutable Change Proposal
-→ exact Human release approval
-
-Approved exact FRV
-→ exact persisted J/K snapshot reconstruction
-→ OutputWriter.publish(...)
-→ immutable OUT package
-```
-
-No UI session state is engineering authority. No write action uses an implicit
-latest Candidate Set, Final Review revision or Output package.
-
-Primary UI start command:
-
-```bash
-streamlit run app/turing_generator_app.py
-```
-
-The legacy `app/ui_app.py` two-tab ingestion skeleton is not the main
-application.
-
-Manual live smoke acceptance covered navigation and presentation. A fully
-populated end-to-end Project for exercising all write actions is deliberately
-deferred to WP-12 demo hardening.
+Do not stage or commit before explicit acceptance.
 
 ---
 
-# Completed Technical Vertical Slice
+# WP-12 Current State
 
-The accepted flow is now:
+Formal run:
 
 ```text
-Source
-→ Processing Run
+WP12-E2E-DRY-001
+Project 308131
+IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION
+```
+
+Do not describe it as failed, restarted or completed.
+
+Blockers:
+
+```text
+BLK-001 derivation producer contract
+→ corrected / focused validation passed
+
+BLK-002 cross-source Processing Artifact identity collision
+→ OPEN / BLOCKING
+→ Monday demo is single-source
+
+BLK-003 semantic effectiveness / engineering-subject quality
+→ OPEN / ACTIVE ARCHITECTURE RECOVERY
+```
+
+Representative real single-source run:
+
+```text
+Project 877791
+RUN-000001
+3 personas × 1 run
+real LLM
+
+93 element proposals
+41 relationship proposals
+134 raw
+
+D3: 70 elements + 39 relationships = 109
+D4: 70 elements + 39 relationships = 109
+Human Review: 110 items
+```
+
+Technical conclusion:
+
+```text
+D4 → Human Review works.
+```
+
+Engineering conclusion:
+
+```text
+source purity, model relevance and subject formation are not acceptable.
+```
+
+Review Item count is diagnostic only. Do not optimize it directly.
+
+---
+
+# Architecture Recovery — ADR-027
+
+New proposed ADR:
+
+```text
+collaboration/decisions/
+ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
+```
+
+Core target:
+
+```text
+REFERENCE KNOWLEDGE
+Apollo 11 / SysML v2 / Modeling Guidance
+        │ guidance only
+        ▼
+ENGINEERING SOURCE
+        ↓
+Deterministic Source Projection
+        ↓
+Find Source-Grounded Evidence
+"digital text marker"
+        ↓
+Anchored Evidence Units
+        ↓
+Persona Interpretation / Classification
+ P1            P2            P3
+        ↓
+Consensus / Variance
+        ↓
+Optional Semantic Normalization / Ontology Alignment
+        ↓
+Human Review
+        ↓
+Approved Engineering Information
+        ↓
+Architecture Derivation
+        ↓
+SysML v2
+```
+
+Hard rules:
+
+```text
+Reference Knowledge ≠ Engineering Evidence
+
+Detection and Interpretation are separate responsibilities.
+
+Personas interpret the SAME source-grounded evidence.
+
+Personas and repeated runs shall not multiply Engineering Subjects.
+
+Review Item count is a diagnostic, not an optimization objective.
+
+Ontology/terminology mapping is a supporting service and shall not invent
+positive Project engineering evidence.
+
+AI-generated interpretation ≠ Approved Engineering Information.
+
+Architecture Derivation follows Human Engineering Review / Approval.
+```
+
+P9/D3/D4 have no grandfathering protection.
+
+Audit every material responsibility as:
+
+```text
+KEEP
+MOVE
+REDUCE
+BYPASS
+REMOVE / RETIRE
+```
+
+Ask:
+
+```text
+"What responsibility does this component legitimately own?"
+```
+
+not:
+
+```text
+"How do we keep the old component compatible?"
+```
+
+---
+
+# ADR-011 Reuse
+
+Do not discard ADR-011.
+
+Still-useful foundations include:
+
+- deterministic Source Projection,
+- source anchors and exact excerpts,
+- source-traceable Information Units,
+- `engineering_source` vs `context_only`,
+- epistemic classification,
+- semantic extraction,
+- deterministic consensus/variance,
+- repeated runs as stability evidence rather than votes,
+- terminology/ontology boundary,
+- Human Review separation.
+
+Important existing behavior to inspect:
+
+```text
+modules/semantic_consensus/analyzer.py
+```
+
+It already groups candidate discussion by exact source evidence
+(anchors + source excerpt) and gives one effective vote per persona. This is
+conceptually close to "same text-marker passage, different professional
+interpretations".
+
+---
+
+# Gemini Diagnostic Benchmark
+
+Source:
+
+```text
+legacy/demo/wp12/01_product_overview.md
+```
+
+A simple external Gemini prompt, with strict source-only evidence instructions,
+returned eight major source-grounded findings covering:
+
+1. collaboration capability / operator / remote expert / live view,
+2. workstation and remote client context,
+3. remote-consultation purpose,
+4. live-image observation requirement,
+5. temporary remote control subject to operator permission,
+6. operator responsibility/controller transparency,
+7. session retention and unresolved retention detail,
+8. explicitly unspecified protocol/deployment/performance/latency/regulatory
+   content and open questions.
+
+Interpretation:
+
+```text
+The core LLM task is feasible.
+The current Turing pipeline likely overcomplicates or mis-bounds it.
+```
+
+Caution: Gemini already made some premature model-form suggestions such as
+State Machine/Guard. This output is a qualitative benchmark only, not a gold
+standard and not Project authority.
+
+---
+
+# Exact Next Technical Work
+
+Do NOT start another real LLM run yet.
+
+First perform a read-only Source→first-Human-Review architecture/code-path audit.
+
+Inspect at least:
+
+```text
+collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md
+collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md
+collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
+
+modules/semantic_extraction/
+modules/semantic_consensus/
+modules/information_units/
+modules/review_workspace/p9_proposal_adapter.py
+modules/review_workspace/p9_review_item_builder.py
+
+agents/roles/legacy_data_interpreter.md
+agents/roles/derivation_assessor.md
+agents/personas/legacy_interpretation/
+agents/personas/derivation_assessment/
+teams/ingestion/
+```
+
+Also trace the actual app/service/pipeline functions connecting:
+
+```text
+registered Source
+→ Source Projection
+→ LLM input
+→ persona outputs
+→ P4/P9/D3/D4
+→ Human Review materialization
+```
+
+For every material step report:
+
+```text
+component
+exact input
+exact output
+Engineering Source vs reference/context/instruction boundary
+source-anchor handling
+subject-identity creation
+persona responsibility
+new semantic/model content created?
+downstream dependency
+KEEP / MOVE / REDUCE / BYPASS / REMOVE recommendation
+```
+
+Then propose the minimum corrected target path.
+
+Do not implement until the audit is reviewed and accepted.
+
+---
+
+# Next Real LLM Run — Acceptance Criteria
+
+Only after a material path correction.
+
+Evaluate in this order:
+
+```text
+1 Source Purity
+2 Model Relevance
+3 Exact Source Grounding
+4 Persona behavior on shared evidence
+5 Useful Consensus / Variance
+6 Human Review usability
+7 Review Item count as diagnostic only
+```
+
+If credible, preserve that exact persisted Run immediately as the preferred
+Monday reference.
+
+Then test:
+
+```text
+awaiting_review
 → Human Review
 → Approved Input
-→ Model Candidates
-→ Candidate Human Review
-→ Internal Engineering Model
-→ deterministic SysML v2 Generation
-→ automated Validation
-→ Final Model Human Review
-→ explicit Human Release Approval
-→ immutable Versioned Output Package
-```
-
-The downstream implemented contracts are:
-
-```text
-IEM
-→ SysMLGenerationService.generate(...)
-→ GeneratedSysMLArtifactSet
-
-GeneratedSysMLArtifactSet
-→ SysMLValidationService.validate(...)
-→ SysMLValidationResult
-
-GeneratedSysMLArtifactSet + SysMLValidationResult
-→ FinalModelReviewRepository
-→ immutable FMR / FRV review evidence
-
-exact FRV
-→ FinalModelReviewReleaseService.approve_for_publication(...)
-→ exact FRD Human approval
-
-artifact + validation + exact FRD
-→ OutputWriter.publish(...)
-→ OUT-xxxxxx
-```
-
-No implicit latest selection is permitted at these authority boundaries.
-
----
-
-# Phase L — Completed Final Model Review and Output Publication
-
-Architecture decision:
-
-`collaboration/decisions/ADR-023-final-model-review-and-output-publication-architecture.md`
-
-Accepted architecture commit:
-
-`72974bb63c92c37baac5eef6b740ee91bacedd01`
-
-Completed implementation:
-
-```text
-L1  domain foundation
-L2  immutable Final Model Review repository
-L3  deterministic Final Model Review read model
-L4  Change Proposal / revision / optional agent-reproposal loop
-L5  Final Human release gate
-L6  Output Publication repository + OutputWriter
-L7  end-to-end integration and acceptance
-```
-
-Generated `.sysml` is review evidence before release, not final output. Code and
-model/diagram review surfaces remain linked through deterministic traceability.
-Edits create immutable Change Proposals; they do not mutate the reviewed SysML.
-
-Final release requires the exact explicit FRV with `valid / passed`, no blocking
-review/change state and an explicit Human `approved_for_publication` decision.
-
-Final publication is:
-
-```text
-data/output/<project_id>/OUT-xxxxxx/
-```
-
-Published SysML bytes are exactly the reviewed Phase-J bytes. Publication is
-fingerprint-bound, project-isolated, atomic, immutable and idempotent for exact
-repeated input.
-
-Output Profile:
-
-```text
-TURING_SYSML_V2_OUTPUT 1.0.0
-```
-
----
-
-# Known Operational Blocker
-
-The workstation currently reports:
-
-```text
-command -v syside
-→ no executable
-
-syside --version
-→ command not found
-```
-
-Therefore:
-
-```text
-automated technical vertical slice: PASS
-live real-SYSIDE publication acceptance: BLOCKED
-```
-
-Do not add a bypass. When SYSIDE becomes available, rerun the dedicated live L7
-test and retain the result as acceptance evidence.
-
----
-
-# Exact Next Work Package
-
-## WP-12 — End-to-End Demo Hardening
-
-Objective:
-
-Prepare and exercise one representative demo Project through the complete
-implemented authority chain and harden only defects that materially affect the
-connected product demonstration.
-
-Target workflow:
-
-```text
-Source
-→ Processing
-→ Human Review
-→ Approved Input
-→ Model Candidates
-→ Candidate Human Review
-→ Internal Engineering Model
-→ SysML v2 Generation
+→ Model Candidate
+→ Candidate Review
+→ Internal Model
+→ SysML v2
 → Validation
-→ Final Model Human Review
-→ Human Release Approval
-→ Versioned Output Package
+→ Final Review / Release where available
 ```
-
-The WP-12 run shall also be used as a formative task-based self-evaluation.
-
-For each material observation capture:
-
-```text
-Observation
-→ what happened while performing the engineering task?
-
-Impact
-→ why did this create unnecessary effort, ambiguity or risk?
-
-UX / engineering response
-→ what should change, if anything?
-
-Resolution
-→ fixed now / deferred / intentionally accepted
-```
-
-Use the test to answer practical workflow questions such as:
-
-- Is the next engineering action immediately clear?
-- Is engineering content visible before implementation metadata?
-- Are alternatives, uncertainty and Human decisions understandable?
-- Does the engineer understand what an action will change?
-- Are exact authority boundaries retained underneath the simplified UI?
-- Does the complete Source→OUT flow remain reproducible?
-
-The result is formative qualitative design evidence. Do not claim statistical
-usability improvement or independent-user validation from this self-evaluation.
-
-Preserve all existing authority boundaries. Do not introduce bypasses for:
-
-- Human Review
-- Candidate Review
-- Phase-I assembly readiness
-- validation
-- Final Model Human Review
-- explicit Human release approval
-- immutable Output publication
-
-The missing local SYSIDE CLI remains a known operational acceptance blocker for
-the real SYSIDE-backed publication validator. No bypass is permitted.
 
 ---
 
-# Remaining Demo Roadmap
+# Monday Demo Strategy
+
+The demo is announced as a real live demonstration.
+
+Preferred sequence:
 
 ```text
-WP-07  Phase K — Validation Layer — COMPLETE
-WP-08  Phase L — Final Model Review + Output Publication — COMPLETE
-       live real-SYSIDE acceptance remains blocked by missing CLI
-WP-09  Guided Workflow UI — COMPLETE
-WP-10  Ingestion + Human Review UX Simplification — COMPLETE
-WP-11  Architecture / Model Proposal UX — COMPLETE
-WP-12  End-to-End Demo Hardening — ACTIVE
-WP-13  Demo Freeze + Rehearsal
-WP-14  CATIA / SSOT Checkpoint
+1. Open/create demo Project.
+2. Show real Engineering Source.
+3. Configure real single-source Processing.
+4. Start actual LLM Processing live.
+5. Let the audience see Processing genuinely running.
+6. Explain the agent chain may take several minutes.
+7. Switch transparently to a genuinely previously processed persisted state.
+8. Continue Human Review live.
+9. Approve/edit/reject as appropriate.
+10. Promote Approved Engineering Information.
+11. Continue Model/Architecture/SysML v2 live.
 ```
 
-Schedule:
+Recommended transition:
 
 ```text
-2026-08-16  WP-12 connected demo hardening
-2026-08-17  Functional freeze / rehearsal / presentation preparation
-2026-08-18  Product demo
+"I'll start the processing step once live so you can see how the workflow is
+actually triggered. Since the agent processing can take several minutes
+depending on the model, I'll continue with a previously processed state of the
+same workflow so that we can inspect the downstream engineering steps."
 ```
 
-Quality remains non-negotiable. Save time through decomposition and focused
-verification, not weaker authority, validation or traceability.
+Do not represent manually curated data as unmodified live LLM output.
+
+BLK-002 means Monday uses a single-source path.
 
 ---
 
-# Immediate Starting Instruction for the Next Chat
+# Presentation and CATIA
 
-Resume with WP-12 formal Stage-A execution. Do not redesign the accepted synthetic
-test fixtures or Expected Engineering Contract merely because an observed result
-differs from expectation.
+PowerPoint work resumes Monday.
 
-Before the first formal test action:
-
-1. record the accepted test-specification baseline commit SHA,
-2. record the System-under-Test commit SHA,
-3. verify the pre-test automated baseline,
-4. create a new isolated dry-run Project,
-5. start `WP12-E2E-DRY-001` at TC-A01.
-
-Execute the four synthetic documents as separate Sources and work through
-`collaboration/audits/wp12_multi_document_dry_run_test_protocol.md` in order.
-
-Record formative observations in:
-`collaboration/ux/wp12_formative_self_evaluation_log.md`.
-
-Classify encountered issues as:
+Presentation story:
 
 ```text
-UX
-INTEGRATION
-ENGINEERING
-EXPECTED_HUMAN_DECISION
-EXTERNAL_BLOCKER
-DEFERRED
+KICK-OFF
+"That was the idea."
+↓
+ARCHITECTURE
+"That is how I operationalized it as systems engineering."
+↓
+PROTOTYPE
+"That is what is implemented."
+↓
+VERIFICATION
+"That is what is being tested."
+↓
+FINDINGS
+"Testing exposed real architecture/semantic issues."
+↓
+NEXT
+"Those findings drive bounded next steps."
 ```
 
-Do not silently alter expected results to match observed behavior. Any protocol
-deviation must be recorded together with its impact on result validity.
-
-Stage B with representative non-synthetic test data is forbidden until the
-Dry-Run Release Gate explicitly records either:
+Original Kick-off flow:
 
 ```text
-PASS — RELEASED FOR REAL TEST DATA
+1 Feature Ingestion
+2 Sortier Agent
+3 Ontologie Anpassung
+4 Muster Antizipation
+5 Human in the Loop
+6 Synthese / SysML-v2 generation
 ```
 
-or:
+Literature framing:
 
 ```text
-PASS WITH DOCUMENTED EXTERNAL LIMITATION — RELEASED FOR REAL TEST DATA
+Data Layer
+Process Layer
+Knowledge Layer
 ```
 
-After WP-12 Stage-A execution and disposition of demo-critical findings, continue
-on 2026-08-17 with:
+CATIA logical architecture overview already exists using the eight existing
+Logical Architecture part usages:
 
 ```text
-WP-13 — Functional Freeze + Rehearsal
-WP-14 — CATIA / SSOT Checkpoint
+LC_01 User Interaction and Status Presentation
+LC_02 Project and Source Context Management
+LC_03 Processing Orchestration and State Control
+LC_04 Engineering Information Processing
+LC_05 Candidate and Review Governance
+LC_06 Coverage Evidence and Traceability Management
+LC_07 Architecture Synthesis and Validation
+LC_08 SysML v2 Artifact Generation
 ```
 
-The missing SYSIDE CLI remains a documented external blocker only. No validation,
-release or publication bypass is permitted.
+Existing detailed lifecycle:
+
+```text
+SFB_002 Engineering Transformation Lifecycle
+```
+
+remains authoritative.
+
+The ADR-027 target flow is intended to become a legitimate high-level System
+Behavior above SFB_002, but:
+
+```text
+DO NOT MODEL IT IN CATIA YET.
+```
+
+First implement the corrected architecture, then accept/revise ADR-027, then
+update CATIA. Do not create presentation-only semantic model elements.
+
+---
+
+# Canonical Current Checkpoint
+
+Read together with:
+
+```text
+collaboration/checkpoints/2026-08-20_wp12_demo_architecture_recovery_ssot.md
+```
+
+---
+
+# New Chat Startup Prompt
+
+Copy this into the new chat:
+
+```text
+We are continuing my Master-thesis prototype "Turing Generator"
+(repository: mz-commits-ai4mbse/SysMLv2-Generator).
+
+Please do not reconstruct the project from chat memory. Treat the repository
+SSOT as authoritative coordination state.
+
+First inspect, in this order:
+
+1. collaboration/handovers/current_chat_handover.md
+2. collaboration/checkpoints/2026-08-20_wp12_demo_architecture_recovery_ssot.md
+3. collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
+4. collaboration/current_state.md
+5. collaboration/roadmap.md
+6. collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md
+
+The immediate objective is WP-12 demo readiness for my Monday 2026-08-24
+presentation/live demonstration.
+
+Important current state:
+- WP12-E2E-DRY-001 is IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION.
+- BLK-002 cross-source Processing Artifact identity collision is still open;
+  therefore the Monday demo path is single-source.
+- BLK-003 semantic effectiveness is the active priority.
+- The last real 3-persona × 1-run single-source test technically reached Human
+  Review but produced source contamination, poor model relevance and subject
+  multiplication.
+- Do NOT start another LLM run yet.
+- Do NOT optimize Review Item count directly.
+- Do NOT add another semantic/post-processing contract before auditing the
+  current path.
+- ADR-027 captures the proposed architecture sharpening:
+  deterministic Source Projection → source-grounded Evidence Detection →
+  personas interpret the SAME evidence → consensus/variance → optional semantic
+  normalization/ontology service → Human Review → Approved Engineering
+  Information → Architecture Derivation → SysML v2.
+- Reference knowledge, prompts, recipes, orchestration metadata and the Apollo 11
+  reference may guide interpretation but must never become Project engineering
+  evidence.
+- Personas and repeated runs must not multiply Engineering Subjects.
+- P9/D3/D4 responsibilities must be judged by legitimate responsibility, not
+  compatibility. KEEP / MOVE / REDUCE / BYPASS / REMOVE is explicitly allowed.
+- Existing ADR-011 Source Projection / Information Unit / source-role /
+  source-anchor / semantic-consensus infrastructure should be reused where it
+  still fits.
+- A simple external Gemini benchmark on
+  legacy/demo/wp12/01_product_overview.md returned eight sensible source-grounded
+  findings. This is a qualitative diagnostic benchmark, not a gold standard or
+  Project authority.
+- The Monday demo should genuinely start the live LLM path, but may then
+  transparently switch to a previously genuinely processed persisted Project
+  state to avoid waiting for the LLM. The downstream Human Review → Approved
+  Input → Model → SysML path should then be demonstrated live.
+- PowerPoint work continues Monday. The CATIA logical architecture overview is
+  already prepared. Do not model the new high-level source-grounded lifecycle in
+  CATIA until it is implemented and ADR-027 is accepted.
+
+Start with a READ-ONLY architecture/code-path audit from Engineering Source to
+the first Human Engineering Review.
+
+For every material step identify:
+- exact input,
+- exact output,
+- which content is Engineering Source versus reference/instruction/context,
+- where source anchors are created/preserved,
+- where subject identity is created,
+- how personas are used,
+- whether the step can create new engineering/model content,
+- downstream dependencies,
+- recommendation: KEEP / MOVE / REDUCE / BYPASS / REMOVE.
+
+Then propose the minimum corrected target path. Do not implement before I accept
+the audit.
+
+Repository workflow:
+GitHub is passive. Give me exact repo-relative paths and deterministic local
+commands/patches. Never use git add . or git add -A. Do not stage/commit before
+explicit acceptance.
+```

@@ -1,5 +1,57 @@
 # Change Log
 
+<!-- BEGIN SSOT UPDATE 2026-08-20 -->
+## 2026-08-20 — WP-12 Demo / Architecture-Recovery SSOT
+
+- preserved formal `WP12-E2E-DRY-001` as `IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION`,
+- preserved BLK-002 as open/blocking for cross-source identity,
+- reframed BLK-003 as a source-grounding / responsibility-boundary recovery problem rather than Review Item count optimization,
+- captured Project `877791` / `RUN-000001` D3/D4/Review counts,
+- recorded the simple Gemini `01_product_overview.md` run as qualitative diagnostic evidence,
+- proposed ADR-027 separating Evidence Detection from Persona Interpretation,
+- established that personas/runs shall not multiply Engineering Subjects,
+- established reference knowledge as guidance only, never Project engineering evidence,
+- established ontology/terminology alignment as a supporting service,
+- placed Architecture Derivation after Human-approved engineering information,
+- required P9/D3/D4 audit with `KEEP / MOVE / REDUCE / BYPASS / REMOVE`,
+- fixed Monday 2026-08-24 demo strategy to real single-source LLM start plus transparent switch to a genuinely persisted prior run if needed,
+- recorded CATIA rule: new high-level lifecycle only after implementation alignment and ADR-027 acceptance,
+- replaced `current_chat_handover.md` and embedded the exact next-chat startup prompt.
+<!-- END SSOT UPDATE 2026-08-20 -->
+
+## 2026-08-19 — Presentation / WP-12 / Demo SSOT Checkpoint
+
+A time-critical execution checkpoint was established for the mandatory professor
+demo on 2026-08-24.
+
+Priority is now:
+
+```text
+presentation preparation
+→ reliable live or Demo/Replay demo path
+→ BLK-003 Architectural Recovery
+```
+
+The checkpoint records:
+
+- the existing Kick-off-to-current presentation concept,
+- the two planned CATIA presentation models,
+- the interrupted WP-12 status,
+- BLK-001/002/003 and the current BLK-003 empirical result,
+- the formative OBS register,
+- planned SOURCE-PURITY/MODEL-RELEVANCE, STABILITY, DASH and Demo/Replay tests,
+- a mandatory replay fallback if the live system is not credible by the evening
+  of 2026-08-20,
+- and the over-next architectural recovery of the ingestion / semantic / review
+  chain.
+
+Authority:
+`collaboration/checkpoints/2026-08-19_presentation_wp12_demo_ssot.md`
+
+This checkpoint does not close WP-12, BLK-002 or BLK-003.
+
+---
+
 ## 2026-08-16 — WP-12 Stage-A Test Design Accepted and Prepared
 
 This is a preparation checkpoint, not WP-12 completion. Project versions remain

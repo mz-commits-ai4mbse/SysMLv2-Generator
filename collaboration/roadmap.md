@@ -1,5 +1,39 @@
 # Roadmap
 
+<!-- BEGIN SSOT UPDATE 2026-08-20 -->
+## Roadmap Delta — 2026-08-20
+
+WP-12 remains active.
+
+```text
+formal WP-12 run interrupted for blocker correction
+→ BLK-003 responsibility/source-boundary audit
+→ ADR-027 review and acceptance/revision
+→ minimum source-grounded processing correction
+→ focused verification
+→ ONE bounded real single-source LLM run
+→ if credible: freeze persisted reference run
+→ Human Review → Approved Input → Model → SysML rehearsal
+→ Monday 2026-08-24 presentation/live demo
+```
+
+BLK-002 remains open, so multi-source end-to-end demonstration is not on the Monday critical path.
+
+Prefer simplification and responsibility correction over additional contracts.
+
+Allowed disposition:
+
+```text
+KEEP
+MOVE
+REDUCE
+BYPASS
+REMOVE / RETIRE
+```
+
+No CATIA high-level lifecycle update until corrected implementation exists and ADR-027 is accepted.
+<!-- END SSOT UPDATE 2026-08-20 -->
+
 ## Purpose
 
 This roadmap defines the official development phases of the Turing Generator.
