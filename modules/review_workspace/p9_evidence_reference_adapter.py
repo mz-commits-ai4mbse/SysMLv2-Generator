@@ -29,6 +29,7 @@ from .p9_proposal_adapter import (
     DERIVATION_TEAM_ID,
     P9ElementProposal,
     P9RelationshipProposal,
+    P9ReviewQuestionProposal,
     P9StructuredProposalSet,
 )
 from .types import ReviewEvidenceReference
@@ -157,6 +158,109 @@ class P9StructuredEvidenceSet:
         return matches[0]
 
 
+def construct_p9_source_evidence_references(
+    p9_evidence: object,
+    structured_proposals: object,
+    *,
+    repository_root: Path | str,
+) -> P9StructuredEvidenceSet:
+    # Construct exact source-only evidence before semantic projection.
+    #
+    # D4 cross-unit semantic synthesis is the review authority when present.
+    # Its semantic projection replaces the pre-projection subject identities
+    # and attaches synthesized-subject evidence. Therefore a D4 run must not
+    # require the legacy source-wide Derivation Consensus contract merely to
+    # reach that projection.
+    #
+    # Legacy runs without a semantic projection still use
+    # construct_p9_evidence_references afterwards.
+
+    if not isinstance(p9_evidence, P9ReviewEvidenceSet):
+        raise ReviewValidationError(
+            "p9_evidence must be a P9ReviewEvidenceSet."
+        )
+
+    if not isinstance(
+        structured_proposals,
+        P9StructuredProposalSet,
+    ):
+        raise ReviewValidationError(
+            "structured_proposals must be a "
+            "P9StructuredProposalSet."
+        )
+
+    _validated_repository_root(repository_root)
+
+    _validate_proposal_set_identity(
+        p9_evidence,
+        structured_proposals,
+    )
+    _validate_proposal_artifact_membership(
+        p9_evidence,
+        structured_proposals,
+    )
+
+    source_references = _construct_source_references(
+        structured_proposals
+    )
+
+    item_kinds: dict[str, str] = {}
+
+    for proposal in structured_proposals.element_proposals:
+        _register_subject_kind(
+            item_kinds,
+            proposal.stable_subject_key,
+            "element",
+        )
+
+    for proposal in structured_proposals.relationship_proposals:
+        _register_subject_kind(
+            item_kinds,
+            proposal.stable_subject_key,
+            "relationship",
+        )
+
+    for question in structured_proposals.review_question_proposals:
+        _register_subject_kind(
+            item_kinds,
+            question.stable_subject_key,
+            "open_question",
+        )
+
+    records = tuple(
+        P9SubjectEvidence(
+            stable_subject_key=stable_subject_key,
+            review_item_kind=item_kinds[stable_subject_key],
+            source_evidence_references=tuple(
+                sorted(
+                    source_references.get(
+                        stable_subject_key,
+                        (),
+                    ),
+                    key=_evidence_reference_key,
+                )
+            ),
+            consensus_evidence_references=(),
+        )
+        for stable_subject_key in sorted(item_kinds)
+    )
+
+    for record in records:
+        if not record.source_evidence_references:
+            raise ReviewIntegrityError(
+                "Every structured P9 subject requires "
+                "at least one Source Evidence Reference."
+            )
+
+    return P9StructuredEvidenceSet(
+        project_id=p9_evidence.project_id,
+        source_id=p9_evidence.source_id,
+        processing_run_id=p9_evidence.processing_run_id,
+        attempt_id=p9_evidence.attempt_id,
+        subject_evidence=records,
+    )
+
+
 def construct_p9_evidence_references(
     p9_evidence: object,
     structured_proposals: object,
@@ -242,6 +346,15 @@ def construct_p9_evidence_references(
             "relationship",
         )
 
+    for question in (
+        structured_proposals.review_question_proposals
+    ):
+        _register_subject_kind(
+            item_kinds,
+            question.stable_subject_key,
+            "open_question",
+        )
+
     records = tuple(
         P9SubjectEvidence(
             stable_subject_key=stable_subject_key,
@@ -290,13 +403,13 @@ def construct_p9_evidence_references(
             )
 
         if (
-            record.review_item_kind == "relationship"
+            record.review_item_kind
+            in {"relationship", "open_question"}
             and record.consensus_evidence_references
         ):
             raise ReviewIntegrityError(
-                "Relationship Consensus Evidence must not "
-                "be invented while explicit links are absent "
-                "from the Consensus Analyzer."
+                "Relationship and Open Question subjects must "
+                "not contain invented Consensus Evidence."
             )
 
     return P9StructuredEvidenceSet(
@@ -477,6 +590,21 @@ def _construct_source_references(
 
         result.setdefault(
             proposal.stable_subject_key,
+            [],
+        ).append(reference)
+
+    for question in proposals.review_question_proposals:
+        reference = ReviewEvidenceReference(
+            artifact_reference=question.artifact_reference,
+            evidence_role=SOURCE_EVIDENCE_ROLE,
+            evidence_locator=question.evidence_locator,
+            evidence_content_fingerprint=(
+                question.evidence_content_fingerprint
+            ),
+        )
+
+        result.setdefault(
+            question.stable_subject_key,
             [],
         ).append(reference)
 
@@ -956,6 +1084,22 @@ def _validate_consensus_agents(
             reference.persona_id
         )
 
+    for question in proposals.review_question_proposals:
+        previous_persona = proposal_agents.get(
+            question.agent_id
+        )
+        if (
+            previous_persona is not None
+            and previous_persona != question.persona_id
+        ):
+            raise ReviewIntegrityError(
+                "One P9 Agent ID is associated with "
+                "multiple Persona IDs."
+            )
+        proposal_agents[question.agent_id] = (
+            question.persona_id
+        )
+
     if set(proposal_agents) != set(
         report["agent_ids"]
     ):
@@ -1022,6 +1166,19 @@ def _validate_proposal_artifact_membership(
         ):
             raise ReviewReferenceError(
                 "Structured proposal references an "
+                "Agent Output outside the selected "
+                "P9 Evidence Set."
+            )
+
+    for question in proposals.review_question_proposals:
+        if (
+            _artifact_reference_key(
+                question.artifact_reference
+            )
+            not in selected_references
+        ):
+            raise ReviewReferenceError(
+                "Reviewable P9 uncertainty references an "
                 "Agent Output outside the selected "
                 "P9 Evidence Set."
             )
@@ -1138,9 +1295,14 @@ def _read_verified_consensus_artifact(
 def _element_consensus_group_key(
     proposal: P9ElementProposal,
 ) -> str:
+    consensus_element_type = (
+        proposal.raw_element_type
+        if proposal.raw_element_type is not None
+        else proposal.element_type
+    )
     return (
         "candidate_model_element::"
-        f"{_normalize_consensus_text(proposal.element_type)}::"
+        f"{_normalize_consensus_text(consensus_element_type)}::"
         f"{_normalize_consensus_text(proposal.candidate_name)}"
     )
 

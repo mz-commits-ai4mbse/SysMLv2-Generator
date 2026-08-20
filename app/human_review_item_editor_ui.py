@@ -12,6 +12,11 @@ from modules.guided_workflow import (
     build_review_item_view,
 )
 from modules.review_workspace.errors import ReviewWorkspaceError
+from modules.review_workspace.open_question_resolution import (
+    CreateElementFromOpenQuestionRequest,
+    ResolveRelationshipEndpointsRequest,
+)
+from modules.review_workspace.p9_proposal_adapter import P9_ELEMENT_TYPES
 from modules.review_workspace.workflow_editing import (
     ReviewItemEditRequest,
     proposal_selection_key,
@@ -174,6 +179,17 @@ def _items_for_section(
             if item.effective_review_outcome == "rejected"
         )
 
+    if section == "open_questions":
+        return tuple(
+            item
+            for item in review_items
+            if (
+                item.section == "open_questions"
+                and item.effective_review_outcome
+                in {"open", "unresolved", "deferred"}
+            )
+        )
+
     return tuple(
         item
         for item in review_items
@@ -228,6 +244,20 @@ def _render_item(
             "This Review Item could not be projected from its exact "
             "content, proposal and consensus bindings."
         )
+        return
+
+    if (
+        item.review_item_kind == "open_question"
+        and _render_relationship_resolution_card(
+            st,
+            service=service,
+            project_id=project_id,
+            workspace_view=workspace_view,
+            item=item,
+            reviewer_identity=reviewer_identity,
+            technical=technical,
+        )
+    ):
         return
 
     if technical:
@@ -309,6 +339,427 @@ def _render_item(
             item=item,
             reviewer_identity=reviewer_identity,
         )
+
+
+
+def _render_relationship_resolution_card(
+    st: Any,
+    *,
+    service,
+    project_id: str,
+    workspace_view,
+    item,
+    reviewer_identity: str,
+    technical: bool,
+) -> bool:
+    """Render one concise decision card for an unresolved relationship."""
+
+    try:
+        projections = service.relationship_resolution_candidates(
+            project_id,
+            workspace_view.document.review_document_id,
+            workspace_view.version.review_document_version_id,
+            item.review_item_id,
+        )
+    except ReviewWorkspaceError:
+        st.error(
+            "Relationship resolution candidates could not be reconstructed "
+            "from exact Review evidence."
+        )
+        return True
+    except Exception:
+        st.error(
+            "Relationship resolution candidates are unavailable. "
+            "No fallback endpoint was inferred."
+        )
+        return True
+
+    if not projections:
+        return False
+
+    projection = projections[0]
+    source_statements = tuple(
+        dict.fromkeys(
+            candidate.source_statement
+            for candidate in projections
+        )
+    )
+
+    st.subheader("Relationship needs resolution")
+    st.warning(
+        "Human decision required. Select the engineering elements that "
+        "the source-supported relationship should bind."
+    )
+    st.markdown(
+        f"**{projection.source_endpoint}** "
+        f"— *{projection.semantic_intent}* → "
+        f"**{projection.target_endpoint}**"
+    )
+
+    if len(source_statements) == 1:
+        st.caption(f'Source: "{source_statements[0]}"')
+    else:
+        st.caption(
+            f"{len(source_statements)} source statements support this "
+            "grouped relationship question."
+        )
+
+    if len(projections) > 1:
+        st.caption(
+            f"{len(projections)} Agent occurrences are grouped under "
+            "this Human decision."
+        )
+
+    source_key = (
+        "human_review_item_editor.endpoint.source."
+        f"{item.review_item_id}"
+    )
+    target_key = (
+        "human_review_item_editor.endpoint.target."
+        f"{item.review_item_id}"
+    )
+
+    st.markdown("**Source element**")
+    selected_source = _render_resolution_candidate_cards(
+        st,
+        cards=projection.source_candidates,
+        selection_key=source_key,
+        endpoint_role="source",
+    )
+    _render_create_element_from_evidence(
+        st,
+        service=service,
+        project_id=project_id,
+        workspace_view=workspace_view,
+        item=item,
+        endpoint_name=projection.source_endpoint,
+        endpoint_role="source",
+        source_statement=source_statements[0],
+        reviewer_identity=reviewer_identity,
+        show_by_default=not projection.source_candidates,
+    )
+
+    st.markdown("**Target element**")
+    selected_target = _render_resolution_candidate_cards(
+        st,
+        cards=projection.target_candidates,
+        selection_key=target_key,
+        endpoint_role="target",
+    )
+    _render_create_element_from_evidence(
+        st,
+        service=service,
+        project_id=project_id,
+        workspace_view=workspace_view,
+        item=item,
+        endpoint_name=projection.target_endpoint,
+        endpoint_role="target",
+        source_statement=source_statements[0],
+        reviewer_identity=reviewer_identity,
+        show_by_default=not projection.target_candidates,
+    )
+
+    if selected_source is not None and selected_target is not None:
+        rationale_key = (
+            "human_review_item_editor.resolve_relationship.rationale."
+            f"{item.review_item_id}"
+        )
+        rationale = st.text_input(
+            "Resolution rationale",
+            value="",
+            key=rationale_key,
+            help=(
+                "Required. Explain why the selected elements represent "
+                "the source-supported relationship endpoints."
+            ),
+        )
+        rationale_value = _optional_text(rationale)
+
+        if st.button(
+            "Resolve relationship with selected elements",
+            key=(
+                "human_review_item_editor.resolve_relationship.submit."
+                f"{item.review_item_id}"
+            ),
+            type="primary",
+        ):
+            if not _reviewer_ready(st, reviewer_identity):
+                return True
+            if rationale_value is None:
+                st.error(
+                    "A rationale is required to resolve the relationship."
+                )
+                return True
+
+            _execute(
+                st,
+                lambda: service.resolve_relationship_open_question(
+                    project_id,
+                    workspace_view.document.review_document_id,
+                    workspace_view.version.review_document_version_id,
+                    item.review_item_id,
+                    request=ResolveRelationshipEndpointsRequest(
+                        expected_revision_id=(
+                            workspace_view.revision.review_revision_id
+                        ),
+                        expected_question_fingerprint=(
+                            item.item_content_fingerprint
+                        ),
+                        source_subject_key=(
+                            selected_source.stable_subject_key
+                        ),
+                        target_subject_key=(
+                            selected_target.stable_subject_key
+                        ),
+                        semantic_intent=projection.semantic_intent,
+                        relationship_title=(
+                            f"{selected_source.title} "
+                            f"{projection.semantic_intent} "
+                            f"{selected_target.title}"
+                        ),
+                        relationship_primary_text=source_statements[0],
+                        rationale=rationale_value,
+                    ),
+                    actor_identity=reviewer_identity,
+                ),
+                "Relationship endpoints resolved. "
+                "The relationship remains open for representation review.",
+            )
+    else:
+        st.info(
+            "Select one source element and one target element before "
+            "resolving the relationship."
+        )
+
+    with _expander(
+        st,
+        "Other review decisions",
+        expanded=False,
+    ):
+        _render_item_outcome_controls(
+            st,
+            service=service,
+            project_id=project_id,
+            workspace_view=workspace_view,
+            item=item,
+            reviewer_identity=reviewer_identity,
+        )
+
+    if technical:
+        with _expander(
+            st,
+            "Technical resolution details",
+            expanded=False,
+        ):
+            st.markdown(item.current_content.primary_text)
+            if item.current_content.description:
+                st.caption(item.current_content.description)
+            _render_evidence(
+                st,
+                item,
+                technical=True,
+            )
+
+    return True
+
+
+def _render_resolution_candidate_cards(
+    st: Any,
+    *,
+    cards,
+    selection_key: str,
+    endpoint_role: str,
+):
+    """Render exact existing element subjects as selectable engineering cards."""
+
+    if not cards:
+        st.warning(
+            "No exact existing element candidate matches this endpoint."
+        )
+        return None
+
+    session_state = getattr(st, "session_state", {})
+    selected_key = session_state.get(selection_key)
+
+    valid_keys = {
+        card.stable_subject_key
+        for card in cards
+    }
+    if selected_key not in valid_keys:
+        selected_key = None
+        if selection_key in session_state:
+            del session_state[selection_key]
+
+    for card in cards:
+        selected = card.stable_subject_key == selected_key
+        container_factory = getattr(st, "container", None)
+        context = (
+            container_factory(border=True)
+            if callable(container_factory)
+            else nullcontext()
+        )
+        with context:
+            st.markdown(f"**{card.title}**")
+            st.caption(
+                f"{card.information_type or 'Unclassified'} · "
+                f"{card.proposal_count} Agent proposal(s) · "
+                f"{card.source_evidence_count} evidence reference(s)"
+            )
+            st.markdown(card.primary_text)
+
+            if selected:
+                st.success(
+                    f"Selected as {endpoint_role} endpoint."
+                )
+            elif st.button(
+                f"Use as {endpoint_role} endpoint",
+                key=_resolution_candidate_button_key(
+                    selection_key=selection_key,
+                    endpoint_role=endpoint_role,
+                    review_item_id=card.review_item_id,
+                ),
+            ):
+                session_state[selection_key] = (
+                    card.stable_subject_key
+                )
+                selected_key = card.stable_subject_key
+
+    return next(
+        (
+            card
+            for card in cards
+            if card.stable_subject_key == selected_key
+        ),
+        None,
+    )
+
+
+def _resolution_candidate_button_key(
+    *,
+    selection_key: str,
+    endpoint_role: str,
+    review_item_id: str,
+) -> str:
+    """Return one widget key scoped to the exact Open Question."""
+
+    return (
+        "human_review_item_editor.endpoint.select."
+        f"{selection_key}.{endpoint_role}.{review_item_id}"
+    )
+
+
+def _render_create_element_from_evidence(
+    st: Any,
+    *,
+    service,
+    project_id: str,
+    workspace_view,
+    item,
+    endpoint_name: str,
+    endpoint_role: str,
+    source_statement: str,
+    reviewer_identity: str,
+    show_by_default: bool,
+) -> None:
+    label = (
+        "Create element from source evidence"
+        if show_by_default
+        else "Create alternative element from source evidence"
+    )
+    with _expander(
+        st,
+        label,
+        expanded=show_by_default,
+    ):
+        prefix = (
+            "human_review_item_editor.create_endpoint."
+            f"{item.review_item_id}.{endpoint_role}"
+        )
+
+        name = st.text_input(
+            "Element name",
+            value=endpoint_name,
+            key=f"{prefix}.name",
+        )
+
+        element_types = (
+            "other",
+            *tuple(
+                value
+                for value in sorted(P9_ELEMENT_TYPES)
+                if value != "other"
+            ),
+        )
+        element_type = st.selectbox(
+            "Element type",
+            options=element_types,
+            index=0,
+            key=f"{prefix}.type",
+        )
+
+        primary_text = st.text_area(
+            "Engineering statement",
+            value=f"Source-supported element: {endpoint_name}.",
+            key=f"{prefix}.statement",
+        )
+        description = st.text_area(
+            "Description",
+            value=(
+                "Explicitly referenced by the source statement: "
+                f"{source_statement}"
+            ),
+            key=f"{prefix}.description",
+        )
+        rationale = st.text_input(
+            "Creation rationale",
+            value="",
+            key=f"{prefix}.rationale",
+            help=(
+                "Required. Creating an element is an explicit Human "
+                "engineering decision."
+            ),
+        )
+        rationale_value = _optional_text(rationale)
+
+        if st.button(
+            "Create element",
+            key=f"{prefix}.submit",
+        ):
+            if not _reviewer_ready(st, reviewer_identity):
+                return
+            if rationale_value is None:
+                st.error(
+                    "A rationale is required to create an element."
+                )
+                return
+
+            _execute(
+                st,
+                lambda: service.create_element_from_open_question(
+                    project_id,
+                    workspace_view.document.review_document_id,
+                    workspace_view.version.review_document_version_id,
+                    item.review_item_id,
+                    request=CreateElementFromOpenQuestionRequest(
+                        expected_revision_id=(
+                            workspace_view.revision.review_revision_id
+                        ),
+                        expected_question_fingerprint=(
+                            item.item_content_fingerprint
+                        ),
+                        element_name=name.strip(),
+                        element_type=element_type,
+                        primary_text=primary_text.strip(),
+                        description=_optional_text(description),
+                        rationale=rationale_value,
+                    ),
+                    actor_identity=reviewer_identity,
+                ),
+                "Element created from exact source evidence. "
+                "The relationship question remains open until endpoints "
+                "are explicitly bound.",
+            )
+
 
 
 def _render_effective_dimensions(

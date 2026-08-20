@@ -526,10 +526,23 @@ def _validate_combined_items(
         subject_keys.add(item.stable_subject_key)
 
     for item in p9_review_items.review_items:
-        if not item.proposal_references:
+        if (
+            item.review_item_kind
+            in {"element", "relationship"}
+            and not item.proposal_references
+        ):
             raise ReviewIntegrityError(
-                "Initial P9 Review Items require "
-                "Agent Proposal References."
+                "Initial P9 element and relationship "
+                "Review Items require Agent Proposal References."
+            )
+
+        if (
+            item.review_item_kind == "open_question"
+            and not item.source_evidence_references
+        ):
+            raise ReviewIntegrityError(
+                "Initial P9 Open Questions require exact "
+                "source evidence."
             )
 
         if item.stable_subject_key.startswith(

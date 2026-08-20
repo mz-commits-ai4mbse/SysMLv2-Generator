@@ -22,6 +22,9 @@ from modules.agents.team_config import AgentTeamConfig, TeamMemberConfig, load_t
 from modules.agents.types import AgentRunResult
 from modules.llm.factory import create_llm_client
 from modules.llm.types import LLMRequest
+from modules.source_analysis_units.identifiers import (
+    validate_source_analysis_unit_id,
+)
 
 
 def run_agent_team(
@@ -38,8 +41,15 @@ def run_agent_team(
     max_members: int | None = None,
     include_alternative_members: bool = False,
     dry_run: bool = False,
+    source_analysis_unit_id: str | None = None,
 ) -> list[AgentRunResult]:
     """Run all selected members of one team on the same task."""
+
+    validated_source_analysis_unit_id = (
+        _validate_optional_source_analysis_unit_id(
+            source_analysis_unit_id
+        )
+    )
 
     team_config = load_team_config(
         project_root=project_root,
@@ -67,6 +77,9 @@ def run_agent_team(
                 api_key=api_key,
                 run_index=run_index,
                 dry_run=dry_run,
+                source_analysis_unit_id=(
+                    validated_source_analysis_unit_id
+                ),
             )
             results.append(result)
 
@@ -85,8 +98,15 @@ def run_team_member(
     api_key: str | None,
     run_index: int,
     dry_run: bool,
+    source_analysis_unit_id: str | None = None,
 ) -> AgentRunResult:
     """Run one persona agent within a team."""
+
+    validated_source_analysis_unit_id = (
+        _validate_optional_source_analysis_unit_id(
+            source_analysis_unit_id
+        )
+    )
 
     role_text = team_config.role_file.read_text(encoding="utf-8")
     persona_text = member.persona_file.read_text(encoding="utf-8")
@@ -114,12 +134,30 @@ def run_team_member(
             member=member,
             model=model,
             run_index=run_index,
+            source_analysis_unit_id=(
+                validated_source_analysis_unit_id
+            ),
         )
         response_id = None
         usage: dict[str, Any] = {}
         status = "dry_run"
     else:
         client = create_llm_client(provider)
+
+        metadata = {
+            "team_id": team_config.team_id,
+            "team_name": team_config.team_name,
+            "role_id": team_config.role_id,
+            "member_id": member.member_id,
+            "agent_id": member.agent_id,
+            "persona_id": member.persona_id,
+            "task_name": team_config.task_name,
+            "run_index": run_index,
+        }
+        if validated_source_analysis_unit_id is not None:
+            metadata["source_analysis_unit_id"] = (
+                validated_source_analysis_unit_id
+            )
 
         llm_result = client.generate(
             LLMRequest(
@@ -128,16 +166,7 @@ def run_team_member(
                 api_key=api_key,
                 instructions=instructions,
                 input_text=input_text,
-                metadata={
-                    "team_id": team_config.team_id,
-                    "team_name": team_config.team_name,
-                    "role_id": team_config.role_id,
-                    "member_id": member.member_id,
-                    "agent_id": member.agent_id,
-                    "persona_id": member.persona_id,
-                    "task_name": team_config.task_name,
-                    "run_index": run_index,
-                },
+                metadata=metadata,
             )
         )
 
@@ -172,6 +201,10 @@ def run_team_member(
         "created_at": datetime.now(timezone.utc).isoformat(),
         "output_text": output_text,
     }
+    if validated_source_analysis_unit_id is not None:
+        payload["source_analysis_unit_id"] = (
+            validated_source_analysis_unit_id
+        )
 
     output_path.write_text(
         json.dumps(payload, indent=2, ensure_ascii=False),
@@ -189,6 +222,9 @@ def run_team_member(
         response_id=response_id,
         usage=usage,
         status=status,
+        source_analysis_unit_id=(
+            validated_source_analysis_unit_id
+        ),
     )
 
 
@@ -301,27 +337,42 @@ def build_dry_run_output(
     member: TeamMemberConfig,
     model: str,
     run_index: int,
+    source_analysis_unit_id: str | None = None,
 ) -> str:
     """Create deterministic dry-run output without calling an LLM."""
 
+    payload = {
+        "dry_run": True,
+        "message": "No LLM call was made.",
+        "team_id": team_config.team_id,
+        "team_name": team_config.team_name,
+        "task_name": team_config.task_name,
+        "role_id": team_config.role_id,
+        "member_id": member.member_id,
+        "agent_id": member.agent_id,
+        "persona_id": member.persona_id,
+        "perspective": member.perspective,
+        "model": model,
+        "run_index": run_index,
+    }
+    if source_analysis_unit_id is not None:
+        payload["source_analysis_unit_id"] = (
+            source_analysis_unit_id
+        )
+
     return json.dumps(
-        {
-            "dry_run": True,
-            "message": "No LLM call was made.",
-            "team_id": team_config.team_id,
-            "team_name": team_config.team_name,
-            "task_name": team_config.task_name,
-            "role_id": team_config.role_id,
-            "member_id": member.member_id,
-            "agent_id": member.agent_id,
-            "persona_id": member.persona_id,
-            "perspective": member.perspective,
-            "model": model,
-            "run_index": run_index,
-        },
+        payload,
         indent=2,
         ensure_ascii=False,
     )
+
+
+def _validate_optional_source_analysis_unit_id(
+    value: str | None,
+) -> str | None:
+    if value is None:
+        return None
+    return validate_source_analysis_unit_id(value)
 
 
 def safe_filename(value: str) -> str:

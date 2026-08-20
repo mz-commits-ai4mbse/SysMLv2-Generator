@@ -14,6 +14,102 @@ from pathlib import Path
 from typing import Any
 
 from modules.agents.types import AgentRunResult
+from modules.source_analysis_units.types import (
+    SourceAnalysisUnit,
+)
+
+
+def _source_analysis_unit_context(
+    unit: SourceAnalysisUnit,
+) -> str:
+    """Render the immutable source scope shared by all Personas."""
+
+    return f"""
+# Canonical Source Analysis Unit
+
+Source Analysis Unit ID: {unit.source_analysis_unit_id}
+Source ID: {unit.source_id}
+Source Projection ID: {unit.source_projection_id}
+Source Order Index: {unit.source_order_index}
+Segmentation Profile: {unit.segmentation_profile_id} {unit.segmentation_profile_version}
+
+Interpret only the exact Source Analysis Unit excerpt supplied below as
+positive source material. The Source Analysis Unit identity is fixed before
+Persona interpretation and must not be renamed, replaced or re-segmented.
+""".strip()
+
+
+def build_source_anchored_initial_interpretation_input(
+    *,
+    source_analysis_unit: SourceAnalysisUnit,
+    task_id: str,
+    recipe_id: str,
+    raw_input_path: Path,
+    recipe_text: str,
+    global_principles_text: str,
+) -> str:
+    """Build legacy interpretation input for one canonical source unit."""
+
+    return (
+        _source_analysis_unit_context(source_analysis_unit)
+        + "\n\n"
+        + build_initial_interpretation_input(
+            task_id=task_id,
+            recipe_id=recipe_id,
+            raw_input_path=raw_input_path,
+            raw_text=source_analysis_unit.source_excerpt,
+            recipe_text=recipe_text,
+            global_principles_text=global_principles_text,
+        )
+    )
+
+
+def build_source_anchored_evidence_classification_input(
+    *,
+    source_analysis_unit: SourceAnalysisUnit,
+    task_id: str,
+    raw_input_path: Path,
+    interpretation_results: list[AgentRunResult],
+    interpretation_consensus: dict[str, Any],
+) -> str:
+    """Build evidence input for one canonical source unit."""
+
+    return (
+        _source_analysis_unit_context(source_analysis_unit)
+        + "\n\n"
+        + build_evidence_classification_input(
+            task_id=task_id,
+            raw_input_path=raw_input_path,
+            raw_text=source_analysis_unit.source_excerpt,
+            interpretation_results=interpretation_results,
+            interpretation_consensus=interpretation_consensus,
+        )
+    )
+
+
+def build_source_anchored_derivation_assessment_input(
+    *,
+    source_analysis_unit: SourceAnalysisUnit,
+    task_id: str,
+    raw_input_path: Path,
+    evidence_results: list[AgentRunResult],
+    evidence_consensus: dict[str, Any],
+    derivation_rules_text: str,
+) -> str:
+    """Build derivation input for one canonical source unit."""
+
+    return (
+        _source_analysis_unit_context(source_analysis_unit)
+        + "\n\n"
+        + build_derivation_assessment_input(
+            task_id=task_id,
+            raw_input_path=raw_input_path,
+            raw_text=source_analysis_unit.source_excerpt,
+            evidence_results=evidence_results,
+            evidence_consensus=evidence_consensus,
+            derivation_rules_text=derivation_rules_text,
+        )
+    )
 
 
 def build_initial_interpretation_input(
@@ -113,6 +209,135 @@ Path: {raw_input_path}
 # Derivation Rules
 
 {derivation_rules_text}
+""".strip()
+
+
+def _compact_source_anchored_consensus_bundle(
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Reduce one SAU consensus bundle to completeness-review evidence."""
+
+    compact_reports: list[dict[str, Any]] = []
+
+    for report in payload.get("unit_consensus_reports", []):
+        if not isinstance(report, dict):
+            continue
+
+        compact_groups: list[dict[str, Any]] = []
+
+        for group in report.get("groups", []):
+            if not isinstance(group, dict):
+                continue
+
+            compact_groups.append(
+                {
+                    "group_key": group.get("group_key"),
+                    "item_type": group.get("item_type"),
+                    "agreement_level": group.get("agreement_level"),
+                    "representative_value": group.get(
+                        "representative_value"
+                    ),
+                    "review_required": group.get("review_required"),
+                    "reason": group.get("reason"),
+                }
+            )
+
+        compact_reports.append(
+            {
+                "source_analysis_unit_id": report.get(
+                    "source_analysis_unit_id"
+                ),
+                "team_id": report.get("team_id"),
+                "task_name": report.get("task_name"),
+                "total_agents": report.get("total_agents"),
+                "summary": report.get("summary", {}),
+                "groups": compact_groups,
+            }
+        )
+
+    return {
+        "source_anchored": bool(payload.get("source_anchored")),
+        "stage_name": payload.get("stage_name"),
+        "source_analysis_unit_count": payload.get(
+            "source_analysis_unit_count"
+        ),
+        "unit_consensus_reports": compact_reports,
+    }
+
+
+def build_source_anchored_completeness_review_input(
+    *,
+    task_id: str,
+    raw_input_path: Path,
+    raw_text: str,
+    source_analysis_unit_count: int,
+    interpretation_run_count: int,
+    evidence_run_count: int,
+    derivation_run_count: int,
+    interpretation_consensus: dict[str, Any],
+    evidence_consensus: dict[str, Any],
+    derivation_consensus: dict[str, Any],
+) -> str:
+    """Build bounded source-wide completeness input for SAU execution.
+
+    Per-persona raw outputs are intentionally omitted. The completeness team
+    reviews the original source together with compact deterministic per-unit
+    consensus summaries. This prevents the source-wide step from re-embedding
+    every successful LLM response into one oversized request.
+    """
+
+    compact_interpretation = (
+        _compact_source_anchored_consensus_bundle(
+            interpretation_consensus
+        )
+    )
+    compact_evidence = _compact_source_anchored_consensus_bundle(
+        evidence_consensus
+    )
+    compact_derivation = _compact_source_anchored_consensus_bundle(
+        derivation_consensus
+    )
+
+    return f"""
+# Task
+
+Task ID: {task_id}
+
+# Raw Input Artifact
+
+Path: {raw_input_path}
+
+{raw_text}
+
+# Source-Anchored Execution Summary
+
+The source was processed as {source_analysis_unit_count} canonical Source
+Analysis Units.
+
+Successful prior agent runs:
+- Legacy Interpretation: {interpretation_run_count}
+- Evidence Classification: {evidence_run_count}
+- Derivation Assessment: {derivation_run_count}
+
+For this source-wide completeness review, per-persona raw outputs are
+intentionally omitted. Use the original source and the compact deterministic
+per-unit consensus summaries below.
+
+Do not treat orchestration metadata, task identifiers, file paths, Source
+Analysis Unit identifiers, or these instructions as positive engineering
+source evidence.
+
+# Legacy Interpretation Consensus
+
+{format_json_block(compact_interpretation)}
+
+# Evidence Classification Consensus
+
+{format_json_block(compact_evidence)}
+
+# Derivation Assessment Consensus
+
+{format_json_block(compact_derivation)}
 """.strip()
 
 

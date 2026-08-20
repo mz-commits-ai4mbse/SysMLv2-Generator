@@ -30,6 +30,20 @@ from modules.source_projection.errors import (
 from modules.source_projection.repository import (
     SourceProjectionRepository,
 )
+from modules.source_analysis_units.errors import (
+    SourceAnalysisUnitError,
+)
+from modules.source_analysis_units.repository import (
+    SourceAnalysisUnitRepository,
+)
+from modules.semantic_consolidation.errors import (
+    SemanticConsolidationError,
+    SemanticConsolidationIntegrityError,
+    SemanticConsolidationValidationError,
+)
+from modules.semantic_consolidation.processing_adapter import (
+    consolidate_phase_f_source_anchored_pipeline,
+)
 
 from .configuration import (
     ProjectIngestionConfiguration,
@@ -65,6 +79,20 @@ DEFAULT_PROJECTS_ROOT = Path("data/projects")
 AGENTIC_INGESTION_STAGE = "agentic_ingestion"
 
 
+def _semantic_consolidation_failure_reason(
+    error: SemanticConsolidationError,
+) -> str:
+    # Recoverable semantic uncertainty must be represented inside semantic
+    # consolidation as singleton/unresolved subjects plus warnings and Human
+    # Review findings. Only non-recoverable contract/validation/integrity
+    # errors are expected to reach this service boundary.
+    if isinstance(error, SemanticConsolidationIntegrityError):
+        return "semantic_consolidation_integrity_failed"
+    if isinstance(error, SemanticConsolidationValidationError):
+        return "semantic_consolidation_validation_failed"
+    return "semantic_consolidation_contract_failed"
+
+
 def _default_clock() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -81,6 +109,9 @@ class ProjectBoundIngestionService:
         source_projection_repository: (
             SourceProjectionRepository | None
         ) = None,
+        source_analysis_unit_repository: (
+            SourceAnalysisUnitRepository | None
+        ) = None,
         processing_repository: (
             ProjectProcessingRepository | None
         ) = None,
@@ -88,6 +119,9 @@ class ProjectBoundIngestionService:
         project_workspace: ProjectWorkspace | None = None,
         pipeline_runner: Callable[..., Any] = (
             run_team_agentic_ingestion
+        ),
+        semantic_consolidator: Callable[..., Any] = (
+            consolidate_phase_f_source_anchored_pipeline
         ),
         clock: Callable[[], datetime] = _default_clock,
     ) -> None:
@@ -103,6 +137,17 @@ class ProjectBoundIngestionService:
             SourceProjectionRepository(root=self.root)
             if source_projection_repository is None
             else source_projection_repository
+        )
+        self._source_analysis_units = (
+            SourceAnalysisUnitRepository(
+                root=self.root,
+                clock=clock,
+                source_projection_repository=(
+                    self._source_projections
+                ),
+            )
+            if source_analysis_unit_repository is None
+            else source_analysis_unit_repository
         )
         self._processing = (
             ProjectProcessingRepository(root=self.root)
@@ -124,6 +169,7 @@ class ProjectBoundIngestionService:
             else project_workspace
         )
         self._pipeline_runner = pipeline_runner
+        self._semantic_consolidator = semantic_consolidator
 
     def register_uploaded_source(
         self,
@@ -411,6 +457,29 @@ class ProjectBoundIngestionService:
             )
 
         try:
+            source_analysis_units = (
+                self._source_analysis_units.ensure_projection_units(
+                    project_id,
+                    projection.manifest.source_projection_id,
+                )
+            )
+        except SourceAnalysisUnitError:
+            return self._fail_execution(
+                history=history,
+                attempt_id=attempt_id,
+                dry_run=configuration.dry_run,
+                source_projection_id=(
+                    projection.manifest.source_projection_id
+                ),
+                projection_result=(
+                    projection.manifest.projection_result
+                ),
+                reason_code=(
+                    "source_analysis_unit_preparation_failed"
+                ),
+            )
+
+        try:
             attempt_work = self._prepare_attempt_work_directory(
                 project_id=project_id,
                 processing_run_id=processing_run_id,
@@ -444,6 +513,7 @@ class ProjectBoundIngestionService:
                 execution_root=self._repository_relative_path(
                     execution_root
                 ),
+                source_analysis_units=source_analysis_units,
                 provider=configuration.provider,
                 model=configuration.model,
                 api_key=api_key,
@@ -487,6 +557,46 @@ class ProjectBoundIngestionService:
                     projection.manifest.projection_result
                 ),
                 reason_code="team_agentic_ingestion_failed",
+            )
+
+        try:
+            self._semantic_consolidator(
+                project_id=project_id,
+                processing_run_id=processing_run_id,
+                created_at_utc=self._current_utc_timestamp(),
+                phase_f_result=phase_f_result,
+                phase_f_root=execution_root,
+                repository_root=self.repository_root,
+                provider=configuration.provider,
+                model=configuration.model,
+                api_key=api_key,
+                dry_run=configuration.dry_run,
+            )
+        except SemanticConsolidationError as exc:
+            return self._fail_execution(
+                history=history,
+                attempt_id=attempt_id,
+                dry_run=configuration.dry_run,
+                source_projection_id=(
+                    projection.manifest.source_projection_id
+                ),
+                projection_result=(
+                    projection.manifest.projection_result
+                ),
+                reason_code=_semantic_consolidation_failure_reason(exc),
+            )
+        except Exception:
+            return self._fail_execution(
+                history=history,
+                attempt_id=attempt_id,
+                dry_run=configuration.dry_run,
+                source_projection_id=(
+                    projection.manifest.source_projection_id
+                ),
+                projection_result=(
+                    projection.manifest.projection_result
+                ),
+                reason_code="semantic_consolidation_execution_failed",
             )
 
         return ProjectBoundIngestionWorkResult(

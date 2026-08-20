@@ -21,3 +21,4 @@ class AgentRunResult:
     response_id: str | None = None
     usage: dict[str, Any] = field(default_factory=dict)
     status: str | None = None
+    source_analysis_unit_id: str | None = None

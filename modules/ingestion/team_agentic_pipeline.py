@@ -29,6 +29,10 @@ from modules.ingestion.agent_inputs import (
     build_derivation_assessment_input,
     build_evidence_classification_input,
     build_initial_interpretation_input,
+    build_source_anchored_completeness_review_input,
+    build_source_anchored_derivation_assessment_input,
+    build_source_anchored_evidence_classification_input,
+    build_source_anchored_initial_interpretation_input,
 )
 from modules.ingestion.agent_tasks import (
     get_completeness_checker_task_instructions,
@@ -38,6 +42,7 @@ from modules.ingestion.agent_tasks import (
 )
 from modules.ingestion.run_summary import write_run_summaries
 from modules.ingestion.review_report import write_ingestion_review_report
+from modules.source_analysis_units.types import SourceAnalysisUnit
 
 
 @dataclass
@@ -51,6 +56,7 @@ class TeamAgenticIngestionResult:
     agent_results: list[AgentRunResult]
     consensus_reports: list[dict[str, Any]]
     run_summary: dict[str, Any]
+    source_analysis_unit_ids: tuple[str, ...] = ()
 
 
 def run_team_agentic_ingestion(
@@ -67,6 +73,7 @@ def run_team_agentic_ingestion(
     max_members_per_team: int | None = 1,
     dry_run: bool = False,
     execution_root: Path | None = None,
+    source_analysis_units: tuple[SourceAnalysisUnit, ...] | None = None,
 ) -> TeamAgenticIngestionResult:
     """Run the modular team-based agentic ingestion pipeline.
 
@@ -116,6 +123,32 @@ def run_team_agentic_ingestion(
         dry_run=dry_run,
         max_members_per_team=max_members_per_team,
     )
+
+    if source_analysis_units is not None:
+        return _run_source_anchored_ingestion(
+            project_root=project_root,
+            task_id=task_id,
+            recipe_id=recipe_id,
+            resolved_raw_input_path=resolved_raw_input_path,
+            resolved_report_output_path=(
+                resolved_report_output_path
+            ),
+            run_id=run_id,
+            run_dir=run_dir,
+            raw_text=raw_text,
+            recipe_text=recipe_text,
+            derivation_rules_text=derivation_rules_text,
+            global_principles_text=global_principles_text,
+            team_files=team_files,
+            provider=provider,
+            model=model,
+            api_key=api_key,
+            runs_per_member=runs_per_member,
+            max_members_per_team=max_members_per_team,
+            dry_run=dry_run,
+            team_execution_mode=team_execution_mode,
+            source_analysis_units=source_analysis_units,
+        )
 
     interpretation_results, interpretation_consensus = run_stage_with_consensus(
         project_root=project_root,
@@ -256,6 +289,332 @@ def run_team_agentic_ingestion(
     )
 
 
+
+def _run_source_anchored_ingestion(
+    *,
+    project_root: Path,
+    task_id: str,
+    recipe_id: str,
+    resolved_raw_input_path: Path,
+    resolved_report_output_path: Path,
+    run_id: str,
+    run_dir: Path,
+    raw_text: str,
+    recipe_text: str,
+    derivation_rules_text: str,
+    global_principles_text: str,
+    team_files: dict[str, Path],
+    provider: str,
+    model: str,
+    api_key: str | None,
+    runs_per_member: int,
+    max_members_per_team: int | None,
+    dry_run: bool,
+    team_execution_mode: str,
+    source_analysis_units: tuple[SourceAnalysisUnit, ...],
+) -> TeamAgenticIngestionResult:
+    """Run semantic Phase-F stages with one immutable source scope at a time."""
+
+    units = _validated_source_analysis_units(
+        source_analysis_units
+    )
+    all_agent_results: list[AgentRunResult] = []
+    consensus_reports: list[dict[str, Any]] = []
+    interpretation_results: list[AgentRunResult] = []
+    evidence_results: list[AgentRunResult] = []
+    derivation_results: list[AgentRunResult] = []
+    interpretation_consensus_by_unit: list[
+        dict[str, Any]
+    ] = []
+    evidence_consensus_by_unit: list[
+        dict[str, Any]
+    ] = []
+    derivation_consensus_by_unit: list[
+        dict[str, Any]
+    ] = []
+
+    for unit in units:
+        unit_id = unit.source_analysis_unit_id
+
+        unit_interpretation_results, unit_interpretation_consensus = (
+            run_stage_with_consensus(
+                project_root=project_root,
+                run_dir=run_dir,
+                stage_name="01_legacy_interpretation",
+                team_file=team_files["legacy_interpretation"],
+                task_instructions=(
+                    get_interpreter_task_instructions()
+                ),
+                input_text=(
+                    build_source_anchored_initial_interpretation_input(
+                        source_analysis_unit=unit,
+                        task_id=task_id,
+                        recipe_id=recipe_id,
+                        raw_input_path=resolved_raw_input_path,
+                        recipe_text=recipe_text,
+                        global_principles_text=(
+                            global_principles_text
+                        ),
+                    )
+                ),
+                provider=provider,
+                model=model,
+                api_key=api_key,
+                runs_per_member=runs_per_member,
+                max_members_per_team=max_members_per_team,
+                dry_run=dry_run,
+                source_analysis_unit_id=unit_id,
+            )
+        )
+        interpretation_results.extend(
+            unit_interpretation_results
+        )
+        all_agent_results.extend(unit_interpretation_results)
+        interpretation_consensus_by_unit.append(
+            unit_interpretation_consensus
+        )
+        consensus_reports.append(unit_interpretation_consensus)
+
+        unit_evidence_results, unit_evidence_consensus = (
+            run_stage_with_consensus(
+                project_root=project_root,
+                run_dir=run_dir,
+                stage_name="02_evidence_classification",
+                team_file=team_files["evidence_classification"],
+                task_instructions=(
+                    get_evidence_classifier_task_instructions()
+                ),
+                input_text=(
+                    build_source_anchored_evidence_classification_input(
+                        source_analysis_unit=unit,
+                        task_id=task_id,
+                        raw_input_path=resolved_raw_input_path,
+                        interpretation_results=(
+                            unit_interpretation_results
+                        ),
+                        interpretation_consensus=(
+                            unit_interpretation_consensus
+                        ),
+                    )
+                ),
+                provider=provider,
+                model=model,
+                api_key=api_key,
+                runs_per_member=runs_per_member,
+                max_members_per_team=max_members_per_team,
+                dry_run=dry_run,
+                source_analysis_unit_id=unit_id,
+            )
+        )
+        evidence_results.extend(unit_evidence_results)
+        all_agent_results.extend(unit_evidence_results)
+        evidence_consensus_by_unit.append(
+            unit_evidence_consensus
+        )
+        consensus_reports.append(unit_evidence_consensus)
+
+        unit_derivation_results, unit_derivation_consensus = (
+            run_stage_with_consensus(
+                project_root=project_root,
+                run_dir=run_dir,
+                stage_name="03_derivation_assessment",
+                team_file=team_files["derivation_assessment"],
+                task_instructions=(
+                    get_derivation_assessor_task_instructions(
+                        derivation_rules_text=(
+                            derivation_rules_text
+                        )
+                    )
+                ),
+                input_text=(
+                    build_source_anchored_derivation_assessment_input(
+                        source_analysis_unit=unit,
+                        task_id=task_id,
+                        raw_input_path=resolved_raw_input_path,
+                        evidence_results=unit_evidence_results,
+                        evidence_consensus=unit_evidence_consensus,
+                        derivation_rules_text=(
+                            derivation_rules_text
+                        ),
+                    )
+                ),
+                provider=provider,
+                model=model,
+                api_key=api_key,
+                runs_per_member=runs_per_member,
+                max_members_per_team=max_members_per_team,
+                dry_run=dry_run,
+                source_analysis_unit_id=unit_id,
+            )
+        )
+        derivation_results.extend(unit_derivation_results)
+        all_agent_results.extend(unit_derivation_results)
+        derivation_consensus_by_unit.append(
+            unit_derivation_consensus
+        )
+        consensus_reports.append(unit_derivation_consensus)
+
+    # Completeness review is intentionally compiled once after all source
+    # analysis units. It does not create engineering proposals and therefore
+    # remains a source-wide review step rather than a per-unit semantic vote.
+    completeness_results, completeness_consensus = (
+        run_stage_with_consensus(
+            project_root=project_root,
+            run_dir=run_dir,
+            stage_name="04_completeness_review",
+            team_file=team_files["completeness_review"],
+            task_instructions=(
+                get_completeness_checker_task_instructions()
+            ),
+            input_text=build_source_anchored_completeness_review_input(
+                task_id=task_id,
+                raw_input_path=resolved_raw_input_path,
+                raw_text=raw_text,
+                source_analysis_unit_count=len(
+                    source_analysis_units
+                ),
+                interpretation_run_count=len(
+                    interpretation_results
+                ),
+                evidence_run_count=len(evidence_results),
+                derivation_run_count=len(derivation_results),
+                interpretation_consensus=(
+                    _source_anchored_consensus_bundle(
+                        "01_legacy_interpretation",
+                        interpretation_consensus_by_unit,
+                    )
+                ),
+                evidence_consensus=(
+                    _source_anchored_consensus_bundle(
+                        "02_evidence_classification",
+                        evidence_consensus_by_unit,
+                    )
+                ),
+                derivation_consensus=(
+                    _source_anchored_consensus_bundle(
+                        "03_derivation_assessment",
+                        derivation_consensus_by_unit,
+                    )
+                ),
+            ),
+            provider=provider,
+            model=model,
+            api_key=api_key,
+            runs_per_member=runs_per_member,
+            max_members_per_team=max_members_per_team,
+            dry_run=dry_run,
+        )
+    )
+    all_agent_results.extend(completeness_results)
+    consensus_reports.append(completeness_consensus)
+
+    write_ingestion_review_report(
+        task_id=task_id,
+        recipe_id=recipe_id,
+        raw_input_path=resolved_raw_input_path,
+        run_id=run_id,
+        run_dir=run_dir,
+        report_output_path=resolved_report_output_path,
+        derivation_results=derivation_results,
+        completeness_results=completeness_results,
+        consensus_reports=consensus_reports,
+        narrative_report_path=None,
+    )
+
+    run_summary = write_run_summaries(
+        task_id=task_id,
+        recipe_id=recipe_id,
+        raw_input_path=resolved_raw_input_path,
+        report_output_path=resolved_report_output_path,
+        run_id=run_id,
+        run_dir=run_dir,
+        provider=provider,
+        model=model,
+        team_execution_mode=team_execution_mode,
+        agent_results=all_agent_results,
+        consensus_reports=consensus_reports,
+        repository_root=project_root,
+    )
+
+    return TeamAgenticIngestionResult(
+        task_id=task_id,
+        run_id=run_id,
+        run_dir=run_dir,
+        report_path=resolved_report_output_path,
+        agent_results=all_agent_results,
+        consensus_reports=consensus_reports,
+        run_summary=run_summary,
+        source_analysis_unit_ids=tuple(
+            unit.source_analysis_unit_id for unit in units
+        ),
+    )
+
+
+def _validated_source_analysis_units(
+    source_analysis_units: tuple[SourceAnalysisUnit, ...],
+) -> tuple[SourceAnalysisUnit, ...]:
+    if not isinstance(source_analysis_units, tuple):
+        raise ValueError("source_analysis_units must be a tuple.")
+    if not source_analysis_units:
+        raise ValueError(
+            "source_analysis_units must contain at least one unit."
+        )
+    if not all(
+        isinstance(unit, SourceAnalysisUnit)
+        for unit in source_analysis_units
+    ):
+        raise ValueError(
+            "source_analysis_units must contain SourceAnalysisUnit instances."
+        )
+
+    ordered = tuple(
+        sorted(
+            source_analysis_units,
+            key=lambda unit: unit.source_order_index,
+        )
+    )
+    ids = tuple(
+        unit.source_analysis_unit_id for unit in ordered
+    )
+    if len(ids) != len(set(ids)):
+        raise ValueError(
+            "source_analysis_unit_id values must be unique."
+        )
+    orders = tuple(unit.source_order_index for unit in ordered)
+    if len(orders) != len(set(orders)):
+        raise ValueError(
+            "source_order_index values must be unique."
+        )
+
+    reference = ordered[0]
+    for unit in ordered[1:]:
+        if (
+            unit.project_id != reference.project_id
+            or unit.source_id != reference.source_id
+            or unit.source_projection_id
+            != reference.source_projection_id
+            or unit.source_projection_fingerprint
+            != reference.source_projection_fingerprint
+        ):
+            raise ValueError(
+                "All Source Analysis Units in one Phase-F execution "
+                "must belong to the same Project, Source and Source Projection."
+            )
+
+    return ordered
+
+
+def _source_anchored_consensus_bundle(
+    stage_name: str,
+    reports: list[dict[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "source_anchored": True,
+        "stage_name": stage_name,
+        "source_analysis_unit_count": len(reports),
+        "unit_consensus_reports": reports,
+    }
+
 def _resolve_pipeline_path(
     project_root: Path,
     path: Path,
@@ -326,6 +685,7 @@ def run_stage_with_consensus(
     runs_per_member: int,
     max_members_per_team: int | None,
     dry_run: bool,
+    source_analysis_unit_id: str | None = None,
 ) -> tuple[list[AgentRunResult], dict[str, Any]]:
     """Run one team stage and create consensus reports."""
 
@@ -335,6 +695,10 @@ def run_stage_with_consensus(
     )
 
     stage_output_dir = run_dir / "agent_outputs" / stage_name
+    if source_analysis_unit_id is not None:
+        stage_output_dir = (
+            stage_output_dir / source_analysis_unit_id
+        )
 
     agent_results = run_agent_team(
         project_root=project_root,
@@ -349,6 +713,7 @@ def run_stage_with_consensus(
         max_members=max_members_per_team,
         include_alternative_members=False,
         dry_run=dry_run,
+        source_analysis_unit_id=source_analysis_unit_id,
     )
 
     agent_payloads = load_agent_payloads_from_results(agent_results)
@@ -358,12 +723,18 @@ def run_stage_with_consensus(
         task_name=team_config.task_name,
         agent_payloads=agent_payloads,
     )
+    if source_analysis_unit_id is not None:
+        consensus_report = dict(consensus_report)
+        consensus_report["source_analysis_unit_id"] = (
+            source_analysis_unit_id
+        )
 
     write_stage_consensus_reports(
         run_dir=run_dir,
         stage_name=stage_name,
         team_id=team_config.team_id,
         consensus_report=consensus_report,
+        source_analysis_unit_id=source_analysis_unit_id,
     )
 
     return agent_results, consensus_report
@@ -392,10 +763,15 @@ def write_stage_consensus_reports(
     stage_name: str,
     team_id: str,
     consensus_report: dict[str, Any],
+    source_analysis_unit_id: str | None = None,
 ) -> None:
     """Write JSON and Markdown consensus reports for one stage."""
 
     consensus_dir = run_dir / "consensus_reports" / stage_name
+    if source_analysis_unit_id is not None:
+        consensus_dir = (
+            consensus_dir / source_analysis_unit_id
+        )
     base_name = safe_filename(team_id)
 
     write_consensus_json(

@@ -215,6 +215,14 @@ def register_source(
     )
 
 
+def _no_op_semantic_consolidator(**kwargs):
+    # These tests exercise the P9/P5 processing bridge, not the
+    # semantic-consolidation adapter contract. The FakePipelineRunner
+    # intentionally emits only minimal Phase-F work evidence and
+    # therefore cannot satisfy the real semantic consolidator.
+    return None
+
+
 def create_service(
     repository_root: Path,
     projects_root: Path,
@@ -224,6 +232,7 @@ def create_service(
         root=projects_root,
         repository_root=repository_root,
         pipeline_runner=pipeline,
+        semantic_consolidator=_no_op_semantic_consolidator,
         clock=FixedClock(),
     )
 

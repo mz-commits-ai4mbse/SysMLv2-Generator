@@ -31,6 +31,7 @@ from .p9_evidence_reference_adapter import (
 from .p9_proposal_adapter import (
     P9ElementProposal,
     P9RelationshipProposal,
+    P9ReviewQuestionProposal,
     P9StructuredProposalSet,
     create_element_stable_subject_key,
     create_relationship_stable_subject_key,
@@ -98,6 +99,19 @@ class P9InitialReviewItemSet:
             for item in self.review_items
             if item.review_item_kind
             == "relationship"
+        )
+
+    @property
+    def open_question_items(
+        self,
+    ) -> tuple[ReviewItem, ...]:
+        """Return all initial Open Question Review Items."""
+
+        return tuple(
+            item
+            for item in self.review_items
+            if item.review_item_kind
+            == "open_question"
         )
 
     def item_for_subject(
@@ -237,6 +251,18 @@ def construct_initial_p9_review_items(
             ),
         )
 
+    for question in (
+        structured_proposals.review_question_proposals
+    ):
+        _validate_review_question_proposal(
+            question
+        )
+        _register_review_question(
+            question,
+            proposal_groups=proposal_groups,
+            subject_kinds=subject_kinds,
+        )
+
     evidence_by_subject = (
         _validated_evidence_by_subject(
             structured_evidence
@@ -318,6 +344,13 @@ def construct_initial_p9_review_items(
         proposal_references = tuple(
             proposal.proposal_reference
             for proposal in proposals
+            if isinstance(
+                proposal,
+                (
+                    P9ElementProposal,
+                    P9RelationshipProposal,
+                ),
+            )
         )
 
         original_report_locator = (
@@ -391,6 +424,33 @@ def construct_initial_p9_review_items(
             )
 
             section = "relationships"
+
+        elif review_item_kind == "open_question":
+            question_proposals = tuple(
+                proposal
+                for proposal in proposals
+                if isinstance(
+                    proposal,
+                    P9ReviewQuestionProposal,
+                )
+            )
+
+            if len(question_proposals) != len(
+                proposals
+            ):
+                raise ReviewIntegrityError(
+                    "Open Question Review Item group "
+                    "contains a non-question proposal."
+                )
+
+            (
+                current_content,
+                dimension_selections,
+            ) = _construct_open_question_draft(
+                question_proposals
+            )
+
+            section = "open_questions"
 
         else:
             raise ReviewIntegrityError(
@@ -531,6 +591,44 @@ def _validate_element_proposal(
             "P9ElementProposal values."
         )
 
+    if proposal.stable_subject_key.startswith(
+        "semantic:element:ses-"
+    ):
+        synthesized_id = proposal.stable_subject_key.removeprefix(
+            "semantic:element:"
+        )
+        if (
+            len(synthesized_id) != len("ses-000001")
+            or not synthesized_id[4:].isdigit()
+            or synthesized_id == "ses-000000"
+        ):
+            raise ReviewIntegrityError(
+                "Synthesized Element Review subject identity is invalid."
+            )
+        return
+
+    if proposal.stable_subject_key.startswith(
+        "semantic:element:"
+    ):
+        if len(proposal.stable_subject_key) <= len(
+            "semantic:element:"
+        ):
+            raise ReviewIntegrityError(
+                "Semantic Element Review subject identity is incomplete."
+            )
+        return
+
+    if proposal.stable_subject_key.startswith("SES-"):
+        if (
+            len(proposal.stable_subject_key) != len("SES-000001")
+            or not proposal.stable_subject_key[4:].isdigit()
+            or proposal.stable_subject_key == "SES-000000"
+        ):
+            raise ReviewIntegrityError(
+                "Synthesized Element Review subject identity is invalid."
+            )
+        return
+
     expected_key = (
         create_element_stable_subject_key(
             element_type=proposal.element_type,
@@ -560,6 +658,108 @@ def _validate_relationship_proposal(
             "P9RelationshipProposal values."
         )
 
+    if proposal.stable_subject_key.startswith(
+        "semantic:relationship:srs-"
+    ):
+        synthesized_relationship_id = (
+            proposal.stable_subject_key.removeprefix(
+                "semantic:relationship:"
+            )
+        )
+        synthesized_source_id = (
+            proposal.source_subject_key.removeprefix(
+                "semantic:element:"
+            )
+            if proposal.source_subject_key.startswith(
+                "semantic:element:"
+            )
+            else ""
+        )
+        synthesized_target_id = (
+            proposal.target_subject_key.removeprefix(
+                "semantic:element:"
+            )
+            if proposal.target_subject_key.startswith(
+                "semantic:element:"
+            )
+            else ""
+        )
+        synthesized_relationship_id_valid = (
+            len(synthesized_relationship_id) == len("srs-000001")
+            and synthesized_relationship_id[4:].isdigit()
+            and synthesized_relationship_id != "srs-000000"
+        )
+        synthesized_source_id_valid = (
+            synthesized_source_id.startswith("ses-")
+            and len(synthesized_source_id) == len("ses-000001")
+            and synthesized_source_id[4:].isdigit()
+            and synthesized_source_id != "ses-000000"
+        )
+        synthesized_target_id_valid = (
+            synthesized_target_id.startswith("ses-")
+            and len(synthesized_target_id) == len("ses-000001")
+            and synthesized_target_id[4:].isdigit()
+            and synthesized_target_id != "ses-000000"
+        )
+        if not (
+            synthesized_relationship_id_valid
+            and synthesized_source_id_valid
+            and synthesized_target_id_valid
+        ):
+            raise ReviewIntegrityError(
+                "Synthesized Relationship Review subject requires valid "
+                "namespaced SRS identity and namespaced SES endpoints."
+            )
+        return
+
+    if proposal.stable_subject_key.startswith(
+        "semantic:relationship:"
+    ):
+        if (
+            len(proposal.stable_subject_key)
+            <= len("semantic:relationship:")
+            or not proposal.source_subject_key.startswith(
+                "semantic:element:"
+            )
+            or not proposal.target_subject_key.startswith(
+                "semantic:element:"
+            )
+        ):
+            raise ReviewIntegrityError(
+                "Semantic Relationship Review subject requires complete "
+                "semantic relationship and element endpoint identities."
+            )
+        return
+
+    if proposal.stable_subject_key.startswith("SRS-"):
+        synthesized_relationship_id_valid = (
+            len(proposal.stable_subject_key) == len("SRS-000001")
+            and proposal.stable_subject_key[4:].isdigit()
+            and proposal.stable_subject_key != "SRS-000000"
+        )
+        synthesized_source_id_valid = (
+            proposal.source_subject_key.startswith("SES-")
+            and len(proposal.source_subject_key) == len("SES-000001")
+            and proposal.source_subject_key[4:].isdigit()
+            and proposal.source_subject_key != "SES-000000"
+        )
+        synthesized_target_id_valid = (
+            proposal.target_subject_key.startswith("SES-")
+            and len(proposal.target_subject_key) == len("SES-000001")
+            and proposal.target_subject_key[4:].isdigit()
+            and proposal.target_subject_key != "SES-000000"
+        )
+        if not (
+            synthesized_relationship_id_valid
+            and synthesized_source_id_valid
+            and synthesized_target_id_valid
+        ):
+            raise ReviewIntegrityError(
+                "Synthesized Relationship Review subject requires valid "
+                "SRS identity and synthesized SES endpoint identities."
+            )
+        return
+
     expected_key = (
         create_relationship_stable_subject_key(
             source_subject_key=(
@@ -580,6 +780,70 @@ def _validate_relationship_proposal(
             "P9 Relationship Proposal stable_subject_key "
             "does not match its semantic identity."
         )
+
+
+def _validate_review_question_proposal(
+    proposal: object,
+) -> None:
+    if not isinstance(
+        proposal,
+        P9ReviewQuestionProposal,
+    ):
+        raise ReviewValidationError(
+            "review_question_proposals must contain "
+            "P9ReviewQuestionProposal values."
+        )
+
+    if not proposal.stable_subject_key.startswith(
+        "open_question:"
+    ):
+        raise ReviewIntegrityError(
+            "P9 Open Question stable_subject_key must "
+            "identify an open_question subject."
+        )
+
+    for value, label in (
+        (proposal.question_id, "question_id"),
+        (proposal.issue_code, "issue_code"),
+        (proposal.title, "question title"),
+        (proposal.review_question, "review_question"),
+        (proposal.raw_value, "raw_value"),
+        (proposal.normalized_value, "normalized_value"),
+        (proposal.source_statement, "source_statement"),
+        (proposal.evidence_locator, "evidence_locator"),
+        (proposal.rationale_summary, "rationale_summary"),
+    ):
+        if not isinstance(value, str) or not value.strip():
+            raise ReviewValidationError(
+                f"{label} must be non-empty text."
+            )
+
+
+def _register_review_question(
+    proposal: P9ReviewQuestionProposal,
+    *,
+    proposal_groups: dict[str, list],
+    subject_kinds: dict[str, str],
+) -> None:
+    existing_kind = subject_kinds.get(
+        proposal.stable_subject_key
+    )
+    if (
+        existing_kind is not None
+        and existing_kind != "open_question"
+    ):
+        raise ReviewIntegrityError(
+            "One stable subject cannot be both an "
+            "Open Question and another Review Item kind."
+        )
+
+    subject_kinds[
+        proposal.stable_subject_key
+    ] = "open_question"
+    proposal_groups.setdefault(
+        proposal.stable_subject_key,
+        [],
+    ).append(proposal)
 
 
 def _register_proposal(
@@ -835,7 +1099,17 @@ def _validate_subject_evidence(
     ] = set()
 
     for proposal in proposals:
-        reference = proposal.proposal_reference
+        reference = (
+            proposal.proposal_reference
+            if isinstance(
+                proposal,
+                (
+                    P9ElementProposal,
+                    P9RelationshipProposal,
+                ),
+            )
+            else None
+        )
 
         if isinstance(
             proposal,
@@ -845,16 +1119,38 @@ def _validate_subject_evidence(
                 "output_text:/candidate_model_elements/"
                 f"{proposal.candidate_id}/source_evidence"
             )
-        else:
+            artifact_reference = (
+                reference.artifact_reference
+            )
+        elif isinstance(
+            proposal,
+            P9RelationshipProposal,
+        ):
             expected_locator = (
                 "output_text:/explicit_source_links/"
                 f"{proposal.link_id}/source_evidence"
+            )
+            artifact_reference = (
+                reference.artifact_reference
+            )
+        elif isinstance(
+            proposal,
+            P9ReviewQuestionProposal,
+        ):
+            expected_locator = proposal.evidence_locator
+            artifact_reference = (
+                proposal.artifact_reference
+            )
+        else:
+            raise ReviewIntegrityError(
+                "Unsupported P9 proposal type in "
+                "source-evidence validation."
             )
 
         expected_source_keys.add(
             (
                 _artifact_reference_key(
-                    reference.artifact_reference
+                    artifact_reference
                 ),
                 expected_locator,
             )
@@ -921,11 +1217,44 @@ def _validate_subject_evidence(
         evidence.consensus_evidence_references
     )
 
+    synthesized_element = (
+        review_item_kind == "element"
+        and stable_subject_key.startswith(
+            "semantic:element:ses-"
+        )
+    )
+    synthesized_relationship = (
+        review_item_kind == "relationship"
+        and stable_subject_key.startswith(
+            "semantic:relationship:srs-"
+        )
+    )
+    semantic_element = (
+        review_item_kind == "element"
+        and stable_subject_key.startswith(
+            "semantic:element:"
+        )
+        and not synthesized_element
+    )
+    semantic_relationship = (
+        review_item_kind == "relationship"
+        and stable_subject_key.startswith(
+            "semantic:relationship:"
+        )
+        and not synthesized_relationship
+    )
+
     if review_item_kind == "element":
         if len(consensus) != 1:
             raise ReviewIntegrityError(
                 "Initial P9 element Review Items require "
                 "exactly one Consensus Evidence Reference."
+            )
+    elif semantic_relationship or synthesized_relationship:
+        if len(consensus) != 1:
+            raise ReviewIntegrityError(
+                "Semantic relationship Review Items require "
+                "exactly one semantic synthesis Evidence Reference."
             )
     elif consensus:
         raise ReviewIntegrityError(
@@ -951,6 +1280,43 @@ def _validate_subject_evidence(
                 "P9 Consensus Evidence uses an "
                 "unexpected evidence role."
             )
+
+        if semantic_element or semantic_relationship:
+            expected_locator = (
+                "semantic_consolidation:/subjects/"
+                f"{stable_subject_key}"
+            )
+            if reference.evidence_locator != expected_locator:
+                raise ReviewIntegrityError(
+                    "Semantic Review Item Consensus Evidence does not "
+                    "identify its exact C2/C3 semantic subject."
+                )
+        elif synthesized_element or synthesized_relationship:
+            subject_kind = (
+                "element"
+                if synthesized_element
+                else "relationship"
+            )
+            review_prefix = (
+                "semantic:element:"
+                if synthesized_element
+                else "semantic:relationship:"
+            )
+            synthesized_subject_id = (
+                stable_subject_key.removeprefix(
+                    review_prefix
+                ).upper()
+            )
+            expected_locator = (
+                "cross_unit_semantic_synthesis:/"
+                f"synthesized_{subject_kind}_subjects/"
+                f"{synthesized_subject_id}"
+            )
+            if reference.evidence_locator != expected_locator:
+                raise ReviewIntegrityError(
+                    "Synthesized Review Item Consensus Evidence does not "
+                    "identify its exact D4 semantic subject."
+                )
 
         _register_global_evidence(
             reference,
@@ -1056,6 +1422,40 @@ def _construct_element_draft(
     )
 
     return content, selections
+
+
+def _construct_open_question_draft(
+    proposals: tuple[
+        P9ReviewQuestionProposal,
+        ...,
+    ],
+) -> tuple[
+    ReviewItemContent,
+    tuple[ReviewDimensionSelection, ...],
+]:
+    representative = proposals[0]
+
+    description = (
+        f"{representative.rationale_summary}\n\n"
+        f"Observed Agent value: {representative.raw_value}\n"
+        f"Review normalization: {representative.normalized_value}\n"
+        f"Exact evidence locator: {representative.evidence_locator}\n"
+        f"Raw structured fragment: {representative.raw_fragment_json}"
+    )
+
+    content = ReviewItemContent(
+        title=representative.title,
+        primary_text=representative.review_question,
+        description=description,
+        information_type="open_question",
+        modality=None,
+        epistemic_status="uncertain",
+        human_rationale=None,
+        human_confidence=None,
+        relationship_representation=None,
+    )
+
+    return content, ()
 
 
 def _construct_relationship_draft(
@@ -1181,6 +1581,8 @@ def _review_item_original_report_locator(
         section = "recognized_elements"
     elif review_item_kind == "relationship":
         section = "explicit_source_links"
+    elif review_item_kind == "open_question":
+        section = "open_questions"
     else:
         raise ReviewIntegrityError(
             "Unsupported Review Item kind for "
@@ -1235,6 +1637,7 @@ def _proposal_sort_key(
     proposal: (
         P9ElementProposal
         | P9RelationshipProposal
+        | P9ReviewQuestionProposal
     ),
 ) -> tuple[
     str,
@@ -1243,6 +1646,18 @@ def _proposal_sort_key(
     str,
     str,
 ]:
+    if isinstance(
+        proposal,
+        P9ReviewQuestionProposal,
+    ):
+        return (
+            proposal.artifact_reference.artifact_id,
+            proposal.agent_id,
+            proposal.persona_id,
+            proposal.question_id,
+            proposal.evidence_content_fingerprint,
+        )
+
     reference = proposal.proposal_reference
 
     return (

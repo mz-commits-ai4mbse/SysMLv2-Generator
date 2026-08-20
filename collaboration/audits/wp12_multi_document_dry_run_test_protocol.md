@@ -42,29 +42,29 @@ run.
 
 Complete before execution.
 
-- [ ] Repository is on intended branch
-- [ ] `HEAD == origin/main`
-- [ ] Working-tree noise is understood and unrelated to the test
-- [ ] Python virtual environment active
+- [x] Repository is on intended branch
+- [x] `HEAD == origin/main`
+- [x] Working-tree noise is understood and unrelated to the test
+- [x] Python virtual environment active
 - [ ] Streamlit application starts
 - [ ] Required LLM credentials/configuration available
-- [ ] Known external SYSIDE CLI status recorded
+- [x] Known external SYSIDE CLI status recorded
 
 Record:
 
 | Field | Value |
 |---|---|
-| Date / time | |
-| Tester | |
-| Git branch | |
-| Test specification baseline commit SHA | |
-| System-under-test commit SHA | |
-| Python version | |
-| Streamlit version | |
+| Date / time | 2026-08-17 09:52 CEST |
+| Tester | Moritz |
+| Git branch | main |
+| Test specification baseline commit SHA | d8ddf7e01b59a796492697bdd8cc88500eb3df56 |
+| System-under-test commit SHA | d8ddf7e01b59a796492697bdd8cc88500eb3df56 |
+| Python version | 3.13.5 |
+| Streamlit version | 1.59.0 |
 | LLM provider | |
 | LLM model | |
 | Application command | `streamlit run app/turing_generator_app.py` |
-| SYSIDE CLI available? | YES / NO |
+| SYSIDE CLI available? | NO — known external blocker, fail-closed |
 | New test Project name | |
 | New test Project ID | |
 
@@ -79,13 +79,13 @@ git diff --check
 
 Expected:
 
-- [ ] Complete repository regression PASS
-- [ ] Only deliberate/known skip(s)
-- [ ] `git diff --check` PASS
+- [x] Complete repository regression PASS
+- [x] Only deliberate/known skip(s)
+- [x] `git diff --check` PASS
 
 Evidence / output reference:
 
--
+- Terminal baseline execution 2026-08-17 09:52 CEST: 5577 passed, 1 skipped in 13.92s; git diff --check PASS; HEAD == origin/main == d8ddf7e01b59a796492697bdd8cc88500eb3df56.
 
 If baseline fails: **STOP. Do not start the formal dry run.**
 

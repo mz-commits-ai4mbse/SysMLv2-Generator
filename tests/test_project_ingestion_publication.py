@@ -17,6 +17,9 @@ from modules.project_ingestion import (
 )
 from modules.project_processing import ProjectProcessingRepository
 from modules.project_sources import ProjectSourceRegistry
+from modules.semantic_consolidation.errors import (
+    SemanticConsolidationIntegrityError,
+)
 from modules.project_workspace import ProjectWorkspace
 
 
@@ -125,9 +128,43 @@ class CompletePipeline:
         )
 
 
+class RecordingSemanticConsolidator:
+    """Record the C2.2 service call or raise a controlled error."""
+
+    def __init__(self, *, error: Exception | None = None) -> None:
+        self.error = error
+        self.calls: list[dict[str, object]] = []
+        self.processing_root: Path | None = None
+        self.event_types_at_call: tuple[str, ...] | None = None
+
+    def __call__(self, **kwargs):
+        self.calls.append(dict(kwargs))
+        if self.processing_root is not None:
+            history = ProjectProcessingRepository(
+                root=self.processing_root
+            ).load_run(
+                kwargs["project_id"],
+                kwargs["processing_run_id"],
+            )
+            self.event_types_at_call = tuple(
+                event.event_type
+                for event in history.events
+            )
+        if self.error is not None:
+            raise self.error
+        return None
+
+
+def _noop_semantic_consolidator(**kwargs):
+    """Keep legacy publication tests focused on publication behavior."""
+    return None
+
+
 def prepare_service(
     tmp_path: Path,
     pipeline: CompletePipeline,
+    *,
+    semantic_consolidator=_noop_semantic_consolidator,
 ):
     repository_root = tmp_path / "repository"
     projects_root = repository_root / "data" / "projects"
@@ -156,6 +193,7 @@ def prepare_service(
         root=projects_root,
         repository_root=repository_root,
         pipeline_runner=pipeline,
+        semantic_consolidator=semantic_consolidator,
         clock=FixedClock(),
     )
     return service, projects_root, repository_root, source
@@ -396,3 +434,175 @@ def test_second_current_run_for_same_source_is_rejected(
         history.manifest.processing_run_id
         for history in scan.run_histories
     ) == ("RUN-000001",)
+
+def test_semantic_consolidator_runs_before_review_publication(
+    tmp_path: Path,
+) -> None:
+    pipeline = CompletePipeline()
+    semantic = RecordingSemanticConsolidator()
+    service, projects_root, repository_root, source = prepare_service(
+        tmp_path,
+        pipeline,
+        semantic_consolidator=semantic,
+    )
+    semantic.processing_root = projects_root
+    secret = "sk-semantic-integration-test"
+    configuration = ProjectIngestionConfiguration(
+        provider="openai",
+        model="gpt-test",
+        dry_run=False,
+    )
+
+    result = service.execute_registered_source(
+        PROJECT_ID,
+        source.source_id,
+        configuration=configuration,
+        api_key=secret,
+    )
+
+    assert result.run_state == "awaiting_review"
+    assert len(pipeline.calls) == 1
+    assert len(semantic.calls) == 1
+    assert semantic.event_types_at_call == (
+        "run_created",
+        "stage_started",
+    )
+
+    call = semantic.calls[0]
+    assert call["project_id"] == PROJECT_ID
+    assert call["processing_run_id"] == "RUN-000001"
+    assert getattr(call["phase_f_result"], "run_id") == (
+        "20260727T180000Z"
+    )
+    assert Path(call["phase_f_root"]).is_dir()
+    assert call["repository_root"] == repository_root
+    assert call["provider"] == "openai"
+    assert call["model"] == "gpt-test"
+    assert call["api_key"] == secret
+    assert call["dry_run"] is False
+    assert (
+        Path(call["phase_f_root"])
+        / "team_agentic_ingestion_run_summary.json"
+    ).is_file()
+
+    history = ProjectProcessingRepository(
+        root=projects_root
+    ).load_run(PROJECT_ID, "RUN-000001")
+    assert tuple(
+        event.event_type
+        for event in history.events
+    ) == (
+        "run_created",
+        "stage_started",
+        "artifact_published",
+        "review_requested",
+    )
+    assert history.events[-1].next_state == "awaiting_review"
+    assert secret not in repr(result)
+    assert secret not in repr(history)
+
+
+def test_semantic_integrity_failure_blocks_publication_and_review(
+    tmp_path: Path,
+) -> None:
+    pipeline = CompletePipeline()
+    semantic = RecordingSemanticConsolidator(
+        error=SemanticConsolidationIntegrityError(
+            "controlled semantic integrity failure"
+        )
+    )
+    service, projects_root, _, source = prepare_service(
+        tmp_path,
+        pipeline,
+        semantic_consolidator=semantic,
+    )
+    semantic.processing_root = projects_root
+
+    result = service.execute_registered_source(
+        PROJECT_ID,
+        source.source_id,
+        configuration=ProjectIngestionConfiguration(),
+    )
+
+    assert len(semantic.calls) == 1
+    assert semantic.event_types_at_call == (
+        "run_created",
+        "stage_started",
+    )
+    assert result.run_state == "failed"
+    assert result.failure_reason == (
+        "semantic_consolidation_integrity_failed"
+    )
+    assert result.artifact_references == ()
+
+    history = ProjectProcessingRepository(
+        root=projects_root
+    ).load_run(PROJECT_ID, "RUN-000001")
+    assert tuple(
+        event.event_type
+        for event in history.events
+    ) == (
+        "run_created",
+        "stage_started",
+        "run_failed",
+    )
+    assert not (
+        projects_root
+        / PROJECT_ID
+        / "runs"
+        / "RUN-000001"
+        / "artifacts"
+    ).exists()
+
+
+def test_semantic_execution_failure_blocks_publication_and_review(
+    tmp_path: Path,
+) -> None:
+    pipeline = CompletePipeline()
+    semantic = RecordingSemanticConsolidator(
+        error=RuntimeError(
+            "controlled semantic execution failure"
+        )
+    )
+    service, projects_root, _, source = prepare_service(
+        tmp_path,
+        pipeline,
+        semantic_consolidator=semantic,
+    )
+    semantic.processing_root = projects_root
+
+    result = service.execute_registered_source(
+        PROJECT_ID,
+        source.source_id,
+        configuration=ProjectIngestionConfiguration(),
+    )
+
+    assert len(semantic.calls) == 1
+    assert semantic.event_types_at_call == (
+        "run_created",
+        "stage_started",
+    )
+    assert result.run_state == "failed"
+    assert result.failure_reason == (
+        "semantic_consolidation_execution_failed"
+    )
+    assert result.artifact_references == ()
+
+    history = ProjectProcessingRepository(
+        root=projects_root
+    ).load_run(PROJECT_ID, "RUN-000001")
+    assert tuple(
+        event.event_type
+        for event in history.events
+    ) == (
+        "run_created",
+        "stage_started",
+        "run_failed",
+    )
+    assert not (
+        projects_root
+        / PROJECT_ID
+        / "runs"
+        / "RUN-000001"
+        / "artifacts"
+    ).exists()

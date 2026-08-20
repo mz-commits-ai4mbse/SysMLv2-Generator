@@ -164,6 +164,7 @@ class P9ElementProposal:
     missing_information: tuple[str, ...]
     rationale_summary: str
     proposal_reference: ReviewProposalReference
+    raw_element_type: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -185,6 +186,28 @@ class P9RelationshipProposal:
 
 
 @dataclass(frozen=True, slots=True)
+class P9ReviewQuestionProposal:
+    """One reviewable semantic uncertainty retained from exact Agent output."""
+
+    stable_subject_key: str
+    question_id: str
+    issue_code: str
+    title: str
+    review_question: str
+    raw_value: str
+    normalized_value: str
+    source_basis: tuple[str, ...]
+    source_statement: str
+    raw_fragment_json: str
+    artifact_reference: ProcessingArtifactReference
+    agent_id: str
+    persona_id: str
+    evidence_locator: str
+    evidence_content_fingerprint: str
+    rationale_summary: str
+
+
+@dataclass(frozen=True, slots=True)
 class P9StructuredProposalSet:
     """All structured element and relationship proposals for one P9 set."""
 
@@ -197,6 +220,10 @@ class P9StructuredProposalSet:
         P9RelationshipProposal,
         ...,
     ]
+    review_question_proposals: tuple[
+        P9ReviewQuestionProposal,
+        ...,
+    ] = ()
 
     @property
     def proposal_count(self) -> int:
@@ -206,6 +233,12 @@ class P9StructuredProposalSet:
             len(self.element_proposals)
             + len(self.relationship_proposals)
         )
+
+    @property
+    def review_question_count(self) -> int:
+        """Return the number of retained semantic uncertainties."""
+
+        return len(self.review_question_proposals)
 
 
 def adapt_p9_agent_proposals(
@@ -717,6 +750,27 @@ def create_relationship_stable_subject_key(
     )
 
 
+def _source_analysis_unit_id_from_wrapper(
+    wrapper: dict[str, Any],
+) -> str | None:
+    """Return the optional SAU binding from a persisted Agent wrapper."""
+
+    value = wrapper.get("source_analysis_unit_id")
+    if value is None:
+        return None
+
+    if (
+        not isinstance(value, str)
+        or re.fullmatch(r"SAU-\d{6}", value) is None
+    ):
+        raise ReviewValidationError(
+            "wrapper source_analysis_unit_id must match "
+            "'SAU-000001' when present."
+        )
+
+    return value
+
+
 def _load_agent_wrapper(
     reference: ProcessingArtifactReference,
     *,
@@ -774,6 +828,9 @@ def _load_agent_wrapper(
     )
 
     run_index = wrapper["run_index"]
+    source_analysis_unit_id = (
+        _source_analysis_unit_id_from_wrapper(wrapper)
+    )
 
     if (
         isinstance(run_index, bool)
@@ -807,6 +864,7 @@ def _load_agent_wrapper(
         "persona_id": persona_id,
         "run_index": run_index,
         "output_text": output_text,
+        "source_analysis_unit_id": source_analysis_unit_id,
     }
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -295,6 +296,38 @@ def _service(
         )
         return "p9-structured-evidence"
 
+    def p9_source_evidence_builder(
+        evidence,
+        proposals,
+        *,
+        repository_root,
+    ):
+        captures["p9_source_evidence"] = (
+            evidence,
+            proposals,
+            repository_root,
+        )
+        return "p9-source-evidence"
+
+    def p9_review_input_projector(
+        evidence,
+        proposals,
+        structured_evidence,
+        *,
+        repository_root,
+    ):
+        captures["p9_semantic_projection"] = (
+            evidence,
+            proposals,
+            structured_evidence,
+            repository_root,
+        )
+        return SimpleNamespace(
+            proposals=proposals,
+            evidence=structured_evidence,
+            used_semantic_projection=False,
+        )
+
     def p4_selector(evidence, **kwargs):
         captures["p4_human_scan"] = kwargs[
             "human_review_scan"
@@ -375,6 +408,12 @@ def _service(
         p9_evidence_selector=p9_selector,
         p9_proposal_adapter=p9_proposal_adapter,
         p9_evidence_builder=p9_evidence_builder,
+        p9_source_evidence_builder=(
+            p9_source_evidence_builder
+        ),
+        p9_review_input_projector=(
+            p9_review_input_projector
+        ),
         p4_evidence_selector=p4_selector,
         p4_evidence_builder=p4_builder,
         initial_review_assembler=assembler,
@@ -435,6 +474,19 @@ def test_open_or_create_review_constructs_exact_initial_bundle():
     assert assembly["review_revision_id"] == "RVR-000001"
     assert assembly["opened_by"] == "Reviewer A"
     assert assembly["timestamp"] == "2026-08-08T07:30:00Z"
+
+    source_evidence = captures[
+        "p9_source_evidence"
+    ]
+    assert source_evidence[1] == "p9-proposals"
+    assert source_evidence[2] == Path("/repository")
+
+    semantic_projection = captures[
+        "p9_semantic_projection"
+    ]
+    assert semantic_projection[1] == "p9-proposals"
+    assert semantic_projection[2] == "p9-source-evidence"
+    assert semantic_projection[3] == Path("/repository")
 
     p4_scan = captures["p4_human_scan"]
     assert p4_scan.decisions == (p4_decision,)

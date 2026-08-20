@@ -35,6 +35,15 @@ from .errors import (
     ReviewWorkspaceError,
 )
 from .evidence_adapter import select_p9_review_evidence_set
+from .open_question_resolution import (
+    CreateElementFromOpenQuestionRequest,
+    ResolveRelationshipEndpointsRequest,
+    create_element_from_open_question_revision,
+    create_relationship_endpoint_resolution_revision,
+)
+from .resolution_candidates import (
+    project_relationship_resolution_candidates,
+)
 from .finalization_authorization import (
     authorize_persisted_review_document_finalization,
 )
@@ -88,9 +97,17 @@ from .p4_evidence_adapter import select_p4_review_evidence_set
 from .p4_evidence_reference_adapter import construct_p4_evidence_references
 from .p9_evidence_reference_adapter import (
     construct_p9_evidence_references,
+    construct_p9_source_evidence_references,
     load_p9_consensus_evidence_facts,
 )
-from .p9_proposal_adapter import adapt_p9_agent_proposals
+from .p9_review_admissibility_adapter import (
+    adapt_p9_agent_proposals_for_review,
+)
+from .semantic_review_projection import (
+    load_semantic_review_consensus_evidence_facts,
+    project_p9_proposals_to_semantic_subjects,
+    project_p9_review_inputs_to_semantic_subjects,
+)
 from .repository import DEFAULT_PROJECTS_ROOT, ReviewWorkspaceRepository
 from .review_document_assembly import assemble_initial_review_document
 from .workflow_types import (
@@ -149,6 +166,10 @@ class ReviewApprovalWorkflowService:
         p9_evidence_selector: Callable | None = None,
         p9_proposal_adapter: Callable | None = None,
         p9_evidence_builder: Callable | None = None,
+        p9_source_evidence_builder: Callable | None = None,
+        p9_review_input_projector: Callable | None = None,
+        p9_proposal_projector: Callable | None = None,
+        p9_semantic_consensus_loader: Callable | None = None,
         p4_evidence_selector: Callable | None = None,
         p4_evidence_builder: Callable | None = None,
         initial_review_assembler: Callable | None = None,
@@ -261,7 +282,7 @@ class ReviewApprovalWorkflowService:
             else p9_evidence_selector
         )
         self._p9_proposal_adapter = (
-            adapt_p9_agent_proposals
+            adapt_p9_agent_proposals_for_review
             if p9_proposal_adapter is None
             else p9_proposal_adapter
         )
@@ -269,6 +290,26 @@ class ReviewApprovalWorkflowService:
             construct_p9_evidence_references
             if p9_evidence_builder is None
             else p9_evidence_builder
+        )
+        self._p9_source_evidence_builder = (
+            construct_p9_source_evidence_references
+            if p9_source_evidence_builder is None
+            else p9_source_evidence_builder
+        )
+        self._p9_review_input_projector = (
+            project_p9_review_inputs_to_semantic_subjects
+            if p9_review_input_projector is None
+            else p9_review_input_projector
+        )
+        self._p9_proposal_projector = (
+            project_p9_proposals_to_semantic_subjects
+            if p9_proposal_projector is None
+            else p9_proposal_projector
+        )
+        self._p9_semantic_consensus_loader = (
+            load_semantic_review_consensus_evidence_facts
+            if p9_semantic_consensus_loader is None
+            else p9_semantic_consensus_loader
         )
         self._p4_evidence_selector = (
             select_p4_review_evidence_set
@@ -329,11 +370,33 @@ class ReviewApprovalWorkflowService:
                 p9_evidence,
                 repository_root=self.repository_root,
             )
-            p9_structured_evidence = self._p9_evidence_builder(
-                p9_evidence,
-                p9_proposals,
-                repository_root=self.repository_root,
+            source_only_evidence = (
+                self._p9_source_evidence_builder(
+                    p9_evidence,
+                    p9_proposals,
+                    repository_root=self.repository_root,
+                )
             )
+            semantic_projection = (
+                self._p9_review_input_projector(
+                    p9_evidence,
+                    p9_proposals,
+                    source_only_evidence,
+                    repository_root=self.repository_root,
+                )
+            )
+
+            if semantic_projection.used_semantic_projection:
+                p9_proposals = semantic_projection.proposals
+                p9_structured_evidence = semantic_projection.evidence
+            else:
+                # Legacy runs without D4 semantic synthesis retain the
+                # existing source-wide Derivation Consensus contract.
+                p9_structured_evidence = self._p9_evidence_builder(
+                    p9_evidence,
+                    p9_proposals,
+                    repository_root=self.repository_root,
+                )
 
             p4_human_scan = self._p4_human_review_scan(
                 self._human_review_repository.scan_decisions(
@@ -1076,17 +1139,51 @@ class ReviewApprovalWorkflowService:
                     history,
                     repository_root=self.repository_root,
                 )
-                proposals = self._p9_proposal_adapter(
+                raw_proposals = self._p9_proposal_adapter(
                     evidence,
                     repository_root=self.repository_root,
                 )
-                consensus_facts = (
-                    load_p9_consensus_evidence_facts(
+                proposals = self._p9_proposal_projector(
+                    evidence,
+                    raw_proposals,
+                    repository_root=self.repository_root,
+                )
+                semantic_consensus_facts = (
+                    self._p9_semantic_consensus_loader(
                         evidence,
-                        proposals,
+                        raw_proposals,
                         repository_root=self.repository_root,
                     )
                 )
+
+                uses_cross_unit_semantic_subjects = any(
+                    proposal.stable_subject_key.startswith(
+                        (
+                            "semantic:element:ses-",
+                            "semantic:relationship:srs-",
+                        )
+                    )
+                    for proposal in (
+                        *proposals.element_proposals,
+                        *proposals.relationship_proposals,
+                    )
+                )
+
+                if uses_cross_unit_semantic_subjects:
+                    # D4 synthesized subjects are the Review authority.
+                    # Their exact consensus/evidence facts come from the
+                    # cross-unit semantic synthesis artifact. Reconstructing
+                    # legacy source-wide P9 consensus here would reintroduce
+                    # the pre-SAU single-consensus contract.
+                    consensus_facts = semantic_consensus_facts
+                else:
+                    # Historical/legacy runs without D4 synthesis retain the
+                    # original P9 consensus reconstruction path.
+                    consensus_facts = load_p9_consensus_evidence_facts(
+                        evidence,
+                        raw_proposals,
+                        repository_root=self.repository_root,
+                    )
                 consensus_by_key = {
                     (
                         fact.artifact_id,
@@ -1247,6 +1344,195 @@ class ReviewApprovalWorkflowService:
             review_document_version_id,
         )
 
+
+    def relationship_resolution_candidates(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+        review_item_id: str,
+    ):
+        """Return exact existing element candidates for one unresolved relationship."""
+
+        view = self.workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        item = self._review_item_from_view(
+            view,
+            review_item_id,
+        )
+        if item.review_item_kind != "open_question":
+            return ()
+
+        try:
+            history = self._processing_repository.load_run(
+                project_id,
+                view.document.processing_run_id,
+            )
+            evidence = self._p9_evidence_selector(
+                history,
+                repository_root=self.repository_root,
+            )
+            proposals = self._p9_proposal_adapter(
+                evidence,
+                repository_root=self.repository_root,
+            )
+        except ReviewWorkspaceError:
+            raise
+        except Exception as exc:
+            raise ReviewReferenceError(
+                "Exact P9 uncertainty evidence could not be reconstructed "
+                "for relationship resolution."
+            ) from exc
+
+        questions = tuple(
+            question
+            for question in getattr(
+                proposals,
+                "review_question_proposals",
+                (),
+            )
+            if (
+                question.stable_subject_key
+                == item.stable_subject_key
+                and question.issue_code
+                == "unresolved_relationship_endpoint"
+            )
+        )
+        if not questions:
+            return ()
+
+        projections = tuple(
+            project_relationship_resolution_candidates(
+                question,
+                view.revision.review_items,
+            )
+            for question in sorted(
+                questions,
+                key=lambda value: (
+                    value.artifact_reference.artifact_id,
+                    value.evidence_locator,
+                    value.question_id,
+                ),
+            )
+        )
+
+        identities = {
+            (
+                projection.source_endpoint.strip().casefold(),
+                projection.target_endpoint.strip().casefold(),
+                projection.semantic_intent.strip().casefold(),
+            )
+            for projection in projections
+        }
+        if len(identities) != 1:
+            raise ReviewIntegrityError(
+                "One Open Question maps to conflicting unresolved "
+                "relationship identities."
+            )
+
+        return projections
+
+    def create_element_from_open_question(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+        review_item_id: str,
+        *,
+        request: CreateElementFromOpenQuestionRequest,
+        actor_identity: str,
+    ) -> ReviewApprovalWorkspaceView:
+        """Persist one explicit Human-created element from exact question evidence."""
+
+        view = self._draft_workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        reviewer = self._reviewer_identity(actor_identity)
+        occupied, allocated = self._allocate_project_review_item_ids(
+            project_id,
+            1,
+        )
+
+        revision = create_element_from_open_question_revision(
+            view.revision,
+            open_question_item_id=review_item_id,
+            request=request,
+            new_review_item_id=allocated[0],
+            new_review_revision_id=(
+                self._review_repository.next_revision_id(
+                    project_id,
+                    review_document_id,
+                    review_document_version_id,
+                )
+            ),
+            actor_identity=reviewer,
+            timestamp=self._timestamp(),
+        )
+        self._assert_project_review_item_allocation_unchanged(
+            project_id,
+            occupied,
+        )
+        self._review_repository.append_revision(revision)
+        return self.workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+
+    def resolve_relationship_open_question(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+        review_item_id: str,
+        *,
+        request: ResolveRelationshipEndpointsRequest,
+        actor_identity: str,
+    ) -> ReviewApprovalWorkspaceView:
+        """Persist explicit Human endpoint binding as a new relationship Review Item."""
+
+        view = self._draft_workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        reviewer = self._reviewer_identity(actor_identity)
+        occupied, allocated = self._allocate_project_review_item_ids(
+            project_id,
+            1,
+        )
+
+        revision = create_relationship_endpoint_resolution_revision(
+            view.revision,
+            open_question_item_id=review_item_id,
+            request=request,
+            new_relationship_review_item_id=allocated[0],
+            new_review_revision_id=(
+                self._review_repository.next_revision_id(
+                    project_id,
+                    review_document_id,
+                    review_document_version_id,
+                )
+            ),
+            actor_identity=reviewer,
+            timestamp=self._timestamp(),
+        )
+        self._assert_project_review_item_allocation_unchanged(
+            project_id,
+            occupied,
+        )
+        self._review_repository.append_revision(revision)
+        return self.workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+
     def proposal_details(
         self,
         project_id: str,
@@ -1278,8 +1564,13 @@ class ReviewApprovalWorkflowService:
                 history,
                 repository_root=self.repository_root,
             )
-            proposals = self._p9_proposal_adapter(
+            raw_proposals = self._p9_proposal_adapter(
                 evidence,
+                repository_root=self.repository_root,
+            )
+            proposals = self._p9_proposal_projector(
+                evidence,
+                raw_proposals,
                 repository_root=self.repository_root,
             )
             return build_review_proposal_details(
