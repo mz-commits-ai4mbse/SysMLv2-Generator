@@ -1,5 +1,79 @@
 # WP-12 Multi-Document End-to-End Dry-Run Test Protocol
 
+<!-- BEGIN WP12 EXECUTION STATUS 2026-08-24 -->
+## 2026-08-24 — Formal execution / recovery status
+
+### Result semantics
+
+The WP-12 test uses the following result vocabulary from this checkpoint onward:
+
+```text
+PASS
+PASS WITH FINDINGS
+FAILED WITH BLOCKER
+BLOCKER RESOLVED -> RETEST -> PASS / PASS WITH FINDINGS
+```
+
+Blockers are part of the test evidence. The affected Project/Run is not restarted
+merely to erase the failure; after correction, the affected gate is retested and the
+blocker remains documented.
+
+### Formal Stage-A result
+
+```text
+Test:    WP12-E2E-DRY-001
+Project: 308131
+Result:  FAILED WITH BLOCKER
+Blocker: BLK-002 — Cross-Source Processing Artifact Identity Collision
+```
+
+The earlier wording `IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION`
+remains historical evidence but is superseded as the current result classification.
+
+### R4c Single-Source recovery / live E2E evidence
+
+```text
+Project: 120412
+Run:     RUN-000001
+Attempt: ATT-000001
+```
+
+Gate history:
+
+| Gate | Initial result | Current result |
+|---|---|---|
+| Processing -> Human Review | PASS WITH FINDINGS | PASS WITH FINDINGS |
+| Subject + Relationship Review | PASS WITH FINDINGS | PASS WITH FINDINGS |
+| Finalization | PASS WITH FINDINGS | PASS WITH FINDINGS |
+| Approved Input Promotion | FAILED WITH BLOCKER — BLK-004 | PASS — blocker resolved |
+| Approved Engineering Information -> Phase H | FAILED WITH BLOCKER — BLK-005 | PASS WITH FINDINGS — blocker resolved |
+| Phase-H Readiness / Coverage | PASS WITH FINDINGS | PASS WITH FINDINGS |
+| LLM-assisted Model Proposal generation | FAILED WITH BLOCKER — BLK-006 | FAILED WITH BLOCKER |
+
+Current overall WP-12 result:
+
+```text
+FAILED WITH BLOCKER
+active: BLK-002, BLK-006
+```
+
+Canonical finding register:
+
+`collaboration/audits/wp12_findings.md`
+
+Current register coverage:
+
+```text
+BLK-001 .. BLK-006
+SEM-001 .. SEM-011
+OBS-001 .. OBS-030
+PASS-001 .. PASS-010
+```
+
+A future WP-12 closeout may be `PASS WITH FINDINGS` once all blocking gates have
+passed while non-blocking findings remain explicitly documented.
+<!-- END WP12 EXECUTION STATUS 2026-08-24 -->
+
 ## 1. Test identification
 
 **Test ID:** WP12-E2E-DRY-001

@@ -25,6 +25,9 @@ from modules.model_candidates.hybrid_deriver import (
 from modules.model_candidates.llm_projection_executor import (
     LLMProjectionBatchExecutor,
 )
+from modules.model_candidates.modeling_persona_executor import (
+    ModelingPersonaProjectionExecutor,
+)
 from modules.project_processing.types import ProcessingArtifactReference
 from modules.project_workspace.types import FrameworkTemplateReference
 
@@ -380,3 +383,203 @@ def test_unknown_relationship_semantic_can_be_projected_without_overwriting_upst
         == "mystery_relation"
     )
     assert "LLM-assisted target projection" in draft.derivation_rationale
+
+
+class PersonaProjectionRunner:
+    def __init__(self, *, divergent_agent_id=None):
+        self.calls = []
+        self.divergent_agent_id = divergent_agent_id
+
+    def __call__(self, **kwargs):
+        self.calls.append(kwargs)
+        payload = json.loads(kwargs["input_text"])
+        agent_ids = (
+            "AGENT_MODELING_RULES_FOCUSED_ADVISOR",
+            "AGENT_MODELING_ARCHITECTURE_FOCUSED_ADVISOR",
+            "AGENT_MODELING_CONSERVATIVE_REVIEWER",
+        )
+        results = []
+
+        for index, agent_id in enumerate(agent_ids, start=1):
+            proposals = []
+            for item in payload["items"]:
+                options = item["allowed_target_options"]
+                selected_index = 0
+                if (
+                    agent_id == self.divergent_agent_id
+                    and len(options) > 1
+                ):
+                    selected_index = 1
+
+                proposals.append(
+                    {
+                        "approved_input_id": item["approved_input_id"],
+                        "result": "proposed_mapping",
+                        "selected_rule_id": (
+                            options[selected_index]["rule_id"]
+                        ),
+                        "alternative_rule_ids": [],
+                        "rationale": (
+                            "Selected from identical profile-controlled "
+                            "target options."
+                        ),
+                    }
+                )
+
+            results.append(
+                AgentRunResult(
+                    agent_id=agent_id,
+                    task_name=(
+                        "Assess target-model projection of "
+                        "Approved Engineering Information"
+                    ),
+                    run_index=1,
+                    provider=kwargs["provider"],
+                    model=kwargs["model"],
+                    output_text=json.dumps(
+                        {"proposals": proposals}
+                    ),
+                    output_path=(
+                        kwargs["output_dir"]
+                        / f"persona_{index}.json"
+                    ),
+                    response_id=f"resp_persona_{index}",
+                    usage={
+                        "input_tokens": 50,
+                        "output_tokens": 10,
+                    },
+                    status="completed",
+                )
+            )
+
+        return results
+
+
+def _persona_hybrid(
+    profile,
+    rules,
+    runner,
+    tmp_path,
+    *,
+    escalation_ids=(),
+):
+    executor = ModelingPersonaProjectionExecutor(
+        project_root=Path("."),
+        batch_size=8,
+        team_runner=runner,
+    )
+    return HybridModelCandidateDeriver(
+        profile=profile,
+        derivation_rules_reference=rules,
+        executor=executor,
+        output_dir=tmp_path,
+        review_escalation_approved_input_ids=(
+            escalation_ids
+        ),
+    )
+
+
+def test_modeling_personas_unanimous_mapping_generates_candidate(tmp_path):
+    item = _element(
+        1,
+        subject="subject.function",
+        title="Function",
+        classification="Function",
+        framework=None,
+        information_type="function",
+    )
+    profile, rules, request = _request((item,))
+    runner = PersonaProjectionRunner()
+    deriver = _persona_hybrid(
+        profile,
+        rules,
+        runner,
+        tmp_path,
+    )
+
+    plan = deriver.derive(request)
+
+    assert len(runner.calls) == 1
+    assert len(plan.element_drafts) == 1
+    assert len(deriver.last_invocations) == 1
+    invocation = deriver.last_invocations[0]
+    assert len(invocation.supporting_agent_ids) == 3
+    assert len(invocation.supporting_response_fingerprints) == 3
+    assert (
+        invocation.response.proposals[0].result
+        == "proposed_mapping"
+    )
+
+
+def test_modeling_persona_variance_remains_unresolved(tmp_path):
+    item = _element(
+        1,
+        subject="subject.mystery",
+        title="Mystery",
+        classification="Mystery",
+        framework=None,
+        information_type="mystery",
+    )
+    profile, rules, request = _request((item,))
+    runner = PersonaProjectionRunner(
+        divergent_agent_id=(
+            "AGENT_MODELING_ARCHITECTURE_FOCUSED_ADVISOR"
+        )
+    )
+    deriver = _persona_hybrid(
+        profile,
+        rules,
+        runner,
+        tmp_path,
+    )
+
+    with pytest.raises(
+        ModelCandidateDerivationError,
+        match="preserved unresolved engineering information",
+    ):
+        deriver.derive(request)
+
+    assert len(runner.calls) == 1
+    proposal = (
+        deriver.last_invocations[0].response.proposals[0]
+    )
+    assert proposal.result == "ambiguous"
+    assert len(proposal.alternative_rule_ids) >= 2
+
+
+def test_review_escalation_reconsiders_mapped_input_with_personas(
+    tmp_path,
+):
+    item = _element(
+        1,
+        subject="subject.requirement",
+        title="Requirement",
+        classification="System Requirement",
+        framework="System Requirements",
+        information_type="requirement",
+    )
+    profile, rules, request = _request((item,))
+    runner = PersonaProjectionRunner()
+    deriver = _persona_hybrid(
+        profile,
+        rules,
+        runner,
+        tmp_path,
+        escalation_ids=("AIN-000001",),
+    )
+
+    plan = deriver.derive(request)
+
+    assert len(plan.element_drafts) == 1
+    assert len(runner.calls) == 1
+
+    payload = json.loads(runner.calls[0]["input_text"])
+    sent = payload["items"][0]
+    assert sent["approved_input_id"] == "AIN-000001"
+    assert sent["review_escalation"] is True
+    assert sent["deterministic"]["disposition"] == "mapped"
+    assert len(sent["allowed_target_options"]) > 1
+    assert (
+        "LLM-assisted target projection"
+        in plan.element_drafts[0].derivation_rationale
+    )

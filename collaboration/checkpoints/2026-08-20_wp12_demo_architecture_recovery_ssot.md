@@ -121,41 +121,62 @@ Review Item count is diagnostic only.
 
 # 4. Architecture Recovery Direction
 
-Proposed decision:
+Accepted decision:
 
 ```text
 collaboration/decisions/
 ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
 ```
 
+Accepted on 2026-08-21 after the Source-to-first-Human-Review responsibility audit.
+
 Core target:
 
 ```text
 REFERENCE KNOWLEDGE
-Apollo 11 / SysML v2 / Modeling Guidance
+examples / SysML v2 / Modeling Guidance
         │ guidance only
         ▼
 ENGINEERING SOURCE
         ↓
+Register Source
+        ↓
+Prepare Source
+        ↓
 Deterministic Source Projection
         ↓
-Find Source-Grounded Evidence
+Specialized Evidence Detection Agent
+        ↓
+Source-Grounded Evidence
 "digital text marker"
         ↓
-Anchored Evidence Units
-        ↓
-Persona Interpretation / Classification
- P1            P2            P3
+ ┌──────┼──────┐
+ ▼      ▼      ▼
+P1     P2     P3
+Interpret / Classify the SAME Evidence
+ └──────┼──────┘
         ↓
 Consensus / Variance
         ↓
 Optional Semantic Normalization / Ontology Alignment
         ↓
-Human Review
+Human Engineering Review
         ↓
 Approved Engineering Information
         ↓
-Architecture Derivation
+ ┌──────┼──────┐
+ ▼      ▼      ▼
+Model  Model  Model
+Persona Persona Persona
+ └──────┼──────┘
+        ↓
+Architecture / Model Candidate Derivation
+        ↓
+Candidate Consolidation
+        ↓
+Model Candidate Review
+        ↓
+Approved Internal Model
         ↓
 SysML v2
 ```
@@ -164,12 +185,17 @@ Critical invariants:
 
 ```text
 Reference Knowledge ≠ Engineering Evidence
+Source Registration ≠ LLM Source Preparation.
+Evidence Detection ≠ Persona Interpretation.
+Evidence identity exists before persona branching.
 Personas interpret common source evidence.
 Personas/runs shall not multiply Engineering Subjects.
 Review Item count is a diagnostic, not an optimization objective.
 Ontology/terminology alignment is a supporting service.
 AI-generated interpretation ≠ Approved Engineering Information.
 Architecture Derivation follows Human Engineering Review/Approval.
+Model derivation may use a second persona branch after approval.
+The exact downstream modeling personas remain an implementation/evaluation decision.
 ```
 
 P9/D3/D4 shall be audited by legitimate responsibility:
@@ -435,54 +461,32 @@ UX cleanup is secondary to BLK-003 recovery on the demo critical path.
 
 # 12. Exact Next Action
 
-No code change has yet been accepted for ADR-027.
+The Source-to-first-Human-Review responsibility audit is complete and the
+resulting ADR-027 architecture is accepted.
 
-The next chat shall begin with a read-only responsibility/path audit from Engineering Source to the first Human Engineering Review.
-
-Inspect at least:
-
-```text
-collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md
-collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md
-collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
-
-modules/semantic_extraction/
-modules/semantic_consensus/
-modules/information_units/
-modules/review_workspace/p9_proposal_adapter.py
-modules/review_workspace/p9_review_item_builder.py
-
-agents/roles/legacy_data_interpreter.md
-agents/roles/derivation_assessor.md
-agents/personas/legacy_interpretation/
-agents/personas/derivation_assessment/
-teams/ingestion/
-```
-
-Also inspect the actual local integration path that invokes the LLM and materializes Human Review.
-
-Produce:
+Implementation proceeds in bounded recovery slices:
 
 ```text
-CURRENT PATH
-component by component
-
-FOR EACH COMPONENT
-- input
-- output
-- source/reference boundary
-- source-anchor handling
-- subject-identity responsibility
-- persona responsibility
-- whether it creates new semantic/model content
-- downstream dependency
-- KEEP / MOVE / REDUCE / BYPASS / REMOVE recommendation
-
-THEN
-minimal corrected target path
+R1  Architecture/Thesis documentation alignment
+R2  Source-grounded Evidence contract + persistence
+R3  Specialized Evidence Detection Agent + Source Preparation integration
+R4  Shared-Evidence persona interpretation + evidence-centered consensus/review
+R5  Post-approval model derivation + downstream persona evaluation
 ```
 
-Do not implement until that audit is reviewed.
+Immediate implementation rule:
+
+```text
+Source Registry remains pure Source authority.
+Source Preparation owns Source Projection + Evidence Detection.
+The UI may combine registration/preparation for convenience.
+The detector is one specialized persona-independent LLM task.
+Interpretation personas consume the same persisted Evidence IDs.
+No pre-review model derivation is allowed on the corrected active path.
+```
+
+Do not trigger another real LLM improvement run until R3/R4 materially change
+the active Source-to-Human-Review path.
 
 ---
 

@@ -1,5 +1,46 @@
 # Current Project State
 
+<!-- BEGIN SSOT UPDATE 2026-08-24 WP12 LIVE E2E -->
+## WP-12 Live E2E status — 2026-08-24
+
+WP-12 is currently classified `FAILED WITH BLOCKER`.
+
+Active blockers:
+
+```text
+BLK-002  Cross-Source Processing Artifact Identity Collision
+BLK-006  LLM-assisted Model Proposal generation fails in live E2E
+```
+
+R4c semantic recovery has been implemented and live single-source validated through
+Phase-H readiness on Project `120412`. The live path successfully reached Human
+Review, finalization, 17 active Approved Inputs and Approved Engineering Information
+with 21 accepted semantic Relationships.
+
+Resolved test blockers:
+
+```text
+BLK-004 -> resolved -> live retest PASS
+BLK-005 -> resolved -> live retest PASS WITH FINDINGS
+```
+
+Latest full repository regression:
+
+```text
+5889 passed, 1 skipped in 15.28s
+git diff --check PASS
+```
+
+Canonical WP-12 evidence:
+
+- `collaboration/checkpoints/2026-08-24_wp12_r4c_live_e2e_ssot.md`
+- `collaboration/audits/wp12_findings.md`
+- `collaboration/audits/wp12_multi_document_dry_run_test_protocol.md`
+
+Immediate next action: diagnose `BLK-006`; do not retry Model Proposal generation
+until the exact failure path and any partial artifact state are known.
+<!-- END SSOT UPDATE 2026-08-24 WP12 LIVE E2E -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-20 -->
 ## SSOT Delta — 2026-08-20: WP-12 Demo Readiness and Architecture Recovery
 

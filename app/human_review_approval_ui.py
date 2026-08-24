@@ -351,7 +351,7 @@ def _render_review_queue(
             type=(
                 "primary"
                 if view.decisions_required > 0
-                else None
+                else "secondary"
             ),
         ):
             st.session_state[

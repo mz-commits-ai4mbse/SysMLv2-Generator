@@ -72,6 +72,7 @@ class ProjectBoundIngestionWorkResult:
     projection_result: str | None
     phase_f_run_id: str | None
     failure_reason: str | None = None
+    workflow_contract: str = "legacy_phase_f"
 
 
 @dataclass(frozen=True, slots=True)

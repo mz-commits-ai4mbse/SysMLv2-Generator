@@ -51,10 +51,7 @@ def create_manifest_from_review_item(
             item_assessment.approved_input_kind
         ),
         canonical_content=canonical_content,
-        selected_classification=_single_dimension_value(
-            item,
-            "classification",
-        ),
+        selected_classification=_approved_classification(item),
         selected_framework_assignment=_single_dimension_value(
             item,
             "framework_assignment",
@@ -165,6 +162,46 @@ def _approved_relationship(
         profile_validation_fingerprint=(
             relationship.validation_fingerprint
         ),
+    )
+
+
+def _approved_classification(
+    item: ReviewItem,
+) -> str | None:
+    """Bridge legacy scalar and R4c semantic classification."""
+
+    selection = next(
+        (
+            value
+            for value in item.dimension_selections
+            if value.dimension == "classification"
+        ),
+        None,
+    )
+
+    if selection is None:
+        return None
+
+    values = selection.selected_values
+    if len(values) == 1:
+        return values[0]
+
+    semantic_values = tuple(
+        value
+        for value in (
+            item.current_content.information_type,
+            item.current_content.modality,
+            item.current_content.epistemic_status,
+        )
+        if value is not None
+    )
+
+    if values == semantic_values:
+        return None
+
+    raise ApprovedInputIntegrityError(
+        "Review dimension 'classification' is neither one legacy scalar "
+        "classification nor the exact reviewed semantic classification tuple."
     )
 
 

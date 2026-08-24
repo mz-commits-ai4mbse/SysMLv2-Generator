@@ -1,5 +1,32 @@
 # Roadmap
 
+<!-- BEGIN ROADMAP UPDATE 2026-08-24 WP12 LIVE E2E -->
+## Current WP-12 execution status — 2026-08-24
+
+```text
+WP-12 End-to-End Demo Hardening / Verification     ACTIVE
+  formal multi-source Stage-A                      FAILED WITH BLOCKER — BLK-002
+  R4c single-source semantic recovery              LIVE VALIDATED to Phase-H readiness
+  Approved Input promotion                         PASS after BLK-004 correction
+  AEI -> Phase-H handoff                           PASS after BLK-005 correction
+  Model Proposal generation                        FAILED WITH BLOCKER — BLK-006
+
+NEXT
+  diagnose + correct BLK-006
+  -> same-project generation retest
+  -> Candidate Review
+  -> Internal Model
+  -> SysML v2 downstream
+
+SEPARATE OPEN FORMAL BLOCKER
+  BLK-002 multi-source identity
+```
+
+WP-12 closeout is not permitted while either active blocker remains open. Once all
+blocking gates pass, remaining non-blocking findings may be accepted as
+`PASS WITH FINDINGS`.
+<!-- END ROADMAP UPDATE 2026-08-24 WP12 LIVE E2E -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-20 -->
 ## Roadmap Delta — 2026-08-20
 

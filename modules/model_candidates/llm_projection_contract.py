@@ -35,6 +35,9 @@ Rules:
 - ambiguous: selected_rule_id must be null; provide at least two allowed alternatives.
 - unmapped: selected_rule_id must be null; alternatives must be empty.
 - Prefer unmapped over forcing engineering information into an unsuitable target type.
+- `review_escalation=true` means Human Model Review rejected a prior Candidate;
+  reconsider the mapping using only the supplied target options.
+- A prior deterministic mapping is not authoritative during explicit review escalation.
 - Do not approve anything.
 - Do not generate SysML v2 code.
 - Do not expose chain-of-thought; provide only a short rationale.
@@ -67,6 +70,7 @@ class LLMProjectionInputItem:
     deterministic_disposition: str
     deterministic_reason_code: str
     deterministic_candidate_rule_ids: tuple[str, ...]
+    review_escalation: bool
     allowed_target_options: tuple[LLMProjectionTargetOption, ...]
 
 
@@ -102,13 +106,28 @@ def build_llm_projection_request(
     coverage: ModelCandidateProjectionCoverage,
     profile: ModelStructureProfile,
     approved_input_ids: tuple[str, ...] | None = None,
+    explicit_escalation_approved_input_ids: tuple[str, ...] = (),
     max_batch_size: int = DEFAULT_LLM_PROJECTION_BATCH_SIZE,
 ) -> LLMProjectionRequest:
     _validate_profile_binding(request, coverage, profile)
     _validate_batch_size(max_batch_size)
 
-    unresolved_ids = coverage.unresolved_approved_input_ids
-    selected_ids = unresolved_ids if approved_input_ids is None else approved_input_ids
+    escalation_ids = _validate_explicit_escalation_ids(
+        request=request,
+        coverage=coverage,
+        values=explicit_escalation_approved_input_ids,
+    )
+    eligible_ids = tuple(
+        sorted(
+            set(coverage.unresolved_approved_input_ids)
+            | set(escalation_ids)
+        )
+    )
+    selected_ids = (
+        eligible_ids
+        if approved_input_ids is None
+        else approved_input_ids
+    )
 
     if not isinstance(selected_ids, tuple):
         raise ModelCandidateDerivationError(
@@ -116,7 +135,7 @@ def build_llm_projection_request(
         )
     if not selected_ids:
         raise ModelCandidateDerivationError(
-            "LLM projection request requires at least one unresolved input."
+            "LLM projection request requires at least one eligible input."
         )
     if len(selected_ids) > max_batch_size:
         raise ModelCandidateDerivationError(
@@ -127,21 +146,31 @@ def build_llm_projection_request(
             "LLM projection request contains duplicate Approved Input IDs."
         )
 
-    outside = set(selected_ids) - set(unresolved_ids)
+    outside = set(selected_ids) - set(eligible_ids)
     if outside:
         raise ModelCandidateDerivationError(
             "LLM projection request may contain only ambiguous/unmapped "
-            f"Approved Inputs: {sorted(outside)}."
+            "Approved Inputs or explicit Human-review escalation targets: "
+            f"{sorted(outside)}."
         )
 
-    input_by_id = {item.approved_input_id: item for item in request.approved_inputs}
-    coverage_by_id = {item.approved_input_id: item for item in coverage.entries}
+    input_by_id = {
+        item.approved_input_id: item
+        for item in request.approved_inputs
+    }
+    coverage_by_id = {
+        item.approved_input_id: item
+        for item in coverage.entries
+    }
 
     items = tuple(
         _build_input_item(
             approved_input=input_by_id[approved_input_id],
             disposition=coverage_by_id[approved_input_id],
             profile=profile,
+            review_escalation=(
+                approved_input_id in set(escalation_ids)
+            ),
         )
         for approved_input_id in sorted(selected_ids)
     )
@@ -242,16 +271,30 @@ def parse_llm_projection_response(
     )
 
 
-def _build_input_item(*, approved_input, disposition, profile):
-    if disposition.disposition not in {"ambiguous", "unmapped"}:
+def _build_input_item(
+    *,
+    approved_input,
+    disposition,
+    profile,
+    review_escalation,
+):
+    if (
+        disposition.disposition not in {"ambiguous", "unmapped"}
+        and not (
+            review_escalation
+            and disposition.disposition == "mapped"
+        )
+    ):
         raise ModelCandidateDerivationError(
-            "Only ambiguous/unmapped inputs may enter the LLM contract."
+            "Only ambiguous/unmapped inputs or explicit mapped "
+            "review-escalation targets may enter the LLM contract."
         )
 
     options = _allowed_target_options(
         approved_input_kind=approved_input.approved_input_kind,
         disposition=disposition,
         profile=profile,
+        review_escalation=review_escalation,
     )
     if not options:
         raise ModelCandidateDerivationError(
@@ -272,22 +315,45 @@ def _build_input_item(*, approved_input, disposition, profile):
         reviewed_framework_assignment=approved_input.selected_framework_assignment,
         deterministic_disposition=disposition.disposition,
         deterministic_reason_code=disposition.reason_code,
-        deterministic_candidate_rule_ids=disposition.candidate_rule_ids,
+        deterministic_candidate_rule_ids=tuple(
+            sorted(
+                set(disposition.candidate_rule_ids)
+                | (
+                    {disposition.selected_rule_id}
+                    if (
+                        review_escalation
+                        and disposition.selected_rule_id is not None
+                    )
+                    else set()
+                )
+            )
+        ),
+        review_escalation=review_escalation,
         allowed_target_options=options,
     )
 
 
-def _allowed_target_options(*, approved_input_kind, disposition, profile):
+def _allowed_target_options(
+    *,
+    approved_input_kind,
+    disposition,
+    profile,
+    review_escalation,
+):
     if approved_input_kind == "element_statement":
         areas = {item.model_area_id: item for item in profile.model_areas}
         all_rules = {
             item.rule_id: item for item in profile.element_derivation_rules
         }
         rule_ids = (
-            disposition.candidate_rule_ids
-            if disposition.disposition == "ambiguous"
-            and disposition.candidate_rule_ids
-            else tuple(sorted(all_rules))
+            tuple(sorted(all_rules))
+            if review_escalation
+            else (
+                disposition.candidate_rule_ids
+                if disposition.disposition == "ambiguous"
+                and disposition.candidate_rule_ids
+                else tuple(sorted(all_rules))
+            )
         )
         options = []
         for rule_id in rule_ids:
@@ -469,6 +535,53 @@ def _validate_profile_binding(request, coverage, profile):
         )
 
 
+def _validate_explicit_escalation_ids(
+    *,
+    request,
+    coverage,
+    values,
+):
+    if not isinstance(values, tuple):
+        raise ModelCandidateDerivationError(
+            "explicit_escalation_approved_input_ids must be a tuple."
+        )
+    if len(values) != len(set(values)):
+        raise ModelCandidateDerivationError(
+            "explicit_escalation_approved_input_ids must be unique."
+        )
+
+    request_ids = {
+        item.approved_input_id
+        for item in request.approved_inputs
+    }
+    coverage_by_id = {
+        item.approved_input_id: item
+        for item in coverage.entries
+    }
+
+    outside = set(values) - request_ids
+    if outside:
+        raise ModelCandidateDerivationError(
+            "Explicit review escalation references Approved Inputs "
+            f"outside the derivation snapshot: {sorted(outside)}."
+        )
+
+    invalid = tuple(
+        sorted(
+            value
+            for value in values
+            if coverage_by_id[value].disposition != "mapped"
+        )
+    )
+    if invalid:
+        raise ModelCandidateDerivationError(
+            "Explicit review escalation may add only deterministically "
+            f"mapped Approved Inputs: {list(invalid)}."
+        )
+
+    return tuple(sorted(values))
+
+
 def _validate_batch_size(value):
     if (
         not isinstance(value, int)
@@ -498,6 +611,7 @@ def _input_item_to_dict(item):
             "reason": item.deterministic_reason_code,
             "candidate_rule_ids": list(item.deterministic_candidate_rule_ids),
         },
+        "review_escalation": item.review_escalation,
         "allowed_target_options": [
             _target_option_to_dict(option)
             for option in item.allowed_target_options

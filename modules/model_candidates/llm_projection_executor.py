@@ -43,10 +43,14 @@ class LLMProjectionInvocation:
     usage: dict
     output_path: Path
     status: str | None
+    supporting_response_fingerprints: tuple[str, ...] = ()
+    supporting_agent_ids: tuple[str, ...] = ()
 
 
 class LLMProjectionBatchExecutor:
     """Execute unresolved target-projection work serially and without retries."""
+
+    agent_reference = "agents/target_projection_mapper.md"
 
     def __init__(
         self,
@@ -99,16 +103,22 @@ class LLMProjectionBatchExecutor:
         coverage: ModelCandidateProjectionCoverage,
         profile: ModelStructureProfile,
         output_dir: Path,
+        explicit_escalation_approved_input_ids: tuple[str, ...] = (),
     ) -> tuple[LLMProjectionInvocation, ...]:
-        """Execute only unresolved inputs in bounded, serial batches."""
+        """Execute eligible target-projection work in bounded serial batches."""
 
-        unresolved_ids = coverage.unresolved_approved_input_ids
-        if not unresolved_ids:
+        eligible_ids = tuple(
+            sorted(
+                set(coverage.unresolved_approved_input_ids)
+                | set(explicit_escalation_approved_input_ids)
+            )
+        )
+        if not eligible_ids:
             return ()
 
         batches = tuple(
-            unresolved_ids[index : index + self.batch_size]
-            for index in range(0, len(unresolved_ids), self.batch_size)
+            eligible_ids[index : index + self.batch_size]
+            for index in range(0, len(eligible_ids), self.batch_size)
         )
         if len(batches) > self.max_calls_per_run:
             raise ModelCandidateDerivationError(
@@ -135,6 +145,9 @@ class LLMProjectionBatchExecutor:
                 coverage=coverage,
                 profile=profile,
                 approved_input_ids=approved_input_ids,
+                explicit_escalation_approved_input_ids=(
+                    explicit_escalation_approved_input_ids
+                ),
                 max_batch_size=self.batch_size,
             )
             input_text = llm_projection_request_to_compact_json(llm_request)

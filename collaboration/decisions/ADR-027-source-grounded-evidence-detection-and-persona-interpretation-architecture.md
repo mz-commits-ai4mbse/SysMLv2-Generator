@@ -2,7 +2,11 @@
 
 Status
 
-**Proposed — architecture direction captured for recovery; detailed implementation/disposition remains subject to the current-pipeline audit.**
+**Accepted — responsibility-boundary recovery accepted after Source-to-Human-Review audit. Implementation remains incremental and regression-controlled.**
+
+Accepted
+
+2026-08-21
 
 Date
 
@@ -76,6 +80,66 @@ engineering information mean?"
 ```
 
 Detection establishes the common source-grounded evidence space. Persona interpretation operates on that common evidence space.
+
+### 1a. Evidence Detection Is a Specialized Persona-Independent Agent Task
+
+Evidence Detection is an explicit LLM-backed preparation task with one narrowly
+bounded responsibility:
+
+```text
+Engineering Source
++ project/source identity
++ source projection / processing scope
++ reference examples and detection guidance
+        ↓
+Specialized Evidence Detection Agent
+        ↓
+exact source-grounded evidence spans
+```
+
+The detector may use curated repository examples, modeling guidance and other
+reference knowledge to learn what kinds of engineering information are worth
+marking. Those inputs remain `context_only` guidance. They shall never become
+positive Project evidence.
+
+The detector shall not:
+
+- create requirements, actors, functions, interfaces or other model elements,
+- perform architecture derivation,
+- assign final engineering meaning on behalf of interpretation personas,
+- create multiple evidence identities merely because several personas or runs
+  will later consume the evidence.
+
+Detector output must be independently verifiable against the Source Projection.
+At minimum, every accepted evidence span is bound by exact source anchors and an
+exact source excerpt.
+
+### 1b. Source Registration and Source Preparation Are Architecturally Separate
+
+The Source Registry remains the immutable authority for Project Source identity.
+LLM execution shall not be added to the Source Registry contract itself.
+
+The system distinguishes:
+
+```text
+REGISTER SOURCE
+    ↓
+PREPARE SOURCE
+    ↓
+Source Projection
+    ↓
+Evidence Detection
+    ↓
+SOURCE READY FOR INTERPRETATION
+```
+
+The UI may present registration and preparation as one convenient user action.
+That is a UX choice, not a collapse of architectural responsibilities.
+
+Evidence Detection is version/configuration dependent. Its persisted result must
+therefore remain traceable to the immutable Source version and to the detector
+configuration used to create it. Changing persona configuration alone shall not
+require Evidence Detection to be repeated.
 
 ### 2. Reference Knowledge Is Guidance, Never Engineering Evidence
 
@@ -182,6 +246,51 @@ Engineering Source
 
 AI-generated interpretation is evidence for Human Review, not Approved Engineering Information.
 
+### 9a. Architecture Derivation May Again Use Multiple Personas
+
+Multi-persona processing remains valuable after Human Engineering Review.
+However, its responsibility changes.
+
+Before Human Review, personas answer:
+
+```text
+"What does this same source-grounded Evidence mean?"
+```
+
+After approval, model-derivation personas may answer:
+
+```text
+"How can this Approved Engineering Information be represented
+as a coherent system/model architecture?"
+```
+
+Target sequence:
+
+```text
+Approved Engineering Information
+        ↓
+ ┌──────┼──────┐
+ ▼      ▼      ▼
+Model  Model  Model
+Persona Persona Persona
+ └──────┼──────┘
+        ↓
+Architecture / Model Candidate Derivation
+        ↓
+Semantic Comparison / Candidate Consolidation
+        ↓
+Model Candidate Review
+        ↓
+Approved Internal Model
+        ↓
+SysML v2 Generation
+```
+
+Whether this downstream derivation phase shall reuse existing personas or
+introduce new task-specific modeling personas is intentionally deferred until
+that stage is implemented and evaluated. The architecture requires the persona
+branch; it does not prematurely freeze its future persona set.
+
 ### 10. Existing P9 Responsibilities Have No Grandfathering Protection
 
 Every material P9/D3/D4 responsibility shall be classified as:
@@ -195,6 +304,108 @@ RETIRE
 ```
 
 A responsibility shall not be retained merely because downstream code currently expects it.
+
+---
+
+## Thesis-Relevant Architecture Finding
+
+The WP-12 formative run exposed a responsibility-ordering defect rather than a
+simple clustering or prompt-quality problem.
+
+### Previous responsibility sequence
+
+In the previous active path, each interpretation persona could independently:
+
+1. select what it considered meaningful engineering information,
+2. assign persona-local `source_info_id` identities,
+3. interpret/classify that selected information,
+4. feed a derivation step that created model-oriented candidate elements and
+   relationships before the first Human Engineering Review.
+
+Downstream D3/D4 semantic consolidation then attempted to determine which of
+those independently created candidate populations referred to the same
+engineering subject.
+
+This caused a fundamental comparability problem:
+
+```text
+Persona A selection ≠ Persona B selection ≠ Persona C selection
+```
+
+Therefore differences between persona outputs could not be interpreted cleanly
+as professional interpretation variance. A difference could instead be caused
+by different source selection, segmentation, abstraction, naming or early
+modeling decisions.
+
+### Observed consequences
+
+The architecture produced several characteristic symptoms:
+
+- **persona-driven subject multiplication** — additional personas could create
+  additional subject populations rather than additional views on one subject;
+- **unstable engineering-subject identity** — candidate names/types became part
+  of the mechanism used to infer common subjects;
+- **false or ambiguous variance** — source-selection differences and genuine
+  interpretation differences were mixed;
+- **excessive downstream semantic repair** — later LLM consolidation had to
+  reconstruct commonality that had not been established upstream;
+- **premature model derivation** — model structure was proposed from unreviewed
+  interpretation;
+- **Human Review overload** — the reviewer received a large model-oriented
+  subject population rather than a compact set of source-grounded engineering
+  information;
+- **technical success without engineering effectiveness** — the processing
+  chain could reach Human Review correctly while the review content remained
+  unsuitable for engineering use.
+
+The representative real single-source run made the effect visible:
+
+```text
+3 personas × 1 run
+93 element proposals
+41 relationship proposals
+134 raw proposals
+109 D3/D4 semantic subjects
+110 Human Review items
+```
+
+These counts are evidence of the symptom, not a target to optimize directly.
+
+### Architectural correction
+
+ADR-027 introduces an explicit boundary:
+
+```text
+DETECTION
+Which source passages are potentially engineering-relevant?
+        ↓
+fixed source-grounded Evidence identity
+        ↓
+INTERPRETATION
+What does this same Evidence mean from different professional perspectives?
+```
+
+Only after Evidence identity is fixed do personas branch. This makes
+consensus/variance meaningful because each persona is now discussing the same
+source-grounded object.
+
+After Human Engineering Review and approval, a second persona branch may be used
+for architecture/model derivation. The key change is therefore not the removal
+of personas or LLM reasoning, but the placement of those responsibilities on
+the correct side of the engineering approval boundary.
+
+### Thesis interpretation
+
+This is a first-class formative engineering result of the prototype:
+
+> Source grounding alone is insufficient for reliable multi-persona semantic
+> processing when evidence detection and persona-specific interpretation share
+> the same responsibility boundary. A common evidence identity must be
+> established before persona variance can be interpreted as engineering
+> variance.
+
+This finding should be carried into the thesis as an observed failure,
+root-cause analysis, architectural correction and subsequent evaluation target.
 
 ---
 
@@ -285,21 +496,43 @@ REFERENCE KNOWLEDGE
         ▼
 ENGINEERING SOURCE
         ↓
+Register Source
+        ↓
+Prepare Source
+        ↓
 Deterministic Source Projection
         ↓
-Find Source-Grounded Evidence
+Specialized Evidence Detection Agent
         ↓
-Interpret / Classify with Personas
+Source-Grounded Evidence
+        ↓
+ ┌──────┼──────┐
+ ▼      ▼      ▼
+P1     P2     P3
+Interpret / Classify the SAME Evidence
+ └──────┼──────┘
         ↓
 Consensus / Variance
         ↓
 optional Semantic Normalization / Ontology Alignment
         ↓
-Human Review
+Human Engineering Review
         ↓
 Approved Engineering Information
         ↓
-Architecture Derivation
+ ┌──────┼──────┐
+ ▼      ▼      ▼
+Model  Model  Model
+Persona Persona Persona
+ └──────┼──────┘
+        ↓
+Architecture / Model Candidate Derivation
+        ↓
+Candidate Consolidation
+        ↓
+Model Candidate Review
+        ↓
+Approved Internal Model
         ↓
 SysML v2
 ```
@@ -310,13 +543,27 @@ Add this to the authoritative CATIA model only after the implementation is align
 
 ## Status and Next Decision
 
-ADR-027 remains `Proposed` during the current-pipeline responsibility audit.
+ADR-027 is `Accepted` as the governing architecture-recovery direction.
 
-After the audit:
+The completed Source-to-first-Human-Review audit established that the primary
+BLK-003 root cause is the mixing of evidence detection, persona interpretation
+and pre-review model derivation.
 
-- accept or revise ADR-027,
-- implement only the minimum responsibility changes,
+Implementation proceeds incrementally:
+
+```text
+R1  Accept/document ADR-027 and thesis finding
+R2  Introduce source-grounded Evidence contract and persistence
+R3  Add specialized Evidence Detection Agent and Source Preparation
+R4  Make interpretation personas consume the same persisted Evidence
+R5  Move model derivation behind Human Engineering Approval and evaluate
+    the required downstream modeling personas
+```
+
+After at least one material corrected processing path exists:
+
 - run focused automated tests,
 - run one bounded real single-source LLM test,
-- evaluate source purity, model relevance, source grounding and Human Review usability,
+- evaluate source purity, model relevance, source grounding, persona behavior
+  on shared Evidence, consensus/variance and Human Review usability,
 - retain a successful persisted run as the preferred Monday demo reference.

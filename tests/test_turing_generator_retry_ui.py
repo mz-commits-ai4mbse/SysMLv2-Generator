@@ -18,6 +18,7 @@ from app.turing_generator_ui import (
     render_project_ingestion_execution,
 )
 from modules.project_ingestion import (
+    CORRECTED_PIPELINE_CONFIGURATION_VERSION,
     ProjectIngestionConfiguration,
     calculate_ingestion_configuration_fingerprint,
 )
@@ -326,3 +327,37 @@ def test_awaiting_review_offers_direct_human_review_transition() -> None:
     assert pending["active_view"] == APP_VIEW_REVIEW
     assert pending["project_id"] == PROJECT_ID
     assert pending["selected_entity_id"] is None
+
+
+def test_failed_corrected_run_reconstructs_v2_retry_configuration() -> None:
+    configuration = ProjectIngestionConfiguration(
+        max_members_per_team=None,
+        pipeline_configuration_version=(
+            CORRECTED_PIPELINE_CONFIGURATION_VERSION
+        ),
+    )
+    st = FakeStreamlit(
+        clicked_keys={
+            "turing_generator.retry_agentic_ingestion"
+        }
+    )
+    service = FakeService(
+        _state(
+            "failed",
+            fingerprint=(
+                calculate_ingestion_configuration_fingerprint(
+                    configuration
+                )
+            ),
+        )
+    )
+
+    render_project_ingestion_execution(
+        st,
+        ingestion_service=service,
+        navigation=navigation(),
+    )
+
+    assert service.retry_calls == [
+        (PROJECT_ID, SOURCE_ID, "RUN-000001")
+    ]

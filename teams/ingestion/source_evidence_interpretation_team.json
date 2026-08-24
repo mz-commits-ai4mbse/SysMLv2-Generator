@@ -1,0 +1,40 @@
+{
+  "team_id": "TEAM_SOURCE_EVIDENCE_INTERPRETATION",
+  "team_name": "Source Evidence Interpretation Team",
+  "task_name": "Interpret fixed source-grounded Evidence",
+  "role_id": "ROLE_SOURCE_EVIDENCE_INTERPRETER",
+  "role_file": "agents/roles/source_evidence_interpreter.md",
+  "description": "The existing interpretation perspectives interpret the same fixed source-grounded Evidence identities.",
+  "default_execution_mode": "multi_persona",
+  "members": [
+    {
+      "member_id": "LEGACY_INTERPRETER_001",
+      "agent_id": "AGENT_LEGACY_LITERAL_INTERPRETER",
+      "persona_id": "PERSONA_LEGACY_LITERAL_INTERPRETER",
+      "persona_file": "agents/personas/legacy_interpretation/literal_interpreter.md",
+      "perspective": "literal_source_faithful"
+    },
+    {
+      "member_id": "LEGACY_INTERPRETER_002",
+      "agent_id": "AGENT_LEGACY_SYSTEMS_ENGINEERING_INTERPRETER",
+      "persona_id": "PERSONA_LEGACY_SYSTEMS_ENGINEERING_INTERPRETER",
+      "persona_file": "agents/personas/legacy_interpretation/systems_engineering_interpreter.md",
+      "perspective": "systems_engineering"
+    },
+    {
+      "member_id": "LEGACY_INTERPRETER_003",
+      "agent_id": "AGENT_LEGACY_SKEPTICAL_AMBIGUITY_INTERPRETER",
+      "persona_id": "PERSONA_LEGACY_SKEPTICAL_AMBIGUITY_INTERPRETER",
+      "persona_file": "agents/personas/legacy_interpretation/skeptical_ambiguity_interpreter.md",
+      "perspective": "skeptical_ambiguity"
+    }
+  ],
+  "consensus_required": true,
+  "consensus_focus": [
+    "interpreted_statement",
+    "information_type",
+    "statement_modality",
+    "epistemic_class",
+    "uncertainty"
+  ]
+}

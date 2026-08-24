@@ -1,5 +1,40 @@
 # Change Log
 
+## 2026-08-24 — WP-12 R4c Live E2E SSOT checkpoint
+
+A new authoritative WP-12 verification checkpoint was recorded.
+
+Result semantics are now explicit:
+
+```text
+PASS
+PASS WITH FINDINGS
+FAILED WITH BLOCKER
+BLOCKER RESOLVED -> RETEST -> PASS / PASS WITH FINDINGS
+```
+
+Current overall result is `FAILED WITH BLOCKER`.
+
+Active blockers:
+- BLK-002 — Cross-Source Processing Artifact Identity Collision
+- BLK-006 — LLM-assisted Model Proposal generation fails in live E2E
+
+Resolved/live-retested blockers:
+- BLK-004 — Approved Input Promotion
+- BLK-005 — Approved Engineering Information -> Phase H handoff
+
+Project `120412` has live-validated the R4c single-source path through Phase-H
+readiness with 17 Approved Subjects and 21 accepted semantic Relationships.
+The latest complete regression is `5889 passed, 1 skipped`; `git diff --check` passes.
+
+Canonical evidence:
+- `collaboration/checkpoints/2026-08-24_wp12_r4c_live_e2e_ssot.md`
+- `collaboration/audits/wp12_findings.md`
+- `collaboration/audits/wp12_multi_document_dry_run_test_protocol.md`
+
+No version release or WP-12 closeout is claimed by this checkpoint.
+
+---
 <!-- BEGIN SSOT UPDATE 2026-08-20 -->
 ## 2026-08-20 — WP-12 Demo / Architecture-Recovery SSOT
 

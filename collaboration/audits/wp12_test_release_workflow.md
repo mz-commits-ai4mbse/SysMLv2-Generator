@@ -1,5 +1,29 @@
 # WP-12 Test and Release Workflow — Synthetic Dry Run to Real Test Data
 
+<!-- BEGIN WP12 RELEASE STATUS 2026-08-24 -->
+## 2026-08-24 — Current WP-12 release-gate status
+
+```text
+Formal Stage-A / multi-source: FAILED WITH BLOCKER — BLK-002
+R4c single-source live E2E:     FAILED WITH BLOCKER — BLK-006
+Overall WP-12:                  FAILED WITH BLOCKER
+Stage-B / release progression:  NOT AUTHORIZED
+```
+
+Resolved blockers remain part of test history:
+
+```text
+BLK-001 corrected / verified
+BLK-004 resolved -> live retest PASS
+BLK-005 resolved -> live retest PASS WITH FINDINGS
+```
+
+The release gate is not reclassified until all active blockers have been corrected and
+successfully retested. Remaining non-blocking findings may lead to `PASS WITH
+FINDINGS`, but never to a silent bypass of Human Review, Candidate Review,
+traceability, validation or publication authority.
+<!-- END WP12 RELEASE STATUS 2026-08-24 -->
+
 ## Purpose
 
 This document defines the controlled validation sequence for the WP-12 demonstrator.

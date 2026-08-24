@@ -43,6 +43,7 @@ class HybridModelCandidateDeriver:
         derivation_rules_reference: ModelDerivationRulesReference,
         executor: LLMProjectionBatchExecutor,
         output_dir: Path,
+        review_escalation_approved_input_ids: tuple[str, ...] = (),
     ) -> None:
         if not isinstance(output_dir, Path):
             raise ModelCandidateDerivationError(
@@ -52,6 +53,22 @@ class HybridModelCandidateDeriver:
         self.derivation_rules_reference = derivation_rules_reference
         self.executor = executor
         self.output_dir = output_dir
+        if not isinstance(
+            review_escalation_approved_input_ids,
+            tuple,
+        ):
+            raise ModelCandidateDerivationError(
+                "review_escalation_approved_input_ids must be a tuple."
+            )
+        if len(review_escalation_approved_input_ids) != len(
+            set(review_escalation_approved_input_ids)
+        ):
+            raise ModelCandidateDerivationError(
+                "review_escalation_approved_input_ids must be unique."
+            )
+        self.review_escalation_approved_input_ids = tuple(
+            sorted(review_escalation_approved_input_ids)
+        )
         self._deterministic = ProfileDrivenModelCandidateDeriver(
             profile=profile,
             derivation_rules_reference=derivation_rules_reference,
@@ -77,7 +94,13 @@ class HybridModelCandidateDeriver:
 
         coverage = self._deterministic.assess_projection_coverage(request)
 
-        if not coverage.unresolved_approved_input_ids:
+        llm_target_ids = tuple(
+            sorted(
+                set(coverage.unresolved_approved_input_ids)
+                | set(self.review_escalation_approved_input_ids)
+            )
+        )
+        if not llm_target_ids:
             self.last_invocations = ()
             plan = self._deterministic.derive(request)
             self._has_derived = True
@@ -88,6 +111,9 @@ class HybridModelCandidateDeriver:
             coverage=coverage,
             profile=self.profile,
             output_dir=self.output_dir,
+            explicit_escalation_approved_input_ids=(
+                self.review_escalation_approved_input_ids
+            ),
         )
         self.last_invocations = invocations
 
@@ -96,11 +122,11 @@ class HybridModelCandidateDeriver:
             for invocation in invocations
             for proposal in invocation.response.proposals
         }
-        expected_ids = set(coverage.unresolved_approved_input_ids)
+        expected_ids = set(llm_target_ids)
         if set(proposals) != expected_ids:
             raise ModelCandidateDerivationError(
                 "Hybrid target projection did not return exactly one validated "
-                "proposal for every unresolved Approved Input."
+                "proposal for every eligible Approved Input."
             )
 
         unresolved = tuple(
@@ -132,7 +158,11 @@ class HybridModelCandidateDeriver:
             if approved_input.approved_input_kind != "element_statement":
                 continue
 
-            if entry.disposition == "mapped":
+            if (
+                entry.disposition == "mapped"
+                and approved_input.approved_input_id
+                not in self.review_escalation_approved_input_ids
+            ):
                 element_drafts.append(
                     self._deterministic._derive_element(approved_input)
                 )
@@ -161,7 +191,11 @@ class HybridModelCandidateDeriver:
                 continue
 
             entry = coverage_by_id[approved_input.approved_input_id]
-            if entry.disposition == "mapped":
+            if (
+                entry.disposition == "mapped"
+                and approved_input.approved_input_id
+                not in self.review_escalation_approved_input_ids
+            ):
                 relationship_inputs.append(approved_input)
                 continue
 
@@ -288,6 +322,18 @@ class HybridModelCandidateDeriver:
                     "response_fingerprint": (
                         item.response.response_fingerprint
                     ),
+                    **(
+                        {
+                            "supporting_response_fingerprints": list(
+                                item.supporting_response_fingerprints
+                            ),
+                            "supporting_agent_ids": list(
+                                item.supporting_agent_ids
+                            ),
+                        }
+                        if item.supporting_response_fingerprints
+                        else {}
+                    ),
                 }
                 for item in self.last_invocations
             ],
@@ -295,7 +341,11 @@ class HybridModelCandidateDeriver:
         return ModelCandidateGenerationProvenance(
             method="llm_assisted_profile_projection",
             recipe_reference="ADR-020:H9",
-            agent_reference="agents/target_projection_mapper.md",
+            agent_reference=getattr(
+                self.executor,
+                "agent_reference",
+                "agents/target_projection_mapper.md",
+            ),
             model_reference=f"{provider}:{model}",
             context_fingerprint=self._provenance_fingerprint(payload),
         )

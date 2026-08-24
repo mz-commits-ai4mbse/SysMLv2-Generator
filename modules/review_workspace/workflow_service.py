@@ -26,6 +26,17 @@ from modules.project_workspace import (
     ProjectWorkspaceError,
 )
 from modules.terminology_mapping import TerminologyMappingRepository
+from modules.subject_review.relationship_decisions import (
+    SubjectRelationshipDecisionRepository,
+    create_subject_relationship_decision_record,
+)
+from modules.subject_review.governance import (
+    relationship_decision_authority_fingerprint,
+    subject_relationship_finalization_issue_codes,
+)
+from modules.approved_engineering_information import (
+    build_approved_engineering_information,
+)
 
 from .errors import (
     ReviewFinalizationBlockedError,
@@ -110,6 +121,17 @@ from .semantic_review_projection import (
 )
 from .repository import DEFAULT_PROJECTS_ROOT, ReviewWorkspaceRepository
 from .review_document_assembly import assemble_initial_review_document
+from .revision_manifest import create_review_revision
+from .subject_review_artifact_adapter import (
+    assemble_subject_review_initial_review,
+    load_subject_review_bundle_payload,
+    load_subject_review_consensus_filter_facts,
+    select_subject_review_artifacts,
+)
+from .shared_evidence_review_adapter import (
+    assemble_shared_evidence_initial_review,
+    select_shared_evidence_review_artifact,
+)
 from .workflow_types import (
     ReviewApprovalFinalizationResult,
     ReviewApprovalIssue,
@@ -127,6 +149,23 @@ _P4_HUMAN_REVIEW_TARGET_TYPES = frozenset(
         "framework_assignment_candidate",
     }
 )
+
+
+
+def _subject_review_has_outgoing_relationship(
+    card: dict,
+    *,
+    source_subject_id: str,
+    relationship_kind: str,
+    target_subject_id: str,
+) -> bool:
+    return any(
+        relation.get("direction") == "outgoing"
+        and relation.get("source_subject_id") == source_subject_id
+        and relation.get("relationship_kind") == relationship_kind
+        and relation.get("target_subject_id") == target_subject_id
+        for relation in card.get("relationships", ())
+    )
 
 
 def _default_clock() -> datetime:
@@ -362,6 +401,124 @@ class ReviewApprovalWorkflowService:
                 project_id,
                 processing_run_id,
             )
+            subject_review_artifacts = (
+                select_subject_review_artifacts(history)
+            )
+            if subject_review_artifacts is not None:
+                source_manifest = self._source_registry.load_source(
+                    project_id,
+                    history.manifest.source_id,
+                )
+                project_manifest = self._workspace.load_project(
+                    project_id
+                )
+                review_document_id = (
+                    self._review_repository.next_document_id(
+                        project_id
+                    )
+                )
+                review_document_version_id = (
+                    format_review_document_version_id(1)
+                )
+                review_revision_id = format_review_revision_id(1)
+                timestamp = self._timestamp()
+                occupied_review_item_ids = (
+                    self._occupied_review_item_ids(project_id)
+                )
+
+                subject_assembly = (
+                    assemble_subject_review_initial_review(
+                        history=history,
+                        source_manifest=source_manifest,
+                        project_manifest=project_manifest,
+                        artifacts=subject_review_artifacts,
+                        repository_root=self.repository_root,
+                        review_document_id=review_document_id,
+                        review_document_version_id=(
+                            review_document_version_id
+                        ),
+                        review_revision_id=review_revision_id,
+                        opened_by=reviewer_identity,
+                        timestamp=timestamp,
+                        occupied_review_item_ids=(
+                            occupied_review_item_ids
+                        ),
+                    )
+                )
+                self._review_repository.create_document_workspace(
+                    *subject_assembly.repository_bundle
+                )
+                return ReviewApprovalWorkspaceOpenResult(
+                    created=True,
+                    workspace=self.workspace_view(
+                        project_id,
+                        review_document_id,
+                        review_document_version_id,
+                    ),
+                )
+
+            corrected_review_artifact = (
+                select_shared_evidence_review_artifact(history)
+            )
+            if corrected_review_artifact is not None:
+                source_manifest = self._source_registry.load_source(
+                    project_id,
+                    history.manifest.source_id,
+                )
+                project_manifest = self._workspace.load_project(
+                    project_id
+                )
+                review_document_id = (
+                    self._review_repository.next_document_id(
+                        project_id
+                    )
+                )
+                review_document_version_id = (
+                    format_review_document_version_id(1)
+                )
+                review_revision_id = format_review_revision_id(1)
+                timestamp = self._timestamp()
+                occupied_review_item_ids = (
+                    self._occupied_review_item_ids(project_id)
+                )
+
+                corrected_assembly = (
+                    assemble_shared_evidence_initial_review(
+                        history=history,
+                        source_manifest=source_manifest,
+                        project_manifest=project_manifest,
+                        primary_artifact_reference=(
+                            corrected_review_artifact.primary_review_report
+                        ),
+                        structured_review_input_reference=(
+                            corrected_review_artifact.structured_review_input
+                        ),
+                        repository_root=self.repository_root,
+                        projects_root=self.root,
+                        review_document_id=review_document_id,
+                        review_document_version_id=(
+                            review_document_version_id
+                        ),
+                        review_revision_id=review_revision_id,
+                        opened_by=reviewer_identity,
+                        timestamp=timestamp,
+                        occupied_review_item_ids=(
+                            occupied_review_item_ids
+                        ),
+                    )
+                )
+                self._review_repository.create_document_workspace(
+                    *corrected_assembly.repository_bundle
+                )
+                return ReviewApprovalWorkspaceOpenResult(
+                    created=True,
+                    workspace=self.workspace_view(
+                        project_id,
+                        review_document_id,
+                        review_document_version_id,
+                    ),
+                )
+
             p9_evidence = self._p9_evidence_selector(
                 history,
                 repository_root=self.repository_root,
@@ -1106,6 +1263,348 @@ class ReviewApprovalWorkflowService:
             artifact_set=persisted_artifact_set,
         )
 
+    def subject_relationship_review_decisions(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+    ):
+        """Return latest persisted decisions for R4c relationship hypotheses."""
+
+        payload = self.subject_review_bundle_payload(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        if payload is None:
+            return ()
+
+        repository = SubjectRelationshipDecisionRepository(root=self.root)
+        values = repository.latest_by_relationship(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        cards = {
+            card["canonical_subject_id"]: card
+            for card in payload["cards"]
+        }
+
+        for value in values:
+            card = cards.get(value.source_subject_id)
+            if card is None:
+                raise ReviewIntegrityError(
+                    "Persisted relationship decision source Subject "
+                    "is absent from current authority."
+                )
+            if (
+                value.subject_review_card_fingerprint
+                != card["content_fingerprint"]
+            ):
+                raise ReviewIntegrityError(
+                    "Persisted relationship decision is bound to a "
+                    "different Subject Review Card."
+                )
+            if not _subject_review_has_outgoing_relationship(
+                card,
+                source_subject_id=value.source_subject_id,
+                relationship_kind=value.relationship_kind,
+                target_subject_id=value.target_subject_id,
+            ):
+                raise ReviewIntegrityError(
+                    "Persisted relationship decision no longer maps to "
+                    "the exact outgoing relationship hypothesis."
+                )
+
+        return values
+
+    def record_subject_relationship_review_decision(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+        *,
+        source_subject_id: str,
+        relationship_kind: str,
+        target_subject_id: str,
+        outcome: str,
+        rationale: str | None,
+        reviewer_identity: str,
+    ):
+        """Append one decision owned by the relationship source SUBJ-* card."""
+
+        view = self._draft_workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        payload = self.subject_review_bundle_payload(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        if payload is None:
+            raise ReviewReferenceError(
+                "Selected Workspace has no Subject Review authority."
+            )
+
+        cards = tuple(
+            card
+            for card in payload["cards"]
+            if card["canonical_subject_id"] == source_subject_id
+        )
+        if len(cards) != 1:
+            raise ReviewReferenceError(
+                "Relationship source Subject is unavailable."
+            )
+        card = cards[0]
+
+        if not _subject_review_has_outgoing_relationship(
+            card,
+            source_subject_id=source_subject_id,
+            relationship_kind=relationship_kind,
+            target_subject_id=target_subject_id,
+        ):
+            raise ReviewReferenceError(
+                "Relationship decision must be recorded on its exact "
+                "source Subject card."
+            )
+
+        reviewer = self._reviewer_identity(reviewer_identity)
+        timestamp = self._timestamp()
+
+        # Relationship decisions are sidecar records, but they must still
+        # invalidate any earlier finalization confirmation. Advance the
+        # immutable Review head first with content-identical Review Items.
+        decision_revision = create_review_revision(
+            project_id=project_id,
+            review_document_id=review_document_id,
+            review_document_version_id=review_document_version_id,
+            review_revision_id=(
+                self._review_repository.next_revision_id(
+                    project_id,
+                    review_document_id,
+                    review_document_version_id,
+                )
+            ),
+            revision_sequence=view.revision.revision_sequence + 1,
+            predecessor_revision_id=view.revision.review_revision_id,
+            review_items=view.revision.review_items,
+            scoped_review_action_ids=(
+                view.revision.scoped_review_action_ids
+            ),
+            created_by=reviewer,
+            timestamp=timestamp,
+        )
+        self._review_repository.append_revision(decision_revision)
+
+        repository = SubjectRelationshipDecisionRepository(root=self.root)
+        current = repository.latest_by_relationship(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        key = (
+            source_subject_id,
+            relationship_kind,
+            target_subject_id,
+        )
+        predecessor = next(
+            (
+                item
+                for item in current
+                if (
+                    item.source_subject_id,
+                    item.relationship_kind,
+                    item.target_subject_id,
+                )
+                == key
+            ),
+            None,
+        )
+
+        value = create_subject_relationship_decision_record(
+            project_id=project_id,
+            review_document_id=review_document_id,
+            review_document_version_id=review_document_version_id,
+            review_revision_id=decision_revision.review_revision_id,
+            decision_id=repository.next_decision_id(
+                project_id,
+                review_document_id,
+                review_document_version_id,
+            ),
+            predecessor_decision_id=(
+                predecessor.decision_id
+                if predecessor is not None
+                else None
+            ),
+            subject_review_card_fingerprint=card["content_fingerprint"],
+            source_subject_id=source_subject_id,
+            relationship_kind=relationship_kind,
+            target_subject_id=target_subject_id,
+            outcome=outcome,
+            rationale=rationale,
+            reviewer_identity=reviewer,
+            created_at=timestamp,
+        )
+        repository.append(value)
+        return value
+
+    def _subject_relationship_finalization_issue_codes(
+        self,
+        document,
+        version,
+        revision,
+    ) -> tuple[str, ...]:
+        """Return R4c relationship blockers without recursive Workspace reads."""
+
+        subject_items = tuple(
+            item
+            for item in revision.review_items
+            if isinstance(
+                getattr(item, "original_report_locator", None),
+                str,
+            )
+            and item.original_report_locator.startswith(
+                "subject_review:SUBJ-"
+            )
+        )
+        if not subject_items:
+            # Historical / compatibility Review routes retain the existing
+            # finalization authority and must not trigger any extra
+            # Processing read merely to discover that R4c does not apply.
+            return ()
+        if len(subject_items) != len(revision.review_items):
+            raise ReviewIntegrityError(
+                "A Review Revision must not mix canonical Subject Review "
+                "Items with legacy Review Item authority."
+            )
+
+        history = self._processing_repository.load_run(
+            document.project_id,
+            document.processing_run_id,
+        )
+        artifacts = select_subject_review_artifacts(history)
+        if artifacts is None:
+            return ()
+
+        payload = load_subject_review_bundle_payload(
+            artifacts,
+            history=history,
+            repository_root=self.repository_root,
+        )
+        decisions = SubjectRelationshipDecisionRepository(
+            root=self.root
+        ).latest_by_relationship(
+            document.project_id,
+            document.review_document_id,
+            version.review_document_version_id,
+        )
+        return subject_relationship_finalization_issue_codes(
+            subject_review_payload=payload,
+            review_items=revision.review_items,
+            relationship_decisions=decisions,
+        )
+
+    def _assess_finalization(
+        self,
+        document,
+        version,
+        revision,
+    ):
+        """Apply R4c relationship governance while preserving legacy assessor."""
+
+        issue_codes = self._subject_relationship_finalization_issue_codes(
+            document,
+            version,
+            revision,
+        )
+        if not issue_codes:
+            return self._finalization_assessor(
+                document,
+                version,
+                revision,
+            )
+        return assess_review_document_finalization(
+            document,
+            version,
+            revision,
+            additional_blocking_issue_codes=issue_codes,
+        )
+
+    def approved_engineering_information(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+    ):
+        """Return derived R4c Approved Engineering Information authority."""
+
+        view = self.workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        if view.version.version_state != "finalized":
+            raise ReviewIntegrityError(
+                "Approved Engineering Information requires finalized Review."
+            )
+
+        payload = self.subject_review_bundle_payload(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        if payload is None:
+            raise ReviewReferenceError(
+                "Selected finalized Workspace has no Subject Review authority."
+            )
+
+        decisions = self.subject_relationship_review_decisions(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        return build_approved_engineering_information(
+            workspace_view=view,
+            subject_review_payload=payload,
+            relationship_decisions=decisions,
+            relationship_decision_authority_fingerprint=(
+                relationship_decision_authority_fingerprint(decisions)
+            ),
+        )
+
+    def subject_review_bundle_payload(
+        self,
+        project_id: str,
+        review_document_id: str,
+        review_document_version_id: str,
+    ) -> dict | None:
+        """Return persisted Subject Review content for one exact Workspace."""
+
+        view = self.workspace_view(
+            project_id,
+            review_document_id,
+            review_document_version_id,
+        )
+        history = self._processing_repository.load_run(
+            project_id,
+            view.document.processing_run_id,
+        )
+        artifacts = select_subject_review_artifacts(history)
+        if artifacts is None:
+            return None
+        if view.document.attempt_id != artifacts.attempt_id:
+            raise ReviewIntegrityError(
+                "Review Workspace Subject authority does not bind its "
+                "Processing Attempt."
+            )
+        return load_subject_review_bundle_payload(
+            artifacts,
+            history=history,
+            repository_root=self.repository_root,
+        )
+
     def review_filter_facts(
         self,
         project_id: str,
@@ -1120,7 +1619,7 @@ class ReviewApprovalWorkflowService:
             review_document_version_id,
         )
 
-        needs_p9 = any(
+        requires_processing_evidence = any(
             item.proposal_references
             or item.consensus_evidence_references
             for item in view.revision.review_items
@@ -1128,13 +1627,88 @@ class ReviewApprovalWorkflowService:
 
         proposals = None
         consensus_by_key = {}
+        history = None
+        subject_review_artifacts = None
+        shared_review_artifacts = None
 
-        if needs_p9:
+        if requires_processing_evidence:
             try:
                 history = self._processing_repository.load_run(
                     project_id,
                     view.document.processing_run_id,
                 )
+                subject_review_artifacts = (
+                    select_subject_review_artifacts(history)
+                )
+                if subject_review_artifacts is not None:
+                    if (
+                        view.document.attempt_id
+                        != subject_review_artifacts.attempt_id
+                    ):
+                        raise ReviewIntegrityError(
+                            "Review Document is not bound to the current "
+                            "Subject Review Processing Attempt."
+                        )
+                    subject_consensus_facts = (
+                        load_subject_review_consensus_filter_facts(
+                            subject_review_artifacts,
+                            history=history,
+                            repository_root=self.repository_root,
+                        )
+                    )
+                    consensus_by_key = {
+                        (
+                            fact.artifact_id,
+                            fact.evidence_locator,
+                            fact.evidence_content_fingerprint,
+                        ): fact
+                        for fact in subject_consensus_facts
+                    }
+                else:
+                    from .shared_evidence_review_adapter import (
+                        load_shared_evidence_review_consensus_filter_facts,
+                        select_shared_evidence_review_artifact,
+                    )
+
+                    shared_review_artifacts = (
+                        select_shared_evidence_review_artifact(history)
+                    )
+                    if shared_review_artifacts is not None:
+                        shared_consensus_facts = (
+                            load_shared_evidence_review_consensus_filter_facts(
+                                shared_review_artifacts,
+                                repository_root=self.repository_root,
+                            )
+                        )
+                        consensus_by_key = {
+                            (
+                                fact.artifact_id,
+                                fact.evidence_locator,
+                                fact.evidence_content_fingerprint,
+                            ): fact
+                            for fact in shared_consensus_facts
+                        }
+            except ReviewWorkspaceError:
+                raise
+            except Exception as exc:
+                raise ReviewReferenceError(
+                    "Exact shared-Evidence filter evidence could not be "
+                    "reconstructed."
+                ) from exc
+
+        needs_p9 = (
+            requires_processing_evidence
+            and subject_review_artifacts is None
+            and shared_review_artifacts is None
+        )
+
+        if needs_p9:
+            try:
+                if history is None:
+                    history = self._processing_repository.load_run(
+                        project_id,
+                        view.document.processing_run_id,
+                    )
                 evidence = self._p9_evidence_selector(
                     history,
                     repository_root=self.repository_root,
@@ -1222,7 +1796,7 @@ class ReviewApprovalWorkflowService:
                 if fact is None:
                     raise ReviewIntegrityError(
                         "Review Item Consensus Evidence cannot be mapped "
-                        "to the exact P9 Consensus artifact."
+                        "to the exact Review Consensus artifact."
                     )
                 item_consensus.append(
                     ReviewConsensusFilterFact(
@@ -1371,6 +1945,19 @@ class ReviewApprovalWorkflowService:
                 project_id,
                 view.document.processing_run_id,
             )
+
+            # Corrected shared-Evidence Review Items may be open questions
+            # because they represent gaps, ambiguities, risks or unresolved
+            # engineering information. They are not legacy P9 relationship
+            # endpoint questions unless a future corrected contract encodes
+            # that relationship-resolution authority explicitly.
+            from .shared_evidence_review_adapter import (
+                select_shared_evidence_review_artifact,
+            )
+
+            if select_shared_evidence_review_artifact(history) is not None:
+                return ()
+
             evidence = self._p9_evidence_selector(
                 history,
                 repository_root=self.repository_root,
@@ -2024,7 +2611,7 @@ class ReviewApprovalWorkflowService:
 
         if version.version_state == "draft":
             try:
-                finalization_assessment = self._finalization_assessor(
+                finalization_assessment = self._assess_finalization(
                     document,
                     version,
                     revision,
@@ -2330,7 +2917,7 @@ class ReviewApprovalWorkflowService:
 
         if version.version_state == "draft":
             try:
-                finalization = self._finalization_assessor(
+                finalization = self._assess_finalization(
                     document,
                     version,
                     revision,
@@ -2863,10 +3450,24 @@ class ReviewApprovalWorkflowService:
                 "finalization."
             )
 
+        subject_relationship_issues = (
+            self._subject_relationship_finalization_issue_codes(
+                view.document,
+                view.version,
+                view.revision,
+            )
+        )
         blocking_issue_codes = tuple(
-            issue.code
-            for issue in view.issues
-            if issue.issue_level == "blocking"
+            sorted(
+                {
+                    *(
+                        issue.code
+                        for issue in view.issues
+                        if issue.issue_level == "blocking"
+                    ),
+                    *subject_relationship_issues,
+                }
+            )
         )
 
         preview = create_review_finalization_workflow_preview(

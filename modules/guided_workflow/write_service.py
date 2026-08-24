@@ -16,6 +16,9 @@ from modules.final_model_review.repository import (
 from modules.model_candidates.candidate_review_repository import (
     ModelCandidateReviewRepository,
 )
+from modules.model_candidates.derivation_workflow import (
+    ModelDerivationWorkflowService,
+)
 from modules.output_publication.final_review_publication import (
     FinalReviewPublicationService,
 )
@@ -36,6 +39,7 @@ class GuidedWorkflowWriteService:
         project_root: Path | str = Path("."),
         *,
         candidate_review_repository=None,
+        model_derivation_service=None,
         final_review_repository=None,
         final_change_service=None,
         final_release_service=None,
@@ -50,6 +54,13 @@ class GuidedWorkflowWriteService:
             )
             if candidate_review_repository is None
             else candidate_review_repository
+        )
+        self._model_derivation = (
+            ModelDerivationWorkflowService(
+                project_root=self.project_root,
+            )
+            if model_derivation_service is None
+            else model_derivation_service
         )
 
         if final_review_repository is None:
@@ -85,6 +96,52 @@ class GuidedWorkflowWriteService:
             if final_publication_service is None
             else final_publication_service
         )
+
+    def assess_model_derivation(
+        self,
+        project_id: str,
+        *,
+        predecessor_candidate_set_id: str | None = None,
+    ):
+        """Return advisory Phase-H strategy without making a Human choice."""
+
+        try:
+            return self._model_derivation.assess(
+                project_id,
+                predecessor_candidate_set_id=predecessor_candidate_set_id,
+            )
+        except Exception as exc:
+            raise GuidedWorkflowWriteError(
+                "Model derivation strategy could not be assessed safely."
+            ) from exc
+
+    def generate_model_proposal(
+        self,
+        project_id: str,
+        *,
+        mode: str,
+        provider: str = "openai",
+        model: str = "gpt-5.4-mini",
+        api_key: str | None = None,
+        predecessor_candidate_set_id: str | None = None,
+        human_regeneration_reason: str | None = None,
+    ):
+        """Generate one explicit Phase-H Candidate Set."""
+
+        try:
+            return self._model_derivation.generate(
+                project_id,
+                mode=mode,
+                provider=provider,
+                model=model,
+                api_key=api_key,
+                predecessor_candidate_set_id=predecessor_candidate_set_id,
+                human_regeneration_reason=human_regeneration_reason,
+            )
+        except Exception as exc:
+            raise GuidedWorkflowWriteError(
+                "Model Proposal generation could not be completed safely."
+            ) from exc
 
     def record_candidate_review_decision(
         self,

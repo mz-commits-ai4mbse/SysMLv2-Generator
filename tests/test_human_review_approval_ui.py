@@ -542,6 +542,34 @@ def test_existing_review_can_be_selected_without_creation(tmp_path):
     ]
 
 
+
+def test_completed_review_queue_uses_valid_secondary_button_type(tmp_path):
+    st = FakeStreamlit()
+    st.session_state[SESSION_APP_VIEW] = APP_VIEW_REVIEW
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+
+    item = _queue_item(with_workspace=True)
+    item.review_outcome_counts = (
+        ("accepted_with_modification", 3),
+    )
+    workflow = FakeWorkflowService(items=(item,))
+
+    render_human_review_approval_ui(
+        tmp_path,
+        streamlit_module=st,
+        project_workspace=FakeWorkspace(),
+        workflow_service=workflow,
+    )
+
+    open_buttons = [
+        call
+        for call in st.calls
+        if call[0] == "button"
+        and call[1] == "Open review · requirements.md"
+    ]
+    assert len(open_buttons) == 1
+    assert open_buttons[0][3] == "secondary"
+
 def test_review_return_control_preserves_project_and_dashboard_view(
     tmp_path,
 ):

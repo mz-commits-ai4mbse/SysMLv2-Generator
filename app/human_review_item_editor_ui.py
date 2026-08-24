@@ -7,6 +7,7 @@ from dataclasses import replace
 from typing import Any
 
 from app.presentation_preferences import technical_details_enabled
+from app.human_subject_review_ui import render_subject_review_editor
 from modules.guided_workflow import (
     GuidedWorkflowValidationError,
     build_review_item_view,
@@ -70,6 +71,43 @@ def render_review_item_editor(
             "Reopen it before editing."
         )
         return
+
+    subject_payload_loader = getattr(
+        service,
+        "subject_review_bundle_payload",
+        None,
+    )
+    if callable(subject_payload_loader):
+        try:
+            subject_payload = subject_payload_loader(
+                project_id,
+                workspace_view.document.review_document_id,
+                workspace_view.version.review_document_version_id,
+            )
+        except ReviewWorkspaceError:
+            st.error(
+                "Persisted Subject Review authority could not be "
+                "reconstructed for this Review Workspace."
+            )
+            return
+        except Exception:
+            st.error(
+                "Subject-centric Human Review is unavailable. "
+                "No legacy fallback was inferred for this bound Workspace."
+            )
+            return
+
+        if subject_payload is not None:
+            render_subject_review_editor(
+                st,
+                service=service,
+                project_id=project_id,
+                workspace_view=workspace_view,
+                reviewer_identity=reviewer_identity,
+                payload=subject_payload,
+                technical=technical,
+            )
+            return
 
     with _expander(
         st,
@@ -766,22 +804,54 @@ def _render_effective_dimensions(
     st: Any,
     item,
 ) -> None:
-    if not item.dimension_selections:
-        return
+    """Render current engineering meaning plus persisted Human selections."""
 
-    st.table(
-        [
+    content = item.current_content
+    rows = [
+        {
+            "Dimension": "information_type",
+            "Value": content.information_type or "not_classified",
+            "Origin": "current_review_content",
+            "Sources": "",
+        },
+        {
+            "Dimension": "modality",
+            "Value": content.modality or "not_specified",
+            "Origin": "current_review_content",
+            "Sources": "",
+        },
+        {
+            "Dimension": "epistemic_status",
+            "Value": content.epistemic_status or "not_specified",
+            "Origin": "current_review_content",
+            "Sources": "",
+        },
+    ]
+
+    relationship = content.relationship_representation
+    if relationship is not None:
+        rows.append(
             {
-                "Dimension": selection.dimension,
-                "Value": ", ".join(selection.selected_values),
-                "Origin": selection.value_origin,
-                "Sources": ", ".join(
-                    selection.source_reference_ids
-                ),
+                "Dimension": "relationship_validation_status",
+                "Value": relationship.validation_status,
+                "Origin": "current_review_content",
+                "Sources": "",
             }
-            for selection in item.dimension_selections
-        ]
+        )
+
+    rows.extend(
+        {
+            "Dimension": selection.dimension,
+            "Value": ", ".join(selection.selected_values),
+            "Origin": selection.value_origin,
+            "Sources": ", ".join(
+                selection.source_reference_ids
+            ),
+        }
+        for selection in item.dimension_selections
     )
+
+    st.table(rows)
 
 
 def _render_evidence(
@@ -1137,6 +1207,53 @@ def _render_item_outcome_controls(
     reviewer_identity: str,
 ) -> None:
     st.markdown("**Review item decision**")
+
+    accepted_outcomes = {
+        "accepted_as_generated",
+        "accepted_with_modification",
+        "combined",
+    }
+    if item.effective_review_outcome in accepted_outcomes:
+        st.success("This Review Item is accepted.")
+        return
+
+    if not item.proposal_references:
+        if st.button(
+            "Accept reviewed information",
+            key=(
+                "human_review_item_editor.accept_evidence_only."
+                f"{item.review_item_id}"
+            ),
+            type="primary",
+        ):
+            if not _reviewer_ready(st, reviewer_identity):
+                return
+
+            request = ReviewItemEditRequest(
+                expected_revision_id=(
+                    workspace_view.revision.review_revision_id
+                ),
+                expected_item_content_fingerprint=(
+                    item.item_content_fingerprint
+                ),
+                updated_content=item.current_content,
+                selected_proposal_keys=(),
+                review_outcome="accepted_with_modification",
+                rationale=None,
+            )
+
+            _execute(
+                st,
+                lambda: service.save_item_review(
+                    project_id,
+                    workspace_view.document.review_document_id,
+                    workspace_view.version.review_document_version_id,
+                    item.review_item_id,
+                    request=request,
+                    actor_identity=reviewer_identity,
+                ),
+                "Reviewed source-grounded information accepted.",
+            )
 
     rationale = st.text_input(
         "Item rationale",

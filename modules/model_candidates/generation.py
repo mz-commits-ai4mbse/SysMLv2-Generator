@@ -6,11 +6,18 @@ from collections.abc import Callable
 from datetime import datetime, timezone
 from typing import Protocol, runtime_checkable
 
+from modules.approved_engineering_information import (
+    ApprovedEngineeringInformationSet,
+)
 from modules.approved_input import ApprovedInputRepository
 from modules.approved_input.types import ApprovedInputManifest
 from modules.project_workspace import ProjectWorkspace
 from modules.project_workspace.workspace import DEFAULT_PROJECTS_ROOT
 
+from .approved_engineering_deriver import (
+    bind_generation_provenance_to_approved_engineering_information,
+    validate_approved_engineering_information_binding,
+)
 from .candidate_set_manifest import (
     create_model_candidate_set_manifest,
 )
@@ -101,6 +108,9 @@ class ModelCandidateGenerationService:
             ModelStructureProfileReference
         ),
         derivation_rules_reference: ModelDerivationRulesReference,
+        approved_engineering_information: (
+            ApprovedEngineeringInformationSet | None
+        ) = None,
         generation_provenance: ModelCandidateGenerationProvenance | None = None,
         predecessor_candidate_set_id: str | None = None,
         regeneration_reason: str | None = None,
@@ -121,6 +131,13 @@ class ModelCandidateGenerationService:
                 "active Approved Input."
             )
 
+        if approved_engineering_information is not None:
+            validate_approved_engineering_information_binding(
+                project_id=project_id,
+                approved_inputs=active_inputs,
+                approved_engineering_information=approved_engineering_information,
+            )
+
         predecessor = self._load_predecessor(
             project_id,
             predecessor_candidate_set_id,
@@ -135,11 +152,18 @@ class ModelCandidateGenerationService:
             ),
             derivation_rules_reference=derivation_rules_reference,
             predecessor_candidate_set=predecessor,
+            approved_engineering_information=approved_engineering_information,
         )
         plan = self._derive(deriver, request)
         resolved_generation_provenance = self._resolve_generation_provenance(
             deriver,
             generation_provenance,
+        )
+        resolved_generation_provenance = (
+            bind_generation_provenance_to_approved_engineering_information(
+                resolved_generation_provenance,
+                approved_engineering_information,
+            )
         )
         element_drafts = self._validate_element_drafts(
             plan.element_drafts,

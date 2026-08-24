@@ -1,0 +1,38 @@
+{
+  "team_id": "TEAM_MODELING_PROJECTION",
+  "team_name": "Modeling Projection Team",
+  "task_name": "Assess target-model projection of Approved Engineering Information",
+  "role_id": "ROLE_MODELING_PROJECTION_ADVISOR",
+  "role_file": "agents/roles/modeling_projection_advisor.md",
+  "description": "Three modeling perspectives independently assess the same profile-controlled target options for the same Approved Inputs.",
+  "default_execution_mode": "multi_persona",
+  "members": [
+    {
+      "member_id": "MODELING_PROJECTION_001",
+      "agent_id": "AGENT_MODELING_RULES_FOCUSED_ADVISOR",
+      "persona_id": "PERSONA_DERIVATION_RULES_FOCUSED_ASSESSOR",
+      "persona_file": "agents/personas/derivation_assessment/rules_focused_assessor.md",
+      "perspective": "rules_focused"
+    },
+    {
+      "member_id": "MODELING_PROJECTION_002",
+      "agent_id": "AGENT_MODELING_ARCHITECTURE_FOCUSED_ADVISOR",
+      "persona_id": "PERSONA_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
+      "persona_file": "agents/personas/derivation_assessment/architecture_focused_assessor.md",
+      "perspective": "architecture_focused"
+    },
+    {
+      "member_id": "MODELING_PROJECTION_003",
+      "agent_id": "AGENT_MODELING_CONSERVATIVE_REVIEWER",
+      "persona_id": "PERSONA_DERIVATION_CONSERVATIVE_REVIEWER",
+      "persona_file": "agents/personas/derivation_assessment/conservative_reviewer.md",
+      "perspective": "conservative_review"
+    }
+  ],
+  "consensus_required": true,
+  "consensus_focus": [
+    "selected_rule_id",
+    "explicit_ambiguity",
+    "explicit_unmapped"
+  ]
+}

@@ -580,3 +580,47 @@ GitHub is passive. Give me exact repo-relative paths and deterministic local
 commands/patches. Never use git add . or git add -A. Do not stage/commit before
 explicit acceptance.
 ```
+
+# Immediate Starting Instruction for the Next Chat
+
+Use these authorities first:
+
+- `collaboration/checkpoints/2026-08-24_wp12_r4c_live_e2e_ssot.md`
+- `collaboration/audits/wp12_findings.md`
+- `collaboration/audits/wp12_multi_document_dry_run_test_protocol.md`
+
+Current WP-12 result:
+
+```text
+FAILED WITH BLOCKER
+active: BLK-002, BLK-006
+```
+
+Immediate work is **BLK-006 diagnosis**, not further architecture redesign and not a
+blind retry of the Model Proposal button.
+
+Starting sequence:
+
+```text
+1. inspect the exact Model Proposal generation service path
+2. reproduce the failure with a direct service call / full stack trace
+3. inspect Project 120412 for partial Candidate/Proposal artifacts
+4. determine root cause
+5. discuss bounded correction
+6. only after acceptance: patch + focused tests
+7. full regression + git diff --check
+8. retest Model Proposal generation on the same Project 120412
+```
+
+Do not stage or commit unrelated dirty files. Do not use `git add .`, `git add -A`
+or `git add --all`.
+
+Preserve the test-result discipline:
+
+```text
+blocker occurs -> FAILED WITH BLOCKER
+bounded correction -> same-gate retest
+successful retest -> blocker RESOLVED -> PASS / PASS WITH FINDINGS
+```
+
+BLK-002 remains independently open for the formal multi-source Stage-A path.

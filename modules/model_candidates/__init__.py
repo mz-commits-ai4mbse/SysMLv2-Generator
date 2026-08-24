@@ -68,6 +68,23 @@ from .errors import (
     ModelElementCandidateIdAllocationError,
     ModelRelationshipCandidateIdAllocationError,
 )
+from .derivation_workflow import (
+    DEFAULT_MODELING_MODEL,
+    DEFAULT_MODELING_PROVIDER,
+    ModelDerivationWorkflowService,
+)
+from .derivation_strategy import (
+    ECO_DETERMINISTIC_MODE,
+    LLM_ASSISTED_MODE,
+    MODEL_DERIVATION_MODES,
+    RECOMMENDATION_ECO_COVERAGE,
+    RECOMMENDATION_LLM_REVIEW_ESCALATION,
+    RECOMMENDATION_LLM_UNRESOLVED,
+    ModelDerivationStrategyAssessment,
+    assess_model_derivation_strategy,
+    build_review_escalation_reason,
+    validate_model_derivation_mode,
+)
 from .derivation_context import (
     DEFAULT_MODEL_DERIVATION_RULES_PATH,
     EXPECTED_MODEL_DERIVATION_CONTEXT_ID,
@@ -78,6 +95,12 @@ from .generation import (
     ModelCandidateGenerationService,
 )
 from .hybrid_deriver import HybridModelCandidateDeriver
+from .modeling_persona_executor import (
+    DEFAULT_MAX_MODELING_BATCHES_PER_RUN,
+    DEFAULT_MODELING_PROJECTION_TEAM_FILE,
+    ModelingPersonaProjectionExecutor,
+    consolidate_modeling_persona_responses,
+)
 from .identifiers import (
     MAX_MODEL_CANDIDATE_SEQUENCE,
     MIN_MODEL_CANDIDATE_SEQUENCE,
@@ -207,6 +230,23 @@ from .types import (
 
 
 __all__ = [
+    "DEFAULT_MODELING_MODEL",
+    "DEFAULT_MODELING_PROVIDER",
+    "ModelDerivationWorkflowService",
+    "DEFAULT_MAX_MODELING_BATCHES_PER_RUN",
+    "DEFAULT_MODELING_PROJECTION_TEAM_FILE",
+    "ModelingPersonaProjectionExecutor",
+    "consolidate_modeling_persona_responses",
+    "ECO_DETERMINISTIC_MODE",
+    "LLM_ASSISTED_MODE",
+    "MODEL_DERIVATION_MODES",
+    "RECOMMENDATION_ECO_COVERAGE",
+    "RECOMMENDATION_LLM_REVIEW_ESCALATION",
+    "RECOMMENDATION_LLM_UNRESOLVED",
+    "ModelDerivationStrategyAssessment",
+    "assess_model_derivation_strategy",
+    "build_review_escalation_reason",
+    "validate_model_derivation_mode",
     "MAX_MODEL_CANDIDATE_SEQUENCE",
     "MIN_MODEL_CANDIDATE_SEQUENCE",
     "MODEL_CANDIDATE_SET_ID_PATTERN",

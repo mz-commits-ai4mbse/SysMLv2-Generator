@@ -2,6 +2,14 @@
 
 from __future__ import annotations
 
+from modules.engineering_subjects import EngineeringSubjectDiscoveryAgent
+from modules.subject_consensus import analyze_subject_consensus
+from modules.subject_interpretation import SubjectInterpretationPipeline
+from modules.subject_review import build_subject_review_bundle
+from modules.subject_review.artifacts import (
+    write_subject_processing_artifacts,
+)
+
 from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
@@ -11,6 +19,17 @@ from typing import Any
 from modules.ingestion.team_agentic_pipeline import (
     run_team_agentic_ingestion,
 )
+from modules.evidence_interpretation import (
+    SharedEvidenceInterpretationPipeline,
+    build_shared_evidence_review_input,
+    shared_evidence_review_input_to_json,
+)
+from modules.source_evidence import SourceEvidenceRepository
+from modules.source_preparation import (
+    SourcePreparationService,
+    source_preparation_result_to_dict,
+)
+import json
 from modules.project_processing import (
     ProjectProcessingRepository,
     create_processing_event,
@@ -47,6 +66,7 @@ from modules.semantic_consolidation.processing_adapter import (
 
 from .configuration import (
     ProjectIngestionConfiguration,
+    CORRECTED_PIPELINE_CONFIGURATION_VERSION,
     calculate_ingestion_configuration_fingerprint,
     validate_ingestion_configuration,
     workflow_profile_for_source_role,
@@ -123,6 +143,11 @@ class ProjectBoundIngestionService:
         semantic_consolidator: Callable[..., Any] = (
             consolidate_phase_f_source_anchored_pipeline
         ),
+        source_preparation_service: Any | None = None,
+        source_evidence_repository: Any | None = None,
+        shared_evidence_interpretation_pipeline: Any | None = None,
+        engineering_subject_discovery_agent: Any | None = None,
+        subject_interpretation_pipeline: Any | None = None,
         clock: Callable[[], datetime] = _default_clock,
     ) -> None:
         self.root = Path(root)
@@ -170,6 +195,48 @@ class ProjectBoundIngestionService:
         )
         self._pipeline_runner = pipeline_runner
         self._semantic_consolidator = semantic_consolidator
+        self._source_evidence = (
+            SourceEvidenceRepository(
+                root=self.root,
+                clock=clock,
+                source_projection_repository=self._source_projections,
+            )
+            if source_evidence_repository is None
+            else source_evidence_repository
+        )
+        self._source_preparation = (
+            SourcePreparationService(
+                root=self.root,
+                repository_root=self.repository_root,
+                clock=clock,
+                source_registry=self._source_registry,
+                source_projection_repository=self._source_projections,
+                source_analysis_unit_repository=self._source_analysis_units,
+                source_evidence_repository=self._source_evidence,
+            )
+            if source_preparation_service is None
+            else source_preparation_service
+        )
+        self._shared_evidence_interpretation = (
+            SharedEvidenceInterpretationPipeline(
+                project_root=self.repository_root,
+                clock=clock,
+            )
+            if shared_evidence_interpretation_pipeline is None
+            else shared_evidence_interpretation_pipeline
+        )
+        self._engineering_subject_discovery = (
+            EngineeringSubjectDiscoveryAgent()
+            if engineering_subject_discovery_agent is None
+            else engineering_subject_discovery_agent
+        )
+        self._subject_interpretation = (
+            SubjectInterpretationPipeline(
+                project_root=self.repository_root,
+            )
+            if subject_interpretation_pipeline is None
+            else subject_interpretation_pipeline
+        )
 
     def register_uploaded_source(
         self,
@@ -427,6 +494,17 @@ class ProjectBoundIngestionService:
         source_id = history.manifest.source_id
         processing_run_id = history.manifest.processing_run_id
 
+        if (
+            configuration.pipeline_configuration_version
+            == CORRECTED_PIPELINE_CONFIGURATION_VERSION
+        ):
+            return self._execute_shared_evidence_attempt(
+                history=history,
+                attempt_id=attempt_id,
+                configuration=configuration,
+                api_key=api_key,
+            )
+
         try:
             projection = self._source_projections.create_projection(
                 project_id,
@@ -617,6 +695,353 @@ class ProjectBoundIngestionService:
             failure_reason=None,
         )
 
+    def _execute_shared_evidence_attempt(
+        self,
+        *,
+        history: Any,
+        attempt_id: str,
+        configuration: ProjectIngestionConfiguration,
+        api_key: str | None,
+    ) -> ProjectBoundIngestionWorkResult:
+        """Execute Source Preparation and shared-Evidence interpretation."""
+
+        project_id = history.manifest.project_id
+        source_id = history.manifest.source_id
+        processing_run_id = history.manifest.processing_run_id
+
+        try:
+            preparation = self._source_preparation.prepare_registered_source(
+                project_id,
+                source_id,
+                provider=configuration.provider,
+                model=configuration.model,
+                api_key=api_key,
+                dry_run=configuration.dry_run,
+            )
+            projection = self._source_projections.load_projection(
+                project_id,
+                preparation.source_projection_id,
+            )
+            attempt_work = self._prepare_attempt_work_directory(
+                project_id=project_id,
+                processing_run_id=processing_run_id,
+                attempt_id=attempt_id,
+            )
+            phase_f_root = attempt_work / "phase_f"
+            phase_f_root.mkdir()
+        except Exception:
+            return self._fail_execution(
+                history=history,
+                attempt_id=attempt_id,
+                dry_run=configuration.dry_run,
+                source_projection_id=None,
+                projection_result=None,
+                reason_code="source_preparation_failed",
+            )
+
+        if (
+            preparation.status == "skipped_context_only"
+            or configuration.dry_run
+        ):
+            status = (
+                "dry_run_completed"
+                if configuration.dry_run
+                else "context_only_prepared"
+            )
+            self._write_shared_evidence_compatibility_outputs(
+                attempt_work=attempt_work,
+                phase_f_root=phase_f_root,
+                status=status,
+                preparation=preparation,
+                review_input_json=None,
+            )
+            return ProjectBoundIngestionWorkResult(
+                project_id=project_id,
+                source_id=source_id,
+                source_projection_id=preparation.source_projection_id,
+                processing_run_id=processing_run_id,
+                attempt_id=attempt_id,
+                run_state="running",
+                processing_stage=AGENTIC_INGESTION_STAGE,
+                dry_run=configuration.dry_run,
+                projection_result=projection.manifest.projection_result,
+                phase_f_run_id="SHARED-EVIDENCE-V2",
+                failure_reason=None,
+                workflow_contract="shared_evidence_v2_no_review",
+            )
+
+        try:
+            all_evidence = self._source_evidence.list_source_evidence(
+                project_id,
+                source_id=source_id,
+                source_projection_id=preparation.source_projection_id,
+            )
+            required_ids = set(preparation.source_evidence_ids)
+            evidence = tuple(
+                item
+                for item in all_evidence
+                if item.source_evidence_id in required_ids
+            )
+            if {
+                item.source_evidence_id for item in evidence
+            } != required_ids:
+                raise ProjectIngestionExecutionError(
+                    "Prepared Source Evidence could not be reopened exactly."
+                )
+
+            if not evidence:
+                self._write_shared_evidence_compatibility_outputs(
+                    attempt_work=attempt_work,
+                    phase_f_root=phase_f_root,
+                    status="no_source_evidence_detected",
+                    preparation=preparation,
+                    review_input_json=None,
+                )
+                return ProjectBoundIngestionWorkResult(
+                    project_id=project_id,
+                    source_id=source_id,
+                    source_projection_id=preparation.source_projection_id,
+                    processing_run_id=processing_run_id,
+                    attempt_id=attempt_id,
+                    run_state="running",
+                    processing_stage=AGENTIC_INGESTION_STAGE,
+                    dry_run=False,
+                    projection_result=projection.manifest.projection_result,
+                    phase_f_run_id="SHARED-EVIDENCE-V2",
+                    failure_reason=None,
+                    workflow_contract="shared_evidence_v2_no_review",
+                )
+
+            interpretation = (
+                self._shared_evidence_interpretation.run(
+                    source_projection=projection,
+                    source_evidence=evidence,
+                    execution_root=phase_f_root,
+                    provider=configuration.provider,
+                    model=configuration.model,
+                    api_key=api_key,
+                    runs_per_persona=configuration.runs_per_member,
+                    max_members=configuration.max_members_per_team,
+                    dry_run=False,
+                )
+            )
+            source_manifest = self._source_registry.load_source(
+                project_id,
+                source_id,
+            )
+            review_input = build_shared_evidence_review_input(
+                source_sha256=source_manifest.sha256,
+                processing_run_id=processing_run_id,
+                attempt_id=attempt_id,
+                source_evidence=evidence,
+                interpretation_result=interpretation,
+            )
+            review_input_json = shared_evidence_review_input_to_json(
+                review_input
+            )
+            self._write_shared_evidence_compatibility_outputs(
+                attempt_work=attempt_work,
+                phase_f_root=phase_f_root,
+                status="awaiting_human_engineering_review",
+                preparation=preparation,
+                review_input_json=review_input_json,
+            )
+            # R4c Subject-centric authority is materialized once inside the
+            # Processing Attempt. The legacy shared-Evidence outputs above
+            # remain a temporary compatibility shadow only.
+            try:
+                subject_discovery = (
+                    self._engineering_subject_discovery.discover(
+                        source_projection=projection,
+                        source_evidence=evidence,
+                        provider=configuration.provider,
+                        model=configuration.model,
+                        api_key=api_key,
+                    )
+                )
+                canonical_subject_set = (
+                    subject_discovery.canonical_subject_set
+                )
+                subject_interpretations = (
+                    self._subject_interpretation.run(
+                        source_projection=projection,
+                        subject_set=canonical_subject_set,
+                        execution_root=(
+                            phase_f_root
+                            / "r4c_subject_interpretation"
+                        ),
+                        provider=configuration.provider,
+                        model=configuration.model,
+                        api_key=api_key,
+                        runs_per_persona=(
+                            configuration.runs_per_member
+                        ),
+                    )
+                )
+                subject_consensus = analyze_subject_consensus(
+                    subject_interpretations
+                )
+                subject_review_bundle = build_subject_review_bundle(
+                    subject_set=canonical_subject_set,
+                    interpretations=subject_interpretations,
+                    consensus=subject_consensus,
+                )
+                write_subject_processing_artifacts(
+                    output_root=phase_f_root / "consensus_reports",
+                    source_sha256=source_manifest.sha256,
+                    processing_run_id=processing_run_id,
+                    attempt_id=attempt_id,
+                    subject_set=canonical_subject_set,
+                    interpretations=subject_interpretations,
+                    consensus=subject_consensus,
+                    review_bundle=subject_review_bundle,
+                )
+            except Exception:
+                return self._fail_execution(
+                    history=history,
+                    attempt_id=attempt_id,
+                    dry_run=False,
+                    source_projection_id=(
+                        preparation.source_projection_id
+                    ),
+                    projection_result=(
+                        projection.manifest.projection_result
+                    ),
+                    reason_code="subject_review_processing_failed",
+                )
+        except Exception:
+            return self._fail_execution(
+                history=history,
+                attempt_id=attempt_id,
+                dry_run=False,
+                source_projection_id=preparation.source_projection_id,
+                projection_result=projection.manifest.projection_result,
+                reason_code="shared_evidence_interpretation_failed",
+            )
+
+        return ProjectBoundIngestionWorkResult(
+            project_id=project_id,
+            source_id=source_id,
+            source_projection_id=preparation.source_projection_id,
+            processing_run_id=processing_run_id,
+            attempt_id=attempt_id,
+            run_state="running",
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            dry_run=False,
+            projection_result=projection.manifest.projection_result,
+            phase_f_run_id="SHARED-EVIDENCE-V2",
+            failure_reason=None,
+            workflow_contract="shared_evidence_v2_review",
+        )
+
+    def _write_shared_evidence_compatibility_outputs(
+        self,
+        *,
+        attempt_work: Path,
+        phase_f_root: Path,
+        status: str,
+        preparation: Any,
+        review_input_json: str | None,
+    ) -> None:
+        """Use the existing immutable P5 publisher as a transport envelope."""
+
+        agent_root = phase_f_root / "agent_outputs"
+        consensus_root = phase_f_root / "consensus_reports"
+        agent_root.mkdir(exist_ok=True)
+        consensus_root.mkdir(exist_ok=True)
+
+        preparation_payload = source_preparation_result_to_dict(
+            preparation
+        )
+        preparation_json = (
+            json.dumps(
+                preparation_payload,
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n"
+        )
+        (
+            agent_root / "source_preparation_result.json"
+        ).write_text(
+            preparation_json,
+            encoding="utf-8",
+        )
+
+        if review_input_json is not None:
+            (
+                consensus_root / "shared_evidence_review_input.json"
+            ).write_text(
+                review_input_json,
+                encoding="utf-8",
+            )
+        elif not any(consensus_root.iterdir()):
+            (
+                consensus_root / "source_preparation_status.json"
+            ).write_text(
+                json.dumps(
+                    {
+                        "schema_version": "1.0.0",
+                        "status": status,
+                        "source_evidence_ids": list(
+                            preparation.source_evidence_ids
+                        ),
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+        summary = {
+            "schema_version": "1.0.0",
+            "run_id": "SHARED-EVIDENCE-V2",
+            "status": status,
+            "pipeline_contract": "shared_evidence_v2",
+            "source_evidence_ids": list(
+                preparation.source_evidence_ids
+            ),
+            "pre_review_model_derivation": False,
+            "semantic_consolidation_d3_d4": False,
+        }
+        summary_json = (
+            json.dumps(
+                summary,
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n"
+        )
+        (
+            phase_f_root
+            / "team_agentic_ingestion_run_summary.json"
+        ).write_text(
+            summary_json,
+            encoding="utf-8",
+        )
+        (
+            phase_f_root
+            / "team_agentic_ingestion_run_summary.md"
+        ).write_text(
+            "# Shared-Evidence Processing Summary\n\n"
+            f"- Status: {status}\n"
+            "- Evidence identity fixed before persona interpretation: yes\n"
+            "- Pre-review model derivation: no\n"
+            "- Pre-review D3/D4 semantic consolidation: no\n",
+            encoding="utf-8",
+        )
+        (
+            attempt_work / "ingestion_review_report.md"
+        ).write_text(
+            "# Shared-Evidence Engineering Review Input\n\n"
+            f"Status: {status}\n\n"
+            "This corrected pipeline establishes source-grounded Evidence "
+            "before persona interpretation. Architecture/model derivation "
+            "occurs only after Human Engineering Review.\n",
+            encoding="utf-8",
+        )
+
     def source_execution_state(
         self,
         project_id: str,
@@ -779,6 +1204,48 @@ class ProjectBoundIngestionService:
                     "artifact_publication_event_recovery_required"
                 ),
                 artifact_references=artifact_references,
+            )
+
+        if work.workflow_contract == "shared_evidence_v2_no_review":
+            latest = history.events[-1]
+            completed_event = create_processing_event(
+                project_id=work.project_id,
+                processing_run_id=work.processing_run_id,
+                event_id=f"EVT-{latest.event_sequence + 1:06d}",
+                event_sequence=latest.event_sequence + 1,
+                previous_state=latest.next_state,
+                next_state="completed",
+                processing_stage=AGENTIC_INGESTION_STAGE,
+                event_type="run_completed",
+                attempt_id=work.attempt_id,
+                reason_code="shared_evidence_preparation_completed",
+                artifact_references=(),
+                timestamp=self._current_utc_timestamp(),
+                previous_event_fingerprint=latest.event_fingerprint,
+            )
+            try:
+                self._processing.append_event(completed_event)
+            except Exception:
+                return self._finalize_work_recovery(
+                    work,
+                    reason_code="corrected_completion_recovery_required",
+                    artifact_references=artifact_references,
+                )
+
+            return ProjectBoundIngestionResult(
+                project_id=work.project_id,
+                source_id=work.source_id,
+                source_projection_id=work.source_projection_id,
+                processing_run_id=work.processing_run_id,
+                attempt_id=work.attempt_id,
+                run_state="completed",
+                processing_stage=work.processing_stage,
+                dry_run=work.dry_run,
+                projection_result=work.projection_result,
+                phase_f_run_id=work.phase_f_run_id,
+                artifact_references=artifact_references,
+                failure_reason=None,
+                recovery_required=False,
             )
 
         latest = history.events[-1]

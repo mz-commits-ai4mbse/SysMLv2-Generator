@@ -199,6 +199,74 @@ def test_effective_dimension_values_are_materialized() -> None:
     )
 
 
+def test_r4c_semantic_classification_tuple_is_carried_by_canonical_content() -> None:
+    base = _element_item()
+    semantic_values = tuple(
+        value
+        for value in (
+            base.current_content.information_type,
+            base.current_content.modality,
+            base.current_content.epistemic_status,
+        )
+        if value is not None
+    )
+    assert len(semantic_values) > 1
+
+    item = create_review_item(
+        project_id=base.project_id,
+        review_document_id=base.review_document_id,
+        review_document_version_id=base.review_document_version_id,
+        review_item_id=base.review_item_id,
+        review_item_kind=base.review_item_kind,
+        stable_subject_key=base.stable_subject_key,
+        section=base.section,
+        lineage_operation=base.lineage_operation,
+        derived_from_review_item_ids=base.derived_from_review_item_ids,
+        original_report_locator=base.original_report_locator,
+        proposal_references=base.proposal_references,
+        source_evidence_references=base.source_evidence_references,
+        consensus_evidence_references=base.consensus_evidence_references,
+        current_content=base.current_content,
+        dimension_selections=(
+            ReviewDimensionSelection(
+                dimension="classification",
+                selected_values=semantic_values,
+                value_origin="item_override",
+                source_reference_ids=(),
+                rationale="R4c semantic Human Review classification.",
+                selected_by="moritz",
+                selected_at=TIMESTAMP,
+            ),
+        ),
+        effective_review_outcome=base.effective_review_outcome,
+    )
+    document, artifact_set, assessment = _assessment_inputs(item)
+
+    plan = create_approved_input_promotion_plan(
+        document,
+        artifact_set,
+        assessment,
+        (),
+        timestamp=TIMESTAMP,
+    )
+    manifest = plan.items[0].manifest
+
+    assert manifest is not None
+    assert manifest.selected_classification is None
+    assert (
+        manifest.canonical_content.information_type
+        == base.current_content.information_type
+    )
+    assert (
+        manifest.canonical_content.modality
+        == base.current_content.modality
+    )
+    assert (
+        manifest.canonical_content.epistemic_status
+        == base.current_content.epistemic_status
+    )
+
+
 def test_multiple_items_receive_sequential_ids() -> None:
     first = _element_item(review_item_id="RIT-000001")
     second = _element_item(review_item_id="RIT-000002")

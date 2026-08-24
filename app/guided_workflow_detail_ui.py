@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
@@ -14,9 +15,14 @@ from app.turing_generator_navigation import (
     SESSION_SELECTED_ENTITY_ID,
     read_navigation_state,
 )
+from modules.model_candidates import (
+    ECO_DETERMINISTIC_MODE,
+    LLM_ASSISTED_MODE,
+)
 from modules.guided_workflow import (
     GuidedWorkflowDetailReadService,
     GuidedWorkflowValidationError,
+    GuidedWorkflowWriteError,
     GuidedWorkflowWriteService,
     build_model_proposal_presentation,
 )
@@ -79,7 +85,14 @@ def render_model_proposal_ui(
     if detail.status == "not_available":
         st.info(
             "No Model Proposal is available yet. "
-            "Creating one requires an explicit engineering action."
+            "Choose how the approved engineering information should "
+            "be projected into the target model."
+        )
+        _render_initial_model_derivation(
+            st,
+            project_id=navigation.project_id,
+            write_service=writes,
+            technical=technical,
         )
         return
 
@@ -156,6 +169,14 @@ def render_model_proposal_ui(
         presentation=presentation,
     )
 
+    _render_model_review_regeneration(
+        st,
+        project_id=navigation.project_id,
+        proposal=proposal,
+        write_service=writes,
+        technical=technical,
+    )
+
     if presentation.deviations:
         st.subheader("Structural attention")
         for deviation in presentation.deviations:
@@ -224,6 +245,337 @@ def render_model_proposal_ui(
                     st.caption(
                         f"{issue.code}: {issue.message}"
                     )
+
+
+
+_MODEL_DERIVATION_LABELS = {
+    ECO_DETERMINISTIC_MODE: "Eco / deterministic — no LLM",
+    LLM_ASSISTED_MODE: "LLM-assisted — modeling personas",
+}
+_MODELING_MODEL_OPTIONS = (
+    "gpt-5.4-mini",
+    "gpt-5-mini",
+    "gpt-4.1-mini",
+    "gpt-4o-mini",
+)
+
+
+def _render_initial_model_derivation(
+    st: Any,
+    *,
+    project_id: str,
+    write_service,
+    technical: bool,
+) -> None:
+    """Render advisory strategy plus explicit initial Phase-H action."""
+
+    try:
+        assessment = write_service.assess_model_derivation(project_id)
+    except GuidedWorkflowWriteError:
+        st.error(
+            "Model derivation readiness could not be assessed safely."
+        )
+        return
+
+    total = (
+        assessment.mapped_count
+        + assessment.ambiguous_count
+        + assessment.unmapped_count
+        + assessment.intentionally_not_projected_count
+    )
+    if total == 0:
+        st.info(
+            "No approved engineering information is available for "
+            "model derivation yet."
+        )
+        return
+
+    st.subheader("Choose derivation strategy")
+    if assessment.recommended_mode == ECO_DETERMINISTIC_MODE:
+        st.success(
+            "Recommendation: Eco / deterministic. "
+            "All projectable approved information is resolved by the "
+            "deterministic profile."
+        )
+    else:
+        st.warning(
+            "Recommendation: LLM-assisted. Deterministic projection "
+            "contains unresolved or ambiguous target mappings."
+        )
+
+    subject_count = getattr(
+        assessment,
+        "approved_subject_count",
+        0,
+    )
+    relationship_count = getattr(
+        assessment,
+        "semantic_relationship_count",
+        0,
+    )
+
+    if subject_count or relationship_count:
+        st.markdown("**Approved Subjects**")
+        subject_columns = st.columns(4)
+        subject_columns[0].metric("Total", subject_count)
+        subject_columns[1].metric(
+            "Mapped",
+            assessment.approved_subject_mapped_count,
+        )
+        subject_columns[2].metric(
+            "Ambiguous",
+            assessment.approved_subject_ambiguous_count,
+        )
+        subject_columns[3].metric(
+            "Unmapped",
+            assessment.approved_subject_unmapped_count,
+        )
+
+        st.markdown("**Accepted semantic Relationships**")
+        relationship_columns = st.columns(5)
+        relationship_columns[0].metric(
+            "Total",
+            relationship_count,
+        )
+        relationship_columns[1].metric(
+            "Mapped",
+            assessment.semantic_relationship_mapped_count,
+        )
+        relationship_columns[2].metric(
+            "Ambiguous",
+            assessment.semantic_relationship_ambiguous_count,
+        )
+        relationship_columns[3].metric(
+            "Unmapped",
+            assessment.semantic_relationship_unmapped_count,
+        )
+        relationship_columns[4].metric(
+            "Not projected",
+            (
+                assessment
+                .semantic_relationship_intentionally_not_projected_count
+            ),
+        )
+        if (
+            assessment
+            .semantic_relationship_intentionally_not_projected_count
+        ):
+            st.caption(
+                "Not projected Relationships remain part of the approved "
+                "engineering authority but currently reference at least one "
+                "accepted Open Question that is intentionally not "
+                "model-promotable."
+            )
+    else:
+        # Compatibility fallback for older/legacy assessment providers.
+        columns = st.columns(4)
+        columns[0].metric("Mapped", assessment.mapped_count)
+        columns[1].metric("Ambiguous", assessment.ambiguous_count)
+        columns[2].metric("Unmapped", assessment.unmapped_count)
+        columns[3].metric(
+            "Not projected",
+            assessment.intentionally_not_projected_count,
+        )
+
+    if technical:
+        st.caption(assessment.rationale)
+
+    modes = (ECO_DETERMINISTIC_MODE, LLM_ASSISTED_MODE)
+    selected_mode = st.selectbox(
+        "Derivation mode",
+        options=modes,
+        index=modes.index(assessment.recommended_mode),
+        format_func=lambda value: _MODEL_DERIVATION_LABELS[value],
+        key="guided_model.derivation_mode",
+    )
+
+    model, api_key = _render_modeling_llm_configuration(
+        st,
+        enabled=(selected_mode == LLM_ASSISTED_MODE),
+        key_prefix="guided_model.initial",
+        technical=technical,
+    )
+
+    if st.button(
+        "Generate model proposal",
+        key="guided_model.generate",
+    ):
+        if (
+            selected_mode == LLM_ASSISTED_MODE
+            and os.getenv("OPENAI_API_KEY") is None
+            and api_key is None
+        ):
+            st.error(
+                "LLM-assisted generation requires an OpenAI API key."
+            )
+            return
+
+        try:
+            snapshot = write_service.generate_model_proposal(
+                project_id,
+                mode=selected_mode,
+                provider="openai",
+                model=model,
+                api_key=api_key,
+            )
+        except GuidedWorkflowWriteError:
+            st.error(
+                "Model Proposal generation failed safely. "
+                "No Candidate Set was treated as approved."
+            )
+            return
+
+        st.session_state[SESSION_SELECTED_ENTITY_ID] = (
+            snapshot.manifest.candidate_set_id
+        )
+        st.success("Model Proposal generated.")
+        _rerun(st)
+
+
+def _render_model_review_regeneration(
+    st: Any,
+    *,
+    project_id: str,
+    proposal,
+    write_service,
+    technical: bool,
+) -> None:
+    """Offer LLM escalation only after an actual Candidate rejection."""
+
+    candidate_states = tuple(
+        item.review_state.status
+        for item in (
+            tuple(proposal.proposed_elements)
+            + tuple(proposal.proposed_relationships)
+        )
+    )
+    if "rejected" not in candidate_states:
+        return
+
+    try:
+        assessment = write_service.assess_model_derivation(
+            project_id,
+            predecessor_candidate_set_id=proposal.candidate_set_id,
+        )
+    except GuidedWorkflowWriteError:
+        st.error(
+            "Regeneration readiness could not be assessed safely."
+        )
+        return
+
+    if not assessment.rejected_predecessor_candidate_ids:
+        return
+
+    st.subheader("Regenerate rejected model proposal")
+    st.warning(
+        "Human Model Review rejected Candidate content. "
+        "You can regenerate a successor Candidate Set with the "
+        "three modeling personas."
+    )
+    if technical:
+        st.caption(
+            "Rejected Candidates: "
+            + ", ".join(
+                assessment.rejected_predecessor_candidate_ids
+            )
+        )
+        st.caption(
+            "Escalated Approved Inputs: "
+            + ", ".join(
+                assessment.escalated_approved_input_ids
+            )
+        )
+
+    reason = st.text_area(
+        "Why should the model projection be reconsidered?",
+        key="guided_model.regeneration_reason",
+        placeholder=(
+            "Describe what was wrong with the rejected model mapping."
+        ),
+    )
+    model, api_key = _render_modeling_llm_configuration(
+        st,
+        enabled=True,
+        key_prefix="guided_model.regeneration",
+        technical=technical,
+    )
+
+    if st.button(
+        "Regenerate with LLM",
+        key="guided_model.regenerate_llm",
+    ):
+        reason_value = reason.strip()
+        if not reason_value:
+            st.error(
+                "Provide a regeneration reason from the Human Model Review."
+            )
+            return
+        if (
+            os.getenv("OPENAI_API_KEY") is None
+            and api_key is None
+        ):
+            st.error(
+                "LLM-assisted regeneration requires an OpenAI API key."
+            )
+            return
+
+        try:
+            snapshot = write_service.generate_model_proposal(
+                project_id,
+                mode=LLM_ASSISTED_MODE,
+                provider="openai",
+                model=model,
+                api_key=api_key,
+                predecessor_candidate_set_id=(
+                    proposal.candidate_set_id
+                ),
+                human_regeneration_reason=reason_value,
+            )
+        except GuidedWorkflowWriteError:
+            st.error(
+                "LLM-assisted regeneration failed safely. "
+                "The predecessor Candidate Set remains unchanged."
+            )
+            return
+
+        st.session_state[SESSION_SELECTED_ENTITY_ID] = (
+            snapshot.manifest.candidate_set_id
+        )
+        st.success("Successor Model Proposal generated.")
+        _rerun(st)
+
+
+def _render_modeling_llm_configuration(
+    st: Any,
+    *,
+    enabled: bool,
+    key_prefix: str,
+    technical: bool,
+) -> tuple[str, str | None]:
+    if not enabled:
+        return _MODELING_MODEL_OPTIONS[0], None
+
+    model = st.selectbox(
+        "Model",
+        options=_MODELING_MODEL_OPTIONS,
+        index=0,
+        format_func=lambda value: value,
+        key=f"{key_prefix}.model",
+    )
+
+    if os.getenv("OPENAI_API_KEY"):
+        if technical:
+            st.caption(
+                "OPENAI_API_KEY is available from the process environment."
+            )
+        return model, None
+
+    entered = st.text_input(
+        "OpenAI API key for this model-generation run",
+        key=f"{key_prefix}.api_key",
+        type="password",
+    )
+    return model, entered.strip() or None
 
 
 def _render_model_readiness(st: Any, readiness) -> None:

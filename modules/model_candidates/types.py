@@ -5,6 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
+from modules.approved_engineering_information import (
+    ApprovedEngineeringInformationSet,
+)
 from modules.approved_input.types import (
     ApprovedInputManifest,
     ApprovedInputRelationshipRepresentation,
@@ -109,7 +112,31 @@ class ModelCandidateProjectionCoverage:
         return tuple(
             item.approved_input_id
             for item in self.entries
-            if item.disposition in {"ambiguous", "unmapped"}
+            if item.approved_input_kind != "semantic_relationship"
+            and item.disposition in {"ambiguous", "unmapped"}
+        )
+
+    @property
+    def unresolved_semantic_relationship_ids(self) -> tuple[str, ...]:
+        return tuple(
+            item.approved_input_id
+            for item in self.entries
+            if item.approved_input_kind == "semantic_relationship"
+            and item.disposition in {"ambiguous", "unmapped"}
+        )
+
+    @property
+    def approved_input_count(self) -> int:
+        return sum(
+            1 for item in self.entries
+            if item.approved_input_kind != "semantic_relationship"
+        )
+
+    @property
+    def semantic_relationship_count(self) -> int:
+        return sum(
+            1 for item in self.entries
+            if item.approved_input_kind == "semantic_relationship"
         )
 
     @property
@@ -412,6 +439,9 @@ class ModelCandidateDerivationRequest:
     model_structure_profile_reference: ModelStructureProfileReference
     derivation_rules_reference: ModelDerivationRulesReference
     predecessor_candidate_set: ModelCandidateSetSnapshot | None
+    approved_engineering_information: (
+        ApprovedEngineeringInformationSet | None
+    ) = None
 
 
 @dataclass(frozen=True, slots=True)

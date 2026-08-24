@@ -44,6 +44,8 @@ from modules.guided_workflow import (
 from modules.project_ingestion import (
     DEFAULT_MODEL,
     DEFAULT_PROVIDER,
+    CORRECTED_PIPELINE_CONFIGURATION_VERSION,
+    LEGACY_PIPELINE_CONFIGURATION_VERSION,
     ProjectBoundIngestionService,
     ProjectIngestionConfiguration,
     ProjectIngestionConfigurationError,
@@ -96,6 +98,53 @@ _SESSION_LAST_INGESTION_RESULT = (
 _SESSION_INGESTION_IN_PROGRESS = (
     "turing_generator.ingestion_in_progress"
 )
+
+_UI_TEAM_SCOPE_BY_MAX_MEMBERS = {
+    1: "1",
+    2: "2",
+    None: "all",
+}
+_UI_MAX_MEMBERS_BY_TEAM_SCOPE = {
+    value: key
+    for key, value in _UI_TEAM_SCOPE_BY_MAX_MEMBERS.items()
+}
+
+
+def _configuration_for_retry_fingerprint(
+    fingerprint: str | None,
+) -> ProjectIngestionConfiguration | None:
+    """Reconstruct an exact prior UI configuration from its fingerprint."""
+
+    if not isinstance(fingerprint, str) or len(fingerprint) != 64:
+        return None
+
+    for pipeline_version in (
+        LEGACY_PIPELINE_CONFIGURATION_VERSION,
+        CORRECTED_PIPELINE_CONFIGURATION_VERSION,
+    ):
+        for model in _P9_MODEL_OPTIONS:
+            for max_members in (1, 2, None):
+                for runs_per_member in range(1, 6):
+                    for dry_run in (True, False):
+                        candidate = ProjectIngestionConfiguration(
+                            provider=DEFAULT_PROVIDER,
+                            model=model,
+                            runs_per_member=runs_per_member,
+                            max_members_per_team=max_members,
+                            dry_run=dry_run,
+                            pipeline_configuration_version=(
+                                pipeline_version
+                            ),
+                        )
+                        if (
+                            calculate_ingestion_configuration_fingerprint(
+                                candidate
+                            )
+                            == fingerprint
+                        ):
+                            return candidate
+
+    return None
 
 
 def render_turing_generator_ui(
@@ -677,6 +726,13 @@ def render_project_ingestion_execution(
         execution_state is not None
         and execution_state.can_retry
     )
+    retry_configuration = (
+        _configuration_for_retry_fingerprint(
+            execution_state.configuration_fingerprint
+        )
+        if retry_mode
+        else None
+    )
 
     if not technical:
         st.caption(
@@ -688,29 +744,61 @@ def render_project_ingestion_execution(
         st,
         expanded=technical,
     ):
+        model_default = (
+            retry_configuration.model
+            if (
+                retry_configuration is not None
+                and retry_configuration.model in _P9_MODEL_OPTIONS
+            )
+            else DEFAULT_MODEL
+        )
         model = st.selectbox(
             "Model",
             options=_P9_MODEL_OPTIONS,
-            index=_P9_MODEL_OPTIONS.index(DEFAULT_MODEL),
+            index=_P9_MODEL_OPTIONS.index(model_default),
             key="turing_generator.execution_model",
         )
+
+        team_scope_options = (
+            ("1", "2", "all")
+            if retry_mode
+            else ("2", "all")
+        )
+        team_scope_default = (
+            _UI_TEAM_SCOPE_BY_MAX_MEMBERS.get(
+                retry_configuration.max_members_per_team
+            )
+            if retry_configuration is not None
+            else "all"
+        )
+        if team_scope_default not in team_scope_options:
+            team_scope_default = team_scope_options[0]
+
         team_scope = st.selectbox(
-            "Maximum team members per stage",
-            options=("1", "all"),
-            index=0,
+            "Interpretation personas",
+            options=team_scope_options,
+            index=team_scope_options.index(team_scope_default),
             key="turing_generator.execution_team_scope",
         )
         runs_per_member = st.number_input(
             "Runs per team member",
             min_value=1,
             max_value=5,
-            value=1,
+            value=(
+                retry_configuration.runs_per_member
+                if retry_configuration is not None
+                else 1
+            ),
             step=1,
             key="turing_generator.execution_runs_per_member",
         )
         dry_run = st.checkbox(
             "Dry run — no LLM calls",
-            value=True,
+            value=(
+                retry_configuration.dry_run
+                if retry_configuration is not None
+                else True
+            ),
             key="turing_generator.execution_dry_run",
         )
 
@@ -760,9 +848,14 @@ def render_project_ingestion_execution(
         model=model,
         runs_per_member=int(runs_per_member),
         max_members_per_team=(
-            None if team_scope == "all" else 1
+            _UI_MAX_MEMBERS_BY_TEAM_SCOPE[team_scope]
         ),
         dry_run=bool(dry_run),
+        pipeline_configuration_version=(
+            retry_configuration.pipeline_configuration_version
+            if retry_configuration is not None
+            else CORRECTED_PIPELINE_CONFIGURATION_VERSION
+        ),
     )
 
     configuration_matches = True
