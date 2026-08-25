@@ -109,7 +109,14 @@ class FakeStreamlit:
         on_change=None,
     ):
         self.calls.append(
-            ("selectbox", label, tuple(options), index, key)
+            (
+                "selectbox",
+                label,
+                tuple(options),
+                index,
+                key,
+                tuple(format_func(item) for item in options),
+            )
         )
         selected = (
             self.selected_project
@@ -329,3 +336,48 @@ def test_technical_toggle_is_global_ui_state_only():
         SESSION_SHOW_TECHNICAL_DETAILS
     ] is True
     assert st.session_state[SESSION_PROJECT_ID] == "111111"
+
+
+def test_technical_toggle_preserves_project_selector_identity_and_context():
+    st = FakeStreamlit(
+        selected_project="111111",
+        technical=False,
+    )
+
+    render_global_controls(
+        st,
+        workspace=Workspace(),
+    )
+
+    first_selectbox = [
+        call for call in st.calls
+        if call[0] == "selectbox" and call[1] == "Project"
+    ][-1]
+    first_labels = first_selectbox[5]
+
+    assert st.session_state[SESSION_PROJECT_ID] == "111111"
+
+    # Simulate the Streamlit rerun caused only by presentation-depth change.
+    st.technical = True
+    st.selected_project = None
+
+    render_global_controls(
+        st,
+        workspace=Workspace(),
+    )
+
+    second_selectbox = [
+        call for call in st.calls
+        if call[0] == "selectbox" and call[1] == "Project"
+    ][-1]
+    second_labels = second_selectbox[5]
+
+    assert st.session_state[
+        SESSION_SHOW_TECHNICAL_DETAILS
+    ] is True
+    assert st.session_state[SESSION_PROJECT_ID] == "111111"
+    assert (
+        st.session_state[SESSION_GLOBAL_PROJECT_SELECTOR]
+        == "111111"
+    )
+    assert first_labels == second_labels

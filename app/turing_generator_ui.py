@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from contextlib import nullcontext
+import inspect
 import os
 from pathlib import Path
 from typing import Any
@@ -41,6 +42,7 @@ from modules.guided_workflow import (
     GuidedWorkflowValidationError,
     build_processing_source_view,
 )
+from modules.llm.progress import LLMRequestProgressEvent
 from modules.project_ingestion import (
     DEFAULT_MODEL,
     DEFAULT_PROVIDER,
@@ -145,6 +147,90 @@ def _configuration_for_retry_fingerprint(
                             return candidate
 
     return None
+
+
+class _LLMRequestProgressDisplay:
+    """Render truthful request-count feedback for one synchronous action."""
+
+    def __init__(self, st: Any) -> None:
+        self._st = st
+        self.planned = 0
+        self.completed = 0
+        self.stage: str | None = None
+        self._status = None
+
+    def observe(self, event: LLMRequestProgressEvent) -> None:
+        if event.event_type == "planned":
+            self.planned += event.request_count
+        elif event.event_type == "completed":
+            self.completed += event.request_count
+        self.stage = event.stage
+        self._render(state="running")
+
+    def finish(self, *, success: bool) -> None:
+        if self.planned == 0 and self.completed == 0:
+            return
+        self._render(state="complete" if success else "error")
+
+    def _render(self, *, state: str) -> None:
+        denominator = str(self.planned) if self.planned else "?"
+        label = (
+            f"LLM requests completed: {self.completed} / "
+            f"{denominator}"
+        )
+        stage_label = _LLM_PROGRESS_STAGE_LABELS.get(
+            self.stage,
+            self.stage,
+        )
+        if stage_label:
+            label += f" · {stage_label}"
+
+        if self._status is None:
+            status_factory = getattr(self._st, "status", None)
+            if callable(status_factory):
+                self._status = status_factory(
+                    label,
+                    expanded=False,
+                    state=state,
+                )
+                return
+
+        update = getattr(self._status, "update", None)
+        if callable(update):
+            update(label=label, state=state, expanded=False)
+        else:
+            self._st.info(label)
+
+
+_LLM_PROGRESS_STAGE_LABELS = {
+    "evidence_detection": "Evidence detection",
+    "evidence_interpretation": "Evidence interpretation",
+    "subject_discovery": "Subject discovery",
+    "subject_interpretation": "Subject interpretation",
+}
+
+
+def _accepts_keyword_argument(function: Any, name: str) -> bool:
+    try:
+        parameters = inspect.signature(function).parameters.values()
+    except (TypeError, ValueError):
+        return False
+    return any(
+        parameter.name == name
+        or parameter.kind == inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters
+    )
+
+
+def _invoke_with_optional_llm_progress(
+    function: Any,
+    *args: Any,
+    llm_progress_observer,
+    **kwargs: Any,
+):
+    if _accepts_keyword_argument(function, "llm_progress_observer"):
+        kwargs["llm_progress_observer"] = llm_progress_observer
+    return function(*args, **kwargs)
 
 
 def render_turing_generator_ui(
@@ -954,53 +1040,70 @@ def render_project_ingestion_execution(
                 else:
                     st.info("Processing is running…")
 
+            request_progress = _LLMRequestProgressDisplay(st)
+            activity = _processing_activity_context(
+                st,
+                retry_mode=retry_mode,
+            )
             try:
-                if retry_mode:
-                    result = ingestion_service.retry_registered_source(
-                        navigation.project_id,
-                        selected_source.source_id,
-                        execution_state.processing_run_id,
-                        configuration=configuration,
-                        api_key=api_key,
-                        execution_observer=render_started,
-                    )
-                elif supports_state:
-                    result = ingestion_service.execute_registered_source(
-                        navigation.project_id,
-                        selected_source.source_id,
-                        configuration=configuration,
-                        api_key=api_key,
-                        execution_observer=render_started,
-                    )
-                else:
-                    result = ingestion_service.execute_registered_source(
-                        navigation.project_id,
-                        selected_source.source_id,
-                        configuration=configuration,
-                        api_key=api_key,
-                    )
+                with activity:
+                    if retry_mode:
+                        result = _invoke_with_optional_llm_progress(
+                            ingestion_service.retry_registered_source,
+                            navigation.project_id,
+                            selected_source.source_id,
+                            execution_state.processing_run_id,
+                            configuration=configuration,
+                            api_key=api_key,
+                            execution_observer=render_started,
+                            llm_progress_observer=request_progress.observe,
+                        )
+                    elif supports_state:
+                        result = _invoke_with_optional_llm_progress(
+                            ingestion_service.execute_registered_source,
+                            navigation.project_id,
+                            selected_source.source_id,
+                            configuration=configuration,
+                            api_key=api_key,
+                            execution_observer=render_started,
+                            llm_progress_observer=request_progress.observe,
+                        )
+                    else:
+                        result = _invoke_with_optional_llm_progress(
+                            ingestion_service.execute_registered_source,
+                            navigation.project_id,
+                            selected_source.source_id,
+                            configuration=configuration,
+                            api_key=api_key,
+                            llm_progress_observer=request_progress.observe,
+                        )
             except ProjectIngestionConfigurationError:
+                request_progress.finish(success=False)
                 st.error(
                     "The execution configuration is invalid or no "
                     "longer matches the failed Run."
                 )
             except ProjectIngestionExecutionError:
+                request_progress.finish(success=False)
                 st.error(
                     "The selected Source cannot start this Processing "
                     "operation. Inspect its current Run in the "
                     "Project Dashboard."
                 )
             except ProjectIngestionRecoveryRequiredError:
+                request_progress.finish(success=False)
                 st.error(
                     "The Processing Run requires explicit recovery "
                     "before execution can continue."
                 )
             except ProjectIngestionError:
+                request_progress.finish(success=False)
                 st.error(
                     "Processing failed safely. No successful "
                     "Processing state was inferred."
                 )
             except Exception:
+                request_progress.finish(success=False)
                 st.error(
                     "Processing failed unexpectedly. "
                     "No success state was inferred."
@@ -1199,6 +1302,23 @@ def _render_processing_state_summary(
             st.caption(f"Failure reason: {view.failure_reason}")
         if view.blocked_reason:
             st.caption(f"Blocked reason: {view.blocked_reason}")
+
+
+def _processing_activity_context(
+    st: Any,
+    *,
+    retry_mode: bool,
+):
+    # Keep visible activity feedback around the synchronous Processing call.
+    # A spinner is intentionally used instead of an invented percentage.
+    spinner = getattr(st, "spinner", None)
+    if callable(spinner):
+        return spinner(
+            "Retrying source processing…"
+            if retry_mode
+            else "Processing source…"
+        )
+    return nullcontext()
 
 
 def _processing_options_context(

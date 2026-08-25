@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -42,6 +43,7 @@ def run_agent_team(
     include_alternative_members: bool = False,
     dry_run: bool = False,
     source_analysis_unit_id: str | None = None,
+    result_observer: Callable[[AgentRunResult], None] | None = None,
 ) -> list[AgentRunResult]:
     """Run all selected members of one team on the same task."""
 
@@ -82,6 +84,8 @@ def run_agent_team(
                 ),
             )
             results.append(result)
+            if result_observer is not None:
+                result_observer(result)
 
     return results
 

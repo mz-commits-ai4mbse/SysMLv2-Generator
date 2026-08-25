@@ -9,6 +9,10 @@ import re
 from typing import Any
 
 from modules.llm.factory import create_llm_client
+from modules.llm.progress import (
+    LLMRequestProgressObserver,
+    notify_llm_progress,
+)
 from modules.llm.types import LLMRequest
 from modules.source_analysis_units.types import SourceAnalysisUnit
 from modules.source_evidence.types import SourceEvidenceAnchor
@@ -64,6 +68,7 @@ class EvidenceDetectionAgent:
         model: str,
         api_key: str | None = None,
         dry_run: bool = False,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> EvidenceDetectionResult:
         """Detect exact source evidence through deterministic candidate IDs."""
 
@@ -131,6 +136,12 @@ class EvidenceDetectionAgent:
                     "reference_examples_sha256": reference_sha,
                 },
             )
+        )
+        notify_llm_progress(
+            llm_progress_observer,
+            event_type="completed",
+            stage="evidence_detection",
+            detail=source_analysis_unit.source_analysis_unit_id,
         )
 
         detections = parse_detection_response(

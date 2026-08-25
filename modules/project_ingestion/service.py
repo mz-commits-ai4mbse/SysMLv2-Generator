@@ -19,6 +19,10 @@ from typing import Any
 from modules.ingestion.team_agentic_pipeline import (
     run_team_agentic_ingestion,
 )
+from modules.llm.progress import (
+    LLMRequestProgressObserver,
+    notify_llm_progress,
+)
 from modules.evidence_interpretation import (
     SharedEvidenceInterpretationPipeline,
     build_shared_evidence_review_input,
@@ -322,6 +326,7 @@ class ProjectBoundIngestionService:
             Callable[[ProjectBoundIngestionExecutionState], None]
             | None
         ) = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> ProjectBoundIngestionWorkResult:
         """Create one new Run and execute its first Phase-F Attempt."""
 
@@ -422,6 +427,7 @@ class ProjectBoundIngestionService:
             attempt_id=attempt_id,
             configuration=validated_configuration,
             api_key=api_key,
+            llm_progress_observer=llm_progress_observer,
         )
 
     def retry_registered_source_to_work(
@@ -436,6 +442,7 @@ class ProjectBoundIngestionService:
             Callable[[ProjectBoundIngestionExecutionState], None]
             | None
         ) = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> ProjectBoundIngestionWorkResult:
         """Retry one failed unchanged Run as a new immutable Attempt."""
 
@@ -480,6 +487,7 @@ class ProjectBoundIngestionService:
             attempt_id=attempt_id,
             configuration=validated_configuration,
             api_key=api_key,
+            llm_progress_observer=llm_progress_observer,
         )
 
     def _execute_started_attempt(
@@ -489,6 +497,7 @@ class ProjectBoundIngestionService:
         attempt_id: str,
         configuration: ProjectIngestionConfiguration,
         api_key: str | None,
+        llm_progress_observer: LLMRequestProgressObserver | None,
     ) -> ProjectBoundIngestionWorkResult:
         project_id = history.manifest.project_id
         source_id = history.manifest.source_id
@@ -503,6 +512,7 @@ class ProjectBoundIngestionService:
                 attempt_id=attempt_id,
                 configuration=configuration,
                 api_key=api_key,
+                llm_progress_observer=llm_progress_observer,
             )
 
         try:
@@ -702,6 +712,7 @@ class ProjectBoundIngestionService:
         attempt_id: str,
         configuration: ProjectIngestionConfiguration,
         api_key: str | None,
+        llm_progress_observer: LLMRequestProgressObserver | None,
     ) -> ProjectBoundIngestionWorkResult:
         """Execute Source Preparation and shared-Evidence interpretation."""
 
@@ -717,6 +728,7 @@ class ProjectBoundIngestionService:
                 model=configuration.model,
                 api_key=api_key,
                 dry_run=configuration.dry_run,
+                llm_progress_observer=llm_progress_observer,
             )
             projection = self._source_projections.load_projection(
                 project_id,
@@ -812,6 +824,39 @@ class ProjectBoundIngestionService:
                     workflow_contract="shared_evidence_v2_no_review",
                 )
 
+            if llm_progress_observer is not None:
+                shared_request_count = (
+                    self._shared_evidence_interpretation
+                    .planned_request_count(
+                        runs_per_persona=configuration.runs_per_member,
+                        max_members=configuration.max_members_per_team,
+                    )
+                )
+                subject_request_count = (
+                    self._subject_interpretation.planned_request_count(
+                        runs_per_persona=configuration.runs_per_member,
+                        max_members=None,
+                    )
+                )
+                notify_llm_progress(
+                    llm_progress_observer,
+                    event_type="planned",
+                    stage="evidence_interpretation",
+                    request_count=shared_request_count,
+                )
+                notify_llm_progress(
+                    llm_progress_observer,
+                    event_type="planned",
+                    stage="subject_discovery",
+                    request_count=1,
+                )
+                notify_llm_progress(
+                    llm_progress_observer,
+                    event_type="planned",
+                    stage="subject_interpretation",
+                    request_count=subject_request_count,
+                )
+
             interpretation = (
                 self._shared_evidence_interpretation.run(
                     source_projection=projection,
@@ -823,6 +868,7 @@ class ProjectBoundIngestionService:
                     runs_per_persona=configuration.runs_per_member,
                     max_members=configuration.max_members_per_team,
                     dry_run=False,
+                    llm_progress_observer=llm_progress_observer,
                 )
             )
             source_manifest = self._source_registry.load_source(
@@ -857,6 +903,7 @@ class ProjectBoundIngestionService:
                         provider=configuration.provider,
                         model=configuration.model,
                         api_key=api_key,
+                        llm_progress_observer=llm_progress_observer,
                     )
                 )
                 canonical_subject_set = (
@@ -876,6 +923,7 @@ class ProjectBoundIngestionService:
                         runs_per_persona=(
                             configuration.runs_per_member
                         ),
+                        llm_progress_observer=llm_progress_observer,
                     )
                 )
                 subject_consensus = analyze_subject_consensus(
@@ -1108,6 +1156,7 @@ class ProjectBoundIngestionService:
             Callable[[ProjectBoundIngestionExecutionState], None]
             | None
         ) = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> ProjectBoundIngestionResult:
         self._require_no_current_run(project_id, source_id)
         work = self.execute_registered_source_to_work(
@@ -1116,6 +1165,7 @@ class ProjectBoundIngestionService:
             configuration=configuration,
             api_key=api_key,
             execution_observer=execution_observer,
+            llm_progress_observer=llm_progress_observer,
         )
         return self._complete_work(work)
 
@@ -1131,6 +1181,7 @@ class ProjectBoundIngestionService:
             Callable[[ProjectBoundIngestionExecutionState], None]
             | None
         ) = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> ProjectBoundIngestionResult:
         work = self.retry_registered_source_to_work(
             project_id,
@@ -1139,6 +1190,7 @@ class ProjectBoundIngestionService:
             configuration=configuration,
             api_key=api_key,
             execution_observer=execution_observer,
+            llm_progress_observer=llm_progress_observer,
         )
         return self._complete_work(work)
 

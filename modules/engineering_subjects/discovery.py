@@ -5,6 +5,10 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from modules.llm.factory import create_llm_client
+from modules.llm.progress import (
+    LLMRequestProgressObserver,
+    notify_llm_progress,
+)
 from modules.llm.types import LLMRequest
 from modules.source_evidence.types import SourceEvidence
 from modules.source_projection.types import SourceProjectionArtifact
@@ -46,6 +50,7 @@ class EngineeringSubjectDiscoveryAgent:
         provider: str,
         model: str,
         api_key: str | None = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> EngineeringSubjectDiscoveryResult:
         spans = build_discovery_source_spans(
             source_projection,
@@ -68,6 +73,12 @@ class EngineeringSubjectDiscoveryAgent:
             instructions=instructions,
             input_text=input_text,
             retry=False,
+        )
+        notify_llm_progress(
+            llm_progress_observer,
+            event_type="completed",
+            stage="subject_discovery",
+            detail="canonical subject discovery",
         )
 
         try:
@@ -106,6 +117,12 @@ class EngineeringSubjectDiscoveryAgent:
                 + "\nEND_PREVIOUS_INVALID_DISCOVERY_OUTPUT"
             )
 
+            notify_llm_progress(
+                llm_progress_observer,
+                event_type="planned",
+                stage="subject_discovery",
+                detail="grounding correction retry",
+            )
             result = self._generate(
                 client=client,
                 provider=provider,
@@ -114,6 +131,12 @@ class EngineeringSubjectDiscoveryAgent:
                 instructions=correction_instructions,
                 input_text=correction_input,
                 retry=True,
+            )
+            notify_llm_progress(
+                llm_progress_observer,
+                event_type="completed",
+                stage="subject_discovery",
+                detail="grounding correction retry",
             )
 
             proposals = parse_subject_discovery_output(result.text)

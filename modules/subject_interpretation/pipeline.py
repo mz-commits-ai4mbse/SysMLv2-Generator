@@ -19,6 +19,10 @@ from modules.agents.team_runner import (
     select_team_members,
 )
 from modules.engineering_subjects.types import CanonicalSubjectSet
+from modules.llm.progress import (
+    LLMRequestProgressObserver,
+    notify_llm_progress,
+)
 from modules.source_projection.types import SourceProjectionArtifact
 
 from .contract import parse_subject_interpretation_output
@@ -68,6 +72,25 @@ class SubjectInterpretationPipeline:
         self._team_runner = team_runner
         self._team_member_runner = team_member_runner
 
+    def planned_request_count(
+        self,
+        *,
+        runs_per_persona: int,
+        max_members: int | None,
+    ) -> int:
+        team = load_team_config(
+            project_root=self.project_root,
+            team_file=self.team_file,
+        )
+        members = tuple(
+            select_team_members(
+                team_config=team,
+                max_members=max_members,
+                include_alternative_members=False,
+            )
+        )
+        return len(members) * runs_per_persona
+
     def run(
         self,
         *,
@@ -79,6 +102,7 @@ class SubjectInterpretationPipeline:
         api_key: str | None = None,
         runs_per_persona: int = 1,
         max_members: int | None = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> SharedSubjectInterpretationResult:
         """Run every configured Persona over the exact same Subject population."""
 
@@ -126,22 +150,32 @@ class SubjectInterpretationPipeline:
         parsed_output_root.mkdir(parents=True, exist_ok=True)
         repair_output_root.mkdir(parents=True, exist_ok=True)
 
-        raw_results = tuple(
-            self._team_runner(
-                project_root=self.project_root,
-                team_file=self.team_file,
-                task_instructions=task_instructions,
-                input_text=input_text,
-                output_dir=raw_output_root,
-                provider=provider,
-                model=model,
-                api_key=api_key,
-                runs_per_member=runs_per_persona,
-                max_members=max_members,
-                include_alternative_members=False,
-                dry_run=False,
+        runner_kwargs = {
+            "project_root": self.project_root,
+            "team_file": self.team_file,
+            "task_instructions": task_instructions,
+            "input_text": input_text,
+            "output_dir": raw_output_root,
+            "provider": provider,
+            "model": model,
+            "api_key": api_key,
+            "runs_per_member": runs_per_persona,
+            "max_members": max_members,
+            "include_alternative_members": False,
+            "dry_run": False,
+        }
+        if llm_progress_observer is not None:
+            runner_kwargs["result_observer"] = (
+                lambda result: notify_llm_progress(
+                    llm_progress_observer,
+                    event_type="completed",
+                    stage="subject_interpretation",
+                    detail=(
+                        f"{result.agent_id} · run {result.run_index}"
+                    ),
+                )
             )
-        )
+        raw_results = tuple(self._team_runner(**runner_kwargs))
 
         member_by_agent = {
             member.agent_id: member
@@ -193,6 +227,15 @@ class SubjectInterpretationPipeline:
                 if not needs:
                     raise
 
+                notify_llm_progress(
+                    llm_progress_observer,
+                    event_type="planned",
+                    stage="subject_interpretation",
+                    detail=(
+                        f"classification repair · {member.agent_id} · "
+                        f"run {raw_result.run_index}"
+                    ),
+                )
                 repair_result = self._team_member_runner(
                     team_config=team,
                     member=member,
@@ -208,6 +251,15 @@ class SubjectInterpretationPipeline:
                     api_key=api_key,
                     run_index=raw_result.run_index,
                     dry_run=False,
+                )
+                notify_llm_progress(
+                    llm_progress_observer,
+                    event_type="completed",
+                    stage="subject_interpretation",
+                    detail=(
+                        f"classification repair · {member.agent_id} · "
+                        f"run {raw_result.run_index}"
+                    ),
                 )
                 repaired_text, classification_repairs = (
                     apply_classification_repair_response(

@@ -3,12 +3,36 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from app.turing_generator_ui import render_project_ingestion_execution
+from modules.llm.progress import LLMRequestProgressEvent
 from modules.project_ingestion import (
     DEFAULT_MODEL,
     DEFAULT_PROVIDER,
     ProjectIngestionConfiguration,
     calculate_ingestion_configuration_fingerprint,
 )
+
+
+class _StatusContext:
+    def __init__(self, st, label, state):
+        self._st = st
+        self._st.events.append(("status_create", label, state))
+
+    def update(self, *, label, state, expanded=False):
+        self._st.events.append(("status_update", label, state))
+
+
+class _SpinnerContext:
+    def __init__(self, st, label):
+        self._st = st
+        self._label = label
+
+    def __enter__(self):
+        self._st.events.append(("spinner_enter", self._label))
+        return self
+
+    def __exit__(self, *args):
+        self._st.events.append(("spinner_exit", self._label))
+        return False
 
 
 class _ActionPlaceholder:
@@ -76,6 +100,12 @@ class _FakeStreamlit:
         self.action_placeholder = _ActionPlaceholder(self)
         return self.action_placeholder
 
+    def spinner(self, label):
+        return _SpinnerContext(self, label)
+
+    def status(self, label, *, expanded=False, state="running"):
+        return _StatusContext(self, label, state)
+
 
 class _RetryService:
     def __init__(self, st):
@@ -132,6 +162,7 @@ class _RetryService:
         configuration,
         api_key,
         execution_observer,
+        llm_progress_observer=None,
     ):
         self.retry_called = True
         self._st.events.append(("retry_call", None))
@@ -146,6 +177,26 @@ class _RetryService:
                 processing_stage="agentic_ingestion",
             )
         )
+        if llm_progress_observer is not None:
+            llm_progress_observer(
+                LLMRequestProgressEvent(
+                    event_type="planned",
+                    stage="evidence_detection",
+                    request_count=2,
+                )
+            )
+            llm_progress_observer(
+                LLMRequestProgressEvent(
+                    event_type="completed",
+                    stage="evidence_detection",
+                )
+            )
+            llm_progress_observer(
+                LLMRequestProgressEvent(
+                    event_type="completed",
+                    stage="evidence_detection",
+                )
+            )
 
         return SimpleNamespace(
             project_id=project_id,
@@ -237,3 +288,45 @@ def test_recorded_running_state_renders_no_ingestion_write_action():
         event[0] == "action_button"
         for event in st.events
     )
+
+
+def test_retry_action_keeps_visible_activity_indicator_during_execution():
+    st = _FakeStreamlit()
+    service = _RetryService(st)
+
+    render_project_ingestion_execution(
+        st,
+        ingestion_service=service,
+        navigation=_navigation(),
+    )
+
+    event_names = [event[0] for event in st.events]
+
+    assert "spinner_enter" in event_names
+    assert "spinner_exit" in event_names
+    assert (
+        event_names.index("spinner_enter")
+        < event_names.index("retry_call")
+        < event_names.index("spinner_exit")
+    )
+
+
+def test_retry_action_reports_completed_llm_request_count():
+    st = _FakeStreamlit()
+    service = _RetryService(st)
+
+    render_project_ingestion_execution(
+        st,
+        ingestion_service=service,
+        navigation=_navigation(),
+    )
+
+    labels = [
+        event[1]
+        for event in st.events
+        if event[0] in {"status_create", "status_update"}
+    ]
+
+    assert any("LLM requests completed: 0 / 2" in label for label in labels)
+    assert any("LLM requests completed: 1 / 2" in label for label in labels)
+    assert any("LLM requests completed: 2 / 2" in label for label in labels)

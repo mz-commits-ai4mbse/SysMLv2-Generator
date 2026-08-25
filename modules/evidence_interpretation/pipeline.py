@@ -18,6 +18,10 @@ from modules.agents.team_runner import (
     run_agent_team,
     select_team_members,
 )
+from modules.llm.progress import (
+    LLMRequestProgressObserver,
+    notify_llm_progress,
+)
 from modules.semantic_consensus import (
     analyze_semantic_consensus,
     semantic_consensus_result_to_json,
@@ -78,6 +82,25 @@ class SharedEvidenceInterpretationPipeline:
         self._team_runner = team_runner
         self._clock = clock
 
+    def planned_request_count(
+        self,
+        *,
+        runs_per_persona: int,
+        max_members: int | None,
+    ) -> int:
+        team = load_team_config(
+            project_root=self.project_root,
+            team_file=self.team_file,
+        )
+        members = tuple(
+            select_team_members(
+                team_config=team,
+                max_members=max_members,
+                include_alternative_members=False,
+            )
+        )
+        return len(members) * runs_per_persona
+
     def run(
         self,
         *,
@@ -90,6 +113,7 @@ class SharedEvidenceInterpretationPipeline:
         runs_per_persona: int = 1,
         max_members: int | None = None,
         dry_run: bool = False,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> SharedEvidenceInterpretationResult:
         """Interpret exactly one common Evidence set and calculate consensus."""
 
@@ -153,20 +177,32 @@ class SharedEvidenceInterpretationPipeline:
                 runs_per_persona=runs_per_persona,
             )
         else:
-            raw_results = self._team_runner(
-                project_root=self.project_root,
-                team_file=self.team_file,
-                task_instructions=task_instructions,
-                input_text=input_text,
-                output_dir=agent_output_root / "raw_team_runs",
-                provider=provider,
-                model=model,
-                api_key=api_key,
-                runs_per_member=runs_per_persona,
-                max_members=max_members,
-                include_alternative_members=False,
-                dry_run=False,
-            )
+            runner_kwargs = {
+                "project_root": self.project_root,
+                "team_file": self.team_file,
+                "task_instructions": task_instructions,
+                "input_text": input_text,
+                "output_dir": agent_output_root / "raw_team_runs",
+                "provider": provider,
+                "model": model,
+                "api_key": api_key,
+                "runs_per_member": runs_per_persona,
+                "max_members": max_members,
+                "include_alternative_members": False,
+                "dry_run": False,
+            }
+            if llm_progress_observer is not None:
+                runner_kwargs["result_observer"] = (
+                    lambda result: notify_llm_progress(
+                        llm_progress_observer,
+                        event_type="completed",
+                        stage="evidence_interpretation",
+                        detail=(
+                            f"{result.agent_id} · run {result.run_index}"
+                        ),
+                    )
+                )
+            raw_results = self._team_runner(**runner_kwargs)
             semantic_results = self._materialize_live_results(
                 team=team,
                 members=members,

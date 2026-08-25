@@ -15,6 +15,10 @@ from modules.evidence_detection import (
     EvidenceDetectionReferenceError,
     resolve_detection_anchors,
 )
+from modules.llm.progress import (
+    LLMRequestProgressObserver,
+    notify_llm_progress,
+)
 from modules.project_sources import (
     CONTEXT_ONLY_SOURCE_ROLE,
     ENGINEERING_SOURCE_ROLE,
@@ -110,6 +114,7 @@ class SourcePreparationService:
         model: str,
         api_key: str | None = None,
         dry_run: bool = False,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
     ) -> SourcePreparationResult:
         """Prepare one Source once per material detector configuration."""
 
@@ -177,6 +182,14 @@ class SourcePreparationService:
         evidence_ids: list[str] = []
         response_ids: list[str | None] = []
 
+        if not dry_run and units:
+            notify_llm_progress(
+                llm_progress_observer,
+                event_type="planned",
+                stage="evidence_detection",
+                request_count=len(units),
+            )
+
         for unit in units:
             detected = self._detector.detect(
                 source_analysis_unit=unit,
@@ -185,6 +198,7 @@ class SourcePreparationService:
                 model=model,
                 api_key=api_key,
                 dry_run=dry_run,
+                llm_progress_observer=llm_progress_observer,
             )
             response_ids.append(detected.response_id)
 

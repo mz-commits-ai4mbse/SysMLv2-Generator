@@ -118,15 +118,10 @@ def render_global_controls(
                 else "No project available"
             )
 
-        project = project_by_id[project_id]
-
-        if technical_details:
-            return (
-                f"{project.display_name} · "
-                f"{project.project_id}"
-            )
-
-        return project.display_name
+        # Keep selector rendering stable across presentation-depth changes.
+        # Technical Details is presentation-only state and must never cause
+        # Streamlit to reconstruct or clear the selected Project value.
+        return project_by_id[project_id].display_name
 
     def project_changed() -> None:
         selected = st.session_state.get(
