@@ -67,6 +67,8 @@ class ModelDerivationWorkflowService:
         semantic_relationship_executor_factory: (
             Callable[..., object] | None
         ) = None,
+        model_placement_review_repository=None,
+        model_placement_executor_factory: Callable[..., object] | None = None,
     ) -> None:
         self.project_root = Path(project_root)
         self.projects_root = self.project_root / "data" / "projects"
@@ -115,6 +117,26 @@ class ModelDerivationWorkflowService:
             if semantic_relationship_executor_factory is None
             else semantic_relationship_executor_factory
         )
+        if model_placement_review_repository is None:
+            # Lazy import preserves the package boundary because
+            # model_placement comparison contracts depend on model_candidates
+            # LLM projection contracts.
+            from modules.model_placement.review_repository import (
+                ModelPlacementReviewRepository,
+            )
+
+            self._model_placement_reviews = ModelPlacementReviewRepository(
+                root=self.projects_root,
+            )
+        else:
+            self._model_placement_reviews = (
+                model_placement_review_repository
+            )
+        self._model_placement_executor_factory = (
+            self._default_model_placement_executor
+            if model_placement_executor_factory is None
+            else model_placement_executor_factory
+        )
 
     def assess(
         self,
@@ -143,6 +165,111 @@ class ModelDerivationWorkflowService:
             predecessor_candidate_set=predecessor,
             predecessor_review_decisions=decisions,
         )
+
+    def prepare_model_placement_review(
+        self,
+        project_id: str,
+        *,
+        mode: str,
+        provider: str = DEFAULT_MODELING_PROVIDER,
+        model: str = DEFAULT_MODELING_MODEL,
+        api_key: str | None = None,
+    ):
+        """Generate and persist placement proposals before any model assembly."""
+
+        from modules.model_placement.request_builder import (
+            build_deterministic_model_placement_comparison,
+            build_model_placement_request,
+        )
+
+        selected_mode = validate_model_derivation_mode(mode)
+        request, strict_deriver, _predecessor = self._assessment_request(
+            project_id,
+            predecessor_candidate_set_id=None,
+        )
+        coverage = strict_deriver.assess_projection_coverage(request)
+        profile = load_model_structure_profile()
+        placement_request = build_model_placement_request(
+            request=request,
+            coverage=coverage,
+            profile=profile,
+        )
+
+        if selected_mode == ECO_DETERMINISTIC_MODE:
+            comparison = build_deterministic_model_placement_comparison(
+                placement_request=placement_request,
+                coverage=coverage,
+            )
+        else:
+            output_dir = self._new_model_placement_execution_directory(
+                project_id
+            )
+            executor = self._model_placement_executor_factory(
+                project_root=self.project_root,
+                provider=provider,
+                model=model,
+                api_key=api_key,
+            )
+            comparison = executor.execute(
+                request=placement_request,
+                output_dir=output_dir,
+            )
+
+        return self._model_placement_reviews.publish_comparison(
+            comparison
+        )
+
+    def assemble_model_draft(
+        self,
+        project_id: str,
+        comparison_fingerprint: str,
+        *,
+        provider: str = DEFAULT_MODELING_PROVIDER,
+        model: str = DEFAULT_MODELING_MODEL,
+        api_key: str | None = None,
+    ):
+        """Assemble a reviewable draft; Human Final Review resolves non-exact Relationships."""
+
+        from modules.model_assembly import (
+            ModelAssemblyRepository,
+            build_model_assembly_draft,
+        )
+
+        placement_set = (
+            self._model_placement_reviews.load_approved_placement_set(
+                project_id,
+                comparison_fingerprint,
+            )
+        )
+        request, _strict_deriver, _predecessor = self._assessment_request(
+            project_id,
+            predecessor_candidate_set_id=None,
+        )
+        if request.approved_engineering_information is None:
+            raise ModelCandidateGenerationBlockedError(
+                "Model Assembly requires Approved Engineering Information."
+            )
+
+        profile = load_model_structure_profile()
+
+        # BLK-007:
+        # Model Placement personas are not authorized to decide target
+        # Relationship representation during Assembly. The Assembly builder
+        # already preserves exact profile matches deterministically and can
+        # carry every non-exact accepted engineering Relationship forward as
+        # unresolved. Human Final Model Review is the authority that resolves
+        # those remaining representation choices.
+        draft = build_model_assembly_draft(
+            request=request,
+            approved_placement_set=placement_set,
+            profile=profile,
+            relationship_executor=None,
+            output_dir=None,
+            provider=provider,
+            model=model,
+        )
+        repository = ModelAssemblyRepository(root=self.projects_root)
+        return repository.persist(draft)
 
     def generate(
         self,
@@ -368,6 +495,61 @@ class ModelDerivationWorkflowService:
                 "Finalized R4c Approved Engineering Information authority is "
                 "unavailable for Phase-H derivation."
             ) from exc
+
+    def _default_model_placement_executor(
+        self,
+        *,
+        project_root: Path,
+        provider: str,
+        model: str,
+        api_key: str | None,
+    ):
+        from modules.model_placement.persona_executor import (
+            ModelPlacementPersonaExecutor,
+        )
+
+        return ModelPlacementPersonaExecutor(
+            project_root=project_root,
+            provider=provider,
+            model=model,
+            api_key=api_key,
+        )
+
+    def _new_model_assembly_execution_directory(
+        self,
+        project_id: str,
+    ) -> Path:
+        root = (
+            self.projects_root
+            / project_id
+            / "work"
+            / "model_assembly_generation"
+        )
+        root.mkdir(parents=True, exist_ok=True)
+        return Path(
+            tempfile.mkdtemp(
+                prefix="assembly_",
+                dir=root,
+            )
+        )
+
+    def _new_model_placement_execution_directory(
+        self,
+        project_id: str,
+    ) -> Path:
+        root = (
+            self.projects_root
+            / project_id
+            / "work"
+            / "model_placement_generation"
+        )
+        root.mkdir(parents=True, exist_ok=True)
+        return Path(
+            tempfile.mkdtemp(
+                prefix="placement_",
+                dir=root,
+            )
+        )
 
     def _default_semantic_relationship_executor(
         self,

@@ -33,6 +33,7 @@ class SysMLElementRenderer:
     """
 
     _KEYWORDS = {
+        "TN_003": "part def",
         "TN_004": "part",
         "TN_006": "action",
         "TN_008": "requirement",

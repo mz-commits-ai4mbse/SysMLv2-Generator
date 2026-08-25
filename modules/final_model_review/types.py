@@ -354,9 +354,11 @@ class FinalModelReviewDiagramNodeView:
     model_area: str
     element_type: str
     framework_assignment: str
-    source_model_candidate_id: str
-    review_decision_id: str
+    source_model_candidate_id: str | None
+    review_decision_id: str | None
     code_location: FinalModelReviewCodeLocationView | None
+    authority_ids: tuple[str, ...] = ()
+    authority_types: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -370,9 +372,11 @@ class FinalModelReviewDiagramEdgeView:
     relationship_family: str
     semantic_intent: str
     directionality: str
-    source_model_candidate_id: str
-    review_decision_id: str
+    source_model_candidate_id: str | None
+    review_decision_id: str | None
     code_location: FinalModelReviewCodeLocationView | None
+    authority_ids: tuple[str, ...] = ()
+    authority_types: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -413,10 +417,23 @@ class FinalModelReviewTraceabilityView:
     end_line: int | None
     source_internal_model_element_id: str | None
     source_internal_model_relationship_id: str | None
-    source_model_candidate_id: str
+    source_model_candidate_id: str | None
     approved_input_ids: tuple[str, ...]
-    review_decision_id: str
+    review_decision_id: str | None
     accepted_exception_decision_id: str | None
+    authority_ids: tuple[str, ...] = ()
+    authority_types: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True)
+class FinalModelReviewExternalValidatorView:
+    """Exact external-validator evidence projected into Final Model Review."""
+
+    tool_name: str
+    tool_version: str | None
+    execution_status: str
+    exit_code: int | None
+    normalized_diagnostic_count: int
 
 
 @dataclass(frozen=True, slots=True)
@@ -459,6 +476,7 @@ class FinalModelReviewView:
     change_proposals: tuple[FinalModelReviewChangeProposal, ...]
     required_human_actions: tuple[str, ...]
     next_action: str
+    external_validator_evidence: tuple[FinalModelReviewExternalValidatorView, ...] = ()
 
 
 FINAL_MODEL_REVIEW_RELEASE_STATUSES = (

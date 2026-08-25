@@ -1,0 +1,77 @@
+{
+  "artifact_set_content_fingerprint": "678b09fe6cb4d24e5a744b97a4366bc3f5a993d36046265fd9847079abb6a506",
+  "generated_units": [
+    {
+      "content_fingerprint": "ca5bfe03a282fb97e7fe5fd1254bd1898bfa5cb6f352ba788754bf78d1e5b52d",
+      "generated_symbol_ids": [
+        "IME_000001",
+        "IME_000003",
+        "IME_000007",
+        "IME_000010",
+        "IME_000011",
+        "IME_000012",
+        "IME_000013",
+        "IME_000006",
+        "IME_000002",
+        "IME_000008",
+        "IME_000009",
+        "IME_000005",
+        "IME_000004",
+        "IMR_000002"
+      ],
+      "relative_path": "generated_model.sysml",
+      "source_internal_model_element_ids": [
+        "IME-000001",
+        "IME-000003",
+        "IME-000007",
+        "IME-000010",
+        "IME-000011",
+        "IME-000012",
+        "IME-000013",
+        "IME-000006",
+        "IME-000002",
+        "IME-000008",
+        "IME-000009",
+        "IME-000005",
+        "IME-000004"
+      ],
+      "source_internal_model_relationship_ids": [
+        "IMR-000002"
+      ],
+      "unit_id": "GSU-000001"
+    }
+  ],
+  "generation_context": {
+    "artifact_structure_reference": {
+      "profile_fingerprint": "d9d20eb5f8724dd1547aa1ec62bfaa42319715db4061acf4f0a38b7c54e3d2ae",
+      "profile_id": "TURING_SYSML_V2_ARTIFACT_STRUCTURE",
+      "profile_version": "1.0.0"
+    },
+    "generation_profile_reference": {
+      "profile_fingerprint": "2af04ff5a65c575e15713ccbad74825b6a20de2cc8f41b3ea00079ac1478c2bb",
+      "profile_id": "TURING_SYSML_V2_GENERATION",
+      "profile_version": "1.0.0"
+    },
+    "generator_rules_reference": {
+      "rules_fingerprint": "2cf5efd391b7cc0d02b4374113dd3edb44a3858114ea2b43d96edf241a0417dd",
+      "rules_id": "TURING_SYSML_V2_GENERATOR_RULES",
+      "rules_version": "1.0.0"
+    },
+    "target_notation_reference": {
+      "content_fingerprint": "b6400bb7f8301396ebf7e6a66072430e5ffde6fe6851fb840f4464ef222246f3",
+      "context_id": "CTX_SYSML_V2_TARGET_NOTATION",
+      "version": "0.2.0"
+    }
+  },
+  "generation_input_fingerprint": "328d1e860a169325ac4cac1984739c2ef1c9b4ca56bca9178f166aaaca398383",
+  "generation_provenance": {
+    "context_fingerprint": "76d4337658661cacee8c4c4db64d72acc19bf425d6f8eb2f686675e373e2042f",
+    "implementation_reference": "modules.sysml_generation.authority_backed:AuthorityBackedSysMLArtifactBuilder",
+    "method": "deterministic_authority_backed_serialization"
+  },
+  "nonblocking_diagnostics": [],
+  "project_id": "120412",
+  "schema_version": "1.0.0",
+  "source_iem_content_fingerprint": "7e0f2ee2e006172c2e63fd9bcff706949f32d4b3a731df24c6c38f8e8b38899f",
+  "source_internal_engineering_model_id": "IEM-000002"
+}

@@ -49,6 +49,7 @@ _DIAGNOSTIC_HEADER = re.compile(
     r"(?: \((?P<rule>[^)]+)\))?: (?P<message>.*)$"
 )
 _SYNTAX_RULE_TOKENS = ("syntax", "parse", "parser", "lex", "grammar")
+_BENIGN_NON_DIAGNOSTIC_LINES = frozenset({"All checks passed!"})
 
 Runner = Callable[..., subprocess.CompletedProcess[str]]
 Finder = Callable[[str], str | None]
@@ -338,6 +339,8 @@ class SysideCliValidator:
         for raw_line in text.split("\n"):
             line = raw_line.rstrip()
             if not line:
+                continue
+            if line in _BENIGN_NON_DIAGNOSTIC_LINES:
                 continue
             match = _DIAGNOSTIC_HEADER.match(line)
             if match is None:

@@ -1,45 +1,50 @@
 # Current Project State
 
-<!-- BEGIN SSOT UPDATE 2026-08-24 WP12 LIVE E2E -->
-## WP-12 Live E2E status — 2026-08-24
+<!-- BEGIN SSOT UPDATE 2026-08-25 WP12 GOLDEN E2E CLOSEOUT -->
+## WP-12 Golden E2E Known-Good baseline — 2026-08-25
 
-WP-12 is currently classified `FAILED WITH BLOCKER`.
-
-Active blockers:
+Current accepted status:
 
 ```text
-BLK-002  Cross-Source Processing Artifact Identity Collision
-BLK-006  LLM-assisted Model Proposal generation fails in live E2E
+WP-12 single-source Golden E2E: PASS
+Demo-ready: YES
+WP-12 remaining blocker: BLK-002 Multi-Source
 ```
 
-R4c semantic recovery has been implemented and live single-source validated through
-Phase-H readiness on Project `120412`. The live path successfully reached Human
-Review, finalization, 17 active Approved Inputs and Approved Engineering Information
-with 21 accepted semantic Relationships.
+Project `120412` completed the Human-authority-backed path through `IEM-000002`,
+successful real SYSIDE validation, `FMR-000001 / FRV-000002`, Human release
+`FRD-000001` and immutable publication `OUT-000001`.
 
-Resolved test blockers:
+Published SysML:
+
+`data/output/120412/OUT-000001/generated_model.sysml`
+
+Verification baseline:
 
 ```text
-BLK-004 -> resolved -> live retest PASS
-BLK-005 -> resolved -> live retest PASS WITH FINDINGS
+focused TN_003 synchronization: 29 passed
+complete repository regression: 6046 passed
+git diff --check: PASS
+SYSIDE: completed / exit 0 / diagnostics 0
 ```
 
-Latest full repository regression:
+Canonical detailed checkpoint:
+
+`collaboration/checkpoints/2026-08-25_wp12_golden_e2e_known_good_baseline.md`
+
+The closeout commit containing this checkpoint establishes `main` as the Known-Good
+fallback. New implementation work must use dedicated feature branches.
+
+Exact next activity:
 
 ```text
-5889 passed, 1 skipped in 15.28s
-git diff --check PASS
+BLK + SEM + ODS cross-register triage
+→ prioritize
+→ select bounded feature branch
 ```
 
-Canonical WP-12 evidence:
-
-- `collaboration/checkpoints/2026-08-24_wp12_r4c_live_e2e_ssot.md`
-- `collaboration/audits/wp12_findings.md`
-- `collaboration/audits/wp12_multi_document_dry_run_test_protocol.md`
-
-Immediate next action: diagnose `BLK-006`; do not retry Model Proposal generation
-until the exact failure path and any partial artifact state are known.
-<!-- END SSOT UPDATE 2026-08-24 WP12 LIVE E2E -->
+No new feature implementation shall be started as part of this SSOT closeout.
+<!-- END SSOT UPDATE 2026-08-25 WP12 GOLDEN E2E CLOSEOUT -->
 
 <!-- BEGIN SSOT UPDATE 2026-08-20 -->
 ## SSOT Delta — 2026-08-20: WP-12 Demo Readiness and Architecture Recovery

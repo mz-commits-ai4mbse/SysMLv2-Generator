@@ -1,5 +1,55 @@
 # Change Log
 
+## 2026-08-25 — WP-12 Golden E2E accepted / Known-Good baseline established
+
+The first complete Human-authority-backed single-source Turing Generator E2E was
+successfully executed with project `120412`:
+
+```text
+Engineering Source
+→ Processing
+→ Human Engineering Review
+→ Approved Engineering Information
+→ Human Model Placement
+→ deterministic Model Assembly
+→ SEM-015 quality/refinement + Human Review 2
+→ IEM-000002
+→ deterministic SysML v2 generation
+→ SYSIDE validation PASS
+→ Final Model Review FRV-000002
+→ Human release FRD-000001
+→ Published Output OUT-000001
+```
+
+Published SysML:
+
+`data/output/120412/OUT-000001/generated_model.sysml`
+
+Verification:
+
+```text
+29 focused tests passed
+6046 complete repository tests passed
+git diff --check PASS
+SYSIDE completed / exit 0 / diagnostics 0
+```
+
+BLK-002 remains open for Multi-Source acceptance and is not weakened by this
+single-source acceptance.
+
+This checkpoint also changes development workflow: after the closeout commit,
+`main` is the Known-Good fallback and new implementation work proceeds only on
+dedicated feature branches.
+
+Next activity is BLK / SEM / ODS cross-register triage before selecting further
+implementation.
+
+Authority:
+
+`collaboration/checkpoints/2026-08-25_wp12_golden_e2e_known_good_baseline.md`
+
+---
+
 ## 2026-08-24 — WP-12 R4c Live E2E SSOT checkpoint
 
 A new authoritative WP-12 verification checkpoint was recorded.

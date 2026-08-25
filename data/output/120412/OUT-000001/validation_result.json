@@ -1,0 +1,30 @@
+{
+  "content_fingerprint": "39270547601a975ddf191fb31024e263366a83675e38741d710571cc71a8fb7b",
+  "external_validator_evidence": [
+    {
+      "execution_status": "completed",
+      "exit_code": 0,
+      "normalized_diagnostic_count": 0,
+      "validator_identity": {
+        "command_contract_id": "SYSIDE_CHECK_NONMUTATING_V1",
+        "configuration_fingerprint": "c9ce8b4da69a979106a884df918e2930272dd24672bdae37717ea4706103a482",
+        "tool_name": "SYSIDE Modeler CLI",
+        "tool_version": "syside 0.10.3 (b6e216cb48b5336ea48283e99c68a0e10e17b8cc)",
+        "validator_id": "SYSIDE_CLI"
+      }
+    }
+  ],
+  "findings": [],
+  "project_id": "120412",
+  "publication_gate": "passed",
+  "schema_version": "1.0.0",
+  "source_artifact_set_fingerprint": "678b09fe6cb4d24e5a744b97a4366bc3f5a993d36046265fd9847079abb6a506",
+  "source_internal_engineering_model_id": "IEM-000002",
+  "validation_input_fingerprint": "a1bc90a491b4a676279a6be1576a1db597fb4dd44340e0a2e943dc98fe589ae0",
+  "validation_profile_reference": {
+    "profile_fingerprint": "515735ca0c257351f1b327060fa75ca8f93a79b14839a44da5dae7419745795a",
+    "profile_id": "TURING_SYSML_V2_VALIDATION",
+    "profile_version": "1.0.0"
+  },
+  "validation_status": "valid"
+}

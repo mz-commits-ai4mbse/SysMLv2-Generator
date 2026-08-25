@@ -104,6 +104,14 @@ from .generator_rules import (
     load_generator_rules_reference,
     validate_generator_rules,
 )
+from .authority_backed import (
+    AUTHORITY_BACKED_SYSML_ARTIFACT_SCHEMA_VERSION,
+    AuthorityBackedGeneratedSysMLArtifactSet,
+    AuthorityBackedSysMLArtifactBuilder,
+    AuthorityBackedSysMLArtifactRepository,
+    AuthorityBackedSysMLTraceabilityEntry,
+)
+
 from .artifact_builder import (
     GENERATED_SYSML_ARTIFACT_SET_SCHEMA_VERSION,
     GENERATOR_IMPLEMENTATION_REFERENCE,

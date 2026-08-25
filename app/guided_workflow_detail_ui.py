@@ -10,6 +10,9 @@ from app.guided_workflow_actions import (
     render_final_review_actions,
     render_model_proposal_actions,
 )
+from app.human_model_placement_review_ui import (
+    render_model_placement_review,
+)
 from app.presentation_preferences import technical_details_enabled
 from app.turing_generator_navigation import (
     SESSION_SELECTED_ENTITY_ID,
@@ -83,10 +86,51 @@ def render_model_proposal_ui(
         return
 
     if detail.status == "not_available":
+        placement_loader = getattr(
+            writes,
+            "list_model_placement_comparisons",
+            None,
+        )
+        if callable(placement_loader):
+            try:
+                placement_comparisons = placement_loader(
+                    navigation.project_id
+                )
+            except GuidedWorkflowWriteError:
+                st.error(
+                    "Model Placement Review state could not be loaded safely."
+                )
+                return
+        else:
+            # Compatibility for injected legacy/test write services.
+            placement_comparisons = ()
+
+        if placement_comparisons:
+            comparison = (
+                placement_comparisons[0]
+                if len(placement_comparisons) == 1
+                else st.selectbox(
+                    "Model Placement review bundle",
+                    options=placement_comparisons,
+                    format_func=lambda value: (
+                        value.content_fingerprint[:12]
+                    ),
+                    key="guided_model_placement.comparison",
+                )
+            )
+            render_model_placement_review(
+                st,
+                project_root=root,
+                project_id=navigation.project_id,
+                comparison=comparison,
+                write_service=writes,
+                technical=technical,
+            )
+            return
+
         st.info(
             "No Model Proposal is available yet. "
-            "Choose how the approved engineering information should "
-            "be projected into the target model."
+            "Model Placement must be resolved before model assembly."
         )
         _render_initial_model_derivation(
             st,
@@ -397,7 +441,7 @@ def _render_initial_model_derivation(
     )
 
     if st.button(
-        "Generate model proposal",
+        "Generate model placement proposals",
         key="guided_model.generate",
     ):
         if (
@@ -410,6 +454,49 @@ def _render_initial_model_derivation(
             )
             return
 
+        placement_generator = getattr(
+            write_service,
+            "generate_model_placement_review",
+            None,
+        )
+        if callable(placement_generator):
+            try:
+                spinner = getattr(st, "spinner", None)
+                if callable(spinner):
+                    with spinner(
+                        "Running Model Placement — sorting approved "
+                        "engineering information before assembly..."
+                    ):
+                        placement_generator(
+                            project_id,
+                            mode=selected_mode,
+                            provider="openai",
+                            model=model,
+                            api_key=api_key,
+                        )
+                else:
+                    placement_generator(
+                        project_id,
+                        mode=selected_mode,
+                        provider="openai",
+                        model=model,
+                        api_key=api_key,
+                    )
+            except GuidedWorkflowWriteError:
+                st.error(
+                    "Model Placement generation failed safely. "
+                    "No Model Candidate Set was created."
+                )
+                return
+
+            st.success(
+                "Model Placement proposals generated. "
+                "Human placement decisions are required before assembly."
+            )
+            _rerun(st)
+            return
+
+        # Compatibility fallback for injected legacy/test write services.
         try:
             snapshot = write_service.generate_model_proposal(
                 project_id,
@@ -815,10 +902,109 @@ def render_final_model_review_ui(
         return
 
     if detail.status == "not_available":
-        st.info(
-            "No Final Model Review revision is available yet. "
-            "Generation and validation must produce a review subject first."
+        candidate_loader = getattr(
+            writes,
+            "list_phase_l_review_subject_candidates",
+            None,
         )
+        if not callable(candidate_loader):
+            st.info(
+                "No Final Model Review revision is available yet. "
+                "Generation and validation must produce a review subject first."
+            )
+            return
+
+        try:
+            candidates = candidate_loader(navigation.project_id)
+        except Exception:
+            st.error(
+                "Generated SysML candidates for Final Model Review "
+                "cannot be reconstructed safely."
+            )
+            return
+
+        if not candidates:
+            st.info(
+                "No Final Model Review revision is available yet. "
+                "Generate SysML v2 before starting Final Model Review."
+            )
+            return
+
+        st.warning(
+            "Generated SysML v2 is available, but no Final Model Review "
+            "exists yet."
+        )
+        st.caption(
+            "Select the exact generated Internal Model to start Final Model "
+            "Review. The exact generated SysML v2 is validated with the "
+            "configured external validator and the result is bound immutably "
+            "to the review revision. Publication approval remains a separate "
+            "Human decision."
+        )
+
+        by_id = {
+            item["internal_engineering_model_id"]: item
+            for item in candidates
+        }
+        selected_iem = st.selectbox(
+            "Generated Internal Model",
+            options=tuple(by_id),
+            key="guided_detail.final_review.create_subject.iem",
+        )
+        candidate = by_id[selected_iem]
+
+        st.caption(
+            f"Generated artifact: {candidate['artifact_fingerprint']} · "
+            f"{candidate['unit_count']} unit(s)"
+        )
+
+        preview_key = (
+            "guided_final_model.current_validation_preview."
+            f"{candidate['artifact_fingerprint']}"
+        )
+        cached_validation = st.session_state.get(preview_key)
+        if cached_validation is not None:
+            st.caption(
+                "A current validation result for this exact artifact is "
+                "available in the app session and will be used."
+            )
+
+        label = "Start Final Model Review"
+        if st.button(
+            label,
+            key="guided_detail.final_review.create_subject",
+        ):
+            creator = getattr(
+                writes,
+                "create_phase_l_final_model_review",
+                None,
+            )
+            if not callable(creator):
+                st.error(
+                    "Final Model Review creation is unavailable."
+                )
+                return
+            try:
+                bundle = creator(
+                    navigation.project_id,
+                    selected_iem,
+                    validation_result=cached_validation,
+                )
+            except Exception:
+                st.error(
+                    "Final Model Review subject creation failed safely. "
+                    "No release or publication authority was created."
+                )
+                return
+
+            st.success(
+                "Final Model Review created: "
+                f"{bundle.revision.final_model_review_id} · "
+                f"{bundle.revision.final_model_review_revision_id}"
+            )
+            rerun = getattr(st, "rerun", None)
+            if callable(rerun):
+                rerun()
         return
 
     if detail.status == "selection_required":
@@ -866,6 +1052,51 @@ def render_final_model_review_ui(
     )
 
     _render_release_state(st, gate.release_status)
+
+    external_evidence = getattr(
+        view,
+        "external_validator_evidence",
+        (),
+    )
+    if external_evidence:
+        st.subheader("External SysML v2 validation")
+        for evidence in external_evidence:
+            passed = (
+                evidence.execution_status == "completed"
+                and evidence.exit_code == 0
+                and evidence.normalized_diagnostic_count == 0
+            )
+            if passed:
+                st.success("SYSIDE validation: PASSED")
+            elif evidence.execution_status == "completed":
+                st.error("SYSIDE validation: FAILED")
+            else:
+                st.warning("SYSIDE validation: INCOMPLETE")
+
+            columns = st.columns(3)
+            columns[0].metric(
+                "SYSIDE",
+                "PASS" if passed else "NOT PASS",
+            )
+            columns[1].metric(
+                "Diagnostics",
+                evidence.normalized_diagnostic_count,
+            )
+            columns[2].metric(
+                "Exit code",
+                "—" if evidence.exit_code is None else evidence.exit_code,
+            )
+            validator_label = f"Validator: {evidence.tool_name}"
+            if evidence.tool_version:
+                validator_label += f" · {evidence.tool_version}"
+            else:
+                validator_label += " · version unavailable"
+            st.caption(validator_label)
+        st.caption(
+            "Quality dimension: external SysML v2 conformance / tool "
+            "compatibility. Engineering content approval remains a separate "
+            "Human review decision."
+        )
 
     if view.required_human_actions:
         st.subheader("Your review work")

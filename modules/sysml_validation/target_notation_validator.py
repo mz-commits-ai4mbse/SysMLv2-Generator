@@ -11,7 +11,7 @@ from .types import SysMLValidationFinding
 
 
 _ELEMENT_HEADER = re.compile(
-    r"^(part|action|requirement|use case def) ([A-Za-z_][A-Za-z0-9_]*) \{$"
+    r"^(part def|part|action|requirement|use case def) ([A-Za-z_][A-Za-z0-9_]*) \{$"
 )
 _REFERENCE = r"[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*"
 _RELATIONSHIP = re.compile(

@@ -1,31 +1,30 @@
 # Roadmap
 
-<!-- BEGIN ROADMAP UPDATE 2026-08-24 WP12 LIVE E2E -->
-## Current WP-12 execution status — 2026-08-24
+<!-- BEGIN SSOT UPDATE 2026-08-25 WP12 GOLDEN E2E CLOSEOUT -->
+## Execution status after WP-12 Golden E2E — 2026-08-25
 
 ```text
-WP-12 End-to-End Demo Hardening / Verification     ACTIVE
-  formal multi-source Stage-A                      FAILED WITH BLOCKER — BLK-002
-  R4c single-source semantic recovery              LIVE VALIDATED to Phase-H readiness
-  Approved Input promotion                         PASS after BLK-004 correction
-  AEI -> Phase-H handoff                           PASS after BLK-005 correction
-  Model Proposal generation                        FAILED WITH BLOCKER — BLK-006
-
-NEXT
-  diagnose + correct BLK-006
-  -> same-project generation retest
-  -> Candidate Review
-  -> Internal Model
-  -> SysML v2 downstream
-
-SEPARATE OPEN FORMAL BLOCKER
-  BLK-002 multi-source identity
+WP-12 single-source Golden E2E                  COMPLETE / PASS
+WP-12 Multi-Source acceptance                  OPEN — BLK-002
+Known-Good demo baseline on main               ESTABLISHED BY CLOSEOUT COMMIT
+Cross-register BLK / SEM / ODS triage          NEXT ACTIVITY
+Further implementation                         FEATURE BRANCHES ONLY
 ```
 
-WP-12 closeout is not permitted while either active blocker remains open. Once all
-blocking gates pass, remaining non-blocking findings may be accepted as
-`PASS WITH FINDINGS`.
-<!-- END ROADMAP UPDATE 2026-08-24 WP12 LIVE E2E -->
+The current system is demo-capable and has produced a Human-approved,
+validation-bound, immutable SysML v2 publication (`OUT-000001`).
+
+BLK-002 is retained as the explicit remaining WP-12 blocker for Multi-Source
+processing. It shall be triaged together with the existing SEM and ODS registers
+before further implementation priority is chosen.
+
+After the baseline closeout commit:
+
+```text
+main = Known-Good fallback
+feature/* = all further implementation work
+```
+<!-- END SSOT UPDATE 2026-08-25 WP12 GOLDEN E2E CLOSEOUT -->
 
 <!-- BEGIN SSOT UPDATE 2026-08-20 -->
 ## Roadmap Delta — 2026-08-20

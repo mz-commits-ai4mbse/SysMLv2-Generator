@@ -1,0 +1,54 @@
+{
+  "content_fingerprint": "3fb82f1b98ed6d46f82d7382f48d21c38d435129fa87db22723f37a0e0526d1a",
+  "files": [
+    {
+      "content_fingerprint": "ca5bfe03a282fb97e7fe5fd1254bd1898bfa5cb6f352ba788754bf78d1e5b52d",
+      "relative_path": "generated_model.sysml",
+      "role": "sysml_unit",
+      "source_generated_unit_id": "GSU-000001"
+    },
+    {
+      "content_fingerprint": "399fb0b007a6018f00cb244787793017168e6280d29fc5d312b442289dad8fa1",
+      "relative_path": "generation_summary.json",
+      "role": "generation_summary",
+      "source_generated_unit_id": null
+    },
+    {
+      "content_fingerprint": "64d824149c0bfc42ee5c6c766ce0a58689a7e295b01bf4faf2cd250a9b36994f",
+      "relative_path": "traceability.json",
+      "role": "traceability",
+      "source_generated_unit_id": null
+    },
+    {
+      "content_fingerprint": "3ca94f4c829b18f59866b5238d0038f7772b8f957391bb55cb826b0d0f76ca91",
+      "relative_path": "validation_report.md",
+      "role": "validation_report",
+      "source_generated_unit_id": null
+    },
+    {
+      "content_fingerprint": "74fa058441629ea1669162027c540c15f199732e6f1e45a76dfd66e1f5036c65",
+      "relative_path": "validation_result.json",
+      "role": "validation_result",
+      "source_generated_unit_id": null
+    }
+  ],
+  "final_model_review_id": "FMR-000001",
+  "final_model_review_revision_id": "FRV-000002",
+  "final_release_gate_fingerprint": "83b1e335e3bfa4d40d62b8c954fb373c11b61351ff0c7c00dcadae0aa6d42ff6",
+  "final_review_decision_fingerprint": "eea827a584eae712df562d3355420f1274ff1aa67ebe880a2c947beba742c79b",
+  "final_review_decision_id": "FRD-000001",
+  "final_review_revision_fingerprint": "c9a9448655e379f826a00955d0db764ef5bc799dbb624fb5935bf58c255ffd38",
+  "output_package_id": "OUT-000001",
+  "output_profile_reference": {
+    "profile_fingerprint": "8634cc434c096898a0206643cb01a67b169190767b706b98f7b5977610cd0bb7",
+    "profile_id": "TURING_SYSML_V2_OUTPUT",
+    "profile_version": "1.0.0"
+  },
+  "project_id": "120412",
+  "publication_input_fingerprint": "dfbe70874972fcef71afc1c8b05bd12d3446394c62b13850f334cd2a4cbc2de3",
+  "published_at": "2026-08-25T20:01:25Z",
+  "schema_version": "1.0.0",
+  "source_artifact_set_fingerprint": "678b09fe6cb4d24e5a744b97a4366bc3f5a993d36046265fd9847079abb6a506",
+  "source_internal_engineering_model_id": "IEM-000002",
+  "validation_result_fingerprint": "39270547601a975ddf191fb31024e263366a83675e38741d710571cc71a8fb7b"
+}

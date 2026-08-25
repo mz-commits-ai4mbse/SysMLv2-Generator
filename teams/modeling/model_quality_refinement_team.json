@@ -1,0 +1,19 @@
+{
+  "team_id": "TEAM_MODEL_QUALITY_REFINEMENT",
+  "team_name": "Model Quality Refinement",
+  "task_name": "Refine classified engineering model content",
+  "role_id": "ROLE_MODEL_QUALITY_REFINEMENT_ADVISOR",
+  "role_file": "agents/roles/model_quality_refinement_advisor.md",
+  "description": "One focused LLM editor refines model wording after Human classification/placement and before Human Review 2.",
+  "default_execution_mode": "single_refiner",
+  "members": [
+    {
+      "member_id": "MODEL_QUALITY_001",
+      "agent_id": "AGENT_MODEL_QUALITY_REFINER",
+      "persona_id": "PERSONA_CONSERVATIVE_ENGINEERING_MODEL_EDITOR",
+      "persona_file": "agents/personas/modeling/model_quality_refiner.md",
+      "perspective": "semantic_quality_refinement"
+    }
+  ],
+  "consensus_required": false
+}

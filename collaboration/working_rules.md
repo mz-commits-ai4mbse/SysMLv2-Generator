@@ -1,5 +1,40 @@
 # Working Rules
 
+<!-- BEGIN WORKING RULE 2026-08-25 FEATURE BRANCH POLICY -->
+## Feature-branch policy — effective after WP-12 Golden E2E closeout
+
+The closeout commit containing the 2026-08-25 Golden E2E checkpoint establishes
+`main` as the Known-Good fallback branch.
+
+From that point onward:
+
+1. Do not implement new features directly on `main`.
+2. Create every bounded implementation scope from current verified `main`.
+3. Use a dedicated branch, normally `feature/<finding-or-scope>`.
+4. Keep the branch tied to one coherent BLK / SEM / ODS scope where practical.
+5. Run focused tests during implementation.
+6. Before merge, run the appropriate regression and `git diff --check`.
+7. Merge only after explicit Human review / acceptance.
+8. Verify `main` after merge.
+9. Preserve the ability to return to the Golden E2E baseline at all times.
+10. Never use broad staging commands such as `git add .`, `git add -A` or
+    `git add --all`.
+
+Recommended baseline tag after the closeout commit:
+
+```text
+wp12-golden-e2e-2026-08-25
+```
+
+Branch examples:
+
+```text
+feature/blk-002-multi-source
+feature/sem-015-follow-up
+feature/ods-<id>-<short-name>
+```
+<!-- END WORKING RULE 2026-08-25 FEATURE BRANCH POLICY -->
+
 ## Purpose
 
 This document defines the mandatory engineering and collaboration rules for

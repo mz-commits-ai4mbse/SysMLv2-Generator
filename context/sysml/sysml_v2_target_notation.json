@@ -51,9 +51,34 @@
       "usage_rules": [
         "Use part definitions for logical or physical components.",
         "Use singular, descriptive names.",
-        "Avoid implementation-specific file or class names in logical model output."
+        "Avoid implementation-specific file or class names in logical model output.",
+        "Use part definitions for Human-reviewed standalone reusable stakeholder-role types only when Target-Model Formulation authority explicitly selects TN_003 and validated syntax-fixture evidence is bound."
       ],
-      "example": "part def PipelineOrchestrationComponent { }"
+      "example": "part def PipelineOrchestrationComponent { }",
+      "syntax_evidence": {
+        "fixture_id": "SFX-C6C3-001",
+        "fixture_path": "context/sysml/fixtures/c6c3/stakeholder_role_part_definition.sysml",
+        "fixture_sha256": "17b33b583209a8c10de8155b40284993925943e846e6f07a3cfb9c4d9b297dbb",
+        "validation_environment": "SYSIDE",
+        "validation_status": "passed_with_nonblocking_warning",
+        "validation_method": "manual_open_and_semantic_feedback",
+        "validation_scope": "standalone_part_definition_syntax_only",
+        "validated_on": "2026-08-25",
+        "nonblocking_warnings": [
+          {
+            "code": "unused-definition",
+            "disposition": "accepted_for_isolated_definition_fixture"
+          }
+        ],
+        "sysml_v2_release_commit": "ee25530ed24b8c93a0e3e4b8d5fbfaa5a8d8ffb4",
+        "source_reference_path": "sysml/src/validation/09-Verification/9-Verification-simplified.sysml",
+        "source_reference_sha256": "877d2ae9cfc2e51a37b0217ae94be7df0f810ecf36eddf31c9a27d14dc2a0356",
+        "supporting_reference_paths": [
+          "sysml/src/training/35. Use Cases/Use Case Definition Example.sysml",
+          "sysml/src/examples/Simple Tests/UseCaseTest.sysml"
+        ],
+        "authority_note": "The fixture validates standalone Part Definition syntax only. Human authority is still required before any stakeholder element is materialized through TN_003."
+      }
     },
     {
       "construct_id": "TN_004",

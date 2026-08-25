@@ -15,11 +15,11 @@
       "rule_id": "J2_ELEMENT_001",
       "model_area": "stakeholder.stakeholders",
       "element_type": "stakeholder",
-      "mapping_status": "unsupported_pending_semantic_mapping",
-      "target_construct_id": null,
-      "production_generation_allowed": false,
-      "rationale": "The current IEM semantic identifies a stakeholder, but J2 does not force it into part, item or another SysML construct without an accepted semantic representation.",
-      "target_element_kind": null
+      "mapping_status": "supported",
+      "target_construct_id": "TN_003",
+      "production_generation_allowed": true,
+      "rationale": "Human-reviewed standalone reusable stakeholder-role types are materialized as the SYSIDE-validated TN_003 Part Definition pattern. Activation requires upstream Target-Model Formulation authority; Phase J performs no semantic fallback.",
+      "target_element_kind": "definition"
     },
     {
       "rule_id": "J2_ELEMENT_002",

@@ -15,6 +15,16 @@ from .structure_materialization import (
     ResolvedInternalModelStructureContext,
 )
 from .assembly import InternalModelAssemblyService
+from .authority_backed import (
+    AUTHORITY_BACKED_INTERNAL_MODEL_SCHEMA_VERSION,
+    AuthorityBackedInternalModelElement,
+    AuthorityBackedInternalModelRelationship,
+    AuthorityBackedInternalModelRepository,
+    AuthorityBackedInternalModelSnapshot,
+    AuthorityBackedInternalModelStructureNode,
+    InternalModelAuthorityReference,
+    build_authority_backed_internal_model,
+)
 from .paths import (
     INTERNAL_MODELS_DIRECTORY_NAME,
     INTERNAL_MODEL_ELEMENTS_DIRECTORY_NAME,
@@ -139,3 +149,11 @@ from .types import (
 )
 
 __all__ = [name for name in globals() if not name.startswith("_")]
+
+# SEM-015 successor Internal Model exports
+from .semantic_successor import (
+    SEM015InternalModelSuccessorRepository,
+    SemanticSuccessorResult,
+    build_sem015_internal_model_successor,
+    load_authority_json,
+)

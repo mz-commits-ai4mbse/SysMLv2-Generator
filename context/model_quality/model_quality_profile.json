@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0.0",
+  "profile_id": "TURING_MODEL_QUALITY",
+  "profile_version": "1.0.0",
+  "purpose": "Classification-dependent semantic refinement before deterministic SysML v2 generation.",
+  "principles": [
+    "preserve approved engineering meaning",
+    "do not invent unsupported engineering information",
+    "formulation depends on Human-reviewed target classification and placement",
+    "Human Review 2 approves or overrides refined model-facing wording"
+  ],
+  "reference_sources": [
+    {
+      "source_id": "INCOSE_GtWR_Rev4_2023",
+      "document": "INCOSE-TP-2010-006-04 Rev 4, 1 July 2023",
+      "role": "requirements_authoring_reference",
+      "distribution": "user_owned_reference_not_committed"
+    }
+  ],
+  "rules": {
+    "GENERAL_MEANING": "Preserve source-supported engineering meaning and add no unsupported content.",
+    "GENERAL_CONCISE": "Use concise, model-facing wording appropriate to the supplied element type.",
+    "REQ_BINDING": "Formulate a requirement as a binding statement appropriate to the supplied requirement level and responsible entity.",
+    "REQ_LEVEL": "Preserve the supplied stakeholder/system/subsystem requirement level; do not silently transfer responsibility.",
+    "REQ_SINGULAR": "Prefer one principal obligation/thought per requirement; flag compound source meaning instead of deleting it.",
+    "REQ_UNAMBIGUOUS": "Avoid vague or ambiguous wording when it can be improved without inventing missing engineering data.",
+    "REQ_VERIFIABLE": "Favor verifiable wording but never invent missing quantities, thresholds, conditions or success criteria; flag gaps for Human attention.",
+    "REQ_PRONOUNS": "Avoid ambiguous personal or indefinite pronouns; repeat the engineering noun when needed.",
+    "FUNCTION_VERBAL": "Use concise active verb-object wording for functions/actions.",
+    "USE_CASE_GOAL": "Use concise goal-oriented behavioral wording and preserve the actor/system interaction meaning.",
+    "STAKEHOLDER_ROLE": "Use a concise stakeholder/actor role noun phrase; do not invent responsibilities.",
+    "COMPONENT_NOUN": "Use a concise engineering component noun phrase, not a behavior statement.",
+    "INFO_NOUN": "Use a concise noun phrase for an information item and describe only source-supported content.",
+    "UNCLASSIFIED_CAUTION": "Perform only conservative wording cleanup and require Human attention when the target semantics remain unclear."
+  },
+  "element_profiles": {
+    "stakeholder": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "STAKEHOLDER_ROLE"
+      ]
+    },
+    "stakeholder_requirement": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "REQ_BINDING",
+        "REQ_LEVEL",
+        "REQ_SINGULAR",
+        "REQ_UNAMBIGUOUS",
+        "REQ_VERIFIABLE",
+        "REQ_PRONOUNS"
+      ]
+    },
+    "system_requirement": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "REQ_BINDING",
+        "REQ_LEVEL",
+        "REQ_SINGULAR",
+        "REQ_UNAMBIGUOUS",
+        "REQ_VERIFIABLE",
+        "REQ_PRONOUNS"
+      ]
+    },
+    "subsystem_requirement": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "REQ_BINDING",
+        "REQ_LEVEL",
+        "REQ_SINGULAR",
+        "REQ_UNAMBIGUOUS",
+        "REQ_VERIFIABLE",
+        "REQ_PRONOUNS"
+      ]
+    },
+    "requirement": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "REQ_BINDING",
+        "REQ_LEVEL",
+        "REQ_SINGULAR",
+        "REQ_UNAMBIGUOUS",
+        "REQ_VERIFIABLE",
+        "REQ_PRONOUNS"
+      ]
+    },
+    "function": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "FUNCTION_VERBAL"
+      ]
+    },
+    "action": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "FUNCTION_VERBAL"
+      ]
+    },
+    "use_case": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "USE_CASE_GOAL"
+      ]
+    },
+    "logical_component": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "COMPONENT_NOUN"
+      ]
+    },
+    "physical_component": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "COMPONENT_NOUN"
+      ]
+    },
+    "logical_element": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "COMPONENT_NOUN"
+      ]
+    },
+    "physical_element": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "COMPONENT_NOUN"
+      ]
+    },
+    "information_item": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "INFO_NOUN"
+      ]
+    },
+    "unclassified": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "UNCLASSIFIED_CAUTION"
+      ]
+    },
+    "*": {
+      "rule_ids": [
+        "GENERAL_MEANING",
+        "GENERAL_CONCISE",
+        "UNCLASSIFIED_CAUTION"
+      ]
+    }
+  }
+}

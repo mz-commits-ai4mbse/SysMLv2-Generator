@@ -201,10 +201,8 @@ def test_stakeholder_mapping_blocks_without_force_fit() -> None:
         relationships=(),
     )
     result = SysMLGenerationPreflightService().evaluate(snapshot)
-    assert result.ready is False
-    assert [item.code for item in result.blocking_findings] == [
-        "UNSUPPORTED_ELEMENT_MAPPING"
-    ]
+    assert result.ready is True
+    assert result.blocking_findings == ()
 
 
 def test_satisfies_blocks_when_iem_endpoint_roles_are_wrong() -> None:

@@ -2,60 +2,137 @@
 
 ## Purpose
 
-Authoritative starting point for the next Turing Generator chat after the
-2026-08-20 WP-12 demo-readiness / architecture-recovery checkpoint.
-
-Immediate deadline:
-
-```text
-Monday 2026-08-24 presentation + live demonstration
-```
+Authoritative starting point after the 2026-08-25 WP-12 Golden E2E closeout.
 
 Repository:
 
 ```text
 mz-commits-ai4mbse/SysMLv2-Generator
-branch: main
 ```
 
-Current Work Package:
-
-```text
-WP-12 — End-to-End Demo Hardening
-```
-
-Primary application:
-
-```bash
-streamlit run app/turing_generator_app.py
-```
-
----
-
-# Authority and Working Rules
+## Authority and working mode
 
 Authority order:
 
-1. CATIA SysML v2 model — accepted engineering knowledge
-2. committed repository — implementation reality
-3. Collaboration Knowledge Base / ADRs / checkpoints — decisions and coordination
+1. accepted CATIA SysML v2 engineering model
+2. committed local repository implementation
+3. Collaboration SSOT / ADRs / checkpoints
 4. chat history / temporary artifacts
 
 GitHub is passive for the assistant.
 
-Workflow:
+Do not reconstruct implementation reality from old chat history or stale checkpoints
+when the current repository/SSOT is available.
+
+## Current accepted system state
 
 ```text
-inspect
-→ reason
-→ user review/acceptance
-→ deterministic local patch
+WP-12 single-source Golden E2E: PASS
+Demo-ready: YES
+Remaining WP-12 blocker: BLK-002 Multi-Source
+```
+
+Golden E2E project:
+
+```text
+Project:              120412
+Successor IEM:        IEM-000002
+Final Model Review:   FMR-000001
+Accepted revision:    FRV-000002
+Human release:        FRD-000001
+Published Output:     OUT-000001
+```
+
+Published SysML:
+
+```text
+data/output/120412/OUT-000001/generated_model.sysml
+```
+
+Validation:
+
+```text
+SYSIDE Modeler CLI
+syside 0.10.3 (b6e216cb48b5336ea48283e99c68a0e10e17b8cc)
+completed
+exit code 0
+0 diagnostics
+validation valid
+publication gate passed
+```
+
+Verified repository baseline before SSOT-only closeout cleanup:
+
+```text
+focused TN_003 synchronization: 29 passed
+complete repository regression: 6046 passed in 16.57s
+git diff --check: PASS
+```
+
+## Remaining WP-12 blocker
+
+```text
+BLK-002 — Multi-Source
+OPEN / BLOCKING FOR MULTI-SOURCE ACCEPTANCE
+```
+
+The accepted Golden E2E is single-source. Do not reinterpret this as BLK-002
+resolution.
+
+## Next activity
+
+Do not immediately implement another finding.
+
+Perform a cross-register triage of:
+
+```text
+BLK
+SEM
+ODS
+```
+
+For each item determine:
+
+```text
+current status
+→ duplicate / overlap
+→ dependency
+→ still applicable?
+→ blocker vs quality vs UX/observability/debt
+→ priority
+→ bounded implementation scope
+```
+
+Only after the triage is accepted select the first implementation branch.
+
+## Branch policy
+
+The closeout commit containing the Golden E2E checkpoint establishes:
+
+```text
+main = Known-Good fallback
+```
+
+All subsequent implementation work:
+
+```text
+main
+→ create dedicated feature branch
+→ bounded implementation
 → focused tests
-→ regression where appropriate
+→ appropriate regression
 → git diff --check
-→ exact staging only
-→ user commit/push
-→ verify HEAD == origin/main
+→ Human acceptance
+→ merge to main
+→ verify main
+```
+
+Typical branches:
+
+```text
+feature/blk-002-multi-source
+feature/sem-<id>-<short-name>
+feature/ods-<id>-<short-name>
 ```
 
 Never use:
@@ -63,564 +140,34 @@ Never use:
 ```text
 git add .
 git add -A
+git add --all
 ```
 
-Do not stage or commit before explicit acceptance.
+Do not stage or commit before explicit Human acceptance.
 
----
+Runtime evidence such as `data/projects/` is not source-controlled merely because it
+was used for the Golden E2E.
 
-# WP-12 Current State
+## Read first in the next chat
 
-Formal run:
+1. `collaboration/checkpoints/2026-08-25_wp12_golden_e2e_known_good_baseline.md`
+2. `collaboration/current_state.md`
+3. `collaboration/roadmap.md`
+4. `collaboration/working_rules.md`
+5. `collaboration/audits/wp12_findings.md`
+6. relevant BLK / SEM / ODS authority files discovered during triage
+
+Then verify local reality:
+
+```bash
+git log -1 --oneline
+git status --short
+git diff --check
+```
+
+## Exact next instruction
 
 ```text
-WP12-E2E-DRY-001
-Project 308131
-IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION
-```
-
-Do not describe it as failed, restarted or completed.
-
-Blockers:
-
-```text
-BLK-001 derivation producer contract
-→ corrected / focused validation passed
-
-BLK-002 cross-source Processing Artifact identity collision
-→ OPEN / BLOCKING
-→ Monday demo is single-source
-
-BLK-003 semantic effectiveness / engineering-subject quality
-→ OPEN / ACTIVE ARCHITECTURE RECOVERY
-```
-
-Representative real single-source run:
-
-```text
-Project 877791
-RUN-000001
-3 personas × 1 run
-real LLM
-
-93 element proposals
-41 relationship proposals
-134 raw
-
-D3: 70 elements + 39 relationships = 109
-D4: 70 elements + 39 relationships = 109
-Human Review: 110 items
-```
-
-Technical conclusion:
-
-```text
-D4 → Human Review works.
-```
-
-Engineering conclusion:
-
-```text
-source purity, model relevance and subject formation are not acceptable.
-```
-
-Review Item count is diagnostic only. Do not optimize it directly.
-
----
-
-# Architecture Recovery — ADR-027
-
-New proposed ADR:
-
-```text
-collaboration/decisions/
-ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
-```
-
-Core target:
-
-```text
-REFERENCE KNOWLEDGE
-Apollo 11 / SysML v2 / Modeling Guidance
-        │ guidance only
-        ▼
-ENGINEERING SOURCE
-        ↓
-Deterministic Source Projection
-        ↓
-Find Source-Grounded Evidence
-"digital text marker"
-        ↓
-Anchored Evidence Units
-        ↓
-Persona Interpretation / Classification
- P1            P2            P3
-        ↓
-Consensus / Variance
-        ↓
-Optional Semantic Normalization / Ontology Alignment
-        ↓
-Human Review
-        ↓
-Approved Engineering Information
-        ↓
-Architecture Derivation
-        ↓
-SysML v2
-```
-
-Hard rules:
-
-```text
-Reference Knowledge ≠ Engineering Evidence
-
-Detection and Interpretation are separate responsibilities.
-
-Personas interpret the SAME source-grounded evidence.
-
-Personas and repeated runs shall not multiply Engineering Subjects.
-
-Review Item count is a diagnostic, not an optimization objective.
-
-Ontology/terminology mapping is a supporting service and shall not invent
-positive Project engineering evidence.
-
-AI-generated interpretation ≠ Approved Engineering Information.
-
-Architecture Derivation follows Human Engineering Review / Approval.
-```
-
-P9/D3/D4 have no grandfathering protection.
-
-Audit every material responsibility as:
-
-```text
-KEEP
-MOVE
-REDUCE
-BYPASS
-REMOVE / RETIRE
-```
-
-Ask:
-
-```text
-"What responsibility does this component legitimately own?"
-```
-
-not:
-
-```text
-"How do we keep the old component compatible?"
-```
-
----
-
-# ADR-011 Reuse
-
-Do not discard ADR-011.
-
-Still-useful foundations include:
-
-- deterministic Source Projection,
-- source anchors and exact excerpts,
-- source-traceable Information Units,
-- `engineering_source` vs `context_only`,
-- epistemic classification,
-- semantic extraction,
-- deterministic consensus/variance,
-- repeated runs as stability evidence rather than votes,
-- terminology/ontology boundary,
-- Human Review separation.
-
-Important existing behavior to inspect:
-
-```text
-modules/semantic_consensus/analyzer.py
-```
-
-It already groups candidate discussion by exact source evidence
-(anchors + source excerpt) and gives one effective vote per persona. This is
-conceptually close to "same text-marker passage, different professional
-interpretations".
-
----
-
-# Gemini Diagnostic Benchmark
-
-Source:
-
-```text
-legacy/demo/wp12/01_product_overview.md
-```
-
-A simple external Gemini prompt, with strict source-only evidence instructions,
-returned eight major source-grounded findings covering:
-
-1. collaboration capability / operator / remote expert / live view,
-2. workstation and remote client context,
-3. remote-consultation purpose,
-4. live-image observation requirement,
-5. temporary remote control subject to operator permission,
-6. operator responsibility/controller transparency,
-7. session retention and unresolved retention detail,
-8. explicitly unspecified protocol/deployment/performance/latency/regulatory
-   content and open questions.
-
-Interpretation:
-
-```text
-The core LLM task is feasible.
-The current Turing pipeline likely overcomplicates or mis-bounds it.
-```
-
-Caution: Gemini already made some premature model-form suggestions such as
-State Machine/Guard. This output is a qualitative benchmark only, not a gold
-standard and not Project authority.
-
----
-
-# Exact Next Technical Work
-
-Do NOT start another real LLM run yet.
-
-First perform a read-only Source→first-Human-Review architecture/code-path audit.
-
-Inspect at least:
-
-```text
-collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md
-collaboration/decisions/ADR-015-project-bound-agentic-ingestion-integration.md
-collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
-
-modules/semantic_extraction/
-modules/semantic_consensus/
-modules/information_units/
-modules/review_workspace/p9_proposal_adapter.py
-modules/review_workspace/p9_review_item_builder.py
-
-agents/roles/legacy_data_interpreter.md
-agents/roles/derivation_assessor.md
-agents/personas/legacy_interpretation/
-agents/personas/derivation_assessment/
-teams/ingestion/
-```
-
-Also trace the actual app/service/pipeline functions connecting:
-
-```text
-registered Source
-→ Source Projection
-→ LLM input
-→ persona outputs
-→ P4/P9/D3/D4
-→ Human Review materialization
-```
-
-For every material step report:
-
-```text
-component
-exact input
-exact output
-Engineering Source vs reference/context/instruction boundary
-source-anchor handling
-subject-identity creation
-persona responsibility
-new semantic/model content created?
-downstream dependency
-KEEP / MOVE / REDUCE / BYPASS / REMOVE recommendation
-```
-
-Then propose the minimum corrected target path.
-
-Do not implement until the audit is reviewed and accepted.
-
----
-
-# Next Real LLM Run — Acceptance Criteria
-
-Only after a material path correction.
-
-Evaluate in this order:
-
-```text
-1 Source Purity
-2 Model Relevance
-3 Exact Source Grounding
-4 Persona behavior on shared evidence
-5 Useful Consensus / Variance
-6 Human Review usability
-7 Review Item count as diagnostic only
-```
-
-If credible, preserve that exact persisted Run immediately as the preferred
-Monday reference.
-
-Then test:
-
-```text
-awaiting_review
-→ Human Review
-→ Approved Input
-→ Model Candidate
-→ Candidate Review
-→ Internal Model
-→ SysML v2
-→ Validation
-→ Final Review / Release where available
-```
-
----
-
-# Monday Demo Strategy
-
-The demo is announced as a real live demonstration.
-
-Preferred sequence:
-
-```text
-1. Open/create demo Project.
-2. Show real Engineering Source.
-3. Configure real single-source Processing.
-4. Start actual LLM Processing live.
-5. Let the audience see Processing genuinely running.
-6. Explain the agent chain may take several minutes.
-7. Switch transparently to a genuinely previously processed persisted state.
-8. Continue Human Review live.
-9. Approve/edit/reject as appropriate.
-10. Promote Approved Engineering Information.
-11. Continue Model/Architecture/SysML v2 live.
-```
-
-Recommended transition:
-
-```text
-"I'll start the processing step once live so you can see how the workflow is
-actually triggered. Since the agent processing can take several minutes
-depending on the model, I'll continue with a previously processed state of the
-same workflow so that we can inspect the downstream engineering steps."
-```
-
-Do not represent manually curated data as unmodified live LLM output.
-
-BLK-002 means Monday uses a single-source path.
-
----
-
-# Presentation and CATIA
-
-PowerPoint work resumes Monday.
-
-Presentation story:
-
-```text
-KICK-OFF
-"That was the idea."
-↓
-ARCHITECTURE
-"That is how I operationalized it as systems engineering."
-↓
-PROTOTYPE
-"That is what is implemented."
-↓
-VERIFICATION
-"That is what is being tested."
-↓
-FINDINGS
-"Testing exposed real architecture/semantic issues."
-↓
-NEXT
-"Those findings drive bounded next steps."
-```
-
-Original Kick-off flow:
-
-```text
-1 Feature Ingestion
-2 Sortier Agent
-3 Ontologie Anpassung
-4 Muster Antizipation
-5 Human in the Loop
-6 Synthese / SysML-v2 generation
-```
-
-Literature framing:
-
-```text
-Data Layer
-Process Layer
-Knowledge Layer
-```
-
-CATIA logical architecture overview already exists using the eight existing
-Logical Architecture part usages:
-
-```text
-LC_01 User Interaction and Status Presentation
-LC_02 Project and Source Context Management
-LC_03 Processing Orchestration and State Control
-LC_04 Engineering Information Processing
-LC_05 Candidate and Review Governance
-LC_06 Coverage Evidence and Traceability Management
-LC_07 Architecture Synthesis and Validation
-LC_08 SysML v2 Artifact Generation
-```
-
-Existing detailed lifecycle:
-
-```text
-SFB_002 Engineering Transformation Lifecycle
-```
-
-remains authoritative.
-
-The ADR-027 target flow is intended to become a legitimate high-level System
-Behavior above SFB_002, but:
-
-```text
-DO NOT MODEL IT IN CATIA YET.
-```
-
-First implement the corrected architecture, then accept/revise ADR-027, then
-update CATIA. Do not create presentation-only semantic model elements.
-
----
-
-# Canonical Current Checkpoint
-
-Read together with:
-
-```text
-collaboration/checkpoints/2026-08-20_wp12_demo_architecture_recovery_ssot.md
-```
-
----
-
-# New Chat Startup Prompt
-
-Copy this into the new chat:
-
-```text
-We are continuing my Master-thesis prototype "Turing Generator"
-(repository: mz-commits-ai4mbse/SysMLv2-Generator).
-
-Please do not reconstruct the project from chat memory. Treat the repository
-SSOT as authoritative coordination state.
-
-First inspect, in this order:
-
-1. collaboration/handovers/current_chat_handover.md
-2. collaboration/checkpoints/2026-08-20_wp12_demo_architecture_recovery_ssot.md
-3. collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md
-4. collaboration/current_state.md
-5. collaboration/roadmap.md
-6. collaboration/decisions/ADR-011-semantic-information-unit-and-ontology-boundary.md
-
-The immediate objective is WP-12 demo readiness for my Monday 2026-08-24
-presentation/live demonstration.
-
-Important current state:
-- WP12-E2E-DRY-001 is IN PROGRESS / INTERRUPTED FOR BLOCKING DEFECT CORRECTION.
-- BLK-002 cross-source Processing Artifact identity collision is still open;
-  therefore the Monday demo path is single-source.
-- BLK-003 semantic effectiveness is the active priority.
-- The last real 3-persona × 1-run single-source test technically reached Human
-  Review but produced source contamination, poor model relevance and subject
-  multiplication.
-- Do NOT start another LLM run yet.
-- Do NOT optimize Review Item count directly.
-- Do NOT add another semantic/post-processing contract before auditing the
-  current path.
-- ADR-027 captures the proposed architecture sharpening:
-  deterministic Source Projection → source-grounded Evidence Detection →
-  personas interpret the SAME evidence → consensus/variance → optional semantic
-  normalization/ontology service → Human Review → Approved Engineering
-  Information → Architecture Derivation → SysML v2.
-- Reference knowledge, prompts, recipes, orchestration metadata and the Apollo 11
-  reference may guide interpretation but must never become Project engineering
-  evidence.
-- Personas and repeated runs must not multiply Engineering Subjects.
-- P9/D3/D4 responsibilities must be judged by legitimate responsibility, not
-  compatibility. KEEP / MOVE / REDUCE / BYPASS / REMOVE is explicitly allowed.
-- Existing ADR-011 Source Projection / Information Unit / source-role /
-  source-anchor / semantic-consensus infrastructure should be reused where it
-  still fits.
-- A simple external Gemini benchmark on
-  legacy/demo/wp12/01_product_overview.md returned eight sensible source-grounded
-  findings. This is a qualitative diagnostic benchmark, not a gold standard or
-  Project authority.
-- The Monday demo should genuinely start the live LLM path, but may then
-  transparently switch to a previously genuinely processed persisted Project
-  state to avoid waiting for the LLM. The downstream Human Review → Approved
-  Input → Model → SysML path should then be demonstrated live.
-- PowerPoint work continues Monday. The CATIA logical architecture overview is
-  already prepared. Do not model the new high-level source-grounded lifecycle in
-  CATIA until it is implemented and ADR-027 is accepted.
-
-Start with a READ-ONLY architecture/code-path audit from Engineering Source to
-the first Human Engineering Review.
-
-For every material step identify:
-- exact input,
-- exact output,
-- which content is Engineering Source versus reference/instruction/context,
-- where source anchors are created/preserved,
-- where subject identity is created,
-- how personas are used,
-- whether the step can create new engineering/model content,
-- downstream dependencies,
-- recommendation: KEEP / MOVE / REDUCE / BYPASS / REMOVE.
-
-Then propose the minimum corrected target path. Do not implement before I accept
-the audit.
-
-Repository workflow:
-GitHub is passive. Give me exact repo-relative paths and deterministic local
-commands/patches. Never use git add . or git add -A. Do not stage/commit before
-explicit acceptance.
-```
-
-# Immediate Starting Instruction for the Next Chat
-
-Use these authorities first:
-
-- `collaboration/checkpoints/2026-08-24_wp12_r4c_live_e2e_ssot.md`
-- `collaboration/audits/wp12_findings.md`
-- `collaboration/audits/wp12_multi_document_dry_run_test_protocol.md`
-
-Current WP-12 result:
-
-```text
-FAILED WITH BLOCKER
-active: BLK-002, BLK-006
-```
-
-Immediate work is **BLK-006 diagnosis**, not further architecture redesign and not a
-blind retry of the Model Proposal button.
-
-Starting sequence:
-
-```text
-1. inspect the exact Model Proposal generation service path
-2. reproduce the failure with a direct service call / full stack trace
-3. inspect Project 120412 for partial Candidate/Proposal artifacts
-4. determine root cause
-5. discuss bounded correction
-6. only after acceptance: patch + focused tests
-7. full regression + git diff --check
-8. retest Model Proposal generation on the same Project 120412
-```
-
-Do not stage or commit unrelated dirty files. Do not use `git add .`, `git add -A`
-or `git add --all`.
-
-Preserve the test-result discipline:
-
-```text
-blocker occurs -> FAILED WITH BLOCKER
-bounded correction -> same-gate retest
-successful retest -> blocker RESOLVED -> PASS / PASS WITH FINDINGS
-```
-
-BLK-002 remains independently open for the formal multi-source Stage-A path.
+Inventory and triage BLK + SEM + ODS.
+Do not implement before the triage is reviewed and accepted.
+After selection, create a dedicated feature branch from verified main.

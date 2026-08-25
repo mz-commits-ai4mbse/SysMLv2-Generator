@@ -2,8 +2,14 @@
 
 from __future__ import annotations
 
+from modules.sysml_generation.authority_backed import (
+    AuthorityBackedGeneratedSysMLArtifactSet,
+    authority_backed_artifact_set_from_json,
+)
+
 from dataclasses import fields, is_dataclass, replace
 from pathlib import Path
+import json
 import types
 from typing import Any, Union, get_args, get_origin, get_type_hints
 
@@ -214,12 +220,41 @@ class FinalReviewPublicationService:
     def _artifact_set_from_bundle(
         self,
         bundle,
-    ) -> GeneratedSysMLArtifactSet:
-        artifact_set = _strict_dataclass_from_snapshot(
-            GeneratedSysMLArtifactSet,
-            bundle.artifact_set_snapshot,
-            label="GeneratedSysMLArtifactSet snapshot",
+    ) -> (
+        GeneratedSysMLArtifactSet
+        | AuthorityBackedGeneratedSysMLArtifactSet
+    ):
+        traces = bundle.artifact_set_snapshot.get(
+            "traceability_entries"
         )
+        authority_backed = (
+            isinstance(traces, (list, tuple))
+            and any(
+                isinstance(item, dict)
+                and "authority_references" in item
+                for item in traces
+            )
+        )
+        if authority_backed:
+            try:
+                artifact_set = authority_backed_artifact_set_from_json(
+                    json.dumps(
+                        bundle.artifact_set_snapshot,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                    )
+                )
+            except Exception as exc:
+                raise OutputPublicationIntegrityError(
+                    "Authority-backed GeneratedSysMLArtifactSet snapshot "
+                    "cannot be reconstructed exactly."
+                ) from exc
+        else:
+            artifact_set = _strict_dataclass_from_snapshot(
+                GeneratedSysMLArtifactSet,
+                bundle.artifact_set_snapshot,
+                label="GeneratedSysMLArtifactSet snapshot",
+            )
 
         stored_by_id = {
             item.generated_unit_id: item

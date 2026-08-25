@@ -1,0 +1,279 @@
+{
+  "entries": [
+    {
+      "approved_input_id": "AIN-000002",
+      "authority_references": [
+        {
+          "authority_fingerprint": "6428de927e7b03498f7904d03b88d6910c8267564c3aa636f81952d15628b323",
+          "authority_id": "MPD-000002",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 8,
+        "start_line": 4
+      },
+      "generated_symbol_id": "IME_000001",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000001",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000005",
+      "authority_references": [
+        {
+          "authority_fingerprint": "6f5a6a109f99301d3de98bbd134c8a0909608395ad06120fc2f3735135ba5b5c",
+          "authority_id": "MPD-000005",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 13,
+        "start_line": 9
+      },
+      "generated_symbol_id": "IME_000003",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000003",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000009",
+      "authority_references": [
+        {
+          "authority_fingerprint": "8ef1817dd4b8477fbb9d0151490cb20dde5186d76fb347c0d666dd81924c07f0",
+          "authority_id": "MPD-000020",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 22,
+        "start_line": 18
+      },
+      "generated_symbol_id": "IME_000007",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000007",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000012",
+      "authority_references": [
+        {
+          "authority_fingerprint": "c12d8cae0845cfbe9a2b5b4bcd4342f1e28b710391f15c5f9a8fd1aaf8a16013",
+          "authority_id": "MPD-000021",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 27,
+        "start_line": 23
+      },
+      "generated_symbol_id": "IME_000010",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000010",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000013",
+      "authority_references": [
+        {
+          "authority_fingerprint": "029e8861d0ee71d3df33e347b0b8f060c4cfcabf53968997be3357e678ace70a",
+          "authority_id": "MPD-000013",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 32,
+        "start_line": 28
+      },
+      "generated_symbol_id": "IME_000011",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000011",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000014",
+      "authority_references": [
+        {
+          "authority_fingerprint": "e61ec4731d4d10ddf216f6e986cd8f8f48fc5c6d1f718aecc4d199bb24504195",
+          "authority_id": "MPD-000014",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 37,
+        "start_line": 33
+      },
+      "generated_symbol_id": "IME_000012",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000012",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000017",
+      "authority_references": [
+        {
+          "authority_fingerprint": "7dda269cab0e7f9f5d097f60889b5310aca4998784965f3a5d6c31e103df7d57",
+          "authority_id": "MPD-000017",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 42,
+        "start_line": 38
+      },
+      "generated_symbol_id": "IME_000013",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000013",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000008",
+      "authority_references": [
+        {
+          "authority_fingerprint": "319fe2bafb3f821356fb299925464c5fdbdb9fd1557f35322cc05adeeef91ecf",
+          "authority_id": "MPD-000008",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 49,
+        "start_line": 45
+      },
+      "generated_symbol_id": "IME_000006",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000006",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000003",
+      "authority_references": [
+        {
+          "authority_fingerprint": "856d728bd11b7d4b645213b3e30857095f0919a48e916ccaddf20cda10ff8e5d",
+          "authority_id": "MPD-000003",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 60,
+        "start_line": 56
+      },
+      "generated_symbol_id": "IME_000002",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000002",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000010",
+      "authority_references": [
+        {
+          "authority_fingerprint": "b2aea04907881edbbe8c409ce6684257433abac9db786b11eee864fc905e916a",
+          "authority_id": "MPD-000010",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 65,
+        "start_line": 61
+      },
+      "generated_symbol_id": "IME_000008",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000008",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000011",
+      "authority_references": [
+        {
+          "authority_fingerprint": "f01f2d4e4ffe6e1726b5ff005d4ede7f61f9198993250b1cf947909381e76f82",
+          "authority_id": "MPD-000011",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 70,
+        "start_line": 66
+      },
+      "generated_symbol_id": "IME_000009",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000009",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000007",
+      "authority_references": [
+        {
+          "authority_fingerprint": "d49b39f582723e53dd947051218ef80f1fca0872f99add11760afcfa46e124de",
+          "authority_id": "MPD-000007",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 87,
+        "start_line": 83
+      },
+      "generated_symbol_id": "IME_000005",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000005",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": "AIN-000006",
+      "authority_references": [
+        {
+          "authority_fingerprint": "1ee426daf1dfdeee4057e9818fea707f990bab2dad380039bb55cc577ecca5d5",
+          "authority_id": "MPD-000006",
+          "authority_type": "model_placement_decision"
+        }
+      ],
+      "generated_location": {
+        "end_line": 94,
+        "start_line": 90
+      },
+      "generated_symbol_id": "IME_000004",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": "IME-000004",
+      "source_internal_model_relationship_id": null
+    },
+    {
+      "approved_input_id": null,
+      "authority_references": [
+        {
+          "authority_fingerprint": "7e6e37dc0bb85a7e18129f3bd0df55937502da1fb7f105e6814d6d6ff4b39fd7",
+          "authority_id": "SRD-000009",
+          "authority_type": "engineering_relationship_decision"
+        },
+        {
+          "authority_fingerprint": "320ad8e54a3cca1682542ae2c26710bde7da6cc4417ddcc5c56409bacd4bea57",
+          "authority_id": "FAD-000001",
+          "authority_type": "final_model_relationship_resolution"
+        }
+      ],
+      "generated_location": {
+        "end_line": 98,
+        "start_line": 98
+      },
+      "generated_symbol_id": "IMR_000002",
+      "generated_unit_id": "GSU-000001",
+      "source_internal_engineering_model_id": "IEM-000002",
+      "source_internal_model_element_id": null,
+      "source_internal_model_relationship_id": "IMR-000002"
+    }
+  ],
+  "project_id": "120412",
+  "schema_version": "1.0.0",
+  "source_artifact_set_fingerprint": "678b09fe6cb4d24e5a744b97a4366bc3f5a993d36046265fd9847079abb6a506",
+  "source_internal_engineering_model_id": "IEM-000002"
+}

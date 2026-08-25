@@ -98,8 +98,9 @@ def test_renderer_does_not_emit_generic_iem_attributes() -> None:
     assert "attribute " not in rendered.content
 
 
-def test_unsupported_definition_construct_now_blocks_production_renderer() -> None:
-    with pytest.raises(SysMLGenerationBlockedError):
-        SysMLElementRenderer().render(
-            _projection(target_construct_id="TN_003")
-        )
+def test_stakeholder_definition_construct_renders_part_definition() -> None:
+    rendered = SysMLElementRenderer().render(
+        _projection(target_construct_id="TN_003")
+    )
+    assert rendered.content.startswith("part def IME_000001 {")
+    assert "Engineering name: Engineering Name" in rendered.content

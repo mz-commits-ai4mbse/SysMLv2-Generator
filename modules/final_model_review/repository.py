@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+from modules.sysml_generation.authority_backed import (
+    AuthorityBackedGeneratedSysMLArtifactSet,
+)
+from modules.sysml_validation.authority_backed import (
+    validate_authority_backed_artifact_integrity,
+)
+
 from collections.abc import Callable
 from dataclasses import asdict
 from datetime import datetime, timezone
@@ -100,12 +107,34 @@ def _default_clock() -> datetime:
 
 
 def _default_artifact_validator(artifact_set) -> None:
-    if any(item.blocking for item in validate_artifact_set_integrity(artifact_set)):
-        raise FinalModelReviewIntegrityError(
-            "GeneratedSysMLArtifactSet fails standalone integrity validation."
+    if isinstance(
+        artifact_set,
+        AuthorityBackedGeneratedSysMLArtifactSet,
+    ):
+        findings = validate_authority_backed_artifact_integrity(
+            artifact_set
         )
-    if calculate_received_artifact_set_fingerprint(artifact_set) != artifact_set.content_fingerprint:
-        raise FinalModelReviewIntegrityError("GeneratedSysMLArtifactSet fingerprint mismatch.")
+        if any(item.blocking for item in findings):
+            raise FinalModelReviewIntegrityError(
+                "Authority-backed generated SysML artifact fails "
+                "standalone integrity validation."
+            )
+        return
+
+    if any(
+        item.blocking
+        for item in validate_artifact_set_integrity(artifact_set)
+    ):
+        raise FinalModelReviewIntegrityError(
+            "Generated SysML artifact fails standalone integrity validation."
+        )
+    if (
+        calculate_received_artifact_set_fingerprint(artifact_set)
+        != artifact_set.content_fingerprint
+    ):
+        raise FinalModelReviewIntegrityError(
+            "Generated SysML artifact fingerprint mismatch."
+        )
 
 
 def _default_validation_result_validator(validation_result) -> None:

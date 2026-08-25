@@ -380,7 +380,12 @@ class OutputWriter:
                 for unit in artifact_set.units
             ],
             "nonblocking_diagnostics": [
-                asdict(item) for item in artifact_set.nonblocking_diagnostics
+                asdict(item)
+                for item in getattr(
+                    artifact_set,
+                    "nonblocking_diagnostics",
+                    (),
+                )
             ],
             "artifact_set_content_fingerprint": artifact_set.content_fingerprint,
         }

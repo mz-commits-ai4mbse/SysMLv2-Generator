@@ -110,22 +110,32 @@ def test_use_case_definition_is_explicitly_a_definition_endpoint_kind() -> None:
     assert rule["target_element_kind"] == "definition"
 
 
-def test_stakeholder_and_user_need_are_explicitly_unsupported_not_force_fit() -> None:
+def test_stakeholder_is_supported_as_reviewed_part_definition() -> None:
     generation = load_generation_profile()
-    for area, element_type in (
-        ("stakeholder.stakeholders", "stakeholder"),
-        ("stakeholder.user_needs", "user_need"),
-    ):
-        rule = find_element_mapping(
-            generation,
-            model_area=area,
-            element_type=element_type,
-        )
-        assert rule is not None
-        assert rule["mapping_status"].startswith("unsupported_")
-        assert rule["target_construct_id"] is None
-        assert rule["target_element_kind"] is None
-        assert rule["production_generation_allowed"] is False
+    rule = find_element_mapping(
+        generation,
+        model_area="stakeholder.stakeholders",
+        element_type="stakeholder",
+    )
+    assert rule is not None
+    assert rule["mapping_status"] == "supported"
+    assert rule["target_construct_id"] == "TN_003"
+    assert rule["target_element_kind"] == "definition"
+    assert rule["production_generation_allowed"] is True
+
+
+def test_user_need_remains_explicitly_unsupported_not_force_fit() -> None:
+    generation = load_generation_profile()
+    rule = find_element_mapping(
+        generation,
+        model_area="stakeholder.user_needs",
+        element_type="user_need",
+    )
+    assert rule is not None
+    assert rule["mapping_status"].startswith("unsupported_")
+    assert rule["target_construct_id"] is None
+    assert rule["target_element_kind"] is None
+    assert rule["production_generation_allowed"] is False
 
 
 def test_dependency_accepts_features_and_definitions_but_allocation_requires_features() -> None:

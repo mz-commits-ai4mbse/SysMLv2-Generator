@@ -105,3 +105,107 @@ At each major Human interaction point ask:
 - [ ] Traceability understandable on demand
 - [ ] Next actions generally clear
 - [ ] No demo-critical UX defect remains
+
+---
+
+## 2026-08-25 — SEM-015 single-source app acceptance
+
+Project: `120412` — `WP12 R4c Live E2E`
+
+### Verified acceptance results
+
+| Check | Result | Observation |
+|---|---|---|
+| AC-01 Project context | PASS | Correct WP-12 project selected. |
+| AC-02 Model Placement / Assembly authority | PASS | Human placement decisions and assembly state available. |
+| AC-03 Assembly Final Review | PASS | `FAD-000001`, reviewer `MZ`, base `IEM-000001`. |
+| AC-04 SEM-015 successor binding | PASS | Explicit `IEM-000002`, authority `TFA-000003` + `MQA-000001`; no implicit latest selection. |
+| AC-05 Deterministic SysML generation | PASS | 13 elements, 1 formal relationship; two trace relationships intentionally not materialized. |
+| AC-06 External SYSIDE validation | PASS | SYSIDE Modeler CLI 0.10.3, exit code 0, diagnostics 0. |
+| AC-07 Streamlit validation cache | PASS | Navigation did not re-run SYSIDE or request Keychain access again. |
+| AC-08 Phase-L Final Model Review handoff | FAIL / BLOCKING | Generated + validated `IEM-000002` had no `final_model_reviews/` workspace. |
+
+### Blocking integration finding
+
+`WP12-BLK-SEM015-L-001`
+
+```text
+IEM-000002
+→ deterministic SysML generation       PASS
+→ internal Phase-K validation          PASS
+→ SYSIDE 0.10.3                        PASS
+→ Phase-L Final Model Review           MISSING
+→ Human release                        BLOCKED
+→ Published Output                     BLOCKED
+```
+
+Confirmed persisted state before remediation:
+
+```text
+data/projects/120412/generated_sysml_v2/IEM-000002/artifact_set.json
+data/projects/120412/generated_sysml_v2/IEM-000002/generated/generated_model.sysml
+data/projects/120412/sysml_validation_v2/IEM-000002/validation_result.json
+
+data/projects/120412/final_model_reviews/
+MISSING
+```
+
+Disposition: blocking integration defect. The existing Phase-L authority model,
+Human release gate and publication service remain normative. Remediation shall
+only bridge the exact generated artifact and exact validation result into an
+immutable `FMR` / `FRV` review subject; it shall not infer Human release or
+publication authority.
+
+### Additional observations
+
+- The old persisted validation result for `IEM-000002` remains immutable and can
+  differ from a current read-only validator run after validator implementation
+  changes.
+- Current and historical validation states are visually easy to confuse and
+  remain a UI-quality finding.
+- SYSIDE Keychain authentication occurred only when explicitly starting the
+  external validation and did not repeat during normal navigation.
+
+### 2026-08-25 — AC-08 authority-backed downstream remediation
+
+The first Final Model Review start attempt created the authoritative container
+`FMR-000001` but failed before `FRV-000001`.
+
+Observed root cause:
+
+```text
+AuthorityBackedGeneratedSysMLArtifactSet
+→ legacy FinalModelReviewRepository artifact validator
+→ GeneratedSysMLArtifactSet-only integrity contract
+→ FAIL
+```
+
+The authority-backed artifact intentionally replaces legacy Candidate-based
+traceability with exact Human authority:
+
+```text
+element:
+Approved Input + MPD
+
+relationship:
+SRD + FAD
+```
+
+Disposition:
+
+- retain and reuse `FMR-000001`
+- do not synthesize MCE/MCR/MCD or any legacy Candidate authority
+- do not create a second compatibility artifact with a different fingerprint
+- extend the existing Final Model Review / Human release / publication path to
+  accept the exact authority-backed generated artifact
+- retain explicit Human publication approval
+- move visible external SYSIDE validation from Model Proposal to Final Model
+  Review
+- remove internal `Phase-L` terminology from engineer-facing UI
+
+UX finding `WP12-UX-VAL-003`:
+
+External SYSIDE validation belongs to Final Model Review rather than Model
+Proposal. Starting Final Model Review may execute SYSIDE for the exact selected
+artifact; the resulting evidence is then shown inside Final Model Review before
+explicit Human publication approval.

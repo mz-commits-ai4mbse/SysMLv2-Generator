@@ -1,0 +1,136 @@
+{
+  "schema_version": "0.1.0",
+  "profile_id": "TURING_SYSML_V2_TARGET_MODEL",
+  "profile_version": "0.1.0-draft",
+  "status": "draft_template",
+  "name": "SysML v2 Target Model",
+  "ui_label": "SysML v2 Target Model",
+  "purpose": "Defines reviewed target-model representation and formulation patterns used between approved engineering information and deterministic SysML v2 notation serialization.",
+  "application_visibility": {
+    "show_profile_name": true,
+    "show_internal_reference_source_names": false,
+    "show_source_provenance_in_technical_details_only": true,
+    "forbidden_user_facing_reference_labels": [
+      "Apollo",
+      "Apollo 11"
+    ]
+  },
+  "internal_reference_sources": [
+    {
+      "source_id": "SRC_SYSML_V2_RELEASE",
+      "role": "primary_language_and_syntax_reference"
+    },
+    {
+      "source_id": "SRC_APOLLO11_SYSML_V2",
+      "role": "non_normative_modeling_pattern_reference"
+    },
+    {
+      "source_id": "SRC_TURING_ARCHITECTURE_MODEL",
+      "role": "project_modeling_context_reference"
+    }
+  ],
+  "authority_order": [
+    "human_approved_engineering_meaning",
+    "human_approved_model_representation",
+    "human_approved_model_placement",
+    "human_approved_target_model_formulation",
+    "sysml_v2_target_model_profile",
+    "sysml_v2_target_notation"
+  ],
+  "processing_boundary": {
+    "input": "approved_engineering_information",
+    "output": "human_reviewable_target_model_formulation",
+    "responsibilities": [
+      "decide whether accepted information should be materially represented",
+      "select an appropriate target-model representation pattern",
+      "formulate target-model content while preserving approved meaning",
+      "retain source and Human-authority traceability"
+    ],
+    "not_responsible_for": [
+      "reinterpreting rejected engineering meaning",
+      "inventing missing engineering content",
+      "granting Human approval",
+      "serializing unvalidated SysML v2 syntax"
+    ]
+  },
+  "model_relevance_decision": {
+    "required": true,
+    "allowed_outcomes": [
+      "materialize_formally",
+      "retain_as_context_only",
+      "intentionally_not_materialized",
+      "unresolved_human_review"
+    ],
+    "principle": "Relevant extracted information is not automatically model content. Context information may remain available for reasoning and provenance without becoming a formal model element."
+  },
+  "representation_pattern_template": {
+    "required_fields": [
+      "pattern_id",
+      "engineering_information_types",
+      "target_representation",
+      "allowed_model_areas",
+      "definition_usage_policy",
+      "formulation_policy",
+      "reference_evidence",
+      "target_notation_constructs",
+      "human_review_policy"
+    ],
+    "reference_evidence_fields": [
+      "source_id",
+      "source_locator",
+      "evidence_role",
+      "review_status"
+    ]
+  },
+  "element_patterns": [],
+  "relationship_patterns": [],
+  "formulation_profiles": {
+    "requirement": {
+      "profile_path": "context/requirements/requirements_authoring_profile.json",
+      "status": "draft_pending_source_registration"
+    },
+    "stakeholder": {
+      "profile_path": null,
+      "status": "pending_pattern_derivation"
+    },
+    "use_case": {
+      "profile_path": null,
+      "status": "pending_pattern_derivation"
+    },
+    "function": {
+      "profile_path": null,
+      "status": "pending_pattern_derivation"
+    },
+    "logical_component": {
+      "profile_path": null,
+      "status": "pending_pattern_derivation"
+    },
+    "physical_component": {
+      "profile_path": null,
+      "status": "pending_pattern_derivation"
+    },
+    "relationship": {
+      "profile_path": null,
+      "status": "pending_pattern_derivation"
+    }
+  },
+  "syntax_boundary": {
+    "target_notation_path": "context/sysml/sysml_v2_target_notation.json",
+    "principle": "Target-model patterns describe what and how to model. The Target Notation defines which concrete SysML v2 syntax may be serialized deterministically.",
+    "unvalidated_construct_behavior": "block_or_require_intentional_non_materialization"
+  },
+  "human_authority": {
+    "required_before_internal_model_authority": true,
+    "review_question": "Is this the correct target-model representation and formulation of the approved engineering meaning?",
+    "must_preserve_engineering_classification_trace": true,
+    "must_preserve_source_trace": true
+  },
+  "anti_copy_policy": {
+    "copy_reference_domain_content": false,
+    "copy_reference_identifiers": false,
+    "copy_reference_requirement_text": false,
+    "reuse_reviewed_modeling_patterns": true,
+    "adapt_patterns_to_project_engineering_meaning": true
+  },
+  "implementation_note": "This profile intentionally contains no production patterns yet. Patterns shall be added only after the corresponding reference evidence and target notation constructs have been reviewed."
+}

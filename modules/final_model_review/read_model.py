@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from modules.internal_model.authority_backed import (
+    AuthorityBackedInternalModelRepository,
+)
+
 from dataclasses import asdict
 from pathlib import Path
 from typing import Protocol
@@ -20,6 +24,7 @@ from .types import (
     FinalModelReviewDiagramNodeView,
     FinalModelReviewDiagramView,
     FinalModelReviewEvidenceReference,
+    FinalModelReviewExternalValidatorView,
     FinalModelReviewTraceabilityView,
     FinalModelReviewValidationFindingView,
     FinalModelReviewView,
@@ -46,6 +51,7 @@ class FinalModelReviewReadService:
         *,
         repository: FinalModelReviewRepository | None = None,
         internal_model_read_service: InternalModelReadService | None = None,
+        authority_backed_internal_model_repository=None,
         model_proposal_read_service: ModelProposalReadService | None = None,
         agent_evidence_resolver: FinalModelReviewAgentEvidenceResolver | None = None,
     ) -> None:
@@ -59,6 +65,11 @@ class FinalModelReviewReadService:
             InternalModelReadService(root=self.root)
             if internal_model_read_service is None
             else internal_model_read_service
+        )
+        self._authority_backed_internal_models = (
+            AuthorityBackedInternalModelRepository(root=self.root)
+            if authority_backed_internal_model_repository is None
+            else authority_backed_internal_model_repository
         )
         self._model_proposals = (
             ModelProposalReadService(root=self.root)
@@ -82,23 +93,34 @@ class FinalModelReviewReadService:
         )
         revision = bundle.revision
 
-        snapshot = self._internal_models.load_phase_j_input(
-            project_id,
-            revision.source_internal_engineering_model_id,
+        authority_backed = self._is_authority_backed_artifact_snapshot(
+            bundle.artifact_set_snapshot
         )
-        self._validate_iem_binding(bundle, snapshot)
-
-        candidate_proposal = self._model_proposals.load_model_proposal(
-            project_id,
-            snapshot.manifest.candidate_set_id,
-        )
-        if (
-            candidate_proposal.candidate_set_content_fingerprint
-            != snapshot.manifest.candidate_set_content_fingerprint
-        ):
-            raise FinalModelReviewIntegrityError(
-                "Candidate Proposal does not match the exact source IEM Candidate Set."
+        if authority_backed:
+            snapshot = self._authority_backed_internal_models.load(
+                project_id,
+                revision.source_internal_engineering_model_id,
             )
+            candidate_proposal = None
+        else:
+            snapshot = self._internal_models.load_phase_j_input(
+                project_id,
+                revision.source_internal_engineering_model_id,
+            )
+            candidate_proposal = self._model_proposals.load_model_proposal(
+                project_id,
+                snapshot.manifest.candidate_set_id,
+            )
+            if (
+                candidate_proposal.candidate_set_content_fingerprint
+                != snapshot.manifest.candidate_set_content_fingerprint
+            ):
+                raise FinalModelReviewIntegrityError(
+                    "Candidate Proposal does not match the exact source "
+                    "IEM Candidate Set."
+                )
+
+        self._validate_iem_binding(bundle, snapshot)
 
         traceability = self._traceability(bundle.artifact_set_snapshot)
         locations = {
@@ -208,27 +230,53 @@ class FinalModelReviewReadService:
             change_proposals=change_proposals,
             required_human_actions=required_actions,
             next_action=self._next_action(review_state, required_actions),
+            external_validator_evidence=(
+                self._external_validator_evidence(
+                    bundle.validation_result_snapshot
+                )
+            ),
+        )
+
+    @staticmethod
+    def _is_authority_backed_artifact_snapshot(snapshot) -> bool:
+        if not isinstance(snapshot, dict):
+            return False
+        traces = snapshot.get("traceability_entries")
+        if not isinstance(traces, (list, tuple)):
+            return False
+        return any(
+            isinstance(item, dict)
+            and "authority_references" in item
+            for item in traces
         )
 
     def _validate_iem_binding(self, bundle, snapshot) -> None:
         revision = bundle.revision
-        if snapshot.manifest.project_id != revision.project_id:
+
+        if hasattr(snapshot, "manifest"):
+            project_id = snapshot.manifest.project_id
+            iem_id = snapshot.manifest.internal_engineering_model_id
+            iem_fingerprint = snapshot.manifest.content_fingerprint
+        else:
+            project_id = snapshot.project_id
+            iem_id = snapshot.internal_engineering_model_id
+            iem_fingerprint = snapshot.content_fingerprint
+
+        if project_id != revision.project_id:
             raise FinalModelReviewIntegrityError(
                 "Source IEM Project does not match Final Model Review revision."
             )
-        if (
-            snapshot.manifest.internal_engineering_model_id
-            != revision.source_internal_engineering_model_id
-        ):
+        if iem_id != revision.source_internal_engineering_model_id:
             raise FinalModelReviewIntegrityError(
                 "Source IEM identity does not match Final Model Review revision."
             )
+
         expected_iem_fingerprint = bundle.artifact_set_snapshot.get(
             "source_iem_content_fingerprint"
         )
         if (
             expected_iem_fingerprint is None
-            or snapshot.manifest.content_fingerprint != expected_iem_fingerprint
+            or iem_fingerprint != expected_iem_fingerprint
         ):
             raise FinalModelReviewIntegrityError(
                 "Source IEM fingerprint does not match generated artifact evidence."
@@ -274,28 +322,97 @@ class FinalModelReviewReadService:
 
     def _traceability(self, artifact_snapshot):
         values = artifact_snapshot.get("traceability_entries")
-        if not isinstance(values, list):
+        if not isinstance(values, (list, tuple)):
             raise FinalModelReviewIntegrityError(
                 "Artifact-set traceability_entries must be a JSON array."
             )
+
         result = []
         for raw in values:
             if not isinstance(raw, dict):
                 raise FinalModelReviewIntegrityError(
                     "Traceability entry must be a JSON object."
                 )
+
             location = raw.get("generated_location")
             if location is not None and not isinstance(location, dict):
                 raise FinalModelReviewIntegrityError(
                     "Generated traceability location must be an object."
                 )
+
+            if "authority_references" in raw:
+                authorities = raw.get("authority_references")
+                if not isinstance(authorities, (list, tuple)):
+                    raise FinalModelReviewIntegrityError(
+                        "Authority-backed traceability references are malformed."
+                    )
+
+                authority_ids = []
+                authority_types = []
+                for authority in authorities:
+                    if not isinstance(authority, dict):
+                        raise FinalModelReviewIntegrityError(
+                            "Authority-backed traceability reference must be "
+                            "an object."
+                        )
+                    authority_ids.append(
+                        self._required_string(authority, "authority_id")
+                    )
+                    authority_types.append(
+                        self._required_string(authority, "authority_type")
+                    )
+
+                approved_input = raw.get("approved_input_id")
+                approved_ids = (
+                    ()
+                    if approved_input is None
+                    else (self._required_string(raw, "approved_input_id"),)
+                )
+
+                result.append(
+                    FinalModelReviewTraceabilityView(
+                        generated_unit_id=self._required_string(
+                            raw, "generated_unit_id"
+                        ),
+                        generated_symbol_id=self._required_string(
+                            raw, "generated_symbol_id"
+                        ),
+                        start_line=(
+                            None
+                            if location is None
+                            else location.get("start_line")
+                        ),
+                        end_line=(
+                            None
+                            if location is None
+                            else location.get("end_line")
+                        ),
+                        source_internal_model_element_id=raw.get(
+                            "source_internal_model_element_id"
+                        ),
+                        source_internal_model_relationship_id=raw.get(
+                            "source_internal_model_relationship_id"
+                        ),
+                        source_model_candidate_id=None,
+                        approved_input_ids=approved_ids,
+                        review_decision_id=(
+                            None if not authority_ids else authority_ids[-1]
+                        ),
+                        accepted_exception_decision_id=None,
+                        authority_ids=tuple(authority_ids),
+                        authority_types=tuple(authority_types),
+                    )
+                )
+                continue
+
             approved = raw.get("approved_input_references")
             review = raw.get("review_decision_reference")
             accepted = raw.get("accepted_exception_reference")
-            if not isinstance(approved, list) or not isinstance(review, dict):
+            if not isinstance(approved, (list, tuple)) or not isinstance(review, dict):
                 raise FinalModelReviewIntegrityError(
                     "Traceability authority references are malformed."
                 )
+
             result.append(
                 FinalModelReviewTraceabilityView(
                     generated_unit_id=self._required_string(
@@ -339,6 +456,7 @@ class FinalModelReviewReadService:
                     ),
                 )
             )
+
         return tuple(
             sorted(
                 result,
@@ -360,32 +478,54 @@ class FinalModelReviewReadService:
     ):
         nodes = []
         for element in snapshot.elements:
-            trace = trace_by_element.get(element.internal_model_element_id)
+            trace = trace_by_element.get(
+                element.internal_model_element_id
+            )
             generated_symbol = (
                 None if trace is None else trace.generated_symbol_id
             )
+
+            if hasattr(element, "placement_authority"):
+                candidate_id = None
+                review_id = element.placement_authority.authority_id
+                authority_ids = (
+                    element.placement_authority.authority_id,
+                )
+                authority_types = (
+                    element.placement_authority.authority_type,
+                )
+            else:
+                candidate_id = element.source_model_element_candidate_id
+                review_id = (
+                    element.review_decision_reference
+                    .model_candidate_review_decision_id
+                )
+                authority_ids = ()
+                authority_types = ()
+
             nodes.append(
                 FinalModelReviewDiagramNodeView(
-                    internal_model_element_id=element.internal_model_element_id,
+                    internal_model_element_id=(
+                        element.internal_model_element_id
+                    ),
                     generated_symbol_id=generated_symbol,
                     label=element.name,
                     description=element.description,
                     model_area=element.model_area,
                     element_type=element.element_type,
                     framework_assignment=element.framework_assignment,
-                    source_model_candidate_id=(
-                        element.source_model_element_candidate_id
-                    ),
-                    review_decision_id=(
-                        element.review_decision_reference.model_candidate_review_decision_id
-                    ),
+                    source_model_candidate_id=candidate_id,
+                    review_decision_id=review_id,
                     code_location=(
                         None
                         if generated_symbol is None
                         else locations.get(generated_symbol)
                     ),
+                    authority_ids=authority_ids,
+                    authority_types=authority_types,
                 )
             )
+
         edges = []
         for relationship in snapshot.relationships:
             trace = trace_by_relationship.get(
@@ -394,6 +534,34 @@ class FinalModelReviewReadService:
             generated_symbol = (
                 None if trace is None else trace.generated_symbol_id
             )
+
+            if hasattr(
+                relationship,
+                "engineering_relationship_authority",
+            ):
+                candidate_id = None
+                review_id = (
+                    relationship.final_representation_authority.authority_id
+                )
+                authority_ids = (
+                    relationship.engineering_relationship_authority.authority_id,
+                    relationship.final_representation_authority.authority_id,
+                )
+                authority_types = (
+                    relationship.engineering_relationship_authority.authority_type,
+                    relationship.final_representation_authority.authority_type,
+                )
+            else:
+                candidate_id = (
+                    relationship.source_model_relationship_candidate_id
+                )
+                review_id = (
+                    relationship.review_decision_reference
+                    .model_candidate_review_decision_id
+                )
+                authority_ids = ()
+                authority_types = ()
+
             edges.append(
                 FinalModelReviewDiagramEdgeView(
                     internal_model_relationship_id=(
@@ -409,22 +577,24 @@ class FinalModelReviewReadService:
                     relationship_family=relationship.relationship_family,
                     semantic_intent=relationship.semantic_intent,
                     directionality=relationship.directionality,
-                    source_model_candidate_id=(
-                        relationship.source_model_relationship_candidate_id
-                    ),
-                    review_decision_id=(
-                        relationship.review_decision_reference.model_candidate_review_decision_id
-                    ),
+                    source_model_candidate_id=candidate_id,
+                    review_decision_id=review_id,
                     code_location=(
                         None
                         if generated_symbol is None
                         else locations.get(generated_symbol)
                     ),
+                    authority_ids=authority_ids,
+                    authority_types=authority_types,
                 )
             )
+
         return FinalModelReviewDiagramView(
             nodes=tuple(
-                sorted(nodes, key=lambda item: item.internal_model_element_id)
+                sorted(
+                    nodes,
+                    key=lambda item: item.internal_model_element_id,
+                )
             ),
             edges=tuple(
                 sorted(
@@ -437,9 +607,63 @@ class FinalModelReviewReadService:
             ),
         )
 
+    def _external_validator_evidence(self, validation_snapshot):
+        values = validation_snapshot.get(
+            "external_validator_evidence"
+        )
+        if values is None:
+            return ()
+        if not isinstance(values, (list, tuple)):
+            raise FinalModelReviewIntegrityError(
+                "External validator evidence must be a JSON array."
+            )
+
+        result = []
+        for raw in values:
+            if not isinstance(raw, dict):
+                raise FinalModelReviewIntegrityError(
+                    "External validator evidence entry must be an object."
+                )
+            identity = raw.get("validator_identity")
+            if not isinstance(identity, dict):
+                raise FinalModelReviewIntegrityError(
+                    "External validator identity is malformed."
+                )
+            diagnostics = raw.get("normalized_diagnostic_count")
+            if type(diagnostics) is not int:
+                raise FinalModelReviewIntegrityError(
+                    "External validator diagnostic count is invalid."
+                )
+            exit_code = raw.get("exit_code")
+            if exit_code is not None and type(exit_code) is not int:
+                raise FinalModelReviewIntegrityError(
+                    "External validator exit code is invalid."
+                )
+
+            result.append(
+                FinalModelReviewExternalValidatorView(
+                    tool_name=self._required_string(
+                        identity, "tool_name"
+                    ),
+                    tool_version=(
+                        None
+                        if identity.get("tool_version") is None
+                        else self._optional_tool_version(
+                            identity.get("tool_version")
+                        )
+                    ),
+                    execution_status=self._required_string(
+                        raw, "execution_status"
+                    ),
+                    exit_code=exit_code,
+                    normalized_diagnostic_count=diagnostics,
+                )
+            )
+        return tuple(result)
+
     def _validation_findings(self, validation_snapshot):
         values = validation_snapshot.get("findings")
-        if not isinstance(values, list):
+        if not isinstance(values, (list, tuple)):
             raise FinalModelReviewIntegrityError(
                 "Validation-result findings must be a JSON array."
             )
@@ -622,6 +846,15 @@ class FinalModelReviewReadService:
         if actions:
             return actions[0]
         return "Continue Final Model Review."
+
+    @staticmethod
+    def _optional_tool_version(value):
+        if not isinstance(value, str):
+            raise FinalModelReviewIntegrityError(
+                "External validator tool_version must be text or null."
+            )
+        normalized = value.strip()
+        return normalized or None
 
     @staticmethod
     def _required_string(mapping, key):

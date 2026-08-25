@@ -1,5 +1,88 @@
 # WP-12 Findings — Turing Generator
 
+<!-- BEGIN FINDINGS UPDATE 2026-08-25 TARGET MODEL TEMPLATES -->
+## SEM-015 preparation status update — 25.08.2026
+
+The non-production scaffolding for `SEM-015` has now been created and JSON-validated:
+
+```text
+context/requirements/requirements_authoring_profile.json
+context/sysml/sysml_v2_target_model_profile.json
+```
+
+This changes only the preparation state of the finding.
+
+`SEM-015` remains:
+
+```text
+ACCEPTED MAJOR FINDING / OPEN
+```
+
+The full Target-Model Formulation architecture, source-derived Requirements
+Authoring rules, Human authority integration and downstream processing changes have
+**not** been implemented.
+
+Current WP-12 priority remains `BLK-006` and completion of the same Project `120412`
+single-source E2E.
+
+<!-- END FINDINGS UPDATE 2026-08-25 TARGET MODEL TEMPLATES -->
+
+
+<!-- BEGIN FINDINGS UPDATE 2026-08-25 C6 -->
+## WP-12 Live Update — 25.08.2026
+
+Current Project `120412` live chain:
+
+```text
+Human Engineering Review
+→ Approved Engineering Information
+→ Model Placement Review
+→ Model Assembly
+→ Final Model Review
+→ IEM-000001
+→ SysML v2 generation preflight BLOCKED
+```
+
+`IEM-000001`: 13 elements, 3 relationships.
+
+Current BLK-006 evidence is no longer an opaque LLM-generation failure. The
+authority-backed SysML builder reaches the existing Phase-J preflight and is blocked
+by exactly four unsupported mappings:
+
+```text
+IME-000001 stakeholder -> J2_ELEMENT_001 unsupported
+IME-000003 stakeholder -> J2_ELEMENT_001 unsupported
+IMR-000001 traces_to   -> J2_REL_009 unsupported
+IMR-000003 traces_to   -> J2_REL_009 unsupported
+```
+
+The `dependency` Relationship passes.
+
+BLK-007, discovered while retesting BLK-006, has been corrected and live retested
+PASS: Model Assembly no longer invokes the Model Placement persona team for
+Relationship representation.
+
+New accepted MAJOR finding:
+
+```text
+SEM-015 — Target-Model Formulation is missing as an explicit processing stage
+for all target-model element and relationship representations.
+```
+
+Additional accepted principle:
+
+```text
+Relevant/context information is not automatically model content.
+```
+
+The current product-overview source is retained intentionally as a difficult
+mixed/context-heavy boundary case.
+
+A Requirements Authoring / Target Model template patch has been prepared but NOT
+applied and is not part of the current implementation baseline.
+<!-- END FINDINGS UPDATE 2026-08-25 C6 -->
+
+
 **Stand:** 24.08.2026
 **Basis:** bisherige WP-12 Dry-Run-, Architektur-Recovery-, Live-E2E- und Demo-Hardening-Evidenz bis zum aktuellen Live-Checkpoint vom 24.08.2026.
 **Formaler Stage-A-Test:** `WP12-E2E-DRY-001`, Project `308131`
@@ -926,3 +1009,163 @@ Ein uneingeschränktes `PASS` ist erst gerechtfertigt, wenn auch die für den je
 - `collaboration/decisions/ADR-025-semantic-proposal-consolidation-and-persona-aware-consensus.md`
 - `collaboration/decisions/ADR-026-source-anchored-multi-persona-interpretation-and-cross-unit-synthesis.md`
 - `collaboration/decisions/ADR-027-source-grounded-evidence-detection-and-persona-interpretation-architecture.md`
+
+---
+
+## BLK-007 — Model Assembly invoked Model Placement personas for Relationship representation
+
+**Status:** `CORRECTED / LIVE RETEST PASS`
+
+The first live Assembly attempt failed because relationship representation was
+delegated to the Model Placement team. This crossed the accepted responsibility
+boundary.
+
+Correction:
+
+```text
+Model Assembly is deterministic.
+Exact authorized Relationship semantics may map deterministically.
+Non-exact accepted semantics remain unresolved for Human Final Model Review.
+No LLM/persona relationship projection occurs during Assembly.
+```
+
+Live retest Project `120412`:
+
+```text
+Assembly Draft created
+13 elements
+3 relationships
+0 relationship variance
+3 unresolved/unmapped target Relationship representations
+```
+
+**Test disposition:** `BLOCKER RESOLVED -> RETEST PASS`
+
+---
+
+## SEM-012 — Engineering Information type and Target Model representation are insufficiently separated
+
+**Status:** `ACCEPTED FINDING / OPEN`
+
+Engineering classification describes what information means in the Engineering
+Information layer. It does not uniquely prescribe the target-model construct.
+
+Observed live example:
+
+```text
+Engineering Information: constraint
+Target Model representation: stakeholder requirement
+```
+
+Both identities and their traceability must be preserved.
+
+---
+
+## SEM-013 — Shared placement ambiguity is conflated with Persona variance
+
+**Status:** `ACCEPTED FINDING / OPEN`
+
+If all Placement personas return the same multi-option set, the result is shared
+ambiguity, not inter-Persona disagreement.
+
+Distinguish:
+
+```text
+consensus on one placement
+shared ambiguity
+actual Persona variance
+```
+
+---
+
+## SEM-014 — Unresolved target Relationship representation requires explicit Human selection
+
+**Status:** `ACCEPTED FINDING / OPEN`
+
+An unresolved Relationship representation must begin unselected. A substantive UI
+default must not become engineering authority.
+
+The Human reviewer must explicitly select a target semantic, intentionally decline
+formal materialization, or otherwise resolve the case through the accepted review
+workflow.
+
+---
+
+## SEM-015 — MAJOR: Target-Model Formulation is missing as an explicit processing stage
+
+**Status:** `ACCEPTED MAJOR FINDING / OPEN — IMPLEMENT AFTER CURRENT WP-12 E2E`
+
+The current pipeline moves too directly from approved Engineering Meaning and
+representation/placement toward deterministic SysML serialization.
+
+Required separation:
+
+```text
+Engineering Meaning
+≠ Target-Model Representation
+≠ Target-Model Formulation
+≠ SysML v2 Serialization
+```
+
+This applies to Requirements, Functions, Stakeholders, Use Cases, Logical/Physical
+Elements, information/data representations, Relationships and future constructs.
+
+Target-Model Formulation may be LLM-assisted, but it must preserve Human-approved
+meaning, follow explicit model-/element-specific authoring rules, avoid inventing
+engineering content, retain traceability and remain Human-reviewable before becoming
+target-model authority.
+
+Model relevance must allow:
+
+```text
+materialize formally
+retain as context only
+intentionally not materialized
+unresolved / Human review
+```
+
+Relevant extracted/context information is not automatically formal model content.
+
+A purchased copy of INCOSE *Guide to Writing Requirements*, Rev 4
+(`INCOSE-TP-2010-006-04`, 1 July 2023, ISBN `978-1-93707-05-4`) is available to
+derive a curated Requirements Authoring Profile after WP-12 closeout. The purchased
+source itself must not be distributed or committed.
+
+---
+
+## OBS-031 — Human Model Placement Review requires excessive interaction
+
+**Status:** `ACCEPTED FINDING / OPEN`
+
+Desired interaction:
+
+```text
+single consensus placement
+→ one-click accept; rationale normally unnecessary
+
+shared ambiguity
+→ Human selects among shared alternatives
+
+actual Persona variance / override / rejection
+→ explicit decision and rationale as appropriate
+```
+
+This is UX/governance simplification, not a weakening of Human authority.
+
+### SEM-015-F01 — Dependency-aware in-review regeneration
+
+**Status:** DEFERRED / NOT REQUIRED FOR CURRENT PoC
+
+The current SEM-015 implementation deliberately uses two Human review stages.
+Human-reviewed target classification and placement are inputs to a focused LLM
+model-quality refinement call. The refined wording is then reviewed before
+Internal Model successor materialization.
+
+A future implementation may automatically invalidate and regenerate only the
+downstream wording/formulation affected by an in-review classification change.
+For the current PoC, a changed classification produces a different
+classification/request fingerprint and therefore requires a new refinement
+run. This favors implementation effectiveness and traceable model quality over
+runtime/call efficiency.
+
+This finding shall not block the single-source PoC or current demo completion.

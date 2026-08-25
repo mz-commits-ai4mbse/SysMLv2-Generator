@@ -1,38 +1,40 @@
 {
   "team_id": "TEAM_MODELING_PROJECTION",
-  "team_name": "Modeling Projection Team",
-  "task_name": "Assess target-model projection of Approved Engineering Information",
+  "team_name": "Model Placement Team",
+  "task_name": "Propose RFLP / target-framework placement of Approved Engineering Information",
   "role_id": "ROLE_MODELING_PROJECTION_ADVISOR",
   "role_file": "agents/roles/modeling_projection_advisor.md",
-  "description": "Three modeling perspectives independently assess the same profile-controlled target options for the same Approved Inputs.",
+  "description": "Three dedicated modeling perspectives independently propose profile-controlled placement for the same Approved Inputs. Disagreement is preserved for Human Model Placement Review and is not a generation failure.",
   "default_execution_mode": "multi_persona",
   "members": [
     {
       "member_id": "MODELING_PROJECTION_001",
       "agent_id": "AGENT_MODELING_RULES_FOCUSED_ADVISOR",
-      "persona_id": "PERSONA_DERIVATION_RULES_FOCUSED_ASSESSOR",
-      "persona_file": "agents/personas/derivation_assessment/rules_focused_assessor.md",
-      "perspective": "rules_focused"
+      "persona_id": "PERSONA_MODELING_SYSML_PROFILE_MODELER",
+      "persona_file": "agents/personas/modeling/sysml_profile_modeler.md",
+      "perspective": "sysml_profile_placement"
     },
     {
       "member_id": "MODELING_PROJECTION_002",
       "agent_id": "AGENT_MODELING_ARCHITECTURE_FOCUSED_ADVISOR",
-      "persona_id": "PERSONA_DERIVATION_ARCHITECTURE_FOCUSED_ASSESSOR",
-      "persona_file": "agents/personas/derivation_assessment/architecture_focused_assessor.md",
-      "perspective": "architecture_focused"
+      "persona_id": "PERSONA_MODELING_SYSTEM_ARCHITECTURE_MODELER",
+      "persona_file": "agents/personas/modeling/system_architecture_modeler.md",
+      "perspective": "architecture_level_placement"
     },
     {
       "member_id": "MODELING_PROJECTION_003",
       "agent_id": "AGENT_MODELING_CONSERVATIVE_REVIEWER",
-      "persona_id": "PERSONA_DERIVATION_CONSERVATIVE_REVIEWER",
-      "persona_file": "agents/personas/derivation_assessment/conservative_reviewer.md",
-      "perspective": "conservative_review"
+      "persona_id": "PERSONA_MODELING_CONSERVATIVE_PLACEMENT_REVIEWER",
+      "persona_file": "agents/personas/modeling/conservative_modeling_reviewer.md",
+      "perspective": "conservative_placement_review"
     }
   ],
-  "consensus_required": true,
+  "consensus_required": false,
   "consensus_focus": [
     "selected_rule_id",
-    "explicit_ambiguity",
-    "explicit_unmapped"
+    "framework_level",
+    "model_area",
+    "element_type",
+    "explicit_variance"
   ]
 }

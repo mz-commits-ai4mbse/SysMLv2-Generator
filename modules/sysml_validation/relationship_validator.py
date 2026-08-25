@@ -15,7 +15,7 @@ from .types import SysMLValidationFinding
 
 _PACKAGE = re.compile(r"^package ([A-Za-z_][A-Za-z0-9_]*) \{$")
 _ELEMENT = re.compile(
-    r"^(part|action|requirement|use case def) ([A-Za-z_][A-Za-z0-9_]*) \{$"
+    r"^(part def|part|action|requirement|use case def) ([A-Za-z_][A-Za-z0-9_]*) \{$"
 )
 _REFERENCE = r"[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*"
 _RELATIONSHIP_FORMS = (
@@ -42,6 +42,7 @@ _RELATIONSHIP_FORMS = (
     ),
 )
 _KEYWORD_TO_CONSTRUCT = {
+    "part def": "TN_003",
     "part": "TN_004",
     "action": "TN_006",
     "requirement": "TN_008",

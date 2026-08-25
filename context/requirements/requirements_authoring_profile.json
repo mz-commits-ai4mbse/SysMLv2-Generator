@@ -1,0 +1,138 @@
+{
+  "schema_version": "0.1.0",
+  "profile_id": "TURING_REQUIREMENTS_AUTHORING",
+  "profile_version": "0.1.0-draft",
+  "status": "draft_template",
+  "name": "Requirements Authoring Profile",
+  "purpose": "Defines the controlled, source-grounded formulation contract used to transform Human-approved engineering meaning into reviewable target-model requirement formulations without adding new engineering obligations.",
+  "source_policy": {
+    "principle": "Authoring rules shall be curated from explicitly registered reference sources. The LLM shall not rely on unattributed general knowledge as authoring authority.",
+    "required_source_roles": [
+      "requirements_authoring_guidance",
+      "requirements_engineering_standard"
+    ],
+    "source_bindings": [],
+    "source_binding_status": "pending_source_registration",
+    "no_unattributed_rules": true
+  },
+  "authority_boundary": {
+    "input_authority": "human_approved_engineering_meaning",
+    "output_type": "requirements_formulation_proposal",
+    "output_is_authoritative": false,
+    "human_review_required": true,
+    "approved_output_role": "target_model_formulation",
+    "sysml_serialization_authority": false
+  },
+  "formulation_contract": {
+    "preserve_approved_engineering_meaning": true,
+    "may_rephrase": true,
+    "may_normalize_terminology": true,
+    "may_make_implicit_grammar_explicit": true,
+    "may_add_new_engineering_obligations": false,
+    "may_strengthen_modality_without_authority": false,
+    "may_invent_subject_or_object": false,
+    "may_invent_quantitative_limits": false,
+    "may_invent_verification_method": false,
+    "may_resolve_source_ambiguity_without_review": false,
+    "trace_original_meaning_to_formulation": true
+  },
+  "planned_rule_categories": [
+    {
+      "category_id": "REQ_CAT_ATOMICITY",
+      "name": "Atomicity",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_CLARITY",
+      "name": "Clarity and unambiguity",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_MODALITY",
+      "name": "Obligation and modality",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_SUBJECT",
+      "name": "Subject and responsible entity",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_CONDITIONS",
+      "name": "Conditions, exceptions and applicability",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_VERIFIABILITY",
+      "name": "Verifiability and measurable criteria",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_TERMINOLOGY",
+      "name": "Terminology consistency",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_SOLUTION_BIAS",
+      "name": "Unjustified implementation or solution bias",
+      "status": "awaiting_source_derived_rules"
+    },
+    {
+      "category_id": "REQ_CAT_RATIONALE",
+      "name": "Requirement statement versus rationale",
+      "status": "awaiting_source_derived_rules"
+    }
+  ],
+  "rule_template": {
+    "required_fields": [
+      "rule_id",
+      "category_id",
+      "statement",
+      "source_references",
+      "applicability",
+      "severity_if_violated",
+      "automated_check",
+      "llm_instruction"
+    ],
+    "source_reference_fields": [
+      "source_id",
+      "source_version",
+      "locator",
+      "derivation_note"
+    ]
+  },
+  "rules": [],
+  "proposal_output_contract": {
+    "required_fields": [
+      "source_subject_id",
+      "approved_meaning_fingerprint",
+      "proposed_requirement_text",
+      "applied_rule_ids",
+      "preservation_rationale",
+      "unresolved_questions"
+    ],
+    "prohibited_fields": [
+      "unapproved_new_obligation",
+      "invented_numeric_threshold",
+      "invented_actor",
+      "invented_verification_claim"
+    ]
+  },
+  "review_policy": {
+    "human_review_required": true,
+    "review_question": "Does the formulated requirement preserve the approved engineering meaning while meeting the applicable authoring rules?",
+    "allowed_decisions": [
+      "accept",
+      "accept_with_modification",
+      "reject",
+      "defer"
+    ]
+  },
+  "prompt_usage": {
+    "load_full_external_sources_by_default": false,
+    "load_curated_profile": true,
+    "include_only_applicable_rules": true,
+    "include_source_provenance_for_audit": true
+  },
+  "implementation_note": "This file is intentionally a template until the selected requirements authoring references are registered, reviewed and transformed into traceable project rules."
+}

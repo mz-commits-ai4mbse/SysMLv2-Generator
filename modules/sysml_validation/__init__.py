@@ -69,3 +69,9 @@ from .service import (
 )
 
 from .phase_l_gate import validate_phase_l_handoff
+from .authority_backed import (
+    AuthorityBackedSysMLValidationRepository,
+    AuthorityBackedSysMLValidationService,
+    validate_authority_backed_artifact_integrity,
+    validate_authority_backed_traceability,
+)
