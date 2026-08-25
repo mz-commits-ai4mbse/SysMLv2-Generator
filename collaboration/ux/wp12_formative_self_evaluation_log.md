@@ -209,3 +209,55 @@ External SYSIDE validation belongs to Final Model Review rather than Model
 Proposal. Starting Final Model Review may execute SYSIDE for the exact selected
 artifact; the resulting evidence is then shown inside Final Model Review before
 explicit Human publication approval.
+
+---
+
+<!-- BEGIN WP12 GOLDEN E2E FORMATIVE SYNTHESIS 2026-08-25 -->
+## 2026-08-25 — Golden E2E closeout synthesis
+
+### Run metadata
+
+```text
+Date: 2026-08-25
+Tester: developer / Systems Engineer
+Project: 120412 — WP12 R4c Live E2E
+Known-Good commit:
+924bf27d2ee4ca07c1d04da2c777ce31b7632e97
+Known-Good tag:
+wp12-golden-e2e-2026-08-25
+```
+
+### Final acceptance continuation
+
+The earlier AC-08 failure is retained above as formative evidence. After bounded
+authority-backed downstream remediation, the same connected path continued:
+
+| Check | Result | Observation |
+|---|---|---|
+| AC-08 Final Model Review | PASS | `FMR-000001 / FRV-000002` bound the exact generated and validated artifact. |
+| AC-09 Human Final Approval / Release | PASS | `FRD-000001`, reviewer `MZ`, exact revision approved for publication. |
+| AC-10 Publication | PASS | immutable `OUT-000001` published with one SysML unit and exact validation / review binding. |
+
+### Overall formative conclusion
+
+```text
+Single-source workflow understandable and executable end to end: PASS WITH FINDINGS
+Engineering content inspectable at Human gates: PASS
+Human authority boundaries preserved: PASS
+Traceability / immutable authority binding: PASS
+External SysML v2 validation: PASS
+Immutable publication: PASS
+Multi-source verification: NOT PASSED — BLK-002 remains open
+```
+
+### Most important result
+
+The implementation changes made during WP-12 are themselves formative findings.
+Connected failures repeatedly exposed responsibility-boundary mismatches between
+semantic processing, Human authority, model placement, deterministic assembly,
+target-model formulation, generation, validation and downstream release.
+
+The detailed thesis-oriented synthesis is maintained in:
+
+`collaboration/audits/wp12_formative_self_test_report.md`
+<!-- END WP12 GOLDEN E2E FORMATIVE SYNTHESIS 2026-08-25 -->

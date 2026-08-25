@@ -1,5 +1,47 @@
 # WP-12 Test and Release Workflow — Synthetic Dry Run to Real Test Data
 
+<!-- BEGIN WP12 FORMATIVE CLOSEOUT 2026-08-25 -->
+## 2026-08-25 — Methodological closeout
+
+The original Stage-A release workflow remains valid for the formal multi-source
+claim:
+
+```text
+WP12-E2E-DRY-001 / Project 308131
+FAILED WITH BLOCKER — BLK-002
+```
+
+A separate single-source recovery / formative path was deliberately continued on:
+
+```text
+Project 120412
+```
+
+That path reached a complete Golden E2E and immutable publication.
+
+This is a documented protocol deviation / additional evaluation path, not a
+retroactive Stage-A PASS and not evidence that multi-source processing is verified.
+
+The thesis shall therefore distinguish:
+
+```text
+formal controlled multi-source verification
+→ blocked by BLK-002
+
+single-source formative recovery + connected E2E verification
+→ PASS through immutable publication
+```
+
+The continuation was methodologically useful because it allowed downstream
+architecture, semantic, authority, SysML generation, validation, Final Review and
+publication behavior to be evaluated without hiding the independent multi-source
+identity defect.
+
+Canonical synthesis:
+
+`collaboration/audits/wp12_formative_self_test_report.md`
+<!-- END WP12 FORMATIVE CLOSEOUT 2026-08-25 -->
+
 <!-- BEGIN WP12 RELEASE STATUS 2026-08-24 -->
 ## 2026-08-24 — Current WP-12 release-gate status
 

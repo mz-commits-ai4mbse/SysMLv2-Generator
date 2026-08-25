@@ -1,5 +1,63 @@
 # WP-12 Findings — Turing Generator
 
+<!-- BEGIN WP12 GOLDEN CLOSEOUT STATUS 2026-08-25 -->
+## 2026-08-25 — Golden E2E closeout / current finding status authority
+
+This block supersedes older "current status" wording below while preserving those
+sections as historical test evidence.
+
+Current result:
+
+```text
+WP-12 single-source Golden E2E: PASS
+Formal multi-source Stage-A: FAILED WITH BLOCKER — BLK-002
+Current blocking finding for multi-source acceptance: BLK-002 only
+```
+
+Known-Good baseline:
+
+```text
+924bf27d2ee4ca07c1d04da2c777ce31b7632e97
+wp12-golden-e2e-2026-08-25
+```
+
+Current dispositions relevant to the completed single-source path:
+
+```text
+BLK-003  semantic recovery             RESOLVED / single-source E2E validated
+BLK-004  Approved Input promotion      RESOLVED / live retest PASS
+BLK-005  AEI -> model handoff           RESOLVED / live retest PASS
+BLK-006  model-generation recovery     RESOLVED BY ARCHITECTURAL CORRECTION /
+                                        Golden E2E retest PASS
+BLK-007  Assembly responsibility       RESOLVED / live retest PASS
+
+SEM-012  meaning vs representation     IMPLEMENTED IN CURRENT SINGLE-SOURCE PATH
+SEM-015  Target-Model Formulation      PARTIALLY IMPLEMENTED /
+                                        Golden E2E scope validated;
+                                        general target-type coverage OPEN
+SEM-015-F01                            DEFERRED / non-blocking
+
+WP12-BLK-SEM015-L-001
+          Final Review handoff         RESOLVED / FRV-000002 -> FRD-000001 ->
+                                        OUT-000001
+```
+
+`SEM-015` is no longer unimplemented: its architecture and the exact Golden-E2E
+scope are live validated. It is, however, not yet complete as a general target-model
+formulation capability. The current formulation proposal builder is deliberately
+bounded to the BLK-006 recovery population (`stakeholder` elements and `traces_to`
+relationships). General coverage must be extended together with SEM-011 target-model
+construct coverage. `SEM-015-F01` remains a separate deferred optimization.
+
+Historical sections below that state `BLK-006 OPEN`, `SEM-015 OPEN` or
+`WP-12 overall FAILED WITH BLOCKER` describe the system at the time those findings
+were observed. They must not be read as the current single-source status.
+
+Thesis-oriented synthesis:
+
+`collaboration/audits/wp12_formative_self_test_report.md`
+<!-- END WP12 GOLDEN CLOSEOUT STATUS 2026-08-25 -->
+
 <!-- BEGIN FINDINGS UPDATE 2026-08-25 TARGET MODEL TEMPLATES -->
 ## SEM-015 preparation status update — 25.08.2026
 
