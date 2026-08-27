@@ -253,3 +253,120 @@ def test_live_team_receives_same_fixed_evidence_and_cannot_change_grounding(
         )
 
     assert len(result.consensus_result.outcomes) == 2
+
+
+
+def test_out_of_vocabulary_evidence_classification_is_aligned_before_parse(
+    tmp_path: Path,
+) -> None:
+    from modules.classification_alignment import ClassificationAlignmentService
+    from modules.llm.types import LLMResult
+
+    projection, evidence = environment(tmp_path)
+    alignment_requests = []
+
+    class _AlignmentClient:
+        def generate(self, request):
+            alignment_requests.append(request)
+            payload = json.loads(request.input_text)
+            return LLMResult(
+                text=json.dumps(
+                    {
+                        "alignments": [
+                            {
+                                "item_id": item["item_id"],
+                                "field_name": item["field_name"],
+                                "normalized_value": "logical_element",
+                                "mapping_status": "mapped",
+                                "rationale": (
+                                    "The supplied statement describes an "
+                                    "architecture element."
+                                ),
+                            }
+                            for item in payload["alignment_requests"]
+                        ]
+                    }
+                ),
+                provider=request.provider,
+                model=request.model,
+                response_id=f"align-{len(alignment_requests)}",
+                raw_status="completed",
+            )
+
+    agent_ids = (
+        "AGENT_LEGACY_LITERAL_INTERPRETER",
+        "AGENT_LEGACY_SYSTEMS_ENGINEERING_INTERPRETER",
+        "AGENT_LEGACY_SKEPTICAL_AMBIGUITY_INTERPRETER",
+    )
+
+    def fake_team_runner(**kwargs):
+        results = []
+        for index, agent_id in enumerate(agent_ids, start=1):
+            payload = {
+                "interpretations": [
+                    {
+                        "source_evidence_id": "EVD-000001",
+                        "interpreted_statement": "A logical architecture concept.",
+                        "information_type": "architecture",
+                        "statement_modality": "descriptive",
+                        "epistemic_class": "explicit",
+                        "missing_evidence": None,
+                        "extraction_rationale": "Source-grounded.",
+                        "uncertainties": [],
+                    },
+                    {
+                        "source_evidence_id": "EVD-000002",
+                        "interpreted_statement": "Operator permission constrains control.",
+                        "information_type": "constraint",
+                        "statement_modality": "descriptive",
+                        "epistemic_class": "explicit",
+                        "missing_evidence": None,
+                        "extraction_rationale": "Source-grounded.",
+                        "uncertainties": [],
+                    },
+                ]
+            }
+            results.append(
+                AgentRunResult(
+                    agent_id=agent_id,
+                    task_name="Interpret fixed source-grounded Evidence",
+                    run_index=1,
+                    provider="openai",
+                    model="gpt-test",
+                    output_text=json.dumps(payload),
+                    output_path=tmp_path / f"raw_alignment_{index}.json",
+                    response_id=f"resp_alignment_{index}",
+                    status="completed",
+                )
+            )
+        return results
+
+    pipeline = SharedEvidenceInterpretationPipeline(
+        project_root=Path("."),
+        team_runner=fake_team_runner,
+        clock=fixed_clock,
+        classification_alignment_service=ClassificationAlignmentService(
+            client_factory=lambda provider: _AlignmentClient()
+        ),
+    )
+    result = pipeline.run(
+        source_projection=projection,
+        source_evidence=evidence,
+        execution_root=tmp_path / "alignment_live_run",
+        provider="openai",
+        model="gpt-test",
+        runs_per_persona=1,
+        max_members=None,
+        dry_run=False,
+    )
+
+    assert len(alignment_requests) == 3
+    assert all(
+        agent_result.candidates[0].information_type == "logical_element"
+        for agent_result in result.agent_results
+    )
+    artifacts = tuple(
+        (tmp_path / "alignment_live_run" / "agent_outputs" / "classification_alignment")
+        .rglob("run_01.json")
+    )
+    assert len(artifacts) == 3

@@ -1,173 +1,273 @@
 # Current Chat Handover
 
+<!-- BEGIN THESIS COMPLETION HANDOVER 2026-08-27 -->
+## Accepted thesis completion roadmap
+
+The successful Project `000116` Gate-3 validation is now the empirical baseline
+for the remainder of the thesis.
+
+Do not resume general BLK / SEM / OBS implementation merely because open
+findings exist.
+
+Governing rule:
+
+> Further implementation after Gate 3 is justified only where it is required
+> to substantiate an open thesis claim, close a thesis-critical validation gap,
+> or establish the final prototype baseline. Open implementation findings are
+> not automatically remaining thesis scope.
+
+Remaining sequence:
+
+```text
+1. Professor presentation
+2. Safe Demo / Kochshow
+3. Gate-3 thesis evaluation record
+4. Thesis Scope Gate
+5. BLK-002 decision
+6. only thesis-required implementation
+7. final targeted validation
+8. CATIA / architecture synchronization
+9. implementation freeze
+10. Results / Discussion / Limitations
+11. final claim / traceability / consistency audit
+12. thesis completion
+```
+
+### Immediate continuation
+
+The next task is still:
+
+`Professor presentation`
+
+using:
+
+`collaboration/presentations/interim_presentation_plan.md`
+
+After that:
+
+`Safe Demo / Kochshow`
+
+Only after presentation and demo preparation shall the remaining technical
+scope be selected.
+
+### Thesis Scope Gate
+
+For every remaining BLK / SEM / OBS item ask:
+
+```text
+Is this required to substantiate a thesis claim?
+```
+
+Classify as:
+
+```text
+THESIS-CRITICAL
+VALIDATION-USEFUL
+LIMITATION / FUTURE WORK
+PRODUCT / UX / TECHNICAL DEBT
+```
+
+Do not implement automatically.
+
+### BLK-002
+
+`BLK-002` requires an explicit decision.
+
+If true Multi-Source capability is required by the thesis claim:
+
+```text
+resolve
+→ implement
+→ real Multi-Source E2E
+→ validate
+```
+
+Otherwise:
+
+```text
+retain as explicit limitation / Future Work
+```
+
+Do not infer Multi-Source validation from multiple independent single-source
+runs.
+
+### End-state objective
+
+The final thesis baseline shall align:
+
+```text
+research question
+↔ CATIA architecture
+↔ implementation
+↔ verification evidence
+↔ thesis Results
+↔ thesis Discussion
+↔ thesis Conclusion
+```
+
+After final validation and CATIA synchronization, freeze the prototype.
+
+The final quality question is:
+
+```text
+Does the thesis claim anywhere more than the prototype actually demonstrated?
+```
+<!-- END THESIS COMPLETION HANDOVER 2026-08-27 -->
+
+
 ## Purpose
 
-Authoritative starting point after the 2026-08-25 WP-12 Golden E2E closeout.
+Authoritative starting point after the 2026-08-27 Turing Generator v0.3.0
+Gate-3 real validation closeout.
 
 Repository:
 
-```text
-mz-commits-ai4mbse/SysMLv2-Generator
-```
+`mz-commits-ai4mbse/SysMLv2-Generator`
 
-## Authority and working mode
+Active development branch at closeout:
 
-Authority order:
+`feature/processing-semantic-normalization`
+
+## Authority order
 
 1. accepted CATIA SysML v2 engineering model
-2. committed local repository implementation
+2. committed repository implementation
 3. Collaboration SSOT / ADRs / checkpoints
 4. chat history / temporary artifacts
 
-GitHub is passive for the assistant.
-
-Do not reconstruct implementation reality from old chat history or stale checkpoints
-when the current repository/SSOT is available.
+GitHub remains passive for assistant-driven development unless explicitly
+approved otherwise.
 
 ## Current accepted system state
 
 ```text
-WP-12 single-source Golden E2E: PASS
-Demo-ready: YES
-Remaining WP-12 blocker: BLK-002 Multi-Source
+Project 000116 Lead-Source Gate 3: PASS
+real SYSIDE validation:              PASS
+Human publication approval:          PASS
+immutable publication:               PASS
+complete repository regression:      6100 passed
 ```
 
-Golden E2E project:
+Validated chain:
 
 ```text
-Project:              120412
-Successor IEM:        IEM-000002
+Project:              000116
+Lead Source:          SRC-000002
+Base IEM:             IEM-000001
+Target authority:     TFA-000002
+Quality authority:    MQA-000002
+Successor IEM:        IEM-000003
 Final Model Review:   FMR-000001
 Accepted revision:    FRV-000002
 Human release:        FRD-000001
 Published Output:     OUT-000001
 ```
 
-Published SysML:
+SYSIDE:
 
 ```text
-data/output/120412/OUT-000001/generated_model.sysml
-```
-
-Validation:
-
-```text
-SYSIDE Modeler CLI
-syside 0.10.3 (b6e216cb48b5336ea48283e99c68a0e10e17b8cc)
+SYSIDE Modeler CLI 0.10.3
 completed
-exit code 0
+exit 0
 0 diagnostics
-validation valid
-publication gate passed
+VALID
+publication gate PASSED
 ```
 
-Verified repository baseline before SSOT-only closeout cleanup:
+The generated artifact fingerprint is:
+
+`7b5babbe048f941d9875a345e34a03e1c249061a93e03ade3c9dcfb971f4ddb1`
+
+The validation fingerprint is:
+
+`0e8998e6fe2d4b717cbee6464cdca1b060ad21601dd92389706240b38387ea67`
+
+## Important validation learning
+
+The real Gate-3 run exposed several bounded integration gaps.
+
+Most importantly, changing an element's effective Target-Model representation
+did not previously cause existing supported relationships to be checked again
+against Phase-J endpoint constraints.
+
+The correction is generic:
 
 ```text
-focused TN_003 synchronization: 29 passed
-complete repository regression: 6046 passed in 16.57s
-git diff --check: PASS
+effective endpoint construct changes
+→ evaluate supported connected relationship against Phase-J rule
+→ compatible: retain unchanged
+→ incompatible: reopen only that relationship for Human authority
+→ no authorized formal representation: preserve engineering relationship
+   but intentionally omit formal materialization
 ```
 
-## Remaining WP-12 blocker
+Phase J remains fail-closed.
 
-```text
-BLK-002 — Multi-Source
-OPEN / BLOCKING FOR MULTI-SOURCE ACCEPTANCE
-```
+No Project-specific exception was introduced.
 
-The accepted Golden E2E is single-source. Do not reinterpret this as BLK-002
-resolution.
+The Final Model Review now also supports safe current SYSIDE revalidation without
+mutating historical incomplete validation evidence.
+
+## Claim boundary
+
+This is a real successful single-source end-to-end validation.
+
+Do not claim true Multi-Source Processing.
+
+`BLK-002` remains open.
 
 ## Next activity
 
-Do not immediately implement another finding.
+The next active objective is the professor presentation.
 
-Perform a cross-register triage of:
+Use:
 
-```text
-BLK
-SEM
-ODS
-```
+`collaboration/presentations/interim_presentation_plan.md`
 
-For each item determine:
+as the primary structure.
+
+Preserve the narrative:
 
 ```text
-current status
-→ duplicate / overlap
-→ dependency
-→ still applicable?
-→ blocker vs quality vs UX/observability/debt
-→ priority
-→ bounded implementation scope
+research objective
+→ literature-derived architecture
+→ executable prototype
+→ governed Human-authority workflow
+→ verification
+→ real findings exposed by verification
+→ bounded corrections
+→ remaining limitations
 ```
 
-Only after the triage is accepted select the first implementation branch.
-
-## Branch policy
-
-The closeout commit containing the Golden E2E checkpoint establishes:
+After the presentation is prepared:
 
 ```text
-main = Known-Good fallback
+prepare Safe Demo
+→ agreed Kochshow strategy
+→ real expensive action visibly triggered
+→ transparent switch to genuine persisted pipeline state
+→ continue downstream live
 ```
 
-All subsequent implementation work:
+Do not create fabricated agent results for the demo.
 
-```text
-main
-→ create dedicated feature branch
-→ bounded implementation
-→ focused tests
-→ appropriate regression
-→ git diff --check
-→ Human acceptance
-→ merge to main
-→ verify main
-```
+## Read first
 
-Typical branches:
-
-```text
-feature/blk-002-multi-source
-feature/sem-<id>-<short-name>
-feature/ods-<id>-<short-name>
-```
-
-Never use:
-
-```text
-git add .
-git add -A
-git add --all
-```
-
-Do not stage or commit before explicit Human acceptance.
-
-Runtime evidence such as `data/projects/` is not source-controlled merely because it
-was used for the Golden E2E.
-
-## Read first in the next chat
-
-1. `collaboration/checkpoints/2026-08-25_wp12_golden_e2e_known_good_baseline.md`
+1. `collaboration/checkpoints/2026-08-27_gate3_validation_handover_ssot.md`
 2. `collaboration/current_state.md`
 3. `collaboration/roadmap.md`
-4. `collaboration/working_rules.md`
-5. `collaboration/audits/wp12_findings.md`
-6. relevant BLK / SEM / ODS authority files discovered during triage
-
-Then verify local reality:
-
-```bash
-git log -1 --oneline
-git status --short
-git diff --check
-```
+4. `collaboration/change_log.md`
+5. `collaboration/working_rules.md`
+6. `collaboration/presentations/interim_presentation_plan.md`
+7. `collaboration/checkpoints/2026-08-19_presentation_wp12_demo_ssot.md`
 
 ## Exact next instruction
 
 ```text
-Inventory and triage BLK + SEM + ODS.
-Do not implement before the triage is reviewed and accepted.
-After selection, create a dedicated feature branch from verified main.
+Prepare the professor presentation from the existing interim presentation plan.
+Use the completed Project 000116 Gate-3 real validation as current empirical
+evidence. Clearly distinguish IMPLEMENTED + VERIFIED, EFFECTIVENESS OPEN,
+ARCHITECTURE ONLY, PLANNED NEXT and BLOCKED. Do not claim true Multi-Source
+Processing while BLK-002 remains open. After the presentation, prepare the Safe
+Demo using the agreed Kochshow strategy.
+```

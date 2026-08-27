@@ -18,6 +18,14 @@ from modules.agents.team_runner import (
     run_team_member,
     select_team_members,
 )
+from modules.classification_alignment import (
+    ClassificationAlignmentService,
+    classification_alignment_result_to_json,
+)
+from modules.semantic_consistency_alignment import (
+    SemanticConsistencyAlignmentService,
+    semantic_consistency_result_to_json,
+)
 from modules.engineering_subjects.types import CanonicalSubjectSet
 from modules.llm.progress import (
     LLMRequestProgressObserver,
@@ -66,11 +74,27 @@ class SubjectInterpretationPipeline:
         team_file: Path | str = DEFAULT_TEAM_FILE,
         team_runner: TeamRunner = run_agent_team,
         team_member_runner: TeamMemberRunner = run_team_member,
+        classification_alignment_service: (
+            ClassificationAlignmentService | None
+        ) = None,
+        semantic_consistency_alignment_service: (
+            SemanticConsistencyAlignmentService | None
+        ) = None,
     ) -> None:
         self.project_root = Path(project_root)
         self.team_file = Path(team_file)
         self._team_runner = team_runner
         self._team_member_runner = team_member_runner
+        self._classification_alignment = (
+            ClassificationAlignmentService()
+            if classification_alignment_service is None
+            else classification_alignment_service
+        )
+        self._semantic_consistency_alignment = (
+            SemanticConsistencyAlignmentService()
+            if semantic_consistency_alignment_service is None
+            else semantic_consistency_alignment_service
+        )
 
     def planned_request_count(
         self,
@@ -145,10 +169,11 @@ class SubjectInterpretationPipeline:
         execution_path = Path(execution_root)
         raw_output_root = execution_path / "raw_team_runs"
         parsed_output_root = execution_path / "subject_interpretation"
-        repair_output_root = execution_path / "classification_repairs"
+        alignment_output_root = execution_path / "classification_alignment"
+        semantic_consistency_output_root = execution_path / "semantic_consistency_alignment"
         raw_output_root.mkdir(parents=True, exist_ok=True)
         parsed_output_root.mkdir(parents=True, exist_ok=True)
-        repair_output_root.mkdir(parents=True, exist_ok=True)
+        alignment_output_root.mkdir(parents=True, exist_ok=True)
 
         runner_kwargs = {
             "project_root": self.project_root,
@@ -207,71 +232,75 @@ class SubjectInterpretationPipeline:
                     "Team runner returned an unexpected agent."
                 )
 
-            classification_repairs = ()
-            try:
-                parsed = parse_subject_interpretation_output(
-                    raw_result.output_text,
-                    subject_set=subject_set,
+            alignment = self._classification_alignment.align_output(
+                raw_result.output_text,
+                item_id_field="canonical_subject_id",
+                allowed_item_ids=tuple(
+                    subject.canonical_subject_id
+                    for subject in subject_set.subjects
+                ),
+                context_by_item_id=_subject_alignment_context(subject_set),
+                provider=provider,
+                model=model,
+                api_key=api_key,
+                llm_progress_observer=llm_progress_observer,
+            )
+            if alignment.decisions:
+                alignment_path = (
+                    alignment_output_root
+                    / member.agent_id.lower()
+                    / f"run_{raw_result.run_index:02d}.json"
                 )
-            except SubjectInterpretationValidationError as exc:
-                if str(exc) not in {
-                    "information_type is not an allowed value.",
-                    "statement_modality is not an allowed value.",
-                    "epistemic_class is not an allowed value.",
-                }:
-                    raise
-                needs = find_classification_repair_needs(
-                    raw_result.output_text,
-                    subject_set=subject_set,
+                alignment_path.parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
                 )
-                if not needs:
-                    raise
+                alignment_path.write_text(
+                    classification_alignment_result_to_json(alignment),
+                    encoding="utf-8",
+                )
 
-                notify_llm_progress(
-                    llm_progress_observer,
-                    event_type="planned",
-                    stage="subject_interpretation",
-                    detail=(
-                        f"classification repair · {member.agent_id} · "
-                        f"run {raw_result.run_index}"
+            semantic_consistency = (
+                self._semantic_consistency_alignment.align_output(
+                    alignment.normalized_output_text,
+                    item_id_field="canonical_subject_id",
+                    allowed_item_ids=tuple(
+                        subject.canonical_subject_id
+                        for subject in subject_set.subjects
                     ),
-                )
-                repair_result = self._team_member_runner(
-                    team_config=team,
-                    member=member,
-                    task_instructions=build_classification_repair_task(needs),
-                    input_text=build_classification_repair_input(
-                        original_subject_input=input_text,
-                        raw_output=raw_result.output_text,
-                        needs=needs,
-                    ),
-                    output_dir=repair_output_root,
+                    context_by_item_id=_subject_alignment_context(subject_set),
                     provider=provider,
                     model=model,
                     api_key=api_key,
-                    run_index=raw_result.run_index,
-                    dry_run=False,
+                    llm_progress_observer=llm_progress_observer,
                 )
-                notify_llm_progress(
-                    llm_progress_observer,
-                    event_type="completed",
-                    stage="subject_interpretation",
-                    detail=(
-                        f"classification repair · {member.agent_id} · "
-                        f"run {raw_result.run_index}"
+            )
+            if semantic_consistency.decisions:
+                consistency_path = (
+                    semantic_consistency_output_root
+                    / member.agent_id.lower()
+                    / f"run_{raw_result.run_index:02d}.json"
+                )
+                consistency_path.parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+                consistency_path.write_text(
+                    semantic_consistency_result_to_json(
+                        semantic_consistency
                     ),
+                    encoding="utf-8",
                 )
-                repaired_text, classification_repairs = (
-                    apply_classification_repair_response(
-                        raw_output=raw_result.output_text,
-                        repair_output=repair_result.output_text,
-                        needs=needs,
-                    )
+
+            parsed = parse_subject_interpretation_output(
+                semantic_consistency.normalized_output_text,
+                subject_set=subject_set,
+            )
+            classification_repairs = (
+                _classification_alignment_compatibility_repairs(
+                    alignment.decisions
                 )
-                parsed = parse_subject_interpretation_output(
-                    repaired_text,
-                    subject_set=subject_set,
-                )
+            )
 
             run_result = _create_run_result(
                 source_projection=source_projection,
@@ -471,6 +500,46 @@ def _create_run_result(
         classification_repairs=tuple(classification_repairs),
     )
 
+
+
+def _subject_alignment_context(
+    subject_set: CanonicalSubjectSet,
+) -> dict[str, str]:
+    """Return source-grounded context for classification alignment only."""
+
+    mention_by_id = {
+        mention.mention_id: mention
+        for mention in subject_set.mentions
+    }
+    result = {}
+    for subject in subject_set.subjects:
+        lines = [
+            f"Canonical label: {subject.canonical_label}",
+            f"Neutral subject form: {subject.subject_form}",
+        ]
+        for mention_id in subject.mention_ids:
+            mention = mention_by_id.get(mention_id)
+            if mention is not None:
+                lines.append(f"Source mention: {mention.exact_text}")
+        result[subject.canonical_subject_id] = "\n".join(lines)
+    return result
+
+
+def _classification_alignment_compatibility_repairs(decisions):
+    """Project ADR-030 alignments into the legacy audit field temporarily."""
+
+    from .types import PersonaClassificationRepair
+
+    return tuple(
+        PersonaClassificationRepair(
+            canonical_subject_id=item.item_id,
+            field_name=item.field_name,
+            original_value=item.raw_value,
+            repaired_value=item.normalized_value,
+            content_fingerprint=item.content_fingerprint,
+        )
+        for item in decisions
+    )
 
 def _validate_binding(
     source_projection: SourceProjectionArtifact,

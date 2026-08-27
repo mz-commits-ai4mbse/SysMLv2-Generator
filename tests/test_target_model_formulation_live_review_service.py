@@ -99,6 +99,18 @@ def _repo_root(tmp_path: Path) -> Path:
         ),
         encoding="utf-8",
     )
+    generation_profile_source = (
+        Path(__file__).resolve().parents[1]
+        / "context/sysml/turing_sysml_v2_generation_profile.json"
+    )
+    (
+        root
+        / "context/sysml/turing_sysml_v2_generation_profile.json"
+    ).write_text(
+        generation_profile_source.read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+
     (root / "context/sysml/sysml_v2_target_notation.json").write_text(
         json.dumps(
             {
@@ -221,3 +233,94 @@ def test_four_explicit_selections_then_finalize_is_idempotent(tmp_path):
     assert first == second
     assert first.authority_set_id == "TFA-000001"
     assert len(first.effective_decisions) == 4
+
+
+def test_prepare_review_can_create_explicit_immutable_revision(tmp_path):
+    authority_repo = TargetModelFormulationAuthorityRepository(
+        tmp_path / "projects"
+    )
+    service = TargetModelFormulationLiveReviewService(
+        projects_root=tmp_path / "projects",
+        repo_root=_repo_root(tmp_path),
+        authority_repository=authority_repo,
+        internal_model_repository=_IEMRepo(),
+        final_model_review_repository=_FADRepo(),
+        clock=_clock,
+    )
+
+    first = service.prepare_review(
+        project_id="120412",
+        internal_engineering_model_id="IEM-000001",
+    )
+
+    revised = service.prepare_review(
+        project_id="120412",
+        internal_engineering_model_id="IEM-000001",
+        force_revision=True,
+    )
+
+    assert first.review_id == "TFR-000001"
+    assert revised.review_id == "TFR-000002"
+    assert revised.source_internal_engineering_model_id == (
+        first.source_internal_engineering_model_id
+    )
+    assert revised.source_internal_engineering_model_fingerprint == (
+        first.source_internal_engineering_model_fingerprint
+    )
+
+    # Normal resume now resolves the newest immutable review.
+    resumed = service.prepare_review(
+        project_id="120412",
+        internal_engineering_model_id="IEM-000001",
+    )
+    assert resumed == revised
+
+    # Old history remains available.
+    assert authority_repo.load_review(
+        "120412",
+        "TFR-000001",
+    ) == first
+
+
+
+def test_prepare_review_resolves_generation_profile_from_repo_root(
+    tmp_path,
+    monkeypatch,
+):
+    import modules.target_model_formulation.live_review as live_review_module
+
+    repo_root = _repo_root(tmp_path)
+    expected = (
+        repo_root
+        / "context/sysml/turing_sysml_v2_generation_profile.json"
+    )
+    captured = {}
+
+    def fake_load_generation_profile(path):
+        captured["path"] = Path(path)
+        return {}
+
+    monkeypatch.setattr(
+        live_review_module,
+        "load_generation_profile",
+        fake_load_generation_profile,
+    )
+
+    authority_repo = TargetModelFormulationAuthorityRepository(
+        tmp_path / "projects"
+    )
+    service = TargetModelFormulationLiveReviewService(
+        projects_root=tmp_path / "projects",
+        repo_root=repo_root,
+        authority_repository=authority_repo,
+        internal_model_repository=_IEMRepo(),
+        final_model_review_repository=_FADRepo(),
+        clock=_clock,
+    )
+
+    service.prepare_review(
+        project_id="120412",
+        internal_engineering_model_id="IEM-000001",
+    )
+
+    assert captured["path"] == expected

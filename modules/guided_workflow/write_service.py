@@ -296,6 +296,66 @@ class GuidedWorkflowWriteService:
                 "Authority-backed SysML generation failed safely."
             ) from exc
 
+    def list_refined_internal_models(
+        self,
+        project_id: str,
+        source_internal_engineering_model_id: str,
+    ):
+        """Return Human-authorized refined successors for one exact source IEM."""
+
+        return self.list_sem015_successor_internal_models(
+            project_id,
+            source_internal_engineering_model_id,
+        )
+
+    def materialize_refined_internal_model(
+        self,
+        project_id: str,
+        *,
+        source_snapshot,
+        target_model_formulation_authority,
+        model_quality_authority,
+    ):
+        """Materialize the exact Human-authorized refined Internal Model."""
+
+        if source_snapshot.project_id != project_id:
+            raise GuidedWorkflowWriteError(
+                "Refined Internal Model Project binding is invalid."
+            )
+        try:
+            from dataclasses import asdict, is_dataclass
+            import json
+            from pathlib import Path
+
+            from modules.internal_model.semantic_successor import (
+                SEM015InternalModelSuccessorRepository,
+            )
+
+            def payload(value):
+                if isinstance(value, dict):
+                    raw = dict(value)
+                elif is_dataclass(value):
+                    raw = asdict(value)
+                else:
+                    raise TypeError("Authority must be a dataclass or dict.")
+
+                return json.loads(json.dumps(raw))
+
+            repository = SEM015InternalModelSuccessorRepository(
+                Path(self.project_root) / "data" / "projects"
+            )
+            return repository.materialize(
+                source=source_snapshot,
+                target_model_formulation_authority=payload(
+                    target_model_formulation_authority
+                ),
+                model_quality_authority=payload(model_quality_authority),
+            )
+        except Exception as exc:
+            raise GuidedWorkflowWriteError(
+                "Refined Internal Model materialization failed safely."
+            ) from exc
+
     def list_sem015_successor_internal_models(
         self,
         project_id: str,

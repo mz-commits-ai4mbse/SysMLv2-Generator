@@ -162,3 +162,56 @@ def test_review_snapshot_is_immutable(tmp_path):
     path.write_text(json.dumps(payload), encoding="utf-8")
     with pytest.raises(TargetModelFormulationError, match="immutable"):
         repo.record_review(review)
+
+
+def test_find_review_for_source_returns_latest_immutable_revision(tmp_path):
+    from modules.target_model_formulation.contract import (
+        create_formulation_review,
+    )
+
+    repo = TargetModelFormulationAuthorityRepository(tmp_path)
+    first = review_four()
+    repo.record_review(first)
+
+    second = create_formulation_review(
+        project_id=first.project_id,
+        review_id="TFR-000002",
+        source_internal_engineering_model_id=(
+            first.source_internal_engineering_model_id
+        ),
+        source_internal_engineering_model_fingerprint=(
+            first.source_internal_engineering_model_fingerprint
+        ),
+        final_model_review_decision_id=(
+            first.final_model_review_decision_id
+        ),
+        final_model_review_decision_fingerprint=(
+            first.final_model_review_decision_fingerprint
+        ),
+        target_model_profile_id=first.target_model_profile_id,
+        target_model_profile_version=first.target_model_profile_version,
+        target_model_profile_fingerprint=(
+            first.target_model_profile_fingerprint
+        ),
+        target_notation_fingerprint=(
+            first.target_notation_fingerprint
+        ),
+        items=first.items,
+        created_at="2026-08-25T15:00:00Z",
+    )
+    repo.record_review(second)
+
+    current = repo.find_review_for_source(
+        first.project_id,
+        first.source_internal_engineering_model_id,
+        first.source_internal_engineering_model_fingerprint,
+    )
+
+    assert current is not None
+    assert current.review_id == "TFR-000002"
+
+    # Prior Human-authority history remains immutable and readable.
+    assert repo.load_review(
+        first.project_id,
+        "TFR-000001",
+    ) == first

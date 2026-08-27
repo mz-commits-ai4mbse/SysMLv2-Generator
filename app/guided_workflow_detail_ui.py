@@ -1098,6 +1098,14 @@ def render_final_model_review_ui(
             "Human review decision."
         )
 
+    if _render_current_final_review_validation(
+        st,
+        project_id=navigation.project_id,
+        view=view,
+        write_service=writes,
+    ):
+        return
+
     if view.required_human_actions:
         st.subheader("Your review work")
         for action in view.required_human_actions:
@@ -1453,6 +1461,219 @@ def render_published_output_ui(
                     f"{item.relative_path} · "
                     f"{item.content_fingerprint}"
                 )
+
+
+def _render_current_final_review_validation(
+    st: Any,
+    *,
+    project_id: str,
+    view,
+    write_service,
+) -> bool:
+    """Run current validation and revise the review without mutating history."""
+
+    artifact_fingerprint = view.generated_artifact_set_fingerprint
+    preview_key = (
+        "guided_final_model.current_validation_preview."
+        f"{artifact_fingerprint}"
+    )
+    current = st.session_state.get(preview_key)
+
+    st.subheader("Current SYSIDE validation")
+    st.caption(
+        "Run Phase K again with the currently available SYSIDE validator. "
+        "The persisted historical validation and Final Model Review revision "
+        "remain unchanged."
+    )
+
+    label = (
+        "Run current SYSIDE validation"
+        if current is None
+        else "Re-run current SYSIDE validation"
+    )
+
+    if st.button(
+        label,
+        key=f"{preview_key}.run",
+    ):
+        loader = getattr(
+            write_service,
+            "load_authority_backed_sysml",
+            None,
+        )
+        validator = getattr(
+            write_service,
+            "preview_authority_backed_sysml_validation",
+            None,
+        )
+
+        if not callable(loader) or not callable(validator):
+            st.error("Current SYSIDE validation is unavailable.")
+            return False
+
+        try:
+            artifact = loader(
+                project_id,
+                view.source_internal_engineering_model_id,
+            )
+            if artifact is None:
+                raise ValueError(
+                    "Generated SysML artifact is unavailable."
+                )
+            if artifact.content_fingerprint != artifact_fingerprint:
+                raise ValueError(
+                    "Generated SysML artifact does not match the "
+                    "reviewed artifact."
+                )
+
+            current = validator(
+                project_id,
+                artifact=artifact,
+            )
+
+            if (
+                current.source_artifact_set_fingerprint
+                != artifact_fingerprint
+            ):
+                raise ValueError(
+                    "Current validation does not bind the exact "
+                    "reviewed artifact."
+                )
+
+            st.session_state[preview_key] = current
+
+        except Exception:
+            st.error(
+                "Current SYSIDE validation could not be completed safely. "
+                "The persisted review remains unchanged."
+            )
+            return False
+
+    if current is None:
+        return False
+
+    if (
+        current.validation_status == "valid"
+        and current.publication_gate == "passed"
+    ):
+        st.success(
+            "Current validation: VALID · publication gate PASSED"
+        )
+    elif current.validation_status == "incomplete":
+        st.warning(
+            "Current validation: INCOMPLETE · publication gate BLOCKED"
+        )
+    else:
+        st.error(
+            "Current validation: INVALID · publication gate BLOCKED"
+        )
+
+    for evidence in current.external_validator_evidence:
+        identity = evidence.validator_identity
+        passed = (
+            evidence.execution_status == "completed"
+            and evidence.exit_code == 0
+            and evidence.normalized_diagnostic_count == 0
+        )
+
+        columns = st.columns(3)
+        columns[0].metric(
+            "Current SYSIDE",
+            "PASS" if passed else "NOT PASS",
+        )
+        columns[1].metric(
+            "Diagnostics",
+            evidence.normalized_diagnostic_count,
+        )
+        columns[2].metric(
+            "Exit code",
+            (
+                "—"
+                if evidence.exit_code is None
+                else evidence.exit_code
+            ),
+        )
+
+        validator_label = f"Current validator: {identity.tool_name}"
+        if identity.tool_version:
+            validator_label += f" · {identity.tool_version}"
+        st.caption(validator_label)
+
+    if current.findings:
+        with st.expander(
+            f"Current validation findings ({len(current.findings)})"
+        ):
+            for finding in current.findings:
+                marker = (
+                    "BLOCKING"
+                    if finding.blocking
+                    else finding.severity
+                )
+                st.write(
+                    f"• [{marker}] {finding.code}: {finding.message}"
+                )
+
+    if current.content_fingerprint == view.validation_result_fingerprint:
+        st.caption(
+            "The current validation is identical to the persisted "
+            "review evidence."
+        )
+        return False
+
+    st.info(
+        "The current validation differs from the persisted historical "
+        "validation. The historical revision will remain unchanged."
+    )
+
+    if not (
+        current.validation_status == "valid"
+        and current.publication_gate == "passed"
+    ):
+        return False
+
+    if st.button(
+        "Create review revision with current validation",
+        key=f"{preview_key}.adopt",
+    ):
+        creator = getattr(
+            write_service,
+            "create_phase_l_final_model_review",
+            None,
+        )
+        if not callable(creator):
+            st.error(
+                "Final Model Review revision creation is unavailable."
+            )
+            return False
+
+        try:
+            bundle = creator(
+                project_id,
+                view.source_internal_engineering_model_id,
+                validation_result=current,
+            )
+        except Exception:
+            st.error(
+                "The new Final Model Review revision could not be "
+                "created safely. Existing review history remains unchanged."
+            )
+            return False
+
+        new_revision_id = (
+            bundle.revision.final_model_review_revision_id
+        )
+        st.session_state[
+            SESSION_SELECTED_ENTITY_ID
+        ] = new_revision_id
+
+        st.success(
+            "New Final Model Review revision created from the "
+            "current VALID validation."
+        )
+        _rerun(st)
+        return True
+
+    return False
 
 
 def _render_explicit_selection(

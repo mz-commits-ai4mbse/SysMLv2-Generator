@@ -243,11 +243,13 @@ def build_subject_review_item_request(
                 "A rationale is required when accepted Subject content "
                 "or classification is modified."
             )
-        outcome = (
-            "accepted_with_modification"
-            if changed
-            else "accepted_as_generated"
-        )
+        # Canonical Subject Review is proposal-free by design.
+        # Persona interpretations and consensus remain immutable evidence;
+        # Human acceptance authorizes the effective canonical result, not one
+        # winning Agent proposal. The existing ReviewWorkspace compatibility
+        # outcome for proposal-free acceptance is accepted_with_modification,
+        # even when the canonical fields are accepted unchanged.
+        outcome = "accepted_with_modification"
 
     elif action == "reject":
         if rationale_value is None:

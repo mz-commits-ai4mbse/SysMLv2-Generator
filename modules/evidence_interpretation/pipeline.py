@@ -14,6 +14,14 @@ from modules.agents.team_config import (
     TeamMemberConfig,
     load_team_config,
 )
+from modules.classification_alignment import (
+    ClassificationAlignmentService,
+    classification_alignment_result_to_json,
+)
+from modules.semantic_consistency_alignment import (
+    SemanticConsistencyAlignmentService,
+    semantic_consistency_result_to_json,
+)
 from modules.agents.team_runner import (
     run_agent_team,
     select_team_members,
@@ -76,11 +84,27 @@ class SharedEvidenceInterpretationPipeline:
         team_file: Path | str = DEFAULT_TEAM_FILE,
         team_runner: TeamRunner = run_agent_team,
         clock: Callable[[], datetime] = _default_clock,
+        classification_alignment_service: (
+            ClassificationAlignmentService | None
+        ) = None,
+        semantic_consistency_alignment_service: (
+            SemanticConsistencyAlignmentService | None
+        ) = None,
     ) -> None:
         self.project_root = Path(project_root)
         self.team_file = Path(team_file)
         self._team_runner = team_runner
         self._clock = clock
+        self._classification_alignment = (
+            ClassificationAlignmentService()
+            if classification_alignment_service is None
+            else classification_alignment_service
+        )
+        self._semantic_consistency_alignment = (
+            SemanticConsistencyAlignmentService()
+            if semantic_consistency_alignment_service is None
+            else semantic_consistency_alignment_service
+        )
 
     def planned_request_count(
         self,
@@ -156,6 +180,12 @@ class SharedEvidenceInterpretationPipeline:
         execution_path = Path(execution_root)
         agent_output_root = execution_path / "agent_outputs"
         consensus_output_root = execution_path / "consensus_reports"
+        classification_alignment_output_root = (
+            agent_output_root / "classification_alignment"
+        )
+        semantic_consistency_output_root = (
+            agent_output_root / "semantic_consistency_alignment"
+        )
         agent_output_root.mkdir(parents=True, exist_ok=True)
         consensus_output_root.mkdir(parents=True, exist_ok=True)
 
@@ -211,6 +241,14 @@ class SharedEvidenceInterpretationPipeline:
                 raw_results=tuple(raw_results),
                 provider=provider,
                 model=model,
+                api_key=api_key,
+                classification_alignment_output_root=(
+                    classification_alignment_output_root
+                ),
+                semantic_consistency_output_root=(
+                    semantic_consistency_output_root
+                ),
+                llm_progress_observer=llm_progress_observer,
                 runs_per_persona=runs_per_persona,
             )
 
@@ -297,6 +335,10 @@ class SharedEvidenceInterpretationPipeline:
         raw_results: tuple[Any, ...],
         provider: str,
         model: str,
+        api_key: str | None,
+        classification_alignment_output_root: Path,
+        semantic_consistency_output_root: Path,
+        llm_progress_observer: LLMRequestProgressObserver | None,
         runs_per_persona: int,
     ):
         member_by_agent = {
@@ -325,8 +367,68 @@ class SharedEvidenceInterpretationPipeline:
                     "Team runner returned an unexpected agent."
                 )
 
-            interpretations = parse_evidence_interpretation_output(
+            alignment = self._classification_alignment.align_output(
                 raw_result.output_text,
+                item_id_field="source_evidence_id",
+                allowed_item_ids=expected_ids,
+                context_by_item_id={
+                    item.source_evidence_id: item.source_excerpt
+                    for item in evidence
+                },
+                provider=provider,
+                model=model,
+                api_key=api_key,
+                llm_progress_observer=llm_progress_observer,
+            )
+            if alignment.decisions:
+                alignment_path = (
+                    classification_alignment_output_root
+                    / raw_result.agent_id.lower()
+                    / f"run_{raw_result.run_index:02d}.json"
+                )
+                alignment_path.parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+                alignment_path.write_text(
+                    classification_alignment_result_to_json(alignment),
+                    encoding="utf-8",
+                )
+
+            semantic_consistency = (
+                self._semantic_consistency_alignment.align_output(
+                    alignment.normalized_output_text,
+                    item_id_field="source_evidence_id",
+                    allowed_item_ids=expected_ids,
+                    context_by_item_id={
+                        item.source_evidence_id: item.source_excerpt
+                        for item in evidence
+                    },
+                    provider=provider,
+                    model=model,
+                    api_key=api_key,
+                    llm_progress_observer=llm_progress_observer,
+                )
+            )
+            if semantic_consistency.decisions:
+                consistency_path = (
+                    semantic_consistency_output_root
+                    / raw_result.agent_id.lower()
+                    / f"run_{raw_result.run_index:02d}.json"
+                )
+                consistency_path.parent.mkdir(
+                    parents=True,
+                    exist_ok=True,
+                )
+                consistency_path.write_text(
+                    semantic_consistency_result_to_json(
+                        semantic_consistency
+                    ),
+                    encoding="utf-8",
+                )
+
+            interpretations = parse_evidence_interpretation_output(
+                semantic_consistency.normalized_output_text,
                 expected_source_evidence_ids=expected_ids,
             )
             candidates = materialize_information_unit_candidates(

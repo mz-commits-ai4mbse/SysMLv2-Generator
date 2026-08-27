@@ -565,3 +565,135 @@ def test_detail_views_fail_closed_without_project():
         and "Select a Project" in call[1]
         for call in st.calls
     )
+
+
+def test_final_review_current_validation_can_create_immutable_revision():
+    st = FakeStreamlit()
+    st.session_state[SESSION_PROJECT_ID] = "123456"
+
+    clicked = {
+        "Run current SYSIDE validation",
+        "Create review revision with current validation",
+    }
+
+    def button(label, *, key):
+        st.calls.append(("button", label, key))
+        return label in clicked
+
+    st.button = button
+
+    artifact = SimpleNamespace(
+        project_id="123456",
+        source_internal_engineering_model_id="IEM-000001",
+        content_fingerprint="c" * 64,
+    )
+
+    evidence = SimpleNamespace(
+        validator_identity=SimpleNamespace(
+            tool_name="SYSIDE Modeler CLI",
+            tool_version="0.10.3",
+        ),
+        execution_status="completed",
+        exit_code=0,
+        normalized_diagnostic_count=0,
+    )
+
+    current_validation = SimpleNamespace(
+        project_id="123456",
+        source_internal_engineering_model_id="IEM-000001",
+        source_artifact_set_fingerprint="c" * 64,
+        validation_status="valid",
+        publication_gate="passed",
+        external_validator_evidence=(evidence,),
+        findings=(),
+        content_fingerprint="e" * 64,
+    )
+
+    class Writes:
+        def __init__(self):
+            self.load_calls = []
+            self.preview_calls = []
+            self.create_calls = []
+
+        def load_authority_backed_sysml(
+            self,
+            project_id,
+            internal_engineering_model_id,
+        ):
+            self.load_calls.append(
+                (project_id, internal_engineering_model_id)
+            )
+            return artifact
+
+        def preview_authority_backed_sysml_validation(
+            self,
+            project_id,
+            *,
+            artifact,
+        ):
+            self.preview_calls.append(
+                (project_id, artifact.content_fingerprint)
+            )
+            return current_validation
+
+        def create_phase_l_final_model_review(
+            self,
+            project_id,
+            internal_engineering_model_id,
+            *,
+            validation_result=None,
+        ):
+            self.create_calls.append(
+                (
+                    project_id,
+                    internal_engineering_model_id,
+                    validation_result.content_fingerprint,
+                )
+            )
+            return SimpleNamespace(
+                revision=SimpleNamespace(
+                    final_model_review_revision_id="FRV-000002",
+                )
+            )
+
+    writes = Writes()
+
+    render_final_model_review_ui(
+        ".",
+        streamlit_module=st,
+        detail_service=Service(
+            final_review=final_review_view(),
+            release_gate=SimpleNamespace(
+                release_status="validation_blocked",
+                blockers=(),
+            ),
+        ),
+        write_service=writes,
+    )
+
+    assert writes.load_calls == [
+        ("123456", "IEM-000001"),
+    ]
+    assert writes.preview_calls == [
+        ("123456", "c" * 64),
+    ]
+    assert writes.create_calls == [
+        ("123456", "IEM-000001", "e" * 64),
+    ]
+
+    preview_key = (
+        "guided_final_model.current_validation_preview."
+        + ("c" * 64)
+    )
+    assert st.session_state[preview_key] is current_validation
+    assert (
+        st.session_state[SESSION_SELECTED_ENTITY_ID]
+        == "FRV-000002"
+    )
+    assert st.rerun_count == 1
+
+    assert any(
+        call[0] == "success"
+        and "Current validation: VALID" in call[1]
+        for call in st.calls
+    )

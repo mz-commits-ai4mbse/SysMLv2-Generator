@@ -26,6 +26,188 @@ SUPPORTED_BRIDGE_ELEMENT_TYPES = frozenset({"stakeholder"})
 SUPPORTED_BRIDGE_RELATIONSHIP_SEMANTICS = frozenset({"traces_to"})
 
 
+
+def _effective_element_construct_id(
+    *,
+    element,
+    formulation_items,
+    generation_profile,
+):
+    """Resolve the construct that Phase J would see after formulation."""
+
+    # A formulation decision takes precedence over the baseline mapping.
+    for item in formulation_items:
+        if (
+            item.subject_kind == "element"
+            and item.authority_subject_id
+            == element.internal_model_element_id
+        ):
+            candidate = item.candidates[0]
+
+            if candidate.relevance_outcome != "materialize_formally":
+                return None
+
+            return candidate.target_notation_construct_id
+
+    # Elements outside the bounded formulation population retain the
+    # ordinary Phase-J generation mapping.
+    model_area = getattr(element, "model_area", None)
+    element_type = getattr(element, "element_type", None)
+
+    if not model_area or not element_type:
+        return None
+
+    from modules.sysml_generation.generation_profile import (
+        find_element_mapping,
+    )
+
+    mapping = find_element_mapping(
+        generation_profile,
+        model_area=model_area,
+        element_type=element_type,
+    )
+
+    if mapping is None:
+        return None
+
+    if (
+        mapping.get("mapping_status") != "supported"
+        or not mapping.get("production_generation_allowed")
+    ):
+        return None
+
+    return mapping.get("target_construct_id")
+
+
+def _relationship_endpoint_construct_mismatch(
+    *,
+    relationship,
+    snapshot,
+    formulation_items,
+    generation_profile,
+):
+    """
+    Return mismatch evidence when a previously supported relationship
+    becomes incompatible with its effective endpoint constructs.
+
+    None means that this bounded bridge has no compatibility reason to
+    reopen the relationship.
+    """
+
+    relationship_family = getattr(
+        relationship,
+        "relationship_family",
+        None,
+    )
+    semantic_intent = getattr(
+        relationship,
+        "semantic_intent",
+        None,
+    )
+    directionality = getattr(
+        relationship,
+        "directionality",
+        None,
+    )
+
+    source_id = getattr(
+        relationship,
+        "source_internal_model_element_id",
+        None,
+    )
+    target_id = getattr(
+        relationship,
+        "target_internal_model_element_id",
+        None,
+    )
+
+    # Older/minimal fixtures may not carry the full relationship endpoint
+    # contract. They cannot be evaluated here and retain the previous
+    # bounded behavior.
+    if not all(
+        (
+            relationship_family,
+            semantic_intent,
+            directionality,
+            source_id,
+            target_id,
+        )
+    ):
+        return None
+
+    from modules.sysml_generation.generation_profile import (
+        find_relationship_mapping,
+    )
+
+    mapping = find_relationship_mapping(
+        generation_profile,
+        relationship_family=relationship_family,
+        semantic_intent=semantic_intent,
+        directionality=directionality,
+    )
+
+    # This helper only reopens relationships that already have a supported
+    # Phase-J rule but whose effective endpoint constructs no longer satisfy
+    # that rule. Unsupported relationship semantics remain governed by the
+    # existing bounded formulation policy.
+    if mapping is None:
+        return None
+
+    if (
+        mapping.get("mapping_status") != "supported"
+        or not mapping.get("production_generation_allowed")
+    ):
+        return None
+
+    elements = {
+        item.internal_model_element_id: item
+        for item in snapshot.elements
+    }
+
+    source = elements.get(source_id)
+    target = elements.get(target_id)
+
+    if source is None or target is None:
+        return None
+
+    source_construct = _effective_element_construct_id(
+        element=source,
+        formulation_items=formulation_items,
+        generation_profile=generation_profile,
+    )
+    target_construct = _effective_element_construct_id(
+        element=target,
+        formulation_items=formulation_items,
+        generation_profile=generation_profile,
+    )
+
+    # If an endpoint is unresolved, formulation is already fail-closed for
+    # that endpoint. Do not manufacture an additional relationship decision
+    # before the endpoint itself is Human-resolved.
+    if source_construct is None or target_construct is None:
+        return None
+
+    allowed_sources = tuple(
+        mapping.get("source_endpoint_construct_ids", ())
+    )
+    allowed_targets = tuple(
+        mapping.get("target_endpoint_construct_ids", ())
+    )
+
+    source_valid = source_construct in allowed_sources
+    target_valid = target_construct in allowed_targets
+
+    if source_valid and target_valid:
+        return None
+
+    return {
+        "profile_rule_id": mapping["rule_id"],
+        "source_construct_id": source_construct,
+        "target_construct_id": target_construct,
+        "allowed_source_construct_ids": allowed_sources,
+        "allowed_target_construct_ids": allowed_targets,
+    }
+
 def build_blk006_formulation_review(
     *,
     snapshot,
@@ -33,6 +215,7 @@ def build_blk006_formulation_review(
     target_model_profile: dict,
     review_id: str,
     created_at: str,
+    generation_profile: dict | None = None,
 ):
     """Build review proposals only for the unresolved BLK-006 population."""
 
@@ -188,10 +371,81 @@ def build_blk006_formulation_review(
             )
         )
 
+    if generation_profile is None:
+        from modules.sysml_generation.generation_profile import (
+            load_generation_profile,
+        )
+
+        generation_profile = load_generation_profile()
+
     for relationship in sorted(
         snapshot.relationships,
         key=lambda item: item.internal_model_relationship_id,
     ):
+        mismatch = _relationship_endpoint_construct_mismatch(
+            relationship=relationship,
+            snapshot=snapshot,
+            formulation_items=tuple(items),
+            generation_profile=generation_profile,
+        )
+
+        if mismatch is not None:
+            generation_ref = create_reference_evidence(
+                source_id="TURING_SYSML_V2_GENERATION_PROFILE",
+                role="target_model_formulation_guidance",
+                locator=(
+                    "context/sysml/"
+                    "turing_sysml_v2_generation_profile.json"
+                ),
+                evidence_note=(
+                    "Phase-J rule "
+                    f"{mismatch['profile_rule_id']} does not permit the "
+                    "effective endpoint construct combination "
+                    f"{mismatch['source_construct_id']} -> "
+                    f"{mismatch['target_construct_id']}. "
+                    "The relationship therefore requires explicit Human "
+                    "Target-Model authority before generation."
+                ),
+            )
+
+            candidate = create_formulation_candidate(
+                candidate_id=f"TFC-{candidate_index:06d}",
+                relevance_outcome="intentionally_not_materialized",
+                target_model_pattern_id=None,
+                target_notation_construct_id=None,
+                formulation_text=None,
+                reference_evidence=(generation_ref,),
+                rationale=(
+                    "The approved engineering relationship remains "
+                    f"'{relationship.semantic_intent}', but its effective "
+                    "Target-Model endpoint constructs are not compatible "
+                    f"with Phase-J rule {mismatch['profile_rule_id']}. "
+                    "No alternative formally validated relationship "
+                    "representation is authorized by this bounded bridge. "
+                    "Fail closed by retaining the engineering relationship "
+                    "as authority while intentionally omitting its formal "
+                    "SysML materialization."
+                ),
+            )
+            candidate_index += 1
+
+            items.append(
+                create_review_item(
+                    subject_kind="relationship",
+                    authority_subject_id=(
+                        relationship.internal_model_relationship_id
+                    ),
+                    current_engineering_type=(
+                        relationship.semantic_intent
+                    ),
+                    current_target_representation=(
+                        relationship.semantic_intent
+                    ),
+                    candidates=(candidate,),
+                )
+            )
+            continue
+
         if (
             relationship.semantic_intent
             not in SUPPORTED_BRIDGE_RELATIONSHIP_SEMANTICS

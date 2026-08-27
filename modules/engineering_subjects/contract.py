@@ -11,6 +11,7 @@ from .errors import (
     EngineeringSubjectIntegrityError,
     EngineeringSubjectValidationError,
 )
+from .grounding import validate_subject_discovery_grounding
 from .identifiers import (
     format_canonical_subject_id,
     format_engineering_mention_id,
@@ -87,15 +88,65 @@ def parse_subject_discovery_output(
         )
 
     proposals = tuple(_parse_subject(value) for value in values)
-    labels = [
-        proposal.canonical_label.casefold()
-        for proposal in proposals
-    ]
-    if len(labels) != len(set(labels)):
-        raise EngineeringSubjectValidationError(
-            "Repeated canonical labels must be consolidated into one subject."
+    return _consolidate_compatible_duplicate_subjects(proposals)
+
+
+def _consolidate_compatible_duplicate_subjects(
+    proposals: tuple[DiscoverySubjectProposal, ...],
+) -> tuple[DiscoverySubjectProposal, ...]:
+    """Merge duplicate labels only when no semantic choice is required."""
+
+    ordered: list[DiscoverySubjectProposal] = []
+    index_by_label: dict[str, int] = {}
+
+    for proposal in proposals:
+        label_key = proposal.canonical_label.casefold()
+        existing_index = index_by_label.get(label_key)
+
+        if existing_index is None:
+            index_by_label[label_key] = len(ordered)
+            ordered.append(proposal)
+            continue
+
+        existing = ordered[existing_index]
+        if (
+            existing.subject_form != proposal.subject_form
+            or existing.identity_status != proposal.identity_status
+        ):
+            raise EngineeringSubjectValidationError(
+                "Repeated canonical labels with conflicting subject_form or "
+                "identity_status cannot be consolidated deterministically."
+            )
+
+        merged_mentions = list(existing.mentions)
+        known_mentions = {
+            (
+                mention.source_span_id,
+                mention.start_token_id,
+                mention.end_token_id,
+            )
+            for mention in merged_mentions
+        }
+
+        for mention in proposal.mentions:
+            mention_key = (
+                mention.source_span_id,
+                mention.start_token_id,
+                mention.end_token_id,
+            )
+            if mention_key in known_mentions:
+                continue
+            known_mentions.add(mention_key)
+            merged_mentions.append(mention)
+
+        ordered[existing_index] = DiscoverySubjectProposal(
+            canonical_label=existing.canonical_label,
+            subject_form=existing.subject_form,
+            identity_status=existing.identity_status,
+            mentions=tuple(merged_mentions),
         )
-    return proposals
+
+    return tuple(ordered)
 
 
 def materialize_canonical_subject_set(
@@ -122,6 +173,11 @@ def materialize_canonical_subject_set(
         raise EngineeringSubjectIntegrityError(
             "source_span_ids must be unique."
         )
+
+    validate_subject_discovery_grounding(
+        source_spans=source_spans,
+        proposals=proposals,
+    )
 
     resolved_subjects = []
 

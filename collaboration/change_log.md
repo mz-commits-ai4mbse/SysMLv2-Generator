@@ -1,5 +1,149 @@
 # Change Log
 
+## 2026-08-27 — Thesis-driven completion roadmap accepted
+
+Following successful real Gate-3 validation of Project `000116`, the remaining
+project roadmap was explicitly changed from implementation-backlog-driven to
+thesis-driven execution.
+
+Accepted principle:
+
+> Further implementation after Gate 3 is justified only where it is required
+> to substantiate an open thesis claim, close a thesis-critical validation gap,
+> or establish the final prototype baseline. Open implementation findings are
+> not automatically remaining thesis scope.
+
+Accepted remaining sequence:
+
+```text
+Professor presentation
+→ Safe Demo / Kochshow
+→ Gate-3 thesis evaluation record
+→ Thesis Scope Gate
+→ explicit BLK-002 decision
+→ only thesis-required implementation
+→ final targeted validation
+→ CATIA / architecture synchronization
+→ prototype implementation freeze
+→ Results / Discussion / Limitations finalization
+→ final claim / traceability / consistency audit
+→ thesis completion
+```
+
+`BLK-002` is not automatically selected for implementation.
+
+Instead, the thesis scope must explicitly decide whether a true Multi-Source
+empirical result is required by the research question.
+
+If required:
+
+```text
+resolve BLK-002
+→ real Multi-Source E2E
+→ downstream validation
+```
+
+If not required:
+
+```text
+retain BLK-002 as explicit limitation / Future Work
+```
+
+The same scope discipline applies to remaining SEM / OBS findings.
+
+The final architecture synchronization is intentionally scheduled after the
+last thesis-critical implementation change, followed by a formal prototype
+freeze.
+
+This decision establishes the operating principle:
+
+```text
+The thesis drives remaining implementation.
+The remaining implementation backlog does not define the thesis.
+```
+
+---
+
+
+## 2026-08-27 — v0.3.0 Gate-3 real validation and publication
+
+Project `000116`, Lead Source
+`SRC-000002 / 01_product_overview.md`, completed the governed real
+single-source workflow through immutable publication.
+
+Final chain:
+
+```text
+IEM-000001
+→ TFR-000002 / TFA-000002
+→ MQR-000001 / MQA-000002
+→ IEM-000003
+→ deterministic SysML v2
+→ real SYSIDE PASS
+→ FMR-000001 / FRV-000002
+→ FRD-000001
+→ OUT-000001
+```
+
+Final validation evidence:
+
+```text
+SYSIDE Modeler CLI 0.10.3
+exit code: 0
+diagnostics: 0
+validation: VALID
+publication gate: PASSED
+```
+
+Generated artifact fingerprint:
+
+`7b5babbe048f941d9875a345e34a03e1c249061a93e03ade3c9dcfb971f4ddb1`
+
+Validation fingerprint:
+
+`0e8998e6fe2d4b717cbee6464cdca1b060ad21601dd92389706240b38387ea67`
+
+Published package:
+
+`OUT-000001`
+
+Final complete repository regression after all corrective work:
+
+`6100 passed in 17.87s`
+
+The real run exposed and drove bounded generic corrections for:
+
+- Model Refinement incomplete-successor handling;
+- SEM-015 Human-authority payload normalization;
+- relationship endpoint-construct compatibility after Target-Model Formulation;
+- immutable Target-Model Formulation revisions;
+- current SYSIDE revalidation and immutable Final Model Review revision adoption;
+- explicit Generation Profile resolution through `repo_root`.
+
+The original Phase-J fail-closed relationship guard was retained.
+
+No Project-`000116` special case was introduced.
+
+`IMR-000001` remains authoritative engineering information but is explicitly
+Human-authorized as intentionally not formally materialized because its
+effective endpoint-construct combination lacks a currently authorized formal
+representation.
+
+The successful validation is a single-source acceptance result.
+`BLK-002` remains open for true Multi-Source Processing.
+
+Canonical closeout:
+
+`collaboration/checkpoints/2026-08-27_gate3_validation_handover_ssot.md`
+
+Next activity:
+
+Professor presentation using the existing presentation plan, followed by Safe
+Demo preparation using the agreed Kochshow strategy.
+
+---
+
+
 ## 2026-08-25 — WP-12 Golden E2E accepted / Known-Good baseline established
 
 The first complete Human-authority-backed single-source Turing Generator E2E was

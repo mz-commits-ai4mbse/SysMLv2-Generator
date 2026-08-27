@@ -1,6 +1,6 @@
 {
-  "version": "1.17",
-  "last_updated": "2026-08-14",
+  "version": "1.20",
+  "last_updated": "2026-08-27",
   "authoritative_sources": {
     "engineering_model": {
       "tool": "CATIA Magic Systems of Systems Architect",
@@ -22,7 +22,7 @@
       "provider": "GitHub",
       "repository": "mz-commits-ai4mbse/SysMLv2-Generator",
       "default_branch": "main",
-      "verified_commit": "commit_containing_this_phase_l_completion_ssot_update",
+      "verified_commit": "commit_containing_this_v0.3.0_gate3_closeout",
       "status": "authoritative_for_committed_implementation",
       "verification": {
         "complete_automated_test_count": 5451,
@@ -150,9 +150,34 @@
         "phase_l_live_syside_acceptance": "blocked_missing_cli",
         "phase_l_automated_vertical_slice": "passed",
         "phase_l_completion_note": "Phase L completed Final Model Review, immutable review revisions, code/model/validation/traceability read projection, Change Proposals with controlled authority routing and optional bounded agent re-proposal, an exact Human release gate, versioned output publication, atomic/idempotent OUT packages and an automated IEM-to-J-to-K-to-Human-Release-to-OUT vertical slice. Focused regression: 147 passed, 1 skipped in 1.63s; complete repository regression: 5451 passed, 1 skipped in 26.84s; git diff --check PASS. The skipped test is the deliberate live SYSIDE acceptance test; SYSIDE CLI is unavailable on the verification workstation.",
-        "phase_l_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed"
+        "phase_l_remote_synchronization": "to_be_verified_after_the_completion_commit_is_pushed",
+        "gate3_v030_project_id": "000116",
+        "gate3_v030_lead_source_id": "SRC-000002",
+        "gate3_v030_base_iem_id": "IEM-000001",
+        "gate3_v030_target_model_authority": "TFA-000002",
+        "gate3_v030_model_quality_authority": "MQA-000002",
+        "gate3_v030_successor_iem_id": "IEM-000003",
+        "gate3_v030_generated_artifact_fingerprint": "7b5babbe048f941d9875a345e34a03e1c249061a93e03ade3c9dcfb971f4ddb1",
+        "gate3_v030_validation_fingerprint": "0e8998e6fe2d4b717cbee6464cdca1b060ad21601dd92389706240b38387ea67",
+        "gate3_v030_syside_version": "0.10.3",
+        "gate3_v030_syside_execution": "completed",
+        "gate3_v030_syside_exit_code": 0,
+        "gate3_v030_syside_diagnostics": 0,
+        "gate3_v030_validation_status": "valid",
+        "gate3_v030_publication_gate": "passed",
+        "gate3_v030_final_model_review_id": "FMR-000001",
+        "gate3_v030_final_review_revision_id": "FRV-000002",
+        "gate3_v030_human_release_decision_id": "FRD-000001",
+        "gate3_v030_published_output_id": "OUT-000001",
+        "gate3_v030_complete_repository_test_count": 6100,
+        "gate3_v030_complete_repository_duration_seconds": 17.87,
+        "gate3_v030_git_diff_check": "passed",
+        "gate3_v030_scope": "real_single_source_end_to_end",
+        "gate3_v030_multi_source_status": "open_blocked_by_BLK-002",
+        "gate3_v030_note": "Project 000116 completed the real Human-authority-backed single-source workflow through deterministic SysML v2 generation, real SYSIDE validation, Final Model Review, Human release and immutable publication. This does not establish true Multi-Source Processing."
       },
-      "last_prior_committed_checkpoint": "72974bb63c92c37baac5eef6b740ee91bacedd01"
+      "last_prior_committed_checkpoint": "9f2ae071c51aa3d605e6b81b28f16ce975bf4b14",
+      "active_build_version": "0.3.0"
     },
     "collaboration": {
       "location": "collaboration/",
@@ -182,10 +207,10 @@
     }
   },
   "verified_versions": {
-    "architecture_version": "1.10",
-    "knowledge_base_version": "1.17",
-    "implementation_version": "0.19",
-    "roadmap_version": "1.17"
+    "architecture_version": "1.13",
+    "knowledge_base_version": "1.20",
+    "implementation_version": "0.3.0",
+    "roadmap_version": "1.20"
   },
   "prototype_target": {
     "target_date": "2026-08-14",

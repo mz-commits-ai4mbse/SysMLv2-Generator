@@ -2,7 +2,14 @@
 
 from __future__ import annotations
 
-from modules.engineering_subjects import EngineeringSubjectDiscoveryAgent
+import inspect
+
+from modules.engineering_subjects import (
+    EngineeringSubjectDiscoveryAgent,
+    EngineeringSubjectGroundingError,
+    EngineeringSubjectIntegrityError,
+    EngineeringSubjectValidationError,
+)
 from modules.subject_consensus import analyze_subject_consensus
 from modules.subject_interpretation import SubjectInterpretationPipeline
 from modules.subject_review import build_subject_review_bundle
@@ -12,6 +19,7 @@ from modules.subject_review.artifacts import (
 
 from collections.abc import Callable
 from datetime import datetime, timezone
+from hashlib import sha256
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
@@ -22,6 +30,7 @@ from modules.ingestion.team_agentic_pipeline import (
 from modules.llm.progress import (
     LLMRequestProgressObserver,
     notify_llm_progress,
+    notify_processing_phase,
 )
 from modules.evidence_interpretation import (
     SharedEvidenceInterpretationPipeline,
@@ -101,6 +110,86 @@ from .types import (
 
 DEFAULT_PROJECTS_ROOT = Path("data/projects")
 AGENTIC_INGESTION_STAGE = "agentic_ingestion"
+SUBJECT_DISCOVERY_RAW_RESPONSE_SCHEMA_VERSION = "1.0.0"
+
+
+def _accepts_optional_keyword_argument(
+    function,
+    name: str,
+) -> bool:
+    """Return whether one injected callable accepts an optional keyword."""
+
+    try:
+        parameters = inspect.signature(function).parameters.values()
+    except (TypeError, ValueError):
+        return False
+
+    return any(
+        parameter.kind == inspect.Parameter.VAR_KEYWORD
+        or parameter.name == name
+        for parameter in parameters
+    )
+
+
+def _write_subject_discovery_raw_response(
+    *,
+    output_root: Path,
+    response_kind: str,
+    result,
+) -> None:
+    """Persist one exact non-authoritative raw Subject Discovery response."""
+
+    if response_kind not in {"initial", "grounding_correction"}:
+        raise ValueError("Unsupported Subject Discovery response kind.")
+
+    output_text = getattr(result, "text", None)
+    provider = getattr(result, "provider", None)
+    model = getattr(result, "model", None)
+    response_id = getattr(result, "response_id", None)
+
+    if not isinstance(output_text, str):
+        raise TypeError("Subject Discovery raw response text must be text.")
+
+    payload = {
+        "schema_version": SUBJECT_DISCOVERY_RAW_RESPONSE_SCHEMA_VERSION,
+        "diagnostic_only": True,
+        "engineering_authority": False,
+        "response_kind": response_kind,
+        "provider": provider,
+        "model": model,
+        "response_id": response_id,
+        "output_sha256": sha256(
+            output_text.encode("utf-8")
+        ).hexdigest(),
+        "output_text": output_text,
+    }
+
+    output_root.mkdir(parents=True, exist_ok=True)
+    path = output_root / f"{response_kind}.json"
+    temporary = output_root / f".{response_kind}.json.tmp"
+    temporary.write_text(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
+
+
+def _subject_discovery_failure_reason(
+    error: Exception,
+) -> str:
+    if isinstance(error, EngineeringSubjectGroundingError):
+        return "subject_discovery_grounding_failed"
+    if isinstance(error, EngineeringSubjectValidationError):
+        return "subject_discovery_validation_failed"
+    if isinstance(error, EngineeringSubjectIntegrityError):
+        return "subject_discovery_integrity_failed"
+    return "subject_discovery_execution_failed"
 
 
 def _semantic_consolidation_failure_reason(
@@ -896,19 +985,62 @@ class ProjectBoundIngestionService:
             # Processing Attempt. The legacy shared-Evidence outputs above
             # remain a temporary compatibility shadow only.
             try:
-                subject_discovery = (
-                    self._engineering_subject_discovery.discover(
-                        source_projection=projection,
-                        source_evidence=evidence,
-                        provider=configuration.provider,
-                        model=configuration.model,
-                        api_key=api_key,
-                        llm_progress_observer=llm_progress_observer,
+                subject_discovery_kwargs = {
+                    "source_projection": projection,
+                    "source_evidence": evidence,
+                    "provider": configuration.provider,
+                    "model": configuration.model,
+                    "api_key": api_key,
+                    "llm_progress_observer": llm_progress_observer,
+                }
+
+                discovery_method = (
+                    self._engineering_subject_discovery.discover
+                )
+                if _accepts_optional_keyword_argument(
+                    discovery_method,
+                    "raw_response_observer",
+                ):
+                    raw_response_root = (
+                        phase_f_root
+                        / "agent_outputs"
+                        / "subject_discovery"
+                        / "raw_responses"
                     )
+                    subject_discovery_kwargs[
+                        "raw_response_observer"
+                    ] = (
+                        lambda response_kind, result: (
+                            _write_subject_discovery_raw_response(
+                                output_root=raw_response_root,
+                                response_kind=response_kind,
+                                result=result,
+                            )
+                        )
+                    )
+
+                subject_discovery = discovery_method(
+                    **subject_discovery_kwargs
                 )
-                canonical_subject_set = (
-                    subject_discovery.canonical_subject_set
+            except Exception as exc:
+                return self._fail_execution(
+                    history=history,
+                    attempt_id=attempt_id,
+                    dry_run=False,
+                    source_projection_id=(
+                        preparation.source_projection_id
+                    ),
+                    projection_result=(
+                        projection.manifest.projection_result
+                    ),
+                    reason_code=_subject_discovery_failure_reason(exc),
                 )
+
+            canonical_subject_set = (
+                subject_discovery.canonical_subject_set
+            )
+
+            try:
                 subject_interpretations = (
                     self._subject_interpretation.run(
                         source_projection=projection,
@@ -926,9 +1058,45 @@ class ProjectBoundIngestionService:
                         llm_progress_observer=llm_progress_observer,
                     )
                 )
+            except Exception:
+                return self._fail_execution(
+                    history=history,
+                    attempt_id=attempt_id,
+                    dry_run=False,
+                    source_projection_id=(
+                        preparation.source_projection_id
+                    ),
+                    projection_result=(
+                        projection.manifest.projection_result
+                    ),
+                    reason_code="subject_interpretation_failed",
+                )
+
+            notify_processing_phase(
+                llm_progress_observer,
+                stage="compilation",
+                detail="validating and assembling processing artifacts",
+            )
+
+            try:
                 subject_consensus = analyze_subject_consensus(
                     subject_interpretations
                 )
+            except Exception:
+                return self._fail_execution(
+                    history=history,
+                    attempt_id=attempt_id,
+                    dry_run=False,
+                    source_projection_id=(
+                        preparation.source_projection_id
+                    ),
+                    projection_result=(
+                        projection.manifest.projection_result
+                    ),
+                    reason_code="subject_consensus_failed",
+                )
+
+            try:
                 subject_review_bundle = build_subject_review_bundle(
                     subject_set=canonical_subject_set,
                     interpretations=subject_interpretations,
@@ -955,7 +1123,7 @@ class ProjectBoundIngestionService:
                     projection_result=(
                         projection.manifest.projection_result
                     ),
-                    reason_code="subject_review_processing_failed",
+                    reason_code="subject_review_artifact_failed",
                 )
         except Exception:
             return self._fail_execution(

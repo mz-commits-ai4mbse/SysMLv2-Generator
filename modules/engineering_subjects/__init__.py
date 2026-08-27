@@ -12,10 +12,18 @@ from .contract import (
 )
 from .discovery import EngineeringSubjectDiscoveryAgent
 from .errors import (
+    GROUNDING_VIOLATION_CODES,
     EngineeringSubjectConfigurationError,
     EngineeringSubjectError,
+    EngineeringSubjectGroundingError,
+    EngineeringSubjectGroundingViolation,
     EngineeringSubjectIntegrityError,
     EngineeringSubjectValidationError,
+)
+from .grounding import (
+    ENGINEERING_SUBJECT_GROUNDING_REPAIR_SCHEMA_VERSION,
+    build_engineering_subject_grounding_repair_instructions,
+    validate_subject_discovery_grounding,
 )
 from .identifiers import (
     format_canonical_subject_id,
@@ -46,6 +54,12 @@ from .types import (
 )
 
 __all__ = [
+    "ENGINEERING_SUBJECT_GROUNDING_REPAIR_SCHEMA_VERSION",
+    "GROUNDING_VIOLATION_CODES",
+    "EngineeringSubjectGroundingError",
+    "EngineeringSubjectGroundingViolation",
+    "build_engineering_subject_grounding_repair_instructions",
+    "validate_subject_discovery_grounding",
     "CANONICAL_SUBJECT_SET_SCHEMA_VERSION",
     "ENGINEERING_SUBJECT_DISCOVERY_PROMPT_SCHEMA_VERSION",
     "IDENTITY_STATUSES",

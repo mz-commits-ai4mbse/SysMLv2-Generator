@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.model_refinement_review_ui import render_model_refinement_review
+
 from app.guided_workflow_actions import SESSION_GUIDED_REVIEWER_IDENTITY
 from modules.guided_workflow.errors import GuidedWorkflowWriteError
 from modules.framework import load_framework_template
@@ -285,67 +287,13 @@ def _render_sem015_successor_selection(
     write_service,
     technical,
 ):
-    try:
-        successors = write_service.list_sem015_successor_internal_models(
-            project_id,
-            base_model.internal_engineering_model_id,
-        )
-    except GuidedWorkflowWriteError:
-        st.error("SEM-015 successor state could not be loaded safely.")
-        return base_model
-
-    if not successors:
-        st.warning(
-            "No SEM-015 quality/formulation successor is available yet. "
-            "Generation remains bound to the base Internal Model."
-        )
-        return base_model
-
-    st.markdown("**SEM-015 approved model**")
-    st.caption(
-        "Select the exact Human-authorized successor used for deterministic "
-        "SysML generation. No implicit latest selection is performed."
+    return render_model_refinement_review(
+        st,
+        project_id=project_id,
+        base_model=base_model,
+        write_service=write_service,
+        technical=technical,
     )
-
-    options = {
-        item["internal_engineering_model_id"]: item
-        for item in successors
-    }
-    selected_id = st.selectbox(
-        "Approved Internal Model",
-        options=tuple(options),
-        key=(
-            "guided_final_model.sem015_successor."
-            f"{base_model.content_fingerprint}"
-        ),
-    )
-    selected = options[selected_id]
-    model = selected["model"]
-
-    st.success(
-        f"Using {model.internal_engineering_model_id}: "
-        f"{len(model.elements)} elements · "
-        f"{len(model.relationships)} formal relationships"
-    )
-    st.caption(
-        "Human authority: "
-        f"{selected['target_model_formulation_authority_set_id']} · "
-        f"{selected['model_quality_authority_set_id']}"
-    )
-    omitted = selected[
-        "intentionally_not_materialized_relationship_ids"
-    ]
-    if omitted:
-        st.caption(
-            f"{len(omitted)} relationship(s) intentionally not "
-            "materialized; authority remains traceable."
-        )
-    if technical:
-        st.caption(
-            "SEM-015 successor fingerprint: "
-            f"{model.content_fingerprint}"
-        )
-    return model
 
 
 def _render_authority_backed_sysml(
@@ -356,6 +304,9 @@ def _render_authority_backed_sysml(
     write_service,
     technical,
 ):
+    if model is None:
+        return
+
     try:
         artifact = write_service.load_authority_backed_sysml(
             project_id,

@@ -21,7 +21,11 @@ from .contract import (
     materialize_canonical_subject_set,
     parse_subject_discovery_output,
 )
-from .errors import EngineeringSubjectIntegrityError
+from .errors import EngineeringSubjectGroundingError
+from .grounding import (
+    ENGINEERING_SUBJECT_GROUNDING_REPAIR_SCHEMA_VERSION,
+    build_engineering_subject_grounding_repair_instructions,
+)
 from .prompt import (
     ENGINEERING_SUBJECT_DISCOVERY_PROMPT_SCHEMA_VERSION,
     build_engineering_subject_discovery_instructions,
@@ -30,6 +34,7 @@ from .types import EngineeringSubjectDiscoveryResult
 
 
 ClientFactory = Callable[[str], object]
+RawResponseObserver = Callable[[str, object], None]
 
 
 class EngineeringSubjectDiscoveryAgent:
@@ -51,6 +56,7 @@ class EngineeringSubjectDiscoveryAgent:
         model: str,
         api_key: str | None = None,
         llm_progress_observer: LLMRequestProgressObserver | None = None,
+        raw_response_observer: RawResponseObserver | None = None,
     ) -> EngineeringSubjectDiscoveryResult:
         spans = build_discovery_source_spans(
             source_projection,
@@ -74,6 +80,11 @@ class EngineeringSubjectDiscoveryAgent:
             input_text=input_text,
             retry=False,
         )
+        self._observe_raw_response(
+            raw_response_observer,
+            response_kind="initial",
+            result=result,
+        )
         notify_llm_progress(
             llm_progress_observer,
             event_type="completed",
@@ -95,20 +106,12 @@ class EngineeringSubjectDiscoveryAgent:
                 source_spans=spans,
                 proposals=proposals,
             )
-        except EngineeringSubjectIntegrityError as exc:
+        except EngineeringSubjectGroundingError as exc:
             correction_instructions = (
-                instructions
-                + "\n\nCORRECTION RETRY:\n"
-                + "The previous JSON contained at least one mention whose "
-                + "TOK-* range did not belong to the claimed SPAN-* or "
-                + "otherwise violated system-owned source grounding. Return "
-                + "the COMPLETE JSON again. Preserve the discovered subject "
-                + "population unless grounding requires a correction. "
-                + "Re-check every source_span_id and TOK-* range against the "
-                + "visible TOKEN MAP before returning. Do not invent token "
-                + "IDs or move a mention to another span without source "
-                + "support.\n"
-                + f"Validation error: {exc}"
+                build_engineering_subject_grounding_repair_instructions(
+                    base_instructions=instructions,
+                    error=exc,
+                )
             )
             correction_input = (
                 input_text
@@ -131,6 +134,11 @@ class EngineeringSubjectDiscoveryAgent:
                 instructions=correction_instructions,
                 input_text=correction_input,
                 retry=True,
+            )
+            self._observe_raw_response(
+                raw_response_observer,
+                response_kind="grounding_correction",
+                result=result,
             )
             notify_llm_progress(
                 llm_progress_observer,
@@ -161,6 +169,19 @@ class EngineeringSubjectDiscoveryAgent:
             response_id=result.response_id,
         )
 
+    @staticmethod
+    def _observe_raw_response(
+        observer: RawResponseObserver | None,
+        *,
+        response_kind: str,
+        result,
+    ) -> None:
+        """Expose one completed raw response before semantic validation."""
+
+        if observer is None:
+            return
+        observer(response_kind, result)
+
     def _generate(
         self,
         *,
@@ -185,6 +206,15 @@ class EngineeringSubjectDiscoveryAgent:
                         ENGINEERING_SUBJECT_DISCOVERY_PROMPT_SCHEMA_VERSION
                     ),
                     "grounding_correction_retry": retry,
+                    **(
+                        {
+                            "grounding_repair_schema_version": (
+                                ENGINEERING_SUBJECT_GROUNDING_REPAIR_SCHEMA_VERSION
+                            )
+                        }
+                        if retry
+                        else {}
+                    ),
                 },
             )
         )

@@ -99,7 +99,28 @@ An accepted Subject requires an explicit Human-reviewed:
 This remains true even when all Personas agree. High confidence assists the
 Reviewer; it never substitutes Human Engineering Approval.
 
-`accepted_with_modification` requires a rationale.
+Canonical Subject Review is proposal-free. Persona interpretations are
+immutable evidence and are never selected as a "winning" Agent proposal.
+
+For each structured field, deterministic consensus governs only the proposed
+default:
+
+- `unanimous` and `majority` expose the deterministic `selected_value` as the
+  preselected Human Review value;
+- `divergent` and `indeterminate` expose no selected value and require an
+  explicit Human field selection.
+
+Consensus never creates approval authority. An unchanged consensus-backed
+Subject still requires an explicit Human Accept action.
+
+The existing ReviewWorkspace compatibility representation persists an accepted
+proposal-free canonical Subject as `accepted_with_modification` with
+`selected_proposal_keys=()`. When the Human accepts all displayed canonical
+values unchanged, this persistence label does not imply that engineering
+content was semantically modified.
+
+A rationale is required when the Human changes accepted engineering content or
+classification from the displayed canonical proposal.
 
 `rejected` requires a rationale and must not carry approved engineering fields.
 

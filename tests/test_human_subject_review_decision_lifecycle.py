@@ -154,7 +154,7 @@ def _card():
     }
 
 
-def test_plain_accept_is_accepted_as_generated():
+def test_plain_accept_uses_proposal_free_canonical_acceptance():
     item = _item()
     request = build_subject_review_item_request(
         item,
@@ -165,7 +165,9 @@ def test_plain_accept_is_accepted_as_generated():
         epistemic_class=item.current_content.epistemic_status,
         rationale=None,
     )
-    assert request.review_outcome == "accepted_as_generated"
+    assert request.review_outcome == "accepted_with_modification"
+    assert request.selected_proposal_keys == ()
+    assert request.updated_content == item.current_content
 
 
 def test_changed_accept_requires_rationale_and_records_modification():

@@ -152,41 +152,36 @@ Relationship hints may point only to canonical Subjects in the same fixed
 Subject population. They are advisory pre-model semantics and must not create
 new Subject identity, ontology mappings or SysML structure.
 
-## Bounded Required-Classification Repair
+## Controlled Classification Alignment
 
-Information Type, Statement Modality and Epistemic Class are required
-classification fields. Unlike optional relationship hints, an invalid value
-cannot simply be discarded.
+Information Type, Statement Modality and Epistemic Class remain controlled
+internal dimensions. An LLM-produced classification expression is treated as a
+semantic proposal, not as an authoritative enum value.
 
-If a Persona returns an out-of-vocabulary value for one of these required
-fields, the system may perform exactly one bounded repair call for that Persona
-run.
+Before strict parsing, any out-of-vocabulary classification expression is
+handled by the controlled alignment defined in ADR-030. Already valid values
+pass unchanged; pure lexical normalization may be deterministic; semantic
+translation uses one bounded contextual alignment call.
 
-The system first identifies the invalid fields deterministically. The repair
-call may return replacement values only for those exact
-`(canonical_subject_id, field_name)` pairs and only from the already accepted
-ADR-011 vocabulary.
+The alignment may modify only the identified classification field. It may not
+change Subject identity/population, interpreted statements, rationales,
+uncertainties, missing evidence, relationships or already-valid fields.
 
-The original output remains immutable for every valid field. The system applies
-the returned replacements deterministically and then re-runs the complete
-strict parser.
+For `information_type`, ambiguous/unmapped semantics and mapper-contract
+failure normalize to the existing neutral value `unclassified`. This withholds
+unsupported specificity rather than inventing semantics. No source-specific
+alias mapping is permitted.
 
-The repair may not:
+The original Persona output remains immutable and every non-identity alignment
+is retained with raw value, normalized value, mapping status, rationale,
+mapper-response identity when applicable and deterministic fingerprint.
 
-- change Subject identity or population;
-- change interpreted statements, rationales, uncertainties or missing evidence;
-- change any already valid classification field;
-- change relationships;
-- introduce a new taxonomy term.
+Strict parsing still follows alignment. Malformed JSON, population/identity
+errors, malformed relationships and system-integrity failures remain hard
+failures.
 
-Every applied repair is retained in the Persona run as an auditable
-`classification_repairs` record containing original and repaired values.
-
-There is no automatic alias mapping and no automatic fallback to
-`unclassified`.
-
-If the single bounded repair does not produce an exact valid repair set, the
-Persona run remains fail-closed.
+This step is not Turing Core, BFO, IOF or Project Glossary ontology mapping;
+those remain downstream under ADR-011.
 
 ## Unsupported Relationship Hints
 

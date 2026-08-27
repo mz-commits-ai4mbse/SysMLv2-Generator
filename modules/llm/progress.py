@@ -10,7 +10,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 
-LLM_PROGRESS_EVENT_VALUES = frozenset({"planned", "completed"})
+LLM_PROGRESS_EVENT_VALUES = frozenset({"planned", "completed", "phase"})
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,11 +27,18 @@ class LLMRequestProgressEvent:
             raise ValueError("Unsupported LLM progress event type.")
         if not isinstance(self.stage, str) or not self.stage.strip():
             raise ValueError("LLM progress stage must be non-empty.")
-        if (
-            isinstance(self.request_count, bool)
-            or not isinstance(self.request_count, int)
-            or self.request_count < 1
+        if isinstance(self.request_count, bool) or not isinstance(
+            self.request_count, int
         ):
+            raise ValueError(
+                "Progress request_count must be an integer."
+            )
+        if self.event_type == "phase":
+            if self.request_count != 0:
+                raise ValueError(
+                    "Processing phase events must use request_count=0."
+                )
+        elif self.request_count < 1:
             raise ValueError(
                 "LLM progress request_count must be a positive integer."
             )
@@ -64,6 +71,27 @@ def notify_llm_progress(
             event_type=event_type,
             stage=stage,
             request_count=request_count,
+            detail=detail,
+        )
+    )
+
+
+
+def notify_processing_phase(
+    observer: LLMRequestProgressObserver | None,
+    *,
+    stage: str,
+    detail: str | None = None,
+) -> None:
+    """Notify one non-counting post-LLM runtime phase."""
+
+    if observer is None:
+        return
+    observer(
+        LLMRequestProgressEvent(
+            event_type="phase",
+            stage=stage,
+            request_count=0,
             detail=detail,
         )
     )

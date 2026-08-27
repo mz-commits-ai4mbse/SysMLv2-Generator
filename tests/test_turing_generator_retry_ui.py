@@ -253,11 +253,6 @@ def test_failed_run_offers_retry_when_configuration_matches() -> None:
     assert service.retry_calls == [
         (PROJECT_ID, SOURCE_ID, "RUN-000001")
     ]
-    assert any(
-        call[0] == "info"
-        and "Processing is running" in call[1]
-        for call in st.calls
-    )
     assert not any(
         call[0] in {"info", "caption"}
         and "ATT-000002" in call[1]

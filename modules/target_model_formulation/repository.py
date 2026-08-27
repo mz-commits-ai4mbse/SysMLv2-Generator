@@ -113,11 +113,17 @@ class TargetModelFormulationAuthorityRepository:
                 == source_internal_engineering_model_fingerprint
             )
         )
-        if len(matches) > 1:
-            raise TargetModelFormulationError(
-                "Multiple Target-Model Formulation reviews bind the same source Internal Model."
-            )
-        return None if not matches else matches[0]
+        if not matches:
+            return None
+
+        # Immutable review revisions are permitted for the same exact
+        # source Internal Model. Review IDs are allocated monotonically,
+        # so the highest ID is the current review while all prior reviews
+        # remain preserved as Human-authority history.
+        return max(
+            matches,
+            key=lambda review: review.review_id,
+        )
 
     def allocate_decision_id(self, project_id: str) -> str:
         numbers = [

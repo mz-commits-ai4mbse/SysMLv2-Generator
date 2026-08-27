@@ -150,56 +150,154 @@ def _configuration_for_retry_fingerprint(
 
 
 class _LLMRequestProgressDisplay:
-    """Render truthful request-count feedback for one synchronous action."""
+    """Render one mutable Processing status line for a synchronous action."""
 
-    def __init__(self, st: Any) -> None:
+    def __init__(
+        self,
+        st: Any,
+        *,
+        retry_mode: bool | None = None,
+        technical: bool = False,
+    ) -> None:
         self._st = st
+        self._retry_mode = retry_mode
+        self._technical = technical
         self.planned = 0
         self.completed = 0
         self.stage: str | None = None
+        self.processing_run_id: str | None = None
+        self.attempt_id: str | None = None
         self._status = None
+        self._fallback_placeholder = None
+        self._finished = False
+
+    def start(self, snapshot: Any) -> None:
+        if self._finished:
+            return
+
+        run_id = getattr(snapshot, "processing_run_id", None)
+        attempt_id = getattr(snapshot, "attempt_id", None)
+
+        self.processing_run_id = (
+            run_id if isinstance(run_id, str) else None
+        )
+        self.attempt_id = (
+            attempt_id if isinstance(attempt_id, str) else None
+        )
+        self._render()
 
     def observe(self, event: LLMRequestProgressEvent) -> None:
+        if self._finished:
+            return
+
         if event.event_type == "planned":
             self.planned += event.request_count
         elif event.event_type == "completed":
             self.completed += event.request_count
+
         self.stage = event.stage
-        self._render(state="running")
+        self._render()
 
     def finish(self, *, success: bool) -> None:
-        if self.planned == 0 and self.completed == 0:
-            return
-        self._render(state="complete" if success else "error")
+        del success
+        self._finished = True
 
-    def _render(self, *, state: str) -> None:
-        denominator = str(self.planned) if self.planned else "?"
-        label = (
-            f"LLM requests completed: {self.completed} / "
-            f"{denominator}"
+        for target in (self._status, self._fallback_placeholder):
+            if target is None:
+                continue
+            empty = getattr(target, "empty", None)
+            if callable(empty):
+                empty()
+
+    def _render(self) -> None:
+        label = self._label()
+
+        if self._status is None:
+            status_factory = getattr(self._st, "status", None)
+            if callable(status_factory):
+                kwargs = {
+                    "expanded": False,
+                    "state": "running",
+                }
+                if _accepts_keyword_argument(status_factory, "type"):
+                    kwargs["type"] = "compact"
+                self._status = status_factory(label, **kwargs)
+                return
+
+        update = getattr(self._status, "update", None)
+        if callable(update):
+            update(
+                label=label,
+                state="running",
+                expanded=False,
+            )
+            return
+
+        if self._fallback_placeholder is None:
+            empty_factory = getattr(self._st, "empty", None)
+            if callable(empty_factory):
+                self._fallback_placeholder = empty_factory()
+
+        target = (
+            self._fallback_placeholder
+            if self._fallback_placeholder is not None
+            else self._st
         )
+        info = getattr(target, "info", None)
+        if callable(info):
+            info(label)
+
+    def _label(self) -> str:
+        if self._retry_mode is None:
+            if self.stage == "compilation":
+                return (
+                    "Compilation · validating and assembling "
+                    "processing artifacts…"
+                )
+
+            denominator = str(self.planned) if self.planned else "?"
+            label = (
+                f"LLM processing · {self.completed} / "
+                f"{denominator}"
+            )
+            stage_label = _LLM_PROGRESS_STAGE_LABELS.get(
+                self.stage,
+                self.stage,
+            )
+            if stage_label:
+                label += f" · {stage_label}"
+            return label
+
+        parts = [
+            "Retrying processing"
+            if self._retry_mode
+            else "Processing"
+        ]
+
+        if self._technical:
+            if self.processing_run_id is not None:
+                parts.append(self.processing_run_id)
+            if self.attempt_id is not None:
+                parts.append(self.attempt_id)
+
+        if self.stage == "compilation":
+            parts.append("Compilation")
+            return " · ".join(parts)
+
         stage_label = _LLM_PROGRESS_STAGE_LABELS.get(
             self.stage,
             self.stage,
         )
         if stage_label:
-            label += f" · {stage_label}"
+            parts.append(stage_label)
 
-        if self._status is None:
-            status_factory = getattr(self._st, "status", None)
-            if callable(status_factory):
-                self._status = status_factory(
-                    label,
-                    expanded=False,
-                    state=state,
-                )
-                return
+        if self.planned or self.completed:
+            denominator = str(self.planned) if self.planned else "?"
+            parts.append(
+                f"LLM {self.completed} / {denominator}"
+            )
 
-        update = getattr(self._status, "update", None)
-        if callable(update):
-            update(label=label, state=state, expanded=False)
-        else:
-            self._st.info(label)
+        return " · ".join(parts)
 
 
 _LLM_PROGRESS_STAGE_LABELS = {
@@ -207,8 +305,10 @@ _LLM_PROGRESS_STAGE_LABELS = {
     "evidence_interpretation": "Evidence interpretation",
     "subject_discovery": "Subject discovery",
     "subject_interpretation": "Subject interpretation",
+    "classification_alignment": "Classification alignment",
+    "semantic_consistency_alignment": "Semantic consistency alignment",
+    "compilation": "Compilation",
 }
-
 
 def _accepts_keyword_argument(function: Any, name: str) -> bool:
     try:
@@ -1023,60 +1123,46 @@ def render_project_ingestion_execution(
                 "project_id": navigation.project_id,
                 "source_id": selected_source.source_id,
             }
-            st.info(
-                "Retrying processing…"
-                if retry_mode
-                else "Starting processing…"
+            request_progress = _LLMRequestProgressDisplay(
+                st,
+                retry_mode=retry_mode,
+                technical=technical,
             )
 
             def render_started(snapshot) -> None:
-                if technical:
-                    st.info(
-                        "Processing is running · "
-                        f"{snapshot.processing_run_id} · "
-                        f"{snapshot.attempt_id or 'attempt unavailable'} · "
-                        f"{snapshot.processing_stage or 'stage unavailable'}."
+                request_progress.start(snapshot)
+
+            try:
+                if retry_mode:
+                    result = _invoke_with_optional_llm_progress(
+                        ingestion_service.retry_registered_source,
+                        navigation.project_id,
+                        selected_source.source_id,
+                        execution_state.processing_run_id,
+                        configuration=configuration,
+                        api_key=api_key,
+                        execution_observer=render_started,
+                        llm_progress_observer=request_progress.observe,
+                    )
+                elif supports_state:
+                    result = _invoke_with_optional_llm_progress(
+                        ingestion_service.execute_registered_source,
+                        navigation.project_id,
+                        selected_source.source_id,
+                        configuration=configuration,
+                        api_key=api_key,
+                        execution_observer=render_started,
+                        llm_progress_observer=request_progress.observe,
                     )
                 else:
-                    st.info("Processing is running…")
-
-            request_progress = _LLMRequestProgressDisplay(st)
-            activity = _processing_activity_context(
-                st,
-                retry_mode=retry_mode,
-            )
-            try:
-                with activity:
-                    if retry_mode:
-                        result = _invoke_with_optional_llm_progress(
-                            ingestion_service.retry_registered_source,
-                            navigation.project_id,
-                            selected_source.source_id,
-                            execution_state.processing_run_id,
-                            configuration=configuration,
-                            api_key=api_key,
-                            execution_observer=render_started,
-                            llm_progress_observer=request_progress.observe,
-                        )
-                    elif supports_state:
-                        result = _invoke_with_optional_llm_progress(
-                            ingestion_service.execute_registered_source,
-                            navigation.project_id,
-                            selected_source.source_id,
-                            configuration=configuration,
-                            api_key=api_key,
-                            execution_observer=render_started,
-                            llm_progress_observer=request_progress.observe,
-                        )
-                    else:
-                        result = _invoke_with_optional_llm_progress(
-                            ingestion_service.execute_registered_source,
-                            navigation.project_id,
-                            selected_source.source_id,
-                            configuration=configuration,
-                            api_key=api_key,
-                            llm_progress_observer=request_progress.observe,
-                        )
+                    result = _invoke_with_optional_llm_progress(
+                        ingestion_service.execute_registered_source,
+                        navigation.project_id,
+                        selected_source.source_id,
+                        configuration=configuration,
+                        api_key=api_key,
+                        llm_progress_observer=request_progress.observe,
+                    )
             except ProjectIngestionConfigurationError:
                 request_progress.finish(success=False)
                 st.error(
@@ -1109,6 +1195,9 @@ def render_project_ingestion_execution(
                     "No success state was inferred."
                 )
             else:
+                request_progress.finish(
+                    success=result.run_state not in {"failed", "blocked"}
+                )
                 st.session_state[
                     SESSION_SELECTED_ENTITY_ID
                 ] = (
@@ -1302,23 +1391,6 @@ def _render_processing_state_summary(
             st.caption(f"Failure reason: {view.failure_reason}")
         if view.blocked_reason:
             st.caption(f"Blocked reason: {view.blocked_reason}")
-
-
-def _processing_activity_context(
-    st: Any,
-    *,
-    retry_mode: bool,
-):
-    # Keep visible activity feedback around the synchronous Processing call.
-    # A spinner is intentionally used instead of an invented percentage.
-    spinner = getattr(st, "spinner", None)
-    if callable(spinner):
-        return spinner(
-            "Retrying source processing…"
-            if retry_mode
-            else "Processing source…"
-        )
-    return nullcontext()
 
 
 def _processing_options_context(

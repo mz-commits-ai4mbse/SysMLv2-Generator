@@ -257,3 +257,64 @@ def test_tn003_without_validated_fixture_still_fails_closed():
         stakeholder.candidates[0].relevance_outcome
         == "unresolved_human_review"
     )
+
+
+def test_dependency_is_reopened_when_formulated_endpoint_becomes_generation_incompatible():
+    snapshot = _snapshot()
+
+    # Generic endpoint configuration:
+    # stakeholder -> dependency -> logical component.
+    stakeholder = snapshot.elements[0]
+    stakeholder.name = "remote role"
+    stakeholder.model_area = "stakeholder.stakeholders"
+
+    target = snapshot.elements[1]
+    target.name = "client application"
+    target.element_type = "logical_component"
+    target.model_area = "subsystem.logical"
+
+    # The second stakeholder is also part of the bounded BLK-006 population
+    # and therefore needs the data required by the formal TN_003 proposal.
+    snapshot.elements[2].name = "other remote role"
+    snapshot.elements[2].model_area = "stakeholder.stakeholders"
+
+    dependency = snapshot.relationships[1]
+    dependency.relationship_family = "dependency"
+    dependency.directionality = "source_to_target"
+    dependency.source_internal_model_element_id = "IME-000001"
+    dependency.target_internal_model_element_id = "IME-000002"
+
+    assessment = replace(
+        _assessment(),
+        tn003_allows_stakeholder=True,
+        stakeholder_fixture_validated=True,
+        stakeholder_fixture_id="SFX-C6C3-001",
+        stakeholder_fixture_locator=(
+            "context/sysml/fixtures/c6c3/"
+            "stakeholder_role_part_definition.sysml"
+        ),
+        stakeholder_fixture_status="passed_with_nonblocking_warning",
+    )
+
+    review = build_blk006_formulation_review(
+        snapshot=snapshot,
+        assessment=assessment,
+        target_model_profile=_profile(),
+        review_id="TFR-000001",
+        created_at="2026-08-25T13:45:00Z",
+    )
+
+    reopened = tuple(
+        item
+        for item in review.items
+        if (
+            item.subject_kind == "relationship"
+            and item.authority_subject_id == "IMR-000002"
+        )
+    )
+
+    assert len(reopened) == 1
+    assert (
+        reopened[0].candidates[0].relevance_outcome
+        == "intentionally_not_materialized"
+    )

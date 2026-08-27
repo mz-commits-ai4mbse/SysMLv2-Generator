@@ -9,6 +9,7 @@ from pathlib import Path
 
 from modules.internal_model.authority_backed import AuthorityBackedInternalModelRepository
 from modules.model_assembly.final_review import ModelAssemblyFinalReviewRepository
+from modules.sysml_generation.generation_profile import load_generation_profile
 
 from .errors import TargetModelFormulationError
 from .evidence import assess_local_references
@@ -60,6 +61,7 @@ class TargetModelFormulationLiveReviewService:
         *,
         project_id: str,
         internal_engineering_model_id: str,
+        force_revision: bool = False,
     ):
         snapshot = self.internal_model_repository.load(
             project_id,
@@ -96,7 +98,7 @@ class TargetModelFormulationLiveReviewService:
             internal_engineering_model_id,
             snapshot.content_fingerprint,
         )
-        if existing is not None:
+        if existing is not None and not force_revision:
             self._validate_existing_review_context(
                 existing,
                 snapshot=snapshot,
@@ -107,10 +109,24 @@ class TargetModelFormulationLiveReviewService:
             )
             return existing
 
+        generation_profile_path = (
+            self.repo_root
+            / "context/sysml/turing_sysml_v2_generation_profile.json"
+        )
+        try:
+            generation_profile = load_generation_profile(
+                generation_profile_path
+            )
+        except Exception as exc:
+            raise TargetModelFormulationError(
+                "SysML Generation Profile could not be loaded."
+            ) from exc
+
         review = build_blk006_formulation_review(
             snapshot=snapshot,
             assessment=assessment,
             target_model_profile=profile,
+            generation_profile=generation_profile,
             review_id=self.authority_repository.allocate_review_id(project_id),
             created_at=self._now(),
         )

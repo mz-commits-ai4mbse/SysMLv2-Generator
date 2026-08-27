@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+from app.presentation_preferences import SESSION_SHOW_TECHNICAL_DETAILS
 from app.turing_generator_ui import render_project_ingestion_execution
 from modules.llm.progress import LLMRequestProgressEvent
 from modules.project_ingestion import (
@@ -19,6 +20,9 @@ class _StatusContext:
 
     def update(self, *, label, state, expanded=False):
         self._st.events.append(("status_update", label, state))
+
+    def empty(self):
+        self._st.events.append(("status_empty",))
 
 
 class _SpinnerContext:
@@ -47,6 +51,10 @@ class _ActionPlaceholder:
     def empty(self):
         self.cleared = True
         self._st.events.append(("action_cleared", None))
+
+    def info(self, label):
+        self._st.events.append(("placeholder_info", label))
+        return None
 
 
 class _FakeStreamlit:
@@ -292,6 +300,7 @@ def test_recorded_running_state_renders_no_ingestion_write_action():
 
 def test_retry_action_keeps_visible_activity_indicator_during_execution():
     st = _FakeStreamlit()
+    st.session_state[SESSION_SHOW_TECHNICAL_DETAILS] = True
     service = _RetryService(st)
 
     render_project_ingestion_execution(
@@ -302,13 +311,19 @@ def test_retry_action_keeps_visible_activity_indicator_during_execution():
 
     event_names = [event[0] for event in st.events]
 
-    assert "spinner_enter" in event_names
-    assert "spinner_exit" in event_names
-    assert (
-        event_names.index("spinner_enter")
-        < event_names.index("retry_call")
-        < event_names.index("spinner_exit")
-    )
+    assert "spinner_enter" not in event_names
+    assert "spinner_exit" not in event_names
+    assert "status_create" in event_names
+    assert "status_empty" in event_names
+
+    labels = [
+        event[1]
+        for event in st.events
+        if event[0] in {"status_create", "status_update"}
+    ]
+    assert any("Retrying processing" in label for label in labels)
+    assert any("RUN-000001" in label for label in labels)
+    assert any("ATT-000003" in label for label in labels)
 
 
 def test_retry_action_reports_completed_llm_request_count():
@@ -327,6 +342,15 @@ def test_retry_action_reports_completed_llm_request_count():
         if event[0] in {"status_create", "status_update"}
     ]
 
-    assert any("LLM requests completed: 0 / 2" in label for label in labels)
-    assert any("LLM requests completed: 1 / 2" in label for label in labels)
-    assert any("LLM requests completed: 2 / 2" in label for label in labels)
+    assert any("LLM 0 / 2" in label for label in labels)
+    assert any("LLM 1 / 2" in label for label in labels)
+    assert any("LLM 2 / 2" in label for label in labels)
+    assert any("Evidence detection" in label for label in labels)
+    assert not any(
+        event[0] == "placeholder_info"
+        for event in st.events
+    )
+    assert any(
+        event[0] == "status_empty"
+        for event in st.events
+    )

@@ -1,5 +1,490 @@
 # Roadmap
 
+<!-- BEGIN THESIS COMPLETION ROADMAP 2026-08-27 -->
+## Remaining thesis roadmap — accepted 2026-08-27
+
+The Project `000116` real Gate-3 single-source validation establishes the
+validated prototype baseline.
+
+Remaining work is thesis-driven rather than backlog-driven.
+
+Governing rule:
+
+> Further implementation after Gate 3 is justified only where it is required
+> to substantiate an open thesis claim, close a thesis-critical validation gap,
+> or establish the final prototype baseline. Open implementation findings are
+> not automatically remaining thesis scope.
+
+### Roadmap overview
+
+```text
+R1  Professor presentation                         NEXT
+R2  Safe Demo / Kochshow                           PLANNED NEXT
+R3  Gate-3 thesis evaluation record                PLANNED
+R4  Thesis Scope Gate                              PLANNED
+R5  BLK-002 thesis decision                        GATED BY R4
+R6  Final targeted validation                      GATED BY R4/R5
+R7  CATIA / architecture synchronization           AFTER LAST TECH CHANGE
+R8  Prototype implementation freeze                AFTER R6/R7
+R9  Thesis Results / Discussion / Limitations      AFTER EVIDENCE FREEZE
+R10 Final claim / traceability consistency audit   FINAL QUALITY GATE
+R11 Thesis completion / submission                 FINAL
+```
+
+---
+
+### R1 — Professor presentation
+
+Status:
+
+`NEXT`
+
+Primary basis:
+
+`collaboration/presentations/interim_presentation_plan.md`
+
+Purpose:
+
+- communicate research objective;
+- show literature-derived architecture;
+- show evolution from conceptual process to governed executable system;
+- show implemented architecture;
+- show empirical verification;
+- show findings exposed by the real system;
+- show bounded corrections;
+- distinguish verified capabilities from open limitations.
+
+Required status vocabulary:
+
+```text
+IMPLEMENTED + VERIFIED
+IMPLEMENTED / EFFECTIVENESS OPEN
+ARCHITECTURE ONLY
+PLANNED NEXT
+BLOCKED
+```
+
+The presentation is not a new implementation phase.
+
+---
+
+### R2 — Safe Demo / Kochshow
+
+Status:
+
+`PLANNED NEXT`
+
+Purpose:
+
+demonstrate the real workflow without depending on multi-minute live LLM
+latency.
+
+Accepted strategy:
+
+```text
+trigger real expensive step live
+→ make real execution visible
+→ transparently switch to a genuine previously persisted pipeline state
+→ continue downstream live
+→ repeat only where another expensive boundary requires it
+```
+
+No manually fabricated Agent output may be presented as live system output.
+
+Final deterministic SysML generation and SYSIDE validation should remain live
+where technically stable.
+
+Until `BLK-002` is resolved, the demo remains single-source.
+
+---
+
+### R3 — Gate-3 thesis evaluation record
+
+Status:
+
+`PLANNED`
+
+Create a stable thesis-oriented evaluation record for Project `000116`.
+
+Minimum evidence:
+
+- Project and Source identity;
+- Processing Run / Attempt;
+- Human Engineering Review;
+- Approved Input;
+- Model Placement;
+- Model Assembly;
+- base IEM;
+- Target-Model Formulation;
+- Human Model Quality Review;
+- successor IEM;
+- SysML generation;
+- external SYSIDE validation;
+- Final Model Review;
+- Human publication approval;
+- Published Output;
+- exact fingerprints / bindings;
+- encountered findings;
+- bounded corrective actions;
+- final regression evidence;
+- explicit claim boundaries.
+
+This record freezes the main empirical evidence before further scope decisions.
+
+---
+
+### R4 — Thesis Scope Gate
+
+Status:
+
+`PLANNED`
+
+Purpose:
+
+decide what technical work is still necessary for the thesis.
+
+Every remaining BLK / SEM / OBS item shall be classified as:
+
+```text
+THESIS-CRITICAL
+VALIDATION-USEFUL
+LIMITATION / FUTURE WORK
+PRODUCT / UX / TECHNICAL DEBT
+```
+
+Selection criterion:
+
+```text
+Does resolving this item materially change or substantiate a thesis claim?
+```
+
+If the answer is no, implementation is not automatically justified.
+
+This gate prevents scope creep.
+
+---
+
+### R5 — Explicit BLK-002 decision
+
+Status:
+
+`GATED BY R4`
+
+Finding:
+
+`BLK-002 — Multi-Source Processing Artifact Identity / provenance blocker`
+
+Two legitimate outcomes exist.
+
+#### R5-A — Multi-Source required by thesis claim
+
+If the research question or final claim requires real Multi-Source capability:
+
+```text
+BLK-002 architecture correction
+→ implementation
+→ focused verification
+→ complete regression
+→ real Multi-Source Processing run
+→ Human Review
+→ downstream model path
+→ SysML generation
+→ SYSIDE validation
+→ documented acceptance
+```
+
+Only this route permits a true Multi-Source empirical claim.
+
+#### R5-B — Multi-Source outside bounded thesis proof
+
+If the bounded research claim can be supported by the validated single-source
+prototype:
+
+```text
+retain BLK-002
+→ document as explicit limitation
+→ identify Future Work
+→ no further thesis implementation
+```
+
+Four independently successful Source paths remain single-source evidence and
+must not be represented as a joint Multi-Source result.
+
+---
+
+### R6 — Final targeted validation
+
+Status:
+
+`GATED BY R4/R5`
+
+Mandatory:
+
+```text
+final complete regression
+git diff --check
+real critical-path acceptance
+evidence capture
+```
+
+Optional where evidence gain justifies effort:
+
+- run the other already successfully processed Sources independently through
+  the downstream single-source path;
+- broaden empirical coverage of selected workflow behavior;
+- add only tests required by thesis-critical corrections.
+
+If BLK-002 is resolved, R6 additionally includes a true Multi-Source E2E.
+
+The purpose is evidence, not test-count maximization.
+
+---
+
+### R7 — CATIA / architecture synchronization
+
+Status:
+
+`AFTER LAST THESIS-CRITICAL TECHNICAL CHANGE`
+
+Synchronize the authoritative architecture representation with implementation
+reality.
+
+Review at least:
+
+- Source / Processing architecture;
+- Persona interpretation;
+- semantic alignment;
+- Human Engineering Review;
+- Approved Engineering Information;
+- Model Placement / Assembly;
+- Model Refinement;
+- Target-Model Formulation;
+- Human Model Quality Review;
+- successor IEM authority;
+- SysML generation;
+- validation;
+- Human release;
+- publication;
+- Multi-Source boundary or architecture, depending on R5.
+
+Required final consistency:
+
+```text
+CATIA
+↔ architecture decisions
+↔ repository implementation
+↔ thesis architecture description
+```
+
+---
+
+### R8 — Prototype implementation freeze
+
+Status:
+
+`AFTER R6/R7`
+
+Freeze sequence:
+
+```text
+final regression
+→ final manual / live acceptance
+→ final SSOT synchronization
+→ final implementation integration
+→ verify authoritative branch
+→ optional final thesis prototype tag
+→ implementation freeze
+```
+
+After this point:
+
+```text
+NO feature work
+```
+
+unless a new issue invalidates a thesis-critical claim.
+
+---
+
+### R9 — Thesis Results / Discussion / Limitations
+
+Status:
+
+`AFTER EVIDENCE FREEZE`
+
+Results shall report what was actually demonstrated.
+
+Discussion shall interpret:
+
+- Human-in-the-Loop authority;
+- deterministic vs. LLM-assisted responsibilities;
+- semantic normalization;
+- fail-closed architecture;
+- provenance / traceability;
+- observed integration failures;
+- relationship representation issue;
+- external validation behavior;
+- effectiveness and remaining uncertainty.
+
+Limitations shall explicitly cover unresolved scope such as:
+
+- Multi-Source if BLK-002 remains open;
+- bounded SysML construct coverage;
+- evaluation sample size;
+- prototype vs. production readiness;
+- unresolved UX / observability findings where relevant.
+
+---
+
+### R10 — Final claim / traceability / consistency audit
+
+Status:
+
+`FINAL QUALITY GATE`
+
+Question:
+
+```text
+Does any thesis statement claim more than the evidence demonstrates?
+```
+
+Audit specifically:
+
+```text
+research question
+↔ requirements / architecture
+↔ prototype implementation
+↔ verification evidence
+↔ Results
+↔ Discussion
+↔ Conclusion
+```
+
+Special claim checks:
+
+- Multi-Source;
+- AI autonomy;
+- Human authority;
+- semantic correctness;
+- SysML v2 support;
+- external validation;
+- generalizability;
+- production readiness.
+
+---
+
+### R11 — Thesis completion
+
+Status:
+
+`FINAL`
+
+After R10:
+
+- finalize remaining chapters;
+- finalize figures / tables;
+- bibliography / references;
+- appendices / evidence references;
+- formatting;
+- proofreading;
+- submission package.
+
+---
+
+### Roadmap principle
+
+From this point onward:
+
+```text
+research claim
+→ required evidence
+→ only necessary implementation
+→ validation
+→ freeze
+→ thesis conclusion
+```
+
+Not:
+
+```text
+open backlog
+→ implement everything
+→ hope it becomes thesis scope
+```
+<!-- END THESIS COMPLETION ROADMAP 2026-08-27 -->
+
+
+<!-- BEGIN ROADMAP UPDATE 2026-08-27 V0.3.0 GATE3 CLOSEOUT -->
+## Roadmap status after v0.3.0 Gate-3 real validation — 2026-08-27
+
+```text
+v0.3.0 Processing / semantic hardening         IMPLEMENTED + VERIFIED
+Project 000116 Lead-Source real Gate-3         COMPLETE / PASS
+Human-authorized refined successor IEM         COMPLETE / PASS
+deterministic SysML v2 generation              COMPLETE / PASS
+real SYSIDE validation                         COMPLETE / PASS
+Final Model Review                             COMPLETE / PASS
+Human publication approval                     COMPLETE / PASS
+immutable Published Output                     COMPLETE / PASS
+
+WP-12 true Multi-Source acceptance             OPEN — BLK-002
+Professor presentation                         NEXT
+Safe Demo / Kochshow preparation               AFTER PRESENTATION
+```
+
+Current validation baseline:
+
+```text
+Project:      000116
+Source:       SRC-000002
+Successor:    IEM-000003
+Review:       FMR-000001 / FRV-000002
+Release:      FRD-000001
+Publication:  OUT-000001
+Regression:   6100 passed in 17.87s
+SYSIDE:       PASS / exit 0 / diagnostics 0
+```
+
+The v0.3.0 real single-source critical path is therefore empirically validated.
+
+The next execution sequence is:
+
+```text
+Gate-3 closeout / SSOT synchronization
+→ professor presentation from existing presentation plan
+→ Safe Demo preparation using persisted genuine pipeline states
+→ later BLK / SEM / ODS continuation according to accepted priority
+```
+
+Presentation basis:
+
+`collaboration/presentations/interim_presentation_plan.md`
+
+Safe Demo principle:
+
+```text
+real expensive operation is visibly triggered
+→ transparent switch to a genuine previously persisted state
+→ downstream workflow continues live
+```
+
+The demo shall not claim Multi-Source capability while `BLK-002` remains open.
+
+Still open / explicitly not closed by Gate 3:
+
+- `BLK-002` — Multi-Source identity / provenance
+- `SEM-011` — broader SysML target construct coverage
+- `SEM-013` — placement ambiguity / Persona variance
+- `SEM-014` — broader Human relationship representation selection
+- `SEM-015-F01` — broader dependency-aware selective regeneration
+- `OBS-032` — review-gate naming ambiguity
+- `OBS-DASH-001` — dashboard authority-state representation
+
+`OBS-033` is PASS / closed for the validated v0.3.0 scope after successful
+live retest and publication.
+<!-- END ROADMAP UPDATE 2026-08-27 V0.3.0 GATE3 CLOSEOUT -->
+
+
 <!-- BEGIN SSOT UPDATE 2026-08-25 WP12 GOLDEN E2E CLOSEOUT -->
 ## Execution status after WP-12 Golden E2E — 2026-08-25
 

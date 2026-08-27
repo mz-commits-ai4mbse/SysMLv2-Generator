@@ -1,5 +1,303 @@
 # Current Project State
 
+<!-- BEGIN THESIS COMPLETION STRATEGY 2026-08-27 -->
+## Thesis completion strategy — accepted 2026-08-27
+
+The successful Project `000116` Gate-3 run changes the role of further
+implementation work.
+
+The validated single-source vertical prototype is now the empirical baseline
+for the remainder of the thesis.
+
+The governing principle for all remaining development is:
+
+> Further implementation after Gate 3 is justified only where it is required
+> to substantiate an open thesis claim, close a thesis-critical validation gap,
+> or establish the final prototype baseline. Open implementation findings are
+> not automatically remaining thesis scope.
+
+This explicitly prevents the remaining thesis work from becoming an
+open-ended backlog-completion exercise.
+
+Current thesis-oriented execution sequence:
+
+```text
+1. Professor presentation
+2. Safe Demo / Kochshow preparation
+3. Gate-3 thesis evaluation record
+4. Thesis Scope Gate
+5. Explicit BLK-002 decision
+6. Final targeted validation
+7. CATIA / architecture synchronization
+8. Prototype implementation freeze and final baseline
+9. Thesis Results / Discussion / Limitations finalization
+10. Final claim / traceability / consistency audit
+11. Thesis completion / submission
+```
+
+### Immediate next work
+
+```text
+NOW:
+Professor presentation
+
+THEN:
+Safe Demo preparation
+
+THEN:
+freeze and document Gate-3 empirical evidence
+```
+
+The presentation and Safe Demo are not additional prototype feature phases.
+They communicate and demonstrate the currently validated system.
+
+### Thesis Scope Gate
+
+After the Gate-3 evaluation record has been prepared, all remaining open
+technical findings shall be classified explicitly as one of:
+
+```text
+THESIS-CRITICAL
+→ must be resolved and revalidated
+
+VALIDATION-USEFUL
+→ perform only where evidence gain justifies effort
+
+LIMITATION / FUTURE WORK
+→ document explicitly; do not implement for the thesis
+
+PRODUCT / UX / TECHNICAL DEBT
+→ outside remaining thesis implementation scope unless it blocks evidence
+```
+
+Open BLK / SEM / OBS findings therefore do not automatically become work
+packages.
+
+### BLK-002 decision
+
+`BLK-002 — Multi-Source Processing Artifact Identity / provenance`
+
+requires an explicit thesis-scope decision.
+
+Decision alternatives:
+
+```text
+A. Multi-Source is required to substantiate the research claim
+   → resolve BLK-002
+   → focused verification
+   → real joint Multi-Source E2E
+   → downstream validation
+
+B. Single-Source proof is sufficient for the bounded prototype claim
+   → retain BLK-002 as explicit limitation / Future Work
+   → do not spend thesis time implementing it
+```
+
+This decision shall be based on the research question and thesis claim, not on
+the mere existence of the blocker.
+
+### Final architecture synchronization
+
+After the last thesis-critical implementation change, synchronize the
+authoritative CATIA / architecture representation with the final implemented
+prototype.
+
+The final state shall align:
+
+```text
+research architecture
+↔ CATIA engineering model
+↔ implemented prototype
+↔ thesis description
+↔ empirical claims
+```
+
+### Final implementation freeze
+
+After final validation and CATIA synchronization:
+
+```text
+complete regression
+→ manual / real acceptance where required
+→ SSOT synchronization
+→ final implementation commit / integration
+→ verified baseline
+→ implementation freeze
+```
+
+After the freeze, new feature work requires a demonstrated thesis-critical
+reason.
+
+### Thesis finalization
+
+Results, Discussion and Limitations shall be finalized against the frozen
+prototype evidence.
+
+The final thesis audit must specifically verify that claims do not exceed the
+demonstrated evidence regarding:
+
+- Multi-Source Processing;
+- degree of automation;
+- Human vs. AI authority;
+- SysML v2 construct coverage;
+- external validation;
+- generalizability;
+- production readiness.
+
+Current project principle:
+
+```text
+The thesis now drives implementation.
+Implementation no longer defines the thesis scope.
+```
+<!-- END THESIS COMPLETION STRATEGY 2026-08-27 -->
+
+
+<!-- BEGIN SSOT UPDATE 2026-08-27 V0.3.0 GATE3 CLOSEOUT -->
+## v0.3.0 Gate-3 real validation closeout — 2026-08-27
+
+This delta supersedes older current-status and next-action statements below
+where they conflict with this section.
+
+Current accepted state:
+
+```text
+Active branch: feature/processing-semantic-normalization
+Target build:  v0.3.0
+
+Project 000116 Lead-Source Gate 3: COMPLETE / PASS
+Real SYSIDE validation:              PASS
+Human publication approval:          PASS
+Immutable Published Output:          PASS
+Complete repository regression:      6100 passed
+git diff --check:                    PASS
+```
+
+Validated Lead Source:
+
+```text
+Project:              000116
+Lead Source:          SRC-000002 / 01_product_overview.md
+Base IEM:             IEM-000001
+Target authority:     TFA-000002
+Quality authority:    MQA-000002
+Approved successor:   IEM-000003
+Final Model Review:   FMR-000001
+Accepted revision:    FRV-000002
+Human release:        FRD-000001
+Published Output:     OUT-000001
+```
+
+The governed real workflow reached:
+
+```text
+Engineering Source
+→ Processing
+→ Human Engineering Review
+→ Approved Input
+→ Model Placement
+→ Model Assembly Review
+→ Base Internal Engineering Model
+→ Target-Model Formulation
+→ Human Model Quality Review
+→ Human-authorized successor IEM
+→ deterministic SysML v2 generation
+→ external SYSIDE validation
+→ Final Model Review
+→ Human release approval
+→ immutable publication
+```
+
+Final generated-artifact fingerprint:
+
+`7b5babbe048f941d9875a345e34a03e1c249061a93e03ade3c9dcfb971f4ddb1`
+
+Final validation fingerprint:
+
+`0e8998e6fe2d4b717cbee6464cdca1b060ad21601dd92389706240b38387ea67`
+
+External validation:
+
+```text
+SYSIDE Modeler CLI 0.10.3
+execution completed
+exit code 0
+diagnostics 0
+validation VALID
+publication gate PASSED
+```
+
+Final complete regression:
+
+```text
+6100 passed in 17.87s
+```
+
+### Gate-3 findings resolved during the real run
+
+The real validation exposed and corrected bounded implementation gaps rather
+than weakening downstream validation:
+
+1. incomplete Model Refinement could reach a downstream wrapper without a
+   successor IEM;
+2. SEM-015 materialization required normalization of dataclass Human-authority
+   structures;
+3. Target-Model Formulation did not re-evaluate an existing relationship after
+   an endpoint's effective SysML construct changed;
+4. immutable formulation revision support was required;
+5. the actual Guided Workflow Final Model Review lacked a safe retry path for a
+   historical incomplete SYSIDE infrastructure result;
+6. the Target-Model Formulation Generation Profile path depended unnecessarily
+   on process CWD and was hardened to explicit `repo_root` ownership.
+
+The Phase-J generation guard remained fail-closed throughout.
+
+### Relationship compatibility finding
+
+`IMR-000001` remained valid engineering information but became incompatible
+with the effective formal endpoint constructs authorized for SysML generation.
+
+The generic correction now:
+
+- re-evaluates supported relationships against effective post-formulation
+  endpoint constructs;
+- leaves compatible relationships untouched;
+- reopens only incompatible relationships for Human Target-Model authority;
+- preserves the engineering relationship when no supported formal notation is
+  currently authorized;
+- does not add Project-specific exceptions.
+
+For Project `000116`, Human authority explicitly selected
+`intentionally_not_materialized` for `IMR-000001`.
+
+### Claim boundary
+
+This is successful **single-source** end-to-end validation.
+
+It does not resolve or weaken:
+
+`BLK-002 — Multi-Source Processing Artifact Identity / provenance blocker`
+
+Four independently successful Source paths do not establish true Multi-Source
+Processing.
+
+### Current next activity
+
+```text
+Professor presentation
+→ use collaboration/presentations/interim_presentation_plan.md
+→ then prepare Safe Demo with agreed Kochshow strategy
+```
+
+Do not restart or regenerate Project `000116` merely to simplify presentation
+or demo preparation.
+
+Detailed authority:
+
+`collaboration/checkpoints/2026-08-27_gate3_validation_handover_ssot.md`
+<!-- END SSOT UPDATE 2026-08-27 V0.3.0 GATE3 CLOSEOUT -->
+
+
 <!-- BEGIN SSOT UPDATE 2026-08-25 WP12 GOLDEN E2E CLOSEOUT -->
 ## WP-12 Golden E2E Known-Good baseline — 2026-08-25
 

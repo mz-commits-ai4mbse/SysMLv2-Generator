@@ -53,7 +53,7 @@ def test_card_population_must_match_exact_authority_order():
         subject_review_cards_by_id(payload)
 
 
-def test_unchanged_explicit_accept_maps_to_plain_g6_acceptance():
+def test_unchanged_explicit_accept_maps_to_proposal_free_canonical_acceptance():
     item = _item()
     request = build_subject_review_item_request(
         item,
@@ -65,7 +65,7 @@ def test_unchanged_explicit_accept_maps_to_plain_g6_acceptance():
         rationale=None,
     )
 
-    assert request.review_outcome == "accepted_as_generated"
+    assert request.review_outcome == "accepted_with_modification"
     assert request.selected_proposal_keys == ()
     assert request.updated_content == item.current_content
 

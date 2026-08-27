@@ -206,3 +206,96 @@ def test_pipeline_preserves_fixed_population_and_existing_dimensions(
             for item in run_result.interpretations
         )
         assert len(run_result.relationships) == 1
+
+
+
+def test_out_of_vocabulary_subject_classification_is_aligned_before_parse(
+    tmp_path: Path,
+):
+    from modules.classification_alignment import ClassificationAlignmentService
+    from modules.llm.types import LLMResult
+
+    alignment_requests = []
+
+    class _AlignmentClient:
+        def generate(self, request):
+            alignment_requests.append(request)
+            payload = json.loads(request.input_text)
+            return LLMResult(
+                text=json.dumps(
+                    {
+                        "alignments": [
+                            {
+                                "item_id": item["item_id"],
+                                "field_name": item["field_name"],
+                                "normalized_value": "constraint",
+                                "mapping_status": "mapped",
+                                "rationale": (
+                                    "The supplied statement expresses a "
+                                    "source-grounded condition or limit."
+                                ),
+                            }
+                            for item in payload["alignment_requests"]
+                        ]
+                    }
+                ),
+                provider=request.provider,
+                model=request.model,
+                response_id=f"align-{len(alignment_requests)}",
+                raw_status="completed",
+            )
+
+    def runner(**kwargs):
+        from modules.agents.team_config import load_team_config
+        from modules.agents.team_runner import select_team_members
+
+        team = load_team_config(
+            project_root=kwargs["project_root"],
+            team_file=kwargs["team_file"],
+        )
+        members = tuple(
+            select_team_members(
+                team_config=team,
+                max_members=kwargs["max_members"],
+                include_alternative_members=False,
+            )
+        )
+        payload = json.loads(_output())
+        payload["interpretations"][0]["information_type"] = "condition"
+        output_text = json.dumps(payload)
+        return tuple(
+            _RawResult(
+                agent_id=member.agent_id,
+                run_index=1,
+                output_text=output_text,
+            )
+            for member in members
+        )
+
+    result = SubjectInterpretationPipeline(
+        project_root=Path("."),
+        team_runner=runner,
+        classification_alignment_service=ClassificationAlignmentService(
+            client_factory=lambda provider: _AlignmentClient()
+        ),
+    ).run(
+        source_projection=_projection(),
+        subject_set=_subject_set(),
+        execution_root=tmp_path / "subject_alignment",
+        provider="openai",
+        model="gpt-test",
+        runs_per_persona=1,
+    )
+
+    assert len(alignment_requests) == len(result.required_personas)
+    for run_result in result.run_results:
+        assert run_result.interpretations[0].information_type == "constraint"
+        assert len(run_result.classification_repairs) == 1
+        assert run_result.classification_repairs[0].original_value == "condition"
+        assert run_result.classification_repairs[0].repaired_value == "constraint"
+
+    artifacts = tuple(
+        (tmp_path / "subject_alignment" / "classification_alignment")
+        .rglob("run_01.json")
+    )
+    assert len(artifacts) == len(result.required_personas)
