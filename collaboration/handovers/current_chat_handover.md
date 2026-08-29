@@ -1,5 +1,45 @@
 # Current Chat Handover
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+## 2026-08-29 — Thesis 30-day coordination delta
+
+IMPORTANT FOR ALL NEW CHATS:
+
+The collaboration SSOT changed after the presentation / Multi-Source checkpoint.
+
+Before relying on the older handover ordering, read:
+`collaboration/checkpoints/2026-08-29_thesis_structure_30_day_completion_ssot.md`
+
+and re-read:
+- `collaboration/current_state.md`
+- `collaboration/roadmap.md`
+- `collaboration/change_log.md`
+
+The immediate technical objective remains `BLK-002`, but the project is no longer operating sequentially.
+
+```text
+Track A: BLK-002 → Multi-Source → Safe Demo
+Track B: CATIA System R/F/L + approximately 8–9 Subsystems
+Track C: Thesis restructure / evidence mapping / writing
+```
+
+Internal submission target: approximately `2026-09-28`. Formal deadline remains `2026-10-15`.
+
+CATIA decision:
+- RFLP is the method reference;
+- Physical / deployment modeling is outside the bounded software-centric thesis scope;
+- the final thesis model uses R/F/L through Subsystem level;
+- do not map Python modules one-to-one into CATIA.
+
+Thesis structure now explicitly includes Methodology with R/F/L plus Verification & Validation, System Architecture, Subsystem Architecture, implementation along the real information path, WP-12 / Gate-3 / Multi-Source evaluation, Discussion, a structured reflection on LLM-assisted prototype coding, and Conclusion / Outlook.
+
+Do not delay stable thesis writing until BLK-002 or CATIA is fully complete.
+
+Pre-update coordination commit: `e0fd283e3be3234f16e35e000fb015cc6fb7f3a8`.
+After this SSOT is committed, always use actual `HEAD` / `origin/main` as the coordination baseline.
+<!-- END SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+
+
 ## Purpose
 
 Authoritative starting point for the next Turing Generator chat after the

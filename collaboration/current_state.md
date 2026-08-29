@@ -1,5 +1,48 @@
 # Current Project State
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+## 2026-08-29 — 30-day thesis completion strategy
+
+This block supersedes older remaining-work ordering where it conflicts.
+
+Internal submission target: `approximately 2026-09-28`
+Formal deadline: `2026-10-15`
+
+Current coordination baseline before this SSOT update:
+`e0fd283e3be3234f16e35e000fb015cc6fb7f3a8`
+
+Protected implementation rollback point remains:
+`6d9a600dfa1883d5d6b57f40bfb870ebf6e4cdd6`
+
+Remaining work now runs in three parallel tracks:
+
+```text
+A  BLK-002 → genuine Multi-Source → Safe Demo
+B  CATIA System R/F/L sync → approximately 8–9 Subsystems
+C  Thesis restructure / evidence mapping / writing
+```
+
+Writing no longer waits for technical completion.
+
+CATIA decision:
+- RFLP remains the methodological reference;
+- the thesis model elaborates R/F/L only;
+- Physical / deployment architecture is outside the selected software-centric research scope;
+- approximately 8–9 thesis-relevant Subsystems shall be derived with Requirements, Functions, Logical responsibilities, interfaces / flows and allocations;
+- Python modules / classes are not modeled one-to-one.
+
+The thesis red thread follows the actual engineering-information path from heterogeneous Legacy Sources through governed processing, Human authority, model formulation, deterministic SysML v2, external validation and Human release.
+
+A dedicated chapter / major section on LLM-assisted prototype development is now planned. Verification and Validation are explicit parts of the methodology.
+
+Detailed authority:
+`collaboration/checkpoints/2026-08-29_thesis_structure_30_day_completion_ssot.md`
+
+Completion rule:
+> New implementation after BLK-002 requires a demonstrated thesis-critical reason.
+<!-- END SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
 ## 2026-08-29 — Presentation pause / Multi-Source demo transition
 

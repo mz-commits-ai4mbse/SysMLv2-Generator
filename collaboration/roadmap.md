@@ -1,5 +1,39 @@
 # Roadmap
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+## 2026-08-29 — 30-day submission roadmap
+
+Internal target: `~2026-09-28`
+Formal deadline: `2026-10-15`
+
+The roadmap is now explicitly parallel rather than sequential.
+
+```text
+Track A  BLK-002 → Multi-Source acceptance → Safe Demo → feature freeze
+Track B  System R/F/L → ~8–9 Subsystems → allocation / traceability → CATIA freeze
+Track C  Thesis architecture → writing → evaluation → discussion → LLM reflection → QA
+```
+
+Day windows:
+
+```text
+Days 1–4   BLK-002 audit / contract + thesis architecture / RQ audit
+Days 3–10  CATIA System + Subsystem completion in parallel
+Days 4–8   target window for Multi-Source acceptance / demo-state freeze
+Days 6–18  main writing block
+Days 15–22 WP-12 / Gate-3 / Multi-Source evaluation chapter
+Days 20–25 Discussion + LLM-development reflection
+Days 24–27 Introduction / Conclusion / Abstract / final synthesis
+Days 28–30 submission QA reserve
+```
+
+Day 27 is the internal content-complete target. Days 28–30 are not planned feature-development capacity.
+
+Detailed thesis structure and scope:
+`collaboration/checkpoints/2026-08-29_thesis_structure_30_day_completion_ssot.md`
+<!-- END SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
 ## 2026-08-29 — Roadmap transition to Multi-Source demo readiness
 

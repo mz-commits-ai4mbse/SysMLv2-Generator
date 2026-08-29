@@ -1,5 +1,27 @@
 # Change Log
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+## 2026-08-29 — 30-day thesis completion plan accepted
+
+Accepted decisions:
+
+- internal submission target approximately `2026-09-28`; formal deadline remains `2026-10-15`;
+- BLK-002 / Safe Demo, CATIA completion and thesis writing proceed in parallel;
+- thesis writing starts immediately;
+- RFLP remains the method reference, while the software-centric thesis model elaborates R/F/L only;
+- Physical / deployment architecture is outside the selected research scope;
+- approximately 8–9 thesis-relevant Subsystems are expected;
+- Subsystems receive meaningful Requirements / Functions / Logical allocation / interfaces / flows, but Python modules are not modeled one-to-one;
+- the submitted CATIA `.mdzip` is a detailed engineering artifact while the thesis remains independently understandable;
+- Verification and Validation are an explicit methodological strand;
+- the thesis includes a structured reflection on LLM-assisted prototype implementation and the Human–LLM engineering workflow;
+- Day 27 is the internal content-complete target and Days 28–30 are QA reserve.
+
+Canonical checkpoint:
+`collaboration/checkpoints/2026-08-29_thesis_structure_30_day_completion_ssot.md`
+<!-- END SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
+
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
 ## 2026-08-29 — Presentation checkpoint / Multi-Source demo decision
 
