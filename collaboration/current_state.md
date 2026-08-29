@@ -1,5 +1,94 @@
 # Current Project State
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+## 2026-08-29 — Presentation pause / Multi-Source demo transition
+
+This block supersedes older immediate-next-action wording where it conflicts.
+
+Accepted implementation baseline:
+
+```text
+main / origin/main: 6d9a600dfa1883d5d6b57f40bfb870ebf6e4cdd6
+version:            v0.3.0
+Project 000116 single-source Gate 3: PASS
+real SYSIDE validation:               PASS
+Human release / immutable publication: PASS
+complete regression:                  6100 passed
+```
+
+The current interim-presentation draft and CATIA presentation diagrams are good
+enough for now. Final slide polishing is intentionally deferred until closer to
+the presentation date.
+
+Latest working master deck outside the repository:
+
+`AbschlussPräse_MasterArbeit_MZ_29082026(3).pptx`
+
+The authoritative CATIA model was updated with the current presentation model
+code. The user-maintained textual snapshot is `CATIAMSOSA_TextualNotation.txt`.
+
+Current CATIA presentation artifacts:
+
+```text
+SFB_004 Engineering Data Transformation Flow
+SFB_005 Engineering Information Processing Flow
+Logical Architecture presentation view
+Three-Layer Architecture Mapping
+```
+
+### BLK-002 decision
+
+`BLK-002 — Cross-Source Processing Artifact Identity Collision` remains
+`OPEN / BLOCKING`, but is now explicitly classified:
+
+```text
+THESIS-CRITICAL
+DEMO-CRITICAL
+NEXT TECHNICAL WORK
+```
+
+True Multi-Source is required before the intended Safe Demo. The PoC shall show
+that multiple heterogeneous legacy Sources contribute to one governed
+project-level engineering result, not merely several independent single-source
+runs.
+
+Target principles:
+
+- no a-priori Source hierarchy;
+- all eligible Sources are considered;
+- exact Source / Run / Attempt / Artifact provenance is preserved;
+- semantically equivalent information may consolidate across Sources;
+- Source-unique information survives;
+- contradictions / material variance remain explicit for Human Review;
+- Human authority remains unchanged;
+- no Project-specific shortcut or automatic truth arbitration.
+
+Safety rule:
+
+```text
+clean Known-Good main
+→ dedicated disposable feature/blk-002-multi-source branch
+→ read-only audit first
+→ bounded correction
+→ focused tests
+→ complete regression
+→ real Multi-Source E2E
+→ explicit Human acceptance
+→ only then consider integration
+```
+
+Do not mutate / regenerate accepted Project `000116` merely to simplify
+Multi-Source work.
+
+Detailed authority:
+
+`collaboration/checkpoints/2026-08-29_presentation_demo_multisource_handover_ssot.md`
+
+Future learning concept retained separately:
+
+`collaboration/checkpoints/Thesis_Outlook_Adaptive_Human_Feedback_Learning.md`
+<!-- END SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+
 <!-- BEGIN THESIS COMPLETION STRATEGY 2026-08-27 -->
 ## Thesis completion strategy — accepted 2026-08-27
 

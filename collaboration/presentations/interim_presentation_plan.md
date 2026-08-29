@@ -1,5 +1,91 @@
 # Interim Presentation Planning Note
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+## Presentation working-state checkpoint — 2026-08-29
+
+Latest working master deck outside the repository:
+
+`AbschlussPräse_MasterArbeit_MZ_29082026(3).pptx`
+
+Status:
+
+`GOOD ENOUGH FOR NOW / FINAL POLISH DEFERRED`
+
+Master-deck rule:
+
+```text
+Kick-off content
++ interim content
++ later final-colloquium content
+= one persistent deck
+```
+
+For the interim, older content such as detailed title/context, literature
+findings, detailed SotA, research questions, redundant methodology slides, old
+time plan, old open-points slide and literature is intended to remain hidden or
+backup-only unless needed later.
+
+Current interim story:
+
+```text
+Title
+→ Motivation recap
+→ original Kick-off methodology
+→ three-layer realization
+→ Logical Architecture
+→ End-to-End Engineering Workflow
+→ Engineering Information Processing detail
+→ implemented workflow + Human Authority
+→ verification
+→ Engineering Learnings vs. Kick-off assumptions
+→ current prototype boundaries / operating conditions
+→ modularity outlook
+→ next steps / discussion
+```
+
+CATIA slide-pair rule:
+
+```text
+full diagram
+→ essence slide with small diagram + explicit takeaways
+```
+
+Current diagram set:
+
+1. Three-Layer Architecture Mapping
+2. Logical Architecture presentation view
+3. SFB_004 Engineering Data Transformation Flow
+4. SFB_005 Engineering Information Processing Flow
+
+Important current messages:
+
+- Knowledge Layer is cross-cutting, not one isolated subsystem.
+- Human-in-the-Loop is not one global step; Human authority accompanies multiple
+  transformation boundaries.
+- Persona interpretation is implemented processing behavior.
+- consensus / variance is review evidence, not engineering authority.
+- avoid claiming an implemented automatic attention-routing mechanism unless
+  exact UI behavior exists.
+
+Verification should distinguish software tests, orchestrated E2E behavior,
+external SYSIDE validation and explicit Human authority.
+
+Current system-boundary slide should focus on concrete prototype constraints:
+
+- Turing-RFLP target framework;
+- bounded SysML-v2 construct / notation coverage;
+- text-oriented input boundary;
+- compatible SYSIDE environment for complete external validation;
+- mandatory Human authority.
+
+BLK-002 is intentionally omitted from the current interim slide because it is
+expected to be resolved before presentation use. If not, reintroduce it honestly.
+
+Immediate priority is now:
+
+`BLK-002 → genuine Multi-Source demo readiness`
+<!-- END SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-20 -->
 ## Presentation Delta — 2026-08-20
 

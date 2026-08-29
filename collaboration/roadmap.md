@@ -1,5 +1,66 @@
 # Roadmap
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+## 2026-08-29 — Roadmap transition to Multi-Source demo readiness
+
+Current status:
+
+```text
+v0.3.0 single-source E2E                    COMPLETE / PASS
+interim-presentation working draft          SUFFICIENT / PAUSED
+CATIA presentation diagrams                 COMPLETE FOR CURRENT DRAFT
+BLK-002 true Multi-Source                    NEXT / BLOCKING
+Safe Demo                                    GATED BY MULTI-SOURCE ACCEPTANCE
+```
+
+Immediate execution order:
+
+```text
+R1  SSOT handover / new-chat transition                 NOW
+R2  verify Known-Good main and create feature branch    NEXT
+R3  read-only BLK-002 architecture + code audit         NEXT
+R4  freeze minimal Multi-Source acceptance contract     AFTER R3
+R5  bounded BLK-002 implementation                      GATED BY R4
+R6  focused verification + complete regression          AFTER R5
+R7  real joint Multi-Source E2E                         AFTER R6
+R8  downstream model / SysML / SYSIDE validation        AFTER R7
+R9  freeze genuine persisted Multi-Source demo state    AFTER R8
+R10 Safe Demo / Kochshow rehearsal                      AFTER R9
+R11 interim-presentation final polish                   CLOSER TO PRESENTATION
+R12 thesis evaluation / CATIA sync / final freeze       LATER
+```
+
+True Multi-Source means:
+
+```text
+multiple Sources
+→ project-level shared engineering meaning
+→ preserved per-Source provenance
+→ cross-source consolidation
+→ explicit conflict / variance retention
+→ Human authority
+→ one governed downstream model path
+```
+
+No Source ranking is required for the current PoC.
+
+Safe Demo strategy after BLK-002 acceptance:
+
+```text
+trigger genuine expensive Multi-Source processing visibly
+→ explain LLM latency
+→ transparently switch to a genuine persisted Multi-Source state
+→ continue Human Review and downstream workflow live
+→ keep deterministic SysML / SYSIDE live where stable
+```
+
+No fabricated Agent output may be presented as live output.
+
+BLK-002 is selected because it materially substantiates the legacy-data
+integration claim. This does not reopen the remaining backlog; all other
+findings remain thesis-scope-gated.
+<!-- END SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+
 <!-- BEGIN THESIS COMPLETION ROADMAP 2026-08-27 -->
 ## Remaining thesis roadmap — accepted 2026-08-27
 

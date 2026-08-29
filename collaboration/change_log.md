@@ -1,5 +1,43 @@
 # Change Log
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+## 2026-08-29 — Presentation checkpoint / Multi-Source demo decision
+
+The current interim-presentation draft and CATIA presentation modeling were
+reviewed and are sufficient for now. Presentation polishing is paused while the
+next technical demo-critical item is addressed.
+
+Presentation decisions retained:
+
+- one persistent master deck for Kick-off, interim and final colloquium;
+- presentation-specific show/hide rather than deleting reusable slides;
+- each large CATIA diagram is paired with one simplified essence slide;
+- Human-in-the-Loop is presented as repeated authority across transformation
+  boundaries, not one global process step;
+- Persona processing is an implemented mechanism worth showing;
+- consensus / variance remains review evidence; the stronger attention / future
+  learning narrative is reserved mainly for thesis discussion / final colloquium;
+- system-boundary slides describe concrete current technical / operating limits;
+- BLK-002 is intentionally omitted from the current interim slide because the
+  current plan is to resolve it before that deck is used. If it remains open at
+  final slide polishing, it must be restored as an explicit limitation.
+
+The authoritative CATIA model and current textual snapshot
+`CATIAMSOSA_TextualNotation.txt` were updated with the presentation model code.
+
+Future-outlook concept retained at:
+
+`collaboration/checkpoints/Thesis_Outlook_Adaptive_Human_Feedback_Learning.md`
+
+BLK-002 remains technically open, but is now explicitly selected as
+`THESIS-CRITICAL + DEMO-CRITICAL`.
+
+All BLK-002 work must start from the validated `main` baseline on the dedicated,
+disposable branch `feature/blk-002-multi-source`. No direct implementation on
+`main`, no Project-specific shortcut, and no integration before successful real
+Multi-Source acceptance plus explicit Human acceptance.
+<!-- END SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+
 ## 2026-08-27 — Thesis-driven completion roadmap accepted
 
 Following successful real Gate-3 validation of Project `000116`, the remaining

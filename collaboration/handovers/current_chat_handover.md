@@ -1,273 +1,174 @@
 # Current Chat Handover
 
-<!-- BEGIN THESIS COMPLETION HANDOVER 2026-08-27 -->
-## Accepted thesis completion roadmap
-
-The successful Project `000116` Gate-3 validation is now the empirical baseline
-for the remainder of the thesis.
-
-Do not resume general BLK / SEM / OBS implementation merely because open
-findings exist.
-
-Governing rule:
-
-> Further implementation after Gate 3 is justified only where it is required
-> to substantiate an open thesis claim, close a thesis-critical validation gap,
-> or establish the final prototype baseline. Open implementation findings are
-> not automatically remaining thesis scope.
-
-Remaining sequence:
-
-```text
-1. Professor presentation
-2. Safe Demo / Kochshow
-3. Gate-3 thesis evaluation record
-4. Thesis Scope Gate
-5. BLK-002 decision
-6. only thesis-required implementation
-7. final targeted validation
-8. CATIA / architecture synchronization
-9. implementation freeze
-10. Results / Discussion / Limitations
-11. final claim / traceability / consistency audit
-12. thesis completion
-```
-
-### Immediate continuation
-
-The next task is still:
-
-`Professor presentation`
-
-using:
-
-`collaboration/presentations/interim_presentation_plan.md`
-
-After that:
-
-`Safe Demo / Kochshow`
-
-Only after presentation and demo preparation shall the remaining technical
-scope be selected.
-
-### Thesis Scope Gate
-
-For every remaining BLK / SEM / OBS item ask:
-
-```text
-Is this required to substantiate a thesis claim?
-```
-
-Classify as:
-
-```text
-THESIS-CRITICAL
-VALIDATION-USEFUL
-LIMITATION / FUTURE WORK
-PRODUCT / UX / TECHNICAL DEBT
-```
-
-Do not implement automatically.
-
-### BLK-002
-
-`BLK-002` requires an explicit decision.
-
-If true Multi-Source capability is required by the thesis claim:
-
-```text
-resolve
-→ implement
-→ real Multi-Source E2E
-→ validate
-```
-
-Otherwise:
-
-```text
-retain as explicit limitation / Future Work
-```
-
-Do not infer Multi-Source validation from multiple independent single-source
-runs.
-
-### End-state objective
-
-The final thesis baseline shall align:
-
-```text
-research question
-↔ CATIA architecture
-↔ implementation
-↔ verification evidence
-↔ thesis Results
-↔ thesis Discussion
-↔ thesis Conclusion
-```
-
-After final validation and CATIA synchronization, freeze the prototype.
-
-The final quality question is:
-
-```text
-Does the thesis claim anywhere more than the prototype actually demonstrated?
-```
-<!-- END THESIS COMPLETION HANDOVER 2026-08-27 -->
-
-
 ## Purpose
 
-Authoritative starting point after the 2026-08-27 Turing Generator v0.3.0
-Gate-3 real validation closeout.
+Authoritative starting point for the next Turing Generator chat after the
+2026-08-29 presentation / demo / Multi-Source transition checkpoint.
 
 Repository:
 
 `mz-commits-ai4mbse/SysMLv2-Generator`
 
-Active development branch at closeout:
-
-`feature/processing-semantic-normalization`
-
 ## Authority order
 
-1. accepted CATIA SysML v2 engineering model
-2. committed repository implementation
-3. Collaboration SSOT / ADRs / checkpoints
-4. chat history / temporary artifacts
+1. accepted live CATIA SysML v2 engineering model;
+2. committed repository implementation;
+3. Collaboration SSOT / ADRs / checkpoints;
+4. current external working artifacts;
+5. chat history.
 
-GitHub remains passive for assistant-driven development unless explicitly
-approved otherwise.
+GitHub remains passive for assistant-driven work unless explicitly authorized.
 
-## Current accepted system state
+## Known-Good baseline
 
-```text
-Project 000116 Lead-Source Gate 3: PASS
-real SYSIDE validation:              PASS
-Human publication approval:          PASS
-immutable publication:               PASS
-complete repository regression:      6100 passed
-```
+Remote `main`:
 
-Validated chain:
+`6d9a600dfa1883d5d6b57f40bfb870ebf6e4cdd6`
+
+Accepted v0.3.0 baseline:
 
 ```text
-Project:              000116
-Lead Source:          SRC-000002
-Base IEM:             IEM-000001
-Target authority:     TFA-000002
-Quality authority:    MQA-000002
-Successor IEM:        IEM-000003
-Final Model Review:   FMR-000001
-Accepted revision:    FRV-000002
-Human release:        FRD-000001
-Published Output:     OUT-000001
+Project 000116 single-source Gate 3: PASS
+real SYSIDE validation:               PASS
+Human release / publication:          PASS
+complete regression:                  6100 passed
 ```
 
-SYSIDE:
+Do not mutate / regenerate Project `000116` to simplify BLK-002.
+
+## Current transition decision
+
+Presentation work is sufficient for now and paused.
+
+Next technical objective:
+
+`BLK-002 — Cross-Source Processing Artifact Identity Collision`
 
 ```text
-SYSIDE Modeler CLI 0.10.3
-completed
-exit 0
-0 diagnostics
-VALID
-publication gate PASSED
+status:   OPEN / BLOCKING
+priority: THESIS-CRITICAL + DEMO-CRITICAL
 ```
 
-The generated artifact fingerprint is:
+True Multi-Source is required before the intended Safe Demo.
 
-`7b5babbe048f941d9875a345e34a03e1c249061a93e03ade3c9dcfb971f4ddb1`
-
-The validation fingerprint is:
-
-`0e8998e6fe2d4b717cbee6464cdca1b060ad21601dd92389706240b38387ea67`
-
-## Important validation learning
-
-The real Gate-3 run exposed several bounded integration gaps.
-
-Most importantly, changing an element's effective Target-Model representation
-did not previously cause existing supported relationships to be checked again
-against Phase-J endpoint constraints.
-
-The correction is generic:
+Target:
 
 ```text
-effective endpoint construct changes
-→ evaluate supported connected relationship against Phase-J rule
-→ compatible: retain unchanged
-→ incompatible: reopen only that relationship for Human authority
-→ no authorized formal representation: preserve engineering relationship
-   but intentionally omit formal materialization
+multiple Sources in one Project
+→ source-bound evidence remains attributable
+→ project-level cross-source consolidation
+→ Human Engineering Review
+→ Approved Engineering Information
+→ existing downstream model / SysML / validation path
 ```
 
-Phase J remains fail-closed.
+Rules:
 
-No Project-specific exception was introduced.
+- no a-priori Source hierarchy;
+- all eligible Sources considered;
+- exact provenance retained;
+- equivalent information may consolidate across Sources;
+- Source-unique information survives;
+- conflict / material variance remains explicit;
+- Human Review resolves authority;
+- no automatic truth arbitration or Project-specific shortcut.
 
-The Final Model Review now also supports safe current SYSIDE revalidation without
-mutating historical incomplete validation evidence.
+## Safety contract
 
-## Claim boundary
+Do not implement BLK-002 on `main`.
 
-This is a real successful single-source end-to-end validation.
+After verifying local repository reality, create:
 
-Do not claim true Multi-Source Processing.
+`feature/blk-002-multi-source`
 
-`BLK-002` remains open.
+The branch is disposable and exists specifically to protect the Known-Good
+baseline. If work expands beyond a bounded correction or destabilizes the
+single-source system, stop and reassess before integration.
 
-## Next activity
+Never use:
 
-The next active objective is the professor presentation.
+```text
+git add .
+git add -A
+git add --all
+```
 
-Use:
+Do not broadly clean untracked files.
+
+## First task next chat
+
+READ-ONLY BLK-002 audit before implementation.
+
+Answer:
+
+1. What exact collision / ambiguity constitutes BLK-002?
+2. Which identity / provenance boundary is under-scoped?
+3. Which source-bound behavior can remain untouched?
+4. What project-level consolidation artifact / boundary is needed?
+5. How must provenance survive consolidation?
+6. Where do conflicts reach Human Review?
+7. What is the smallest generic correction?
+8. What acceptance tests prove true Multi-Source?
+
+Only then propose implementation slices.
+
+## Presentation / CATIA state
+
+Latest working master deck:
+
+`AbschlussPräse_MasterArbeit_MZ_29082026(3).pptx`
+
+Status:
+
+`GOOD ENOUGH FOR NOW / POLISH LATER`
+
+Current CATIA presentation artifacts:
+
+```text
+SFB_004 Engineering Data Transformation Flow
+SFB_005 Engineering Information Processing Flow
+Logical Architecture presentation view
+Three-Layer Architecture Mapping
+```
+
+The user updated `CATIAMSOSA_TextualNotation.txt` with the current CATIA model
+code. Do not model speculative BLK-002 architecture before implementation audit.
+
+Presentation plan:
 
 `collaboration/presentations/interim_presentation_plan.md`
 
-as the primary structure.
+## Future thesis outlook
 
-Preserve the narrative:
+Preserve:
 
-```text
-research objective
-→ literature-derived architecture
-→ executable prototype
-→ governed Human-authority workflow
-→ verification
-→ real findings exposed by verification
-→ bounded corrections
-→ remaining limitations
+`collaboration/checkpoints/Thesis_Outlook_Adaptive_Human_Feedback_Learning.md`
+
+This is future architecture / final-colloquium material, not BLK-002 scope.
+
+## Canonical checkpoint
+
+`collaboration/checkpoints/2026-08-29_presentation_demo_multisource_handover_ssot.md`
+
+## Startup commands
+
+```bash
+git log -1 --oneline
+git status --short
+git branch --show-current
+git rev-parse HEAD
+git rev-parse origin/main
 ```
 
-After the presentation is prepared:
+Expected remote baseline:
 
-```text
-prepare Safe Demo
-→ agreed Kochshow strategy
-→ real expensive action visibly triggered
-→ transparent switch to genuine persisted pipeline state
-→ continue downstream live
+`6d9a600dfa1883d5d6b57f40bfb870ebf6e4cdd6`
+
+If local state is safe:
+
+```bash
+git switch main
+git switch -c feature/blk-002-multi-source
 ```
 
-Do not create fabricated agent results for the demo.
-
-## Read first
-
-1. `collaboration/checkpoints/2026-08-27_gate3_validation_handover_ssot.md`
-2. `collaboration/current_state.md`
-3. `collaboration/roadmap.md`
-4. `collaboration/change_log.md`
-5. `collaboration/working_rules.md`
-6. `collaboration/presentations/interim_presentation_plan.md`
-7. `collaboration/checkpoints/2026-08-19_presentation_wp12_demo_ssot.md`
-
-## Exact next instruction
-
-```text
-Prepare the professor presentation from the existing interim presentation plan.
-Use the completed Project 000116 Gate-3 real validation as current empirical
-evidence. Clearly distinguish IMPLEMENTED + VERIFIED, EFFECTIVENESS OPEN,
-ARCHITECTURE ONLY, PLANNED NEXT and BLOCKED. Do not claim true Multi-Source
-Processing while BLK-002 remains open. After the presentation, prepare the Safe
-Demo using the agreed Kochshow strategy.
-```
+Then audit. Do not implement immediately.

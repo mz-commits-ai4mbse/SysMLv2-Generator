@@ -1,5 +1,46 @@
 # WP-12 Findings — Turing Generator
 
+<!-- BEGIN SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+## 2026-08-29 — BLK-002 priority / acceptance decision
+
+This block does not close or technically alter BLK-002.
+
+```text
+BLK-002 — Cross-Source Processing Artifact Identity Collision
+status: OPEN / BLOCKING
+priority: THESIS-CRITICAL + DEMO-CRITICAL
+```
+
+The PoC shall demonstrate multiple heterogeneous legacy Sources contributing to
+one project-level engineering result. Repeated independent single-source runs are
+not sufficient.
+
+Bounded acceptance semantics:
+
+- no a-priori Source authority hierarchy;
+- exact Source / Run / Attempt / Artifact provenance retained;
+- equivalent engineering meaning may consolidate across Sources while retaining
+  all contributing evidence;
+- Source-unique information remains available;
+- cross-source contradiction / material variance remains explicit;
+- Human Review resolves engineering authority;
+- no silent winner selection by Source order / type;
+- no Project-specific special case.
+
+BLK-002 may close only after technical reproduction/correction, focused tests,
+complete regression, a real joint Multi-Source Project reaching project-level
+Human Review, demonstrated cross-source consolidation with provenance, preserved
+source-unique information, explicit conflict handling, and successful continuation
+through the existing governed downstream model / SysML / validation path.
+
+Implementation must occur on the disposable branch:
+
+`feature/blk-002-multi-source`
+
+If the correction ceases to be bounded or destabilizes Known-Good single-source
+behavior, stop and reassess before integration.
+<!-- END SSOT UPDATE 2026-08-29 MULTISOURCE DEMO TRANSITION -->
+
 <!-- BEGIN WP12 GOLDEN CLOSEOUT STATUS 2026-08-25 -->
 ## 2026-08-25 — Golden E2E closeout / current finding status authority
 
