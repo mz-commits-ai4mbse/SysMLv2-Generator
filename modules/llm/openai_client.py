@@ -55,6 +55,7 @@ class OpenAILLMClient:
             response_id=getattr(response, "id", None),
             usage=get_usage_dict(response),
             raw_status=getattr(response, "status", None),
+            incomplete_reason=get_incomplete_reason(response),
         )
 
 
@@ -98,3 +99,22 @@ def get_usage_dict(response: Any) -> dict[str, Any]:
         return usage
 
     return {"usage": str(usage)}
+
+
+def get_incomplete_reason(response: Any) -> str | None:
+    """Extract a provider-reported incomplete-response reason if present."""
+
+    details = getattr(response, "incomplete_details", None)
+    if details is None:
+        return None
+
+    if isinstance(details, dict):
+        reason = details.get("reason")
+    else:
+        reason = getattr(details, "reason", None)
+
+    if reason is None:
+        return None
+
+    text = str(reason).strip()
+    return text or None

@@ -44,6 +44,7 @@ from modules.source_preparation import (
 )
 import json
 from modules.project_processing import (
+    ProjectProcessingOperations,
     ProjectProcessingRepository,
     create_processing_event,
     create_retry_event,
@@ -228,6 +229,9 @@ class ProjectBoundIngestionService:
         processing_repository: (
             ProjectProcessingRepository | None
         ) = None,
+        processing_operations: (
+            ProjectProcessingOperations | None
+        ) = None,
         publisher: ProjectIngestionPublisher | None = None,
         project_workspace: ProjectWorkspace | None = None,
         pipeline_runner: Callable[..., Any] = (
@@ -271,6 +275,15 @@ class ProjectBoundIngestionService:
             ProjectProcessingRepository(root=self.root)
             if processing_repository is None
             else processing_repository
+        )
+        self._processing_operations = (
+            ProjectProcessingOperations(
+                root=self.root,
+                repository=self._processing,
+                clock=clock,
+            )
+            if processing_operations is None
+            else processing_operations
         )
         self._publisher = (
             ProjectIngestionPublisher(
@@ -1333,6 +1346,146 @@ class ProjectBoundIngestionService:
             configuration=configuration,
             api_key=api_key,
             execution_observer=execution_observer,
+            llm_progress_observer=llm_progress_observer,
+        )
+        return self._complete_work(work)
+
+    def supersede_and_execute_registered_source(
+        self,
+        project_id: str,
+        source_id: str,
+        predecessor_run_id: str,
+        *,
+        configuration: ProjectIngestionConfiguration,
+        api_key: str | None = None,
+        execution_observer: (
+            Callable[[ProjectBoundIngestionExecutionState], None]
+            | None
+        ) = None,
+        llm_progress_observer: LLMRequestProgressObserver | None = None,
+    ) -> ProjectBoundIngestionResult:
+        """Create one material-change successor Run and execute its first Attempt."""
+
+        validated_configuration = validate_ingestion_configuration(
+            configuration
+        )
+        project_manifest = self._workspace.load_project(project_id)
+        source_manifest = self._source_registry.load_source(
+            project_id,
+            source_id,
+        )
+        predecessor = self._processing.load_run(
+            project_id,
+            predecessor_run_id,
+        )
+
+        if predecessor.manifest.source_id != source_id:
+            raise ProjectIngestionExecutionError(
+                "The predecessor Processing Run does not belong to the "
+                "selected Source."
+            )
+
+        predecessor_state = derive_processing_run_state(predecessor)
+        if predecessor_state.run_state in {"created", "running"}:
+            raise ProjectIngestionExecutionError(
+                "Successor execution cannot supersede a currently active "
+                "Processing Run."
+            )
+        if predecessor_state.run_state == "superseded":
+            raise ProjectIngestionExecutionError(
+                "The predecessor Processing Run is already superseded."
+            )
+        if predecessor_state.run_state not in {
+            "awaiting_review",
+            "failed",
+            "completed",
+        }:
+            raise ProjectIngestionExecutionError(
+                "The predecessor Processing Run is not eligible for "
+                "material-change successor execution."
+            )
+
+        processing_run_id = self._processing.next_run_id(project_id)
+        semantic_references = tuple(
+            create_semantic_reference_version(
+                reference_system_id=reference_id,
+                reference_version=reference_version,
+            )
+            for reference_id, reference_version
+            in validated_configuration.semantic_reference_versions
+        )
+        created_at = self._current_utc_timestamp()
+
+        successor_manifest = create_processing_run_manifest(
+            project_id=project_id,
+            processing_run_id=processing_run_id,
+            source_id=source_manifest.source_id,
+            source_sha256=source_manifest.sha256,
+            source_role_snapshot=source_manifest.source_role,
+            workflow_profile=workflow_profile_for_source_role(
+                source_manifest.source_role
+            ),
+            configuration_fingerprint=(
+                calculate_ingestion_configuration_fingerprint(
+                    validated_configuration
+                )
+            ),
+            framework_template_id=(
+                project_manifest.framework_template.template_id
+            ),
+            framework_template_version=(
+                project_manifest.framework_template.template_version
+            ),
+            semantic_reference_versions=semantic_references,
+            timestamp=created_at,
+            supersedes_run_id=predecessor_run_id,
+        )
+
+        _, successor = self._processing_operations.create_successor_run(
+            predecessor_run_id,
+            successor_manifest,
+            reason_code="processing_pipeline_successor",
+        )
+
+        attempt_id = self._processing.next_attempt_id(
+            project_id,
+            processing_run_id,
+            AGENTIC_INGESTION_STAGE,
+        )
+        latest = successor.events[-1]
+        started_event = create_processing_event(
+            project_id=project_id,
+            processing_run_id=processing_run_id,
+            event_id=f"EVT-{latest.event_sequence + 1:06d}",
+            event_sequence=latest.event_sequence + 1,
+            previous_state=latest.next_state,
+            next_state="running",
+            processing_stage=AGENTIC_INGESTION_STAGE,
+            event_type="stage_started",
+            attempt_id=attempt_id,
+            reason_code="agentic_ingestion_started",
+            artifact_references=(),
+            timestamp=self._current_utc_timestamp(),
+            previous_event_fingerprint=latest.event_fingerprint,
+        )
+        try:
+            successor = self._processing.append_event(started_event)
+        except Exception as exc:
+            raise ProjectIngestionRecoveryRequiredError(
+                "The successor Run exists and the predecessor is superseded, "
+                "but execution of the successor Run could not be started. "
+                "Explicit recovery is required."
+            ) from exc
+
+        self._notify_execution_observer(
+            execution_observer,
+            successor,
+        )
+        work = self._execute_started_attempt(
+            history=successor,
+            attempt_id=attempt_id,
+            configuration=validated_configuration,
+            api_key=api_key,
             llm_progress_observer=llm_progress_observer,
         )
         return self._complete_work(work)

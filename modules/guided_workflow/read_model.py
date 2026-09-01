@@ -3,6 +3,11 @@
 
 from __future__ import annotations
 
+from modules.project_reconciliation.case_persistence import (
+    PROJECT_RECONCILIATION_CASE_CYCLE_MODE,
+    PROJECT_RECONCILIATION_CASE_CYCLE_SCHEMA_VERSION,
+)
+
 from collections import defaultdict
 from pathlib import Path
 
@@ -20,6 +25,7 @@ from modules.output_publication.repository import (
     OutputPublicationRepository,
 )
 from modules.project_dashboard.service import ProjectDashboardService
+from modules.project_reconciliation import ProjectReconciliationRepository
 from modules.review_workspace.workflow_service import (
     ReviewApprovalWorkflowService,
 )
@@ -60,6 +66,7 @@ class GuidedWorkflowReadService:
         *,
         dashboard_service=None,
         review_service=None,
+        reconciliation_repository=None,
         candidate_repository=None,
         model_proposal_service=None,
         final_review_repository=None,
@@ -84,6 +91,11 @@ class GuidedWorkflowReadService:
             )
             if review_service is None
             else review_service
+        )
+        self._reconciliation = (
+            ProjectReconciliationRepository(root=projects_root)
+            if reconciliation_repository is None
+            else reconciliation_repository
         )
         self._candidates = (
             ModelCandidateRepository(root=projects_root)
@@ -136,9 +148,14 @@ class GuidedWorkflowReadService:
         human_stage, confirmed_result_count = (
             self._human_review_stage(project_id)
         )
+        reconciliation_stage = self._project_reconciliation_stage(
+            project_id,
+            human_stage=human_stage,
+        )
         model_stage = self._model_proposal_stage(
             project_id,
             human_stage=human_stage,
+            reconciliation_stage=reconciliation_stage,
         )
         final_stage, final_approved = self._final_review_stage(
             project_id,
@@ -155,6 +172,7 @@ class GuidedWorkflowReadService:
                 source_stage,
                 processing_stage,
                 human_stage,
+                reconciliation_stage,
                 model_stage,
                 final_stage,
                 output_stage,
@@ -399,11 +417,485 @@ class GuidedWorkflowReadService:
         )
         return stage, len(active_approved_inputs)
 
+
+    def _project_reconciliation_stage(
+        self,
+        project_id: str,
+        *,
+        human_stage,
+    ):
+        """Active thesis-MVP gate: exact Project Fit only."""
+
+        if not callable(
+            getattr(self._reconciliation, "list_project_fit", None)
+        ):
+            return self._legacy_project_reconciliation_stage(
+                project_id,
+                human_stage=human_stage,
+            )
+
+        if human_stage.presentation_status != "complete":
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="not_started",
+                semantic="neutral",
+                summary=(
+                    "Project Fit starts after source-local Human Review and "
+                    "Approved Input are complete."
+                ),
+            )
+
+        try:
+            review_view = self._review.project_view(project_id)
+            fits = tuple(
+                self._reconciliation.list_project_fit(project_id)
+            )
+        except Exception:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="unavailable",
+                semantic="blocking",
+                summary=(
+                    "Project Fit cannot reconstruct the current source-local "
+                    "authority and persisted fit evidence safely."
+                ),
+                blocking_issue_count=1,
+                action_label="Inspect Project Fit state",
+            )
+
+        try:
+            from modules.project_reconciliation.project_fit_readiness import (
+                derive_project_fit_readiness,
+            )
+            readiness = derive_project_fit_readiness(
+                project_id=project_id,
+                review_items=tuple(review_view.items),
+                project_fit_assessments=fits,
+            )
+        except Exception:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="unavailable",
+                semantic="blocking",
+                summary=(
+                    "Project Fit readiness is internally inconsistent. "
+                    "No downstream gate was inferred."
+                ),
+                blocking_issue_count=1,
+                action_label="Inspect Project Fit state",
+            )
+
+        if readiness.source_count <= 1:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="complete",
+                semantic="positive",
+                summary=(
+                    "Single-source engineering authority; project-level "
+                    "Project Fit is not required."
+                ),
+            )
+
+        if readiness.source_review_required_source_ids:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="blocked",
+                semantic="blocking",
+                summary=(
+                    "Project Fit is waiting for source-local Human Review: "
+                    + ", ".join(
+                        readiness.source_review_required_source_ids
+                    )
+                    + "."
+                ),
+                blocking_issue_count=len(
+                    readiness.source_review_required_source_ids
+                ),
+                action_label="Complete Human Review",
+            )
+
+        if readiness.assessment_required_source_ids:
+            count = len(readiness.assessment_required_source_ids)
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="ready",
+                semantic="informational",
+                summary=(
+                    f"{count} of {readiness.source_count} current Engineering "
+                    "Sources require exact Project Fit assessment before the "
+                    "multi-source Model Proposal gate can open."
+                ),
+                action_label="Assess project fit",
+            )
+
+        if readiness.human_resolution_source_ids:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="blocked",
+                semantic="attention",
+                summary=(
+                    "Project Fit requires explicit Human resolution for: "
+                    + ", ".join(
+                        readiness.human_resolution_source_ids
+                    )
+                    + ". No machine-only override is permitted."
+                ),
+                decision_count=len(
+                    readiness.human_resolution_source_ids
+                ),
+                blocking_issue_count=len(
+                    readiness.human_resolution_source_ids
+                ),
+                action_label="Inspect project fit",
+            )
+
+        if readiness.all_admitted:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="complete",
+                semantic="positive",
+                summary=(
+                    f"Project Fit admits all {readiness.source_count} current "
+                    "Engineering Sources. Multi-source Model Proposal is ready. "
+                    "Cross-source semantic reconciliation and change control "
+                    "are outside the thesis MVP."
+                ),
+            )
+
+        return create_stage_view(
+            stage_id="project_reconciliation",
+            presentation_status="unavailable",
+            semantic="blocking",
+            summary=(
+                "Project Fit did not resolve to a valid active MVP gate state."
+            ),
+            blocking_issue_count=1,
+            action_label="Inspect Project Fit state",
+        )
+
+    def _legacy_project_reconciliation_stage(
+        self,
+        project_id: str,
+        *,
+        human_stage,
+    ):
+        if human_stage.presentation_status != "complete":
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="not_started",
+                semantic="neutral",
+                summary=(
+                    "Project Reconciliation starts after source-local Human "
+                    "Review and Approved Input are complete."
+                ),
+            )
+
+        try:
+            review_view = self._review.project_view(project_id)
+        except Exception:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="unavailable",
+                semantic="blocking",
+                summary=(
+                    "Project Reconciliation cannot determine the current "
+                    "source-local Human authority population safely."
+                ),
+                blocking_issue_count=1,
+                action_label="Inspect Human Review state",
+            )
+
+        authority_source_count = len(review_view.items)
+        if authority_source_count <= 1:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="complete",
+                semantic="positive",
+                summary=(
+                    "Single-source engineering authority; project-level "
+                    "reconciliation is not required."
+                ),
+            )
+
+        try:
+            cycle = self._reconciliation.latest_cycle(project_id)
+        except Exception:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="unavailable",
+                semantic="blocking",
+                summary="Project Reconciliation state is unavailable.",
+                blocking_issue_count=1,
+                action_label="Inspect Project Reconciliation state",
+            )
+
+        if cycle is None:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="ready",
+                semantic="informational",
+                summary=(
+                    f"{authority_source_count} source-local Human authority "
+                    "workflows are ready for project-level reconciliation."
+                ),
+                action_label="Start project reconciliation",
+            )
+
+        cycle_id = cycle.reconciliation_cycle_id
+
+        if (
+            getattr(cycle, "schema_version", None)
+            == PROJECT_RECONCILIATION_CASE_CYCLE_SCHEMA_VERSION
+            and getattr(cycle, "reconciliation_mode", None)
+            == PROJECT_RECONCILIATION_CASE_CYCLE_MODE
+        ):
+            try:
+                summary = (
+                    self._reconciliation.load_reconciliation_summary(
+                        project_id,
+                        cycle_id,
+                    )
+                )
+                assessments = (
+                    self._reconciliation.load_case_assessments(
+                        project_id,
+                        cycle_id,
+                    )
+                )
+            except Exception:
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="unavailable",
+                    semantic="blocking",
+                    summary=(
+                        "Concern-centric Project Reconciliation "
+                        "evidence cannot be reconstructed safely."
+                    ),
+                    blocking_issue_count=1,
+                    action_label="Inspect Project Reconciliation state",
+                    target_entity_id=cycle_id,
+                )
+
+            review_required = sum(
+                1
+                for item in assessments
+                if item.human_review_required
+            )
+            conflicts = sum(
+                1
+                for item in assessments
+                if item.outcome == "potential_conflict"
+            )
+            uncertainties = sum(
+                1
+                for item in assessments
+                if item.outcome == "uncertain"
+            )
+
+            if summary.regrouping_required:
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="blocked",
+                    semantic="blocking",
+                    summary=(
+                        f"{summary.case_count} concern-centric "
+                        "Reconciliation Cases are persisted · "
+                        "semantic regrouping is required before "
+                        "Human Project Authority."
+                    ),
+                    blocking_issue_count=1,
+                    action_label="Review project reconciliation",
+                    target_entity_id=cycle_id,
+                )
+
+            detail = (
+                f"{summary.case_count} concern-centric "
+                "Reconciliation Cases persisted"
+                f" · {review_required} require Human Project Authority"
+                f" · {conflicts} potential conflict"
+                + ("" if conflicts == 1 else "s")
+                + f" · {uncertainties} uncertain"
+            )
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="blocked",
+                semantic="attention",
+                summary=(
+                    detail
+                    + " · case-aware Human Project Authority "
+                    "is the next required gate."
+                ),
+                decision_count=review_required,
+                blocking_issue_count=1,
+                action_label="Review project reconciliation",
+                target_entity_id=cycle_id,
+            )
+
+        try:
+            reconciliation = (
+                self._reconciliation.load_semantic_reconciliation(
+                    project_id,
+                    cycle_id,
+                )
+            )
+            bindings = (
+                self._reconciliation
+                .load_authority_bindings_if_available(
+                    project_id,
+                    cycle_id,
+                )
+            )
+            if bindings is None:
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="in_progress",
+                    semantic="informational",
+                    summary=(
+                        "Cross-source semantic evidence is persisted; "
+                        "source-local reviewed-authority bindings are not "
+                        "frozen yet."
+                    ),
+                    action_label="Continue project reconciliation",
+                    target_entity_id=cycle_id,
+                )
+
+            decisions = self._reconciliation.list_authority_decisions(
+                project_id,
+                cycle_id,
+            )
+            relation_pairs = {
+                (
+                    item.left_subject_ref,
+                    item.right_subject_ref,
+                )
+                for item in reconciliation.relations
+            }
+            decision_pairs = {
+                (
+                    item.left_subject_ref,
+                    item.right_subject_ref,
+                )
+                for item in decisions
+            }
+
+            if (
+                len(decision_pairs) != len(decisions)
+                or not decision_pairs.issubset(relation_pairs)
+            ):
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="blocked",
+                    semantic="blocking",
+                    summary=(
+                        "Persisted Project Authority decisions do not bind "
+                        "the exact current S3 relation population."
+                    ),
+                    blocking_issue_count=1,
+                    action_label="Inspect Project Reconciliation state",
+                    target_entity_id=cycle_id,
+                )
+
+            missing = relation_pairs - decision_pairs
+            if missing:
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="action_required",
+                    semantic="attention",
+                    summary=(
+                        f"{len(missing)} cross-source relation"
+                        + ("" if len(missing) == 1 else "s")
+                        + " require explicit Human Project Authority decisions."
+                    ),
+                    decision_count=len(missing),
+                    action_label="Resolve project authority decisions",
+                    target_entity_id=cycle_id,
+                )
+
+            state = (
+                self._reconciliation.load_authority_state_if_available(
+                    project_id,
+                    cycle_id,
+                )
+            )
+            if state is None:
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="in_progress",
+                    semantic="informational",
+                    summary=(
+                        "Human Project Authority decisions are complete; "
+                        "the derived Project Engineering Authority State is "
+                        "not finalized yet."
+                    ),
+                    action_label="Finalize project authority",
+                    target_entity_id=cycle_id,
+                )
+
+            if not state.model_impact_ready:
+                unresolved = len(state.unresolved_decision_ids)
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="blocked",
+                    semantic="blocking",
+                    summary=(
+                        "Project Engineering Authority remains unresolved and "
+                        "cannot enter Model Impact Reconciliation."
+                    ),
+                    decision_count=unresolved,
+                    blocking_issue_count=max(1, unresolved),
+                    action_label="Resolve project authority",
+                    target_entity_id=cycle_id,
+                )
+
+            impact = (
+                self._reconciliation.load_model_impact_if_available(
+                    project_id,
+                    cycle_id,
+                )
+            )
+            if impact is None:
+                return create_stage_view(
+                    stage_id="project_reconciliation",
+                    presentation_status="in_progress",
+                    semantic="informational",
+                    summary=(
+                        "Project Engineering Authority is resolved; Model "
+                        "Impact Reconciliation is not finalized yet."
+                    ),
+                    action_label="Reconcile model impact",
+                    target_entity_id=cycle_id,
+                )
+
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="complete",
+                semantic="positive",
+                summary=(
+                    "Project Engineering Authority and Model Impact "
+                    "Reconciliation are complete."
+                ),
+                target_entity_id=cycle_id,
+            )
+        except Exception:
+            return create_stage_view(
+                stage_id="project_reconciliation",
+                presentation_status="unavailable",
+                semantic="blocking",
+                summary=(
+                    "Project Reconciliation evidence cannot be reconstructed "
+                    "safely."
+                ),
+                blocking_issue_count=1,
+                action_label="Inspect Project Reconciliation state",
+                target_entity_id=cycle_id,
+            )
+
     def _model_proposal_stage(
         self,
         project_id: str,
         *,
         human_stage,
+        reconciliation_stage=None,
     ):
         try:
             scan = self._candidates.scan_project(project_id)
@@ -422,6 +914,35 @@ class GuidedWorkflowReadService:
 
         if scan.candidate_sets and not heads:
             blockers += 1
+
+        reconciliation_gate_open = (
+            human_stage.presentation_status == "complete"
+            if reconciliation_stage is None
+            else (
+                human_stage.presentation_status == "complete"
+                and reconciliation_stage.presentation_status == "complete"
+            )
+        )
+
+        if scan.candidate_sets and not reconciliation_gate_open:
+            blockers += 1
+            return create_stage_view(
+                stage_id="model_proposal",
+                presentation_status="blocked",
+                semantic="blocking",
+                summary=(
+                    "A current Model Proposal exists, but required Project "
+                    "Reconciliation is not complete. The proposal cannot be "
+                    "treated as valid project-level model input."
+                ),
+                blocking_issue_count=blockers,
+                action_label="Complete Project Reconciliation",
+                target_entity_id=(
+                    heads[0].manifest.candidate_set_id
+                    if len(heads) == 1
+                    else None
+                ),
+            )
 
         decision_count = 0
         proposal_blockers = 0
@@ -451,7 +972,7 @@ class GuidedWorkflowReadService:
         blockers += proposal_blockers
 
         if not scan.candidate_sets:
-            if human_stage.presentation_status == "complete":
+            if reconciliation_gate_open:
                 status = "ready"
                 semantic = "informational"
                 action = "Create model proposal"

@@ -16,6 +16,9 @@ from app.guided_workflow_detail_ui import (
     render_published_output_ui,
 )
 from app.guided_workflow_ui import render_guided_workflow_ui
+from app.project_reconciliation_ui import (
+    render_project_reconciliation_ui,
+)
 from app.human_review_approval_ui import (
     render_human_review_approval_ui,
 )
@@ -28,6 +31,7 @@ from app.turing_generator_navigation import (
     APP_VIEW_INGESTION,
     APP_VIEW_MODEL_PROPOSAL,
     APP_VIEW_OUTPUT,
+    APP_VIEW_RECONCILIATION,
     APP_VIEW_REVIEW,
     APP_VIEWS,
     DASHBOARD_VIEW_SOURCES,
@@ -74,6 +78,7 @@ _APP_VIEW_LABELS = {
     APP_VIEW_DASHBOARD: "Project Dashboard",
     APP_VIEW_INGESTION: "Processing",
     APP_VIEW_REVIEW: "Human Review & Approval",
+    APP_VIEW_RECONCILIATION: "Project Reconciliation",
     APP_VIEW_MODEL_PROPOSAL: "Model Proposal",
     APP_VIEW_FINAL_REVIEW: "Final Model Review",
     APP_VIEW_OUTPUT: "Published Output",
@@ -342,6 +347,7 @@ def render_turing_generator_ui(
     workflow_renderer: Callable[..., None] | None = None,
     dashboard_renderer: Callable[..., None] | None = None,
     review_renderer: Callable[..., None] | None = None,
+    reconciliation_renderer: Callable[..., None] | None = None,
     model_proposal_renderer: Callable[..., None] | None = None,
     final_review_renderer: Callable[..., None] | None = None,
     output_renderer: Callable[..., None] | None = None,
@@ -381,6 +387,11 @@ def render_turing_generator_ui(
         render_human_review_approval_ui
         if review_renderer is None
         else review_renderer
+    )
+    render_reconciliation = (
+        render_project_reconciliation_ui
+        if reconciliation_renderer is None
+        else reconciliation_renderer
     )
     render_model_proposal = (
         render_model_proposal_ui
@@ -429,6 +440,14 @@ def render_turing_generator_ui(
 
     if active_view == APP_VIEW_REVIEW:
         render_review(
+            root,
+            streamlit_module=st,
+            project_workspace=workspace,
+        )
+        return
+
+    if active_view == APP_VIEW_RECONCILIATION:
+        render_reconciliation(
             root,
             streamlit_module=st,
             project_workspace=workspace,
@@ -763,6 +782,209 @@ def render_registered_source_inventory(
             )
 
 
+
+def _legacy_processing_successor_available(
+    ingestion_service: ProjectBoundIngestionService,
+    execution_state: Any,
+) -> bool:
+    """Return whether one awaiting-review Run is eligible for current-pipeline reprocessing."""
+
+    if execution_state is None:
+        return False
+    if execution_state.run_state != "awaiting_review":
+        return False
+    if not callable(
+        getattr(
+            ingestion_service,
+            "supersede_and_execute_registered_source",
+            None,
+        )
+    ):
+        return False
+
+    prior = _configuration_for_retry_fingerprint(
+        execution_state.configuration_fingerprint
+    )
+    return bool(
+        prior is not None
+        and prior.pipeline_configuration_version
+        == LEGACY_PIPELINE_CONFIGURATION_VERSION
+    )
+
+
+def _render_current_pipeline_reprocess(
+    st: Any,
+    *,
+    ingestion_service: ProjectBoundIngestionService,
+    project_id: str,
+    selected_source: Any,
+    execution_state: Any,
+    technical: bool,
+) -> None:
+    """Render one explicit legacy-Run successor action through the current pipeline."""
+
+    st.warning(
+        "This source is waiting for review from an older Processing "
+        "pipeline. Continue that historical review only as evidence; "
+        "use the current pipeline to create a traceable successor Run."
+    )
+    if technical:
+        st.caption(
+            f"Predecessor: {execution_state.processing_run_id} · "
+            f"legacy pipeline {LEGACY_PIPELINE_CONFIGURATION_VERSION} · "
+            f"successor pipeline {CORRECTED_PIPELINE_CONFIGURATION_VERSION}"
+        )
+
+    with _processing_options_context(st, expanded=technical):
+        model = st.selectbox(
+            "Model",
+            options=_P9_MODEL_OPTIONS,
+            index=_P9_MODEL_OPTIONS.index(DEFAULT_MODEL),
+            key="turing_generator.reprocess_model",
+        )
+        team_scope = st.selectbox(
+            "Interpretation personas",
+            options=("2", "all"),
+            index=1,
+            key="turing_generator.reprocess_team_scope",
+        )
+        runs_per_member = st.number_input(
+            "Runs per team member",
+            min_value=1,
+            max_value=5,
+            value=1,
+            step=1,
+            key="turing_generator.reprocess_runs_per_member",
+        )
+
+        st.warning(
+            "Reprocessing uses the current live R4c pipeline and sends "
+            "the normalized Source text to the selected LLM provider. "
+            "A new immutable Processing Run will supersede the legacy Run."
+        )
+        live_confirmation = st.checkbox(
+            "I confirm this live LLM execution.",
+            value=False,
+            key="turing_generator.reprocess_live_confirmation",
+        )
+
+        api_key: str | None = None
+        environment_key = os.getenv("OPENAI_API_KEY")
+        if environment_key:
+            if technical:
+                st.caption(
+                    "OPENAI_API_KEY is available from the process environment."
+                )
+        else:
+            entered_key = st.text_input(
+                "OpenAI API key for this run",
+                value="",
+                type="password",
+                key="turing_generator.reprocess_api_key",
+                help=(
+                    "Used only for this execution. The key is not "
+                    "persisted in project evidence."
+                ),
+            )
+            api_key = entered_key.strip() or None
+
+    configuration = ProjectIngestionConfiguration(
+        provider=DEFAULT_PROVIDER,
+        model=model,
+        runs_per_member=int(runs_per_member),
+        max_members_per_team=(
+            _UI_MAX_MEMBERS_BY_TEAM_SCOPE[team_scope]
+        ),
+        dry_run=False,
+        pipeline_configuration_version=(
+            CORRECTED_PIPELINE_CONFIGURATION_VERSION
+        ),
+    )
+
+    clicked = st.button(
+        "Reprocess with current pipeline",
+        key="turing_generator.reprocess_current_pipeline",
+        type="primary",
+    )
+    if not clicked:
+        return
+
+    if not live_confirmation:
+        st.error("Live execution requires explicit confirmation.")
+        return
+    if os.getenv("OPENAI_API_KEY") is None and api_key is None:
+        st.error("Live OpenAI execution requires an API key.")
+        return
+
+    st.session_state[_SESSION_INGESTION_IN_PROGRESS] = {
+        "project_id": project_id,
+        "source_id": selected_source.source_id,
+    }
+    request_progress = _LLMRequestProgressDisplay(
+        st,
+        retry_mode=False,
+        technical=technical,
+    )
+
+    def render_started(snapshot) -> None:
+        request_progress.start(snapshot)
+
+    try:
+        result = _invoke_with_optional_llm_progress(
+            ingestion_service.supersede_and_execute_registered_source,
+            project_id,
+            selected_source.source_id,
+            execution_state.processing_run_id,
+            configuration=configuration,
+            api_key=api_key,
+            execution_observer=render_started,
+            llm_progress_observer=request_progress.observe,
+        )
+    except ProjectIngestionConfigurationError:
+        request_progress.finish(success=False)
+        st.error("The current-pipeline execution configuration is invalid.")
+    except ProjectIngestionExecutionError:
+        request_progress.finish(success=False)
+        st.error(
+            "The legacy Processing Run cannot be superseded safely. "
+            "Inspect its current state in the Project Dashboard."
+        )
+    except ProjectIngestionRecoveryRequiredError:
+        request_progress.finish(success=False)
+        st.error(
+            "The successor transition requires explicit Processing recovery."
+        )
+    except ProjectIngestionError:
+        request_progress.finish(success=False)
+        st.error(
+            "Reprocessing failed safely. No successful Processing state "
+            "was inferred."
+        )
+    except Exception:
+        request_progress.finish(success=False)
+        st.error(
+            "Reprocessing failed unexpectedly. No success state was inferred."
+        )
+    else:
+        request_progress.finish(
+            success=result.run_state not in {"failed", "blocked"}
+        )
+        st.session_state[SESSION_SELECTED_ENTITY_ID] = (
+            selected_source.source_id
+            if result.run_state in {"failed", "blocked"}
+            else result.processing_run_id
+        )
+        st.session_state[_SESSION_LAST_INGESTION_RESULT] = (
+            _safe_ingestion_result(result)
+        )
+        render_ingestion_result_message(st, result)
+    finally:
+        st.session_state.pop(
+            _SESSION_INGESTION_IN_PROGRESS,
+            None,
+        )
+
+
 def render_project_ingestion_execution(
     st: Any,
     *,
@@ -891,11 +1113,24 @@ def render_project_ingestion_execution(
                 st,
                 project_id=navigation.project_id,
             )
-            _render_human_review_transition(
-                st,
-                project_id=navigation.project_id,
-                run_id=execution_state.processing_run_id,
-            )
+            if _legacy_processing_successor_available(
+                ingestion_service,
+                execution_state,
+            ):
+                _render_current_pipeline_reprocess(
+                    st,
+                    ingestion_service=ingestion_service,
+                    project_id=navigation.project_id,
+                    selected_source=selected_source,
+                    execution_state=execution_state,
+                    technical=technical,
+                )
+            else:
+                _render_human_review_transition(
+                    st,
+                    project_id=navigation.project_id,
+                    run_id=execution_state.processing_run_id,
+                )
             return
 
         if execution_state.recovery_required:

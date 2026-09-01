@@ -1268,3 +1268,25 @@ run. This favors implementation effectiveness and traceable model quality over
 runtime/call efficiency.
 
 This finding shall not block the single-source PoC or current demo completion.
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__audits__wp12_findings.md -->
+## 2026-09-01 — BLK-002 finding closure
+
+### BLK-002 — Cross-Source Processing Artifact Identity Collision
+**Status: RESOLVED / LIVE RETESTED**
+
+Resolution:
+```text
+contextual Processing Artifact identity
+→ exact Project Fit
+→ explicit ProjectFitPhaseHHandoff
+→ source-scoped Phase-H Subject identity
+→ separate source-local AEI sets
+→ ONE Model Candidate Set
+→ Human Final Model Review
+```
+
+Project `308131` successfully exercised the multi-source path. Concern-centric S3A/S3B/S4/S5 remains prototype evidence only; automatic cross-source reconciliation/change control is Outlook. No WP-12 blocker remains due to BLK-002.
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__audits__wp12_findings.md -->

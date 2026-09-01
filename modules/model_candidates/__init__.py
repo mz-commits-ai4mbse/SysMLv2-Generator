@@ -424,3 +424,40 @@ __all__ = [
     "model_proposal_view_to_json",
     "model_proposal_view_to_markdown",
 ]
+
+# ADR-032 Project Authority -> Phase-H transient handoff
+from .project_authority_handoff import (
+    PROJECT_AUTHORITY_PHASE_H_HANDOFF_SCHEMA_VERSION,
+    PROJECT_AUTHORITY_SUBJECT_KEY_MODES,
+    ProjectAuthorityPhaseHAEIReference,
+    ProjectAuthorityPhaseHNonProjectableRelationship,
+    ProjectAuthorityPhaseHRelationship,
+    ProjectAuthorityPhaseHSubject,
+    ProjectAuthorityPhaseHHandoff,
+    bind_generation_provenance_to_project_authority_handoff,
+    create_project_authority_phase_h_handoff,
+    phase_h_subject_key,
+    phase_h_subject_key_for_source,
+    select_project_authority_active_inputs,
+    validate_project_authority_phase_h_handoff,
+    validate_project_authority_phase_h_request,
+)
+
+__all__.extend(
+    [
+        "PROJECT_AUTHORITY_PHASE_H_HANDOFF_SCHEMA_VERSION",
+        "PROJECT_AUTHORITY_SUBJECT_KEY_MODES",
+        "ProjectAuthorityPhaseHAEIReference",
+        "ProjectAuthorityPhaseHNonProjectableRelationship",
+        "ProjectAuthorityPhaseHRelationship",
+        "ProjectAuthorityPhaseHSubject",
+        "ProjectAuthorityPhaseHHandoff",
+        "bind_generation_provenance_to_project_authority_handoff",
+        "create_project_authority_phase_h_handoff",
+        "phase_h_subject_key",
+        "phase_h_subject_key_for_source",
+        "select_project_authority_active_inputs",
+        "validate_project_authority_phase_h_handoff",
+        "validate_project_authority_phase_h_request",
+    ]
+)

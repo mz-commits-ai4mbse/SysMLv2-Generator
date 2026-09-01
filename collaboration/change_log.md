@@ -2643,3 +2643,28 @@ Deferred architecture decision:
 
 - The concrete Project Workspace persistence layout will be decided during
   P1/P2 and recorded in ADR-005 before implementation depends on it.
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__change_log.md -->
+## 2026-09-01 — BLK-002 multi-source closeout
+
+`BLK-002 — Cross-Source Processing Artifact Identity Collision` is **RESOLVED / LIVE RETESTED** on Project `308131`.
+
+Implemented:
+- contextual project-wide Processing Artifact identity;
+- exact Project Fit as active multi-source gate;
+- fail-closed stale / duplicate / unresolved fit handling;
+- Project-Fit-only Guided Workflow gate;
+- explicit `ProjectFitPhaseHHandoff`;
+- exact Source / Run / Attempt / Approved Input / AEI provenance;
+- source-scoped Phase-H Subject identity;
+- separate source-local AEI consumption;
+- no synthetic merged AEI;
+- one Candidate Set for the admitted multi-source snapshot;
+- legacy S3/S4/S5 and Project-Authority paths preserved separately.
+
+Scope correction: concern-centric reconciliation proved larger than required for the thesis-MVP acceptance boundary. Active project-level processing now answers only whether reviewed Engineering Sources belong to the Project. Deeper reconciliation/change control is Outlook.
+
+WP-12 multi-source retest Project `308131`: PASS. Project `000116` was not regenerated.
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__change_log.md -->

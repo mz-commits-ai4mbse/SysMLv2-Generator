@@ -158,6 +158,12 @@ def _view(*, human_decisions=0):
             ),
         ),
         create_stage_view(
+            stage_id="project_reconciliation",
+            presentation_status="not_started",
+            semantic="neutral",
+            summary="No project reconciliation yet.",
+        ),
+        create_stage_view(
             stage_id="model_proposal",
             presentation_status="not_started",
             semantic="neutral",
@@ -201,7 +207,7 @@ def test_without_project_engineering_workspace_requests_global_selection():
     assert st.rerun_count == 0
 
 
-def test_engineering_workspace_renders_your_work_and_six_stages():
+def test_engineering_workspace_renders_your_work_and_seven_stages():
     st = FakeStreamlit()
     st.session_state[SESSION_PROJECT_ID] = "123456"
 
@@ -227,7 +233,7 @@ def test_engineering_workspace_renders_your_work_and_six_stages():
         if call[0] == "markdown"
         and call[1].startswith("### ")
     ]
-    assert len(stage_headings) == 6
+    assert len(stage_headings) == 7
 
 
 def test_focused_view_hides_technical_project_identity():
@@ -284,7 +290,7 @@ def test_technical_view_exposes_project_and_stage_details():
         and call[1] == "Technical details"
     ]
 
-    assert len(technical_expanders) == 6
+    assert len(technical_expanders) == 7
 
 
 def test_presentation_depth_does_not_change_workflow_projection():

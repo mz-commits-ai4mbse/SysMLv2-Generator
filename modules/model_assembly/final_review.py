@@ -14,6 +14,7 @@ from modules.model_placement.errors import ModelPlacementContractError
 
 
 MODEL_ASSEMBLY_FINAL_REVIEW_SCHEMA_VERSION = "1.0.0"
+MODEL_ASSEMBLY_PROJECT_AUTHORITY_FINAL_REVIEW_SCHEMA_VERSION = "1.1.0"
 MODEL_ASSEMBLY_FINAL_REVIEW_DECISIONS = frozenset(
     {"approved", "changes_requested"}
 )
@@ -36,7 +37,7 @@ class ModelAssemblyFinalReviewDecision:
     comparison_fingerprint: str
     assembly_draft_fingerprint: str
     approved_placement_set_fingerprint: str
-    approved_engineering_information_fingerprint: str
+    approved_engineering_information_fingerprint: str | None
     decision: str
     relationship_resolutions: tuple[
         FinalModelRelationshipResolution, ...
@@ -45,6 +46,10 @@ class ModelAssemblyFinalReviewDecision:
     rationale: str | None
     reviewed_at: str
     decision_fingerprint: str
+    project_authority_handoff_fingerprint: str | None = None
+    project_engineering_authority_fingerprint: str | None = None
+    model_impact_reconciliation_fingerprint: str | None = None
+    source_approved_engineering_information_fingerprints: tuple[str, ...] = ()
 
 
 def build_final_model_review_options(*, draft, profile):
@@ -185,8 +190,17 @@ def create_final_model_review_decision(
         resolutions = tuple(resolutions_list)
 
     timestamp = reviewed_at or _timestamp()
+    schema_version = (
+        MODEL_ASSEMBLY_PROJECT_AUTHORITY_FINAL_REVIEW_SCHEMA_VERSION
+        if getattr(
+            draft,
+            "project_authority_handoff_fingerprint",
+            None,
+        ) is not None
+        else MODEL_ASSEMBLY_FINAL_REVIEW_SCHEMA_VERSION
+    )
     body = {
-        "schema_version": MODEL_ASSEMBLY_FINAL_REVIEW_SCHEMA_VERSION,
+        "schema_version": schema_version,
         "project_id": draft.project_id,
         "final_assembly_decision_id": final_assembly_decision_id,
         "comparison_fingerprint": draft.comparison_fingerprint,
@@ -206,8 +220,12 @@ def create_final_model_review_decision(
         "rationale": rationale_value,
         "reviewed_at": timestamp,
     }
+    _add_project_authority_binding_to_payload(
+        body,
+        draft,
+    )
     return ModelAssemblyFinalReviewDecision(
-        schema_version=MODEL_ASSEMBLY_FINAL_REVIEW_SCHEMA_VERSION,
+        schema_version=schema_version,
         project_id=draft.project_id,
         final_assembly_decision_id=final_assembly_decision_id,
         comparison_fingerprint=draft.comparison_fingerprint,
@@ -224,10 +242,31 @@ def create_final_model_review_decision(
         rationale=rationale_value,
         reviewed_at=timestamp,
         decision_fingerprint=_fingerprint(body),
+        project_authority_handoff_fingerprint=getattr(
+            draft,
+            "project_authority_handoff_fingerprint",
+            None,
+        ),
+        project_engineering_authority_fingerprint=getattr(
+            draft,
+            "project_engineering_authority_fingerprint",
+            None,
+        ),
+        model_impact_reconciliation_fingerprint=getattr(
+            draft,
+            "model_impact_reconciliation_fingerprint",
+            None,
+        ),
+        source_approved_engineering_information_fingerprints=getattr(
+            draft,
+            "source_approved_engineering_information_fingerprints",
+            (),
+        ),
     )
 
 
 def final_model_review_decision_to_json(value) -> str:
+    _validate_final_review_authority_shape(value)
     payload = {
         "schema_version": value.schema_version,
         "project_id": value.project_id,
@@ -250,6 +289,7 @@ def final_model_review_decision_to_json(value) -> str:
         "reviewed_at": value.reviewed_at,
         "decision_fingerprint": value.decision_fingerprint,
     }
+    _add_project_authority_binding_to_payload(payload, value)
     return json.dumps(
         payload,
         ensure_ascii=False,
@@ -289,16 +329,28 @@ def final_model_review_decision_from_json(text: str):
             rationale=payload["rationale"],
             reviewed_at=payload["reviewed_at"],
             decision_fingerprint=payload["decision_fingerprint"],
+            project_authority_handoff_fingerprint=payload.get(
+                "project_authority_handoff_fingerprint"
+            ),
+            project_engineering_authority_fingerprint=payload.get(
+                "project_engineering_authority_fingerprint"
+            ),
+            model_impact_reconciliation_fingerprint=payload.get(
+                "model_impact_reconciliation_fingerprint"
+            ),
+            source_approved_engineering_information_fingerprints=tuple(
+                payload.get(
+                    "source_approved_engineering_information_fingerprints",
+                    (),
+                )
+            ),
         )
     except Exception as exc:
         raise ModelPlacementContractError(
             "Final Model Review decision JSON violates the exact contract."
         ) from exc
 
-    if value.schema_version != MODEL_ASSEMBLY_FINAL_REVIEW_SCHEMA_VERSION:
-        raise ModelPlacementContractError(
-            "Final Model Review decision schema version is unsupported."
-        )
+    _validate_final_review_authority_shape(value)
     if value.decision not in MODEL_ASSEMBLY_FINAL_REVIEW_DECISIONS:
         raise ModelPlacementContractError(
             "Final Model Review decision is invalid."
@@ -329,6 +381,7 @@ def final_model_review_decision_from_json(text: str):
         "rationale": value.rationale,
         "reviewed_at": value.reviewed_at,
     }
+    _add_project_authority_binding_to_payload(body, value)
     if _fingerprint(body) != value.decision_fingerprint:
         raise ModelPlacementContractError(
             "Final Model Review decision fingerprint is invalid."
@@ -482,6 +535,91 @@ class ModelAssemblyFinalReviewRepository:
             "Z",
         )
 
+
+
+def _add_project_authority_binding_to_payload(payload, value):
+    handoff_fingerprint = getattr(
+        value,
+        "project_authority_handoff_fingerprint",
+        None,
+    )
+    if handoff_fingerprint is None:
+        return
+    payload["project_authority_handoff_fingerprint"] = (
+        handoff_fingerprint
+    )
+    payload["project_engineering_authority_fingerprint"] = getattr(
+        value,
+        "project_engineering_authority_fingerprint",
+        None,
+    )
+    payload["model_impact_reconciliation_fingerprint"] = getattr(
+        value,
+        "model_impact_reconciliation_fingerprint",
+        None,
+    )
+    payload["source_approved_engineering_information_fingerprints"] = list(
+        getattr(
+            value,
+            "source_approved_engineering_information_fingerprints",
+            (),
+        )
+    )
+
+
+def _validate_final_review_authority_shape(value):
+    if value.schema_version == MODEL_ASSEMBLY_FINAL_REVIEW_SCHEMA_VERSION:
+        if value.approved_engineering_information_fingerprint is None:
+            raise ModelPlacementContractError(
+                "Legacy Final Model Review requires one AEI fingerprint."
+            )
+        if any(
+            item is not None
+            for item in (
+                value.project_authority_handoff_fingerprint,
+                value.project_engineering_authority_fingerprint,
+                value.model_impact_reconciliation_fingerprint,
+            )
+        ) or value.source_approved_engineering_information_fingerprints:
+            raise ModelPlacementContractError(
+                "Legacy Final Model Review must not contain Project "
+                "Authority binding."
+            )
+        return
+
+    if (
+        value.schema_version
+        != MODEL_ASSEMBLY_PROJECT_AUTHORITY_FINAL_REVIEW_SCHEMA_VERSION
+    ):
+        raise ModelPlacementContractError(
+            "Final Model Review decision schema version is unsupported."
+        )
+    if value.approved_engineering_information_fingerprint is not None:
+        raise ModelPlacementContractError(
+            "Project-authority Final Model Review must not claim one AEI."
+        )
+    required = (
+        value.project_authority_handoff_fingerprint,
+        value.project_engineering_authority_fingerprint,
+        value.model_impact_reconciliation_fingerprint,
+    )
+    if any(
+        not isinstance(item, str) or len(item) != 64
+        for item in required
+    ):
+        raise ModelPlacementContractError(
+            "Project-authority Final Model Review binding is incomplete."
+        )
+    values = value.source_approved_engineering_information_fingerprints
+    if (
+        not values
+        or values != tuple(sorted(values))
+        or len(values) != len(set(values))
+        or any(not isinstance(item, str) or len(item) != 64 for item in values)
+    ):
+        raise ModelPlacementContractError(
+            "Final Model Review source AEI fingerprint set is invalid."
+        )
 
 def _resolution_payload(item):
     return {

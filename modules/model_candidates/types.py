@@ -442,6 +442,8 @@ class ModelCandidateDerivationRequest:
     approved_engineering_information: (
         ApprovedEngineeringInformationSet | None
     ) = None
+    project_authority_handoff: object | None = None
+    project_fit_handoff: object | None = None
 
 
 @dataclass(frozen=True, slots=True)

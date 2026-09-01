@@ -211,3 +211,24 @@ For thesis and presentation, distinguish clearly:
 - **Implemented today:** persisted Human Review, immutable machine evidence, explicit modification/rejection decisions, traceability, bounded LLM calls, semantic comparison/consolidation patterns.
 - **Conceptually enabled by the architecture:** collection of Human-intervention metrics and an adaptive inference boundary.
 - **Future work:** actual learning model/policy training, shadow evaluation, promotion mechanism, adaptive gateway integration and any risk-based reduction of Human review.
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__checkpoints__Thesis_Outlook_Adaptive_Human_Feedback_Learning.md -->
+## Project-level semantic reconciliation and change control
+
+BLK-002 intentionally closes the thesis MVP at project/source admissibility rather than fully automated cross-source semantic reconciliation.
+
+A future extension may introduce project-level semantic reconciliation and change-control mechanisms to identify equivalent, complementary, conflicting, superseding or revision-dependent engineering information across multiple source revisions.
+
+The prototype global semantic index / Reconciliation Case / Project Engineering Authority work remains useful experimental evidence but is not a mandatory runtime gate of the accepted thesis MVP.
+
+Future work should preserve:
+- Source provenance does not determine semantic grouping;
+- bounded LLM semantic judgment, deterministic identity/coverage/orchestration/authority;
+- Human authority for project-level conflict/supersession decisions;
+- no synthetic merged AEI;
+- traceability to exact source-local authority fingerprints and accepted model revisions.
+
+The active prototype deliberately limits project-level processing to source admissibility / Project Fit while preserving provenance for downstream Human Model Review.
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__checkpoints__Thesis_Outlook_Adaptive_Human_Feedback_Learning.md -->

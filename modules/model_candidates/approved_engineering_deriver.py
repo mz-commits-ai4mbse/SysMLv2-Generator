@@ -11,6 +11,13 @@ from modules.approved_engineering_information import ApprovedEngineeringInformat
 from modules.approved_input.types import ApprovedInputManifest
 
 from .errors import ModelCandidateDerivationError, ModelCandidateReferenceError
+from .project_authority_handoff import (
+    phase_h_subject_key,
+    validate_project_authority_phase_h_request,
+)
+from .project_fit_handoff import (
+    validate_project_fit_phase_h_request,
+)
 from .types import (
     ModelCandidateApprovedInputSelection,
     ModelCandidateDerivationPlan,
@@ -201,6 +208,53 @@ class ApprovedEngineeringInformationDeriver:
         request: ModelCandidateDerivationRequest,
     ) -> ModelCandidateProjectionCoverage:
         base = self.base_deriver.assess_projection_coverage(request)
+
+        fit_handoff = request.project_fit_handoff
+        if fit_handoff is not None:
+            validate_project_fit_phase_h_request(request)
+            views = self._project_fit_relationship_views(request)
+
+            entries = list(base.entries)
+            for view in views:
+                entries.extend(
+                    self._relationship_projection_entries(view)
+                )
+                entries.extend(
+                    self._non_projectable_relationship_entries(view)
+                )
+
+            return ModelCandidateProjectionCoverage(
+                project_id=base.project_id,
+                model_structure_profile_reference=(
+                    base.model_structure_profile_reference
+                ),
+                entries=tuple(entries),
+            )
+
+        handoff = request.project_authority_handoff
+        if handoff is not None:
+            validate_project_authority_phase_h_request(request)
+            project_view = self._project_authority_relationship_view(
+                handoff
+            )
+            return ModelCandidateProjectionCoverage(
+                project_id=base.project_id,
+                model_structure_profile_reference=(
+                    base.model_structure_profile_reference
+                ),
+                entries=tuple(
+                    (
+                        *base.entries,
+                        *self._relationship_projection_entries(
+                            project_view
+                        ),
+                        *self._non_projectable_relationship_entries(
+                            project_view
+                        ),
+                    )
+                ),
+            )
+
         authority = request.approved_engineering_information
         if authority is None:
             return base
@@ -226,6 +280,221 @@ class ApprovedEngineeringInformationDeriver:
         request: ModelCandidateDerivationRequest,
     ) -> ModelCandidateDerivationPlan:
         base_plan = self.base_deriver.derive(request)
+
+        fit_handoff = request.project_fit_handoff
+        if fit_handoff is not None:
+            validate_project_fit_phase_h_request(request)
+            views = self._project_fit_relationship_views(request)
+
+            relationship_drafts = []
+            all_invocations = []
+
+            for view in views:
+                if not view.relationships:
+                    continue
+
+                entries = self._relationship_projection_entries(view)
+                selected_rules = {
+                    item.approved_input_id: item.selected_rule_id
+                    for item in entries
+                    if (
+                        item.disposition == "mapped"
+                        and item.selected_rule_id is not None
+                    )
+                }
+                unresolved = tuple(
+                    item
+                    for item in entries
+                    if item.disposition
+                    in {"ambiguous", "unmapped"}
+                )
+
+                if unresolved:
+                    if self.relationship_executor is None:
+                        raise ModelCandidateDerivationError(
+                            "Source-local semantic Relationships "
+                            "contain unresolved target mappings. "
+                            "Eco deterministic multi-source "
+                            "derivation fails closed."
+                        )
+
+                    if self.output_dir is None:
+                        raise ModelCandidateDerivationError(
+                            "Semantic Relationship projection "
+                            "requires an output_dir."
+                        )
+
+                    execute = getattr(
+                        self.relationship_executor,
+                        "execute_semantic_relationships",
+                        None,
+                    )
+                    if execute is None or not callable(execute):
+                        raise ModelCandidateDerivationError(
+                            "Relationship projection executor does "
+                            "not implement "
+                            "execute_semantic_relationships()."
+                        )
+
+                    invocations = tuple(
+                        execute(
+                            request=request,
+                            relationship_entries=unresolved,
+                            profile=self.profile,
+                            output_dir=(
+                                self.output_dir
+                                / "semantic_relationship_projection"
+                                / view.source_id.lower()
+                                / view.content_fingerprint[:12]
+                            ),
+                        )
+                    )
+                    all_invocations.extend(invocations)
+
+                    proposals = {
+                        proposal.relationship_decision_id:
+                        proposal
+                        for invocation in invocations
+                        for proposal in (
+                            invocation.response.proposals
+                        )
+                    }
+
+                    expected = {
+                        item.approved_input_id
+                        for item in unresolved
+                    }
+                    if set(proposals) != expected:
+                        raise ModelCandidateDerivationError(
+                            "Source-local semantic Relationship "
+                            "projection did not return exactly one "
+                            "validated proposal for every unresolved "
+                            "Relationship."
+                        )
+
+                    still_unresolved = tuple(
+                        sorted(
+                            relationship_id
+                            for relationship_id, proposal
+                            in proposals.items()
+                            if (
+                                proposal.result
+                                != "proposed_mapping"
+                                or proposal.selected_rule_id
+                                is None
+                            )
+                        )
+                    )
+                    if still_unresolved:
+                        raise ModelCandidateDerivationError(
+                            "Source-local semantic Relationship "
+                            "target projection preserved unresolved "
+                            "engineering meaning and cannot create "
+                            "a complete Candidate Set: "
+                            f"{list(still_unresolved)}."
+                        )
+
+                    selected_rules.update(
+                        {
+                            relationship_id:
+                            proposal.selected_rule_id
+                            for relationship_id, proposal
+                            in proposals.items()
+                        }
+                    )
+
+                relationship_drafts.extend(
+                    self._relationship_drafts(
+                        authority=view,
+                        element_drafts=(
+                            base_plan.element_drafts
+                        ),
+                        selected_rules=selected_rules,
+                        authority_evidence_key=(
+                            "approved_engineering_information_"
+                            "fingerprint"
+                        ),
+                        draft_prefix=(
+                            "relationship:source:"
+                            f"{view.source_id.lower()}:"
+                            f"{view.content_fingerprint[:12]}:"
+                        ),
+                    )
+                )
+
+            self.last_relationship_invocations = tuple(
+                all_invocations
+            )
+            self._derived = True
+
+            return ModelCandidateDerivationPlan(
+                element_drafts=base_plan.element_drafts,
+                relationship_drafts=tuple(
+                    sorted(
+                        (
+                            *base_plan.relationship_drafts,
+                            *relationship_drafts,
+                        ),
+                        key=lambda item: item.draft_key,
+                    )
+                ),
+            )
+
+        handoff = request.project_authority_handoff
+        if handoff is not None:
+            validate_project_authority_phase_h_request(request)
+            project_view = self._project_authority_relationship_view(
+                handoff
+            )
+            if not project_view.relationships:
+                self.last_relationship_invocations = ()
+                self._derived = True
+                return base_plan
+            entries = self._relationship_projection_entries(
+                project_view
+            )
+            unresolved = tuple(
+                item
+                for item in entries
+                if item.disposition in {"ambiguous", "unmapped"}
+            )
+            if unresolved:
+                raise ModelCandidateDerivationError(
+                    "Project-authorized Relationships include target-model "
+                    "semantics that are not exact profile matches. I1A "
+                    "preserves them for the later Model Assembly / Human "
+                    "Final Model Review boundary instead of creating a "
+                    "synthetic merged AEI."
+                )
+            selected_rules = {
+                item.approved_input_id: item.selected_rule_id
+                for item in entries
+                if item.selected_rule_id is not None
+            }
+            relationship_drafts = self._relationship_drafts(
+                authority=project_view,
+                element_drafts=base_plan.element_drafts,
+                selected_rules=selected_rules,
+                authority_evidence_key=(
+                    "project_authority_handoff_fingerprint"
+                ),
+                draft_prefix="relationship:project:",
+            )
+            self.last_relationship_invocations = ()
+            self._derived = True
+            return ModelCandidateDerivationPlan(
+                element_drafts=base_plan.element_drafts,
+                relationship_drafts=tuple(
+                    sorted(
+                        (
+                            *base_plan.relationship_drafts,
+                            *relationship_drafts,
+                        ),
+                        key=lambda item: item.draft_key,
+                    )
+                ),
+            )
+
         authority = request.approved_engineering_information
         if authority is None or not authority.relationships:
             self.last_relationship_invocations = ()
@@ -348,6 +617,182 @@ class ApprovedEngineeringInformationDeriver:
         }
         return replace(base, context_fingerprint=_fingerprint(payload))
 
+    def _project_fit_relationship_views(self, request):
+        """Read source-local AEI sets without creating merged authority."""
+
+        from types import SimpleNamespace
+
+        validate_project_fit_phase_h_request(request)
+        handoff = request.project_fit_handoff
+
+        active_by_id = {
+            item.approved_input_id: item
+            for item in request.approved_inputs
+        }
+        if len(active_by_id) != len(request.approved_inputs):
+            raise ModelCandidateReferenceError(
+                "Project-Fit Phase-H Approved Input IDs "
+                "are not unique."
+            )
+
+        values = []
+
+        for authority in (
+            handoff.approved_engineering_information_sets
+        ):
+            review_document_id = getattr(
+                authority,
+                "review_document_id",
+                None,
+            )
+            review_document_version_id = getattr(
+                authority,
+                "review_document_version_id",
+                None,
+            )
+
+            local_inputs = tuple(
+                sorted(
+                    (
+                        item
+                        for item in request.approved_inputs
+                        if (
+                            item.review_document_id
+                            == review_document_id
+                            and item.review_document_version_id
+                            == review_document_version_id
+                        )
+                    ),
+                    key=lambda item: item.approved_input_id,
+                )
+            )
+
+            if not local_inputs:
+                raise ModelCandidateReferenceError(
+                    "Project-Fit AEI has no exact active "
+                    "Review Workspace population."
+                )
+
+            validate_approved_engineering_information_binding(
+                project_id=request.project_id,
+                approved_inputs=local_inputs,
+                approved_engineering_information=authority,
+            )
+
+            source_ids = {
+                item.source_id
+                for item in local_inputs
+            }
+            if len(source_ids) != 1:
+                raise ModelCandidateReferenceError(
+                    "One source-local AEI Review Workspace "
+                    "must bind exactly one Engineering Source."
+                )
+
+            source_id = next(iter(source_ids))
+
+            subjects = []
+            for subject in authority.subjects:
+                manifest = active_by_id.get(
+                    subject.approved_input_id
+                )
+                if manifest is None:
+                    raise ModelCandidateReferenceError(
+                        "Project-Fit AEI Subject references "
+                        "a non-active Approved Input."
+                    )
+
+                if manifest.source_id != source_id:
+                    raise ModelCandidateReferenceError(
+                        "Project-Fit AEI Subject crosses "
+                        "source-local authority."
+                    )
+
+                subjects.append(
+                    SimpleNamespace(
+                        canonical_subject_id=(
+                            subject.canonical_subject_id
+                        ),
+                        approved_input_id=(
+                            subject.approved_input_id
+                        ),
+                        stable_subject_key=phase_h_subject_key(
+                            request,
+                            manifest,
+                        ),
+                    )
+                )
+
+            values.append(
+                SimpleNamespace(
+                    source_id=source_id,
+                    review_document_id=review_document_id,
+                    review_document_version_id=(
+                        review_document_version_id
+                    ),
+                    subjects=tuple(subjects),
+                    relationships=tuple(
+                        authority.relationships
+                    ),
+                    non_projectable_relationship_decision_ids=(
+                        tuple(
+                            authority
+                            .non_projectable_relationship_decision_ids
+                        )
+                    ),
+                    content_fingerprint=(
+                        authority.content_fingerprint
+                    ),
+                )
+            )
+
+        return tuple(
+            sorted(
+                values,
+                key=lambda item: (
+                    item.source_id,
+                    item.review_document_id,
+                    item.review_document_version_id,
+                    item.content_fingerprint,
+                ),
+            )
+        )
+
+    def _project_authority_relationship_view(self, handoff):
+        from types import SimpleNamespace
+
+        subject_values = tuple(
+            SimpleNamespace(
+                canonical_subject_id=item.project_subject_ref,
+                approved_input_id=item.approved_input_id,
+                stable_subject_key=item.phase_h_subject_key,
+            )
+            for item in handoff.subjects
+            if item.project_authority_state == "active"
+        )
+        relationship_values = tuple(
+            SimpleNamespace(
+                source_subject_id=item.source_subject_ref,
+                relationship_kind=item.relationship_kind,
+                target_subject_id=item.target_subject_ref,
+                relationship_decision_id=item.relationship_ref,
+                relationship_decision_fingerprint=(
+                    item.relationship_decision_fingerprint
+                ),
+                rationale=item.rationale,
+            )
+            for item in handoff.relationships
+        )
+        return SimpleNamespace(
+            subjects=subject_values,
+            relationships=relationship_values,
+            non_projectable_relationship_decision_ids=tuple(
+                item.relationship_ref
+                for item in handoff.non_projectable_relationships
+            ),
+            content_fingerprint=handoff.content_fingerprint,
+        )
+
     def _non_projectable_relationship_entries(
         self,
         authority: ApprovedEngineeringInformationSet,
@@ -425,9 +870,13 @@ class ApprovedEngineeringInformationDeriver:
     def _relationship_drafts(
         self,
         *,
-        authority: ApprovedEngineeringInformationSet,
+        authority,
         element_drafts,
         selected_rules: dict[str, str],
+        authority_evidence_key: str = (
+            "approved_engineering_information_fingerprint"
+        ),
+        draft_prefix: str = "relationship:aei:",
     ) -> tuple[ModelRelationshipCandidateDraft, ...]:
         rule_by_id = {
             f"relationship:{item.semantic_intent}": item
@@ -500,9 +949,7 @@ class ApprovedEngineeringInformationDeriver:
                 status=conformance_status,
                 finding_ids=findings,
                 evidence={
-                    "approved_engineering_information_fingerprint": (
-                        authority.content_fingerprint
-                    ),
+                    authority_evidence_key: authority.content_fingerprint,
                     "relationship_decision_ids": [
                         item.relationship_decision_id for item in relationships
                     ],
@@ -564,7 +1011,7 @@ class ApprovedEngineeringInformationDeriver:
             }
             drafts.append(
                 ModelRelationshipCandidateDraft(
-                    draft_key="relationship:aei:" + _fingerprint(draft_payload)[:16],
+                    draft_key=draft_prefix + _fingerprint(draft_payload)[:16],
                     relationship_choice_key=(
                         None
                         if len(endpoint_groups[endpoint_key]) == 1

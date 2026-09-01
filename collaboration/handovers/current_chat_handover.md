@@ -212,3 +212,97 @@ git switch -c feature/blk-002-multi-source
 ```
 
 Then audit. Do not implement immediately.
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__handovers__current_chat_handover.md -->
+# Immediate Starting Instruction for the Next Chat — 2026-09-01
+
+BLK-002 is accepted and live-retested with Project `308131`.
+WP-12 multi-source acceptance is **PASS / COMPLETE**.
+
+Do not redesign BLK-002.
+
+## Read first
+1. `collaboration/checkpoints/2026-09-01_blk002_completion_and_catia_model_next_step_ssot.md`
+2. `collaboration/checkpoints/2026-09-01_blk002_staging_manifest.md`
+3. `collaboration/current_state.md`
+4. `collaboration/roadmap.md`
+5. `collaboration/audits/wp12_multi_document_dry_run_test_protocol.md`
+6. `collaboration/audits/wp12_findings.md`
+7. `collaboration/checkpoints/Thesis_Outlook_Adaptive_Human_Feedback_Learning.md`
+8. `collaboration/working_rules.md`
+9. accepted ADRs, especially ADR-032 / ADR-033 / ADR-034 and the source-local authority chain.
+
+Accepted active architecture:
+```text
+source-local Processing
+→ source-local Human Review
+→ Approved Input + source-local AEI
+→ exact Project Fit
+→ ProjectFitPhaseHHandoff
+→ separate source-local AEI consumption
+→ ONE Model Candidate Set
+→ Human Final Model Review
+→ Model
+```
+
+Concern-centric S3A/S3B/S4/S5 remains prototype/research evidence only.
+
+## First task — stage BLK-002 safely
+Run:
+```bash
+git log -1 --oneline
+git branch --show-current
+git status --short
+git diff --check
+```
+
+Then inspect `collaboration/checkpoints/2026-09-01_blk002_staging_manifest.md`.
+
+Stage ONLY the reviewed BLK-002 implementation, tests, ADR and SSOT files.
+Never use `git add .`, `git add -A` or `git add --all`.
+Do not stage `.DS_Store`, `__pycache__`, runtime `data/projects`, `data/team_runs`,
+ingestion reports, ZIPs, patch helpers or unrelated dirty files.
+
+After staging:
+```bash
+git diff --cached --check
+git diff --cached --stat
+git diff --cached --name-only
+```
+
+Do not commit until I explicitly accept the staged set.
+
+## Second task — update CATIA model
+After staging is clean, perform a READ-ONLY audit of the latest CATIA textual
+model/export against the accepted repository implementation.
+
+CATIA model > shadow model, but CATIA now needs alignment.
+
+Required scope:
+1. identify Requirements missing/stale because of the new implementation;
+2. propose corrected Requirements and traceability;
+3. complete R/F/L at STK, System and Subsystem level;
+4. complete missing Functional elements and allocations;
+5. complete missing Logical elements, interfaces and allocations;
+6. verify Requirements → Functional → Logical traceability;
+7. deliberately OMIT Physical (P);
+8. represent concern-centric reconciliation/change-control only as Outlook;
+9. only after Human review generate/apply the CATIA textual delta.
+
+At minimum model:
+- multiple Engineering Sources per Project;
+- source-local Processing and Human Review;
+- Approved Input and source-local AEI;
+- Project Fit / source admissibility;
+- exact Project/Source/Run/Attempt provenance;
+- Project-Fit-based multi-source Phase-H handoff;
+- separate source-local AEI authority;
+- source-scoped multi-source Subject identity;
+- one Model Candidate Set from all admitted current Engineering Sources;
+- Human Final Model Review as final Model Authority;
+- fail-closed missing/stale/non-admitted Project Fit behavior.
+
+Do not implement further software features before the CATIA model delta is reviewed.
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__handovers__current_chat_handover.md -->

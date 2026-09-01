@@ -73,11 +73,12 @@ def _canonical_stages():
     return tuple(_stage(stage_id) for stage_id in GUIDED_WORKFLOW_STAGE_IDS)
 
 
-def test_stage_contract_contains_six_canonical_engineering_stages():
+def test_stage_contract_contains_seven_canonical_engineering_stages():
     assert GUIDED_WORKFLOW_STAGE_IDS == (
         "project_sources",
         "processing",
         "human_review",
+        "project_reconciliation",
         "model_proposal",
         "final_model_review",
         "published_output",
@@ -424,6 +425,7 @@ def test_your_work_summary_aggregates_engineer_relevant_counts():
             variance=2,
             action="Continue Human Review",
         ),
+        _stage("project_reconciliation"),
         _stage("model_proposal"),
         _stage("final_model_review"),
         _stage("published_output"),
@@ -457,6 +459,7 @@ def test_next_action_prioritizes_open_human_decision():
             decisions=2,
             action="Resolve 2 Human decisions",
         ),
+        _stage("project_reconciliation"),
         _stage("model_proposal"),
         _stage("final_model_review"),
         _stage("published_output"),
@@ -482,6 +485,7 @@ def test_next_action_uses_blocker_when_no_human_decision_is_open():
             action="Inspect processing issue",
         ),
         _stage("human_review"),
+        _stage("project_reconciliation"),
         _stage("model_proposal"),
         _stage("final_model_review"),
         _stage("published_output"),
@@ -514,4 +518,4 @@ def test_fully_complete_workflow_has_no_next_action():
 
     assert view.next_stage_id is None
     assert view.next_action is None
-    assert view.work_summary.completed_stage_count == 6
+    assert view.work_summary.completed_stage_count == 7

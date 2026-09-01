@@ -228,6 +228,42 @@ def test_multiple_artifacts_are_sorted_deterministically() -> None:
     ) == ("IU-000001", "IU-000002")
 
 
+def test_same_local_artifact_identity_is_independent_across_runs() -> None:
+    first_artifact = reference(
+        "IU-000001",
+        fingerprint="c" * 64,
+        path=(
+            f"data/projects/{PROJECT_ID}/runs/RUN-000001/"
+            "artifacts/IU-000001.json"
+        ),
+    )
+    second_artifact = reference(
+        "IU-000001",
+        fingerprint="d" * 64,
+        path=(
+            f"data/projects/{PROJECT_ID}/runs/RUN-000002/"
+            "artifacts/IU-000001.json"
+        ),
+    )
+    first = history_with_events(
+        (("artifact_published", (first_artifact,), "2026-07-25T10:02:00Z"),),
+        run_manifest=manifest(run_id="RUN-000001"),
+    )
+    second = history_with_events(
+        (("artifact_published", (second_artifact,), "2026-07-25T10:02:00Z"),),
+        run_manifest=manifest(run_id="RUN-000002"),
+    )
+
+    lifecycles = derive_processing_artifact_lifecycles((second, first))
+
+    assert len(lifecycles) == 2
+    assert tuple(
+        item.artifact_reference.content_fingerprint
+        for item in lifecycles
+    ) == ("c" * 64, "d" * 64)
+    assert all(item.lifecycle_state == "active" for item in lifecycles)
+
+
 def test_duplicate_publication_is_rejected() -> None:
     artifact = reference("IU-000001")
     history = history_with_events(

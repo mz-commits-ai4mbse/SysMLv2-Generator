@@ -11,6 +11,9 @@ from modules.model_candidates.llm_projection_contract import (
     LLMProjectionTargetOption,
 )
 from modules.model_placement.errors import ModelPlacementContractError
+from modules.model_candidates.project_authority_handoff import (
+    phase_h_subject_key,
+)
 from modules.model_placement.types import (
     MODEL_PLACEMENT_SCHEMA_VERSION,
     ModelPlacementBatchComparison,
@@ -57,11 +60,15 @@ def build_model_placement_request(
             deterministic_rule_ids.add(entry.selected_rule_id)
 
         content = approved_input.canonical_content
+        resolved_subject_key = phase_h_subject_key(
+            request,
+            approved_input,
+        )
         items.append(
             LLMProjectionInputItem(
                 approved_input_id=approved_input.approved_input_id,
                 approved_input_kind=approved_input.approved_input_kind,
-                stable_subject_key=approved_input.stable_subject_key,
+                stable_subject_key=resolved_subject_key,
                 title=content.title,
                 primary_text=content.primary_text,
                 description=content.description,

@@ -29,3 +29,4 @@ class LLMResult:
     response_id: str | None = None
     usage: dict[str, Any] = field(default_factory=dict)
     raw_status: str | None = None
+    incomplete_reason: str | None = None

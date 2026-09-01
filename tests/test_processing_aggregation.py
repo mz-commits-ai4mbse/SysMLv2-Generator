@@ -232,13 +232,20 @@ def history_in_state(
     raise AssertionError(f"unsupported fixture state: {state}")
 
 
-def artifact(artifact_id: str = "IU-000001"):
+def artifact(
+    artifact_id: str = "IU-000001",
+    *,
+    fingerprint: str = "d" * 64,
+    path: str | None = None,
+):
     return create_processing_artifact_reference(
         artifact_type="information_unit",
         artifact_id=artifact_id,
-        content_fingerprint="d" * 64,
+        content_fingerprint=fingerprint,
         repository_relative_path=(
-            f"data/projects/{PROJECT_ID}/semantics/{artifact_id}.json"
+            path
+            if path is not None
+            else f"data/projects/{PROJECT_ID}/semantics/{artifact_id}.json"
         ),
     )
 
@@ -570,6 +577,79 @@ def test_invalidated_artifacts_are_counted_per_source() -> None:
     assert summary.source_summaries[0].invalidated_artifact_count == 1
 
 
+def test_invalidated_counts_remain_source_bound_with_same_local_id() -> None:
+    first = history_in_state("running")
+    first_artifact = artifact(
+        "IU-SHARED",
+        fingerprint="d" * 64,
+        path=(
+            f"data/projects/{PROJECT_ID}/runs/RUN-000001/"
+            "artifacts/IU-SHARED.json"
+        ),
+    )
+    first = append_event(
+        first,
+        next_state="running",
+        event_type="artifact_published",
+        reason_code="artifact_published",
+        timestamp="2026-07-25T10:02:00Z",
+        processing_stage="publication",
+        attempt_id="ATT-000001",
+        artifact_references=(first_artifact,),
+    )
+    invalidated = create_artifact_invalidation_event(
+        first,
+        artifact_references=(first_artifact,),
+        next_state="running",
+        processing_stage="publication",
+        attempt_id="ATT-000001",
+        reason_code="source_out_of_scope",
+        timestamp="2026-07-25T10:03:00Z",
+    )
+    first = create_processing_run_history(
+        manifest=first.manifest,
+        events=first.events + (invalidated,),
+    )
+
+    second_manifest = manifest(
+        "RUN-000002",
+        source_id="SRC-000002",
+        source_sha256=SHA_B,
+    )
+    second = history_in_state("running", run_manifest=second_manifest)
+    second_artifact = artifact(
+        "IU-SHARED",
+        fingerprint="e" * 64,
+        path=(
+            f"data/projects/{PROJECT_ID}/runs/RUN-000002/"
+            "artifacts/IU-SHARED.json"
+        ),
+    )
+    second = append_event(
+        second,
+        next_state="running",
+        event_type="artifact_published",
+        reason_code="artifact_published",
+        timestamp="2026-07-25T10:02:30Z",
+        processing_stage="publication",
+        attempt_id="ATT-000001",
+        artifact_references=(second_artifact,),
+    )
+
+    summary = project_summary(
+        source_scan(source(), source("SRC-000002", sha256=SHA_B)),
+        processing_scan(first, second),
+    )
+    by_source = {
+        item.source_id: item
+        for item in summary.source_summaries
+    }
+
+    assert summary.invalidated_artifacts == 1
+    assert by_source["SRC-000001"].invalidated_artifact_count == 1
+    assert by_source["SRC-000002"].invalidated_artifact_count == 0
+
+
 def test_disposition_change_requires_active_artifact_invalidation() -> None:
     history = history_in_state("running")
     reference = artifact()
@@ -791,9 +871,16 @@ def test_scan_inputs_require_explicit_result_types(
         )
 
 
-def test_artifact_identity_across_sources_is_blocking() -> None:
+def test_same_local_artifact_identity_across_sources_is_not_blocking() -> None:
     first = history_in_state("running")
-    shared = artifact("IU-SHARED")
+    first_artifact = artifact(
+        "IU-SHARED",
+        fingerprint="d" * 64,
+        path=(
+            f"data/projects/{PROJECT_ID}/runs/RUN-000001/"
+            "artifacts/IU-SHARED.json"
+        ),
+    )
     first = append_event(
         first,
         next_state="running",
@@ -802,14 +889,23 @@ def test_artifact_identity_across_sources_is_blocking() -> None:
         timestamp="2026-07-25T10:02:00Z",
         processing_stage="publication",
         attempt_id="ATT-000001",
-        artifact_references=(shared,),
+        artifact_references=(first_artifact,),
     )
+
     second_manifest = manifest(
         "RUN-000002",
         source_id="SRC-000002",
         source_sha256=SHA_B,
     )
     second = history_in_state("running", run_manifest=second_manifest)
+    second_artifact = artifact(
+        "IU-SHARED",
+        fingerprint="e" * 64,
+        path=(
+            f"data/projects/{PROJECT_ID}/runs/RUN-000002/"
+            "artifacts/IU-SHARED.json"
+        ),
+    )
     second = append_event(
         second,
         next_state="running",
@@ -818,18 +914,23 @@ def test_artifact_identity_across_sources_is_blocking() -> None:
         timestamp="2026-07-25T10:03:00Z",
         processing_stage="publication",
         attempt_id="ATT-000001",
-        artifact_references=(shared,),
+        artifact_references=(second_artifact,),
     )
+
     summary = project_summary(
         source_scan(source(), source("SRC-000002", sha256=SHA_B)),
         processing_scan(first, second),
     )
-    assert summary.project_state == "attention_required"
-    assert any(
+
+    assert summary.project_state == "in_progress"
+    assert not any(
         issue.code == "artifact_cross_source_reference"
         for issue in summary.issues
     )
-
+    assert not any(
+        issue.code == "artifact_lifecycle_derivation_failed"
+        for issue in summary.issues
+    )
 
 def test_summary_counts_are_internally_consistent() -> None:
     second_manifest = manifest(

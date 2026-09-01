@@ -3087,3 +3087,56 @@ architecture decision changes the accepted roadmap or authority boundary.
 - Support Profile: `../context/frameworks/turing_preliminary_support_profile.json`
 - Ontology Registry: `../context/semantics/ontology_registry.json`
 - Turing Core Vocabulary: `../context/semantics/turing_core_vocabulary.json`
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__current_state.md -->
+## 2026-09-01 — BLK-002 resolved / WP-12 multi-source acceptance complete
+
+BLK-002 — Cross-Source Processing Artifact Identity Collision is **RESOLVED** and was live-retested successfully with Project `308131`.
+
+Accepted thesis-MVP path:
+
+```text
+source-local Processing
+→ source-local Human Review
+→ Approved Input + source-local Approved Engineering Information
+→ exact Project Fit (S2)
+→ all current Engineering Sources admitted
+→ ProjectFitPhaseHHandoff
+→ separate source-local AEI consumption
+→ ONE Model Candidate Set
+→ Human Final Model Review
+→ Model / SysML v2
+```
+
+Key invariants:
+- project-wide Processing Artifact identity is contextual: `(processing_run_id, artifact_type, artifact_id)`;
+- Project Fit is the only active project-level admissibility gate;
+- exact Source / Projection / Run / Attempt binding is fail-closed;
+- no synthetic merged AEI is created;
+- multi-source Phase-H Subject identity is `project_subject:<source_id-lowercase>:<stable_subject_key>`;
+- exact Project Fit, Approved Input and source-local AEI fingerprints remain provenance-bound;
+- legacy Project Engineering Authority / Model Impact handoff remains separate and mutually exclusive;
+- Human Final Model Review remains final Model Authority.
+
+Concern-centric S3A/S3B/S4/S5 and persisted PRC evidence remain readable prototype/research evidence but are no longer required by the active thesis-MVP path. Cross-source semantic reconciliation, supersession and change control move to Outlook.
+
+Project `000116` remains immutable accepted Gate-3 evidence. Existing PRC evidence for Project `308131` is historical and is not deleted or rewritten.
+
+WP-12 status: **PASS / COMPLETE**.
+
+Accepted focused evidence during BLK-002 closeout:
+```text
+MVP-A Project-Fit gate                         8 passed
+Project-Fit Phase-H handoff contract          8 passed
+Project-Fit Phase-H core combined             14 passed
+legacy Project-Authority / generation         17 passed
+multi-source source-local AEI deriver         2 passed
+combined Phase-H regression                   31 passed
+git diff --check                              PASS
+Project 308131 live multi-source retest       PASS
+```
+
+A repository-wide regression of the final uncommitted BLK-002 tree remains a separate pre-commit integrity check, not an open WP-12 blocker.
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__current_state.md -->

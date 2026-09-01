@@ -377,6 +377,7 @@ def test_review_remains_stable_top_level_application_view():
         APP_VIEW_DASHBOARD,
         "ingestion",
         APP_VIEW_REVIEW,
+        "project_reconciliation",
         "model_proposal",
         "final_review",
         "published_output",

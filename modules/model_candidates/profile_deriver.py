@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 import hashlib
 import json
 
@@ -11,6 +12,10 @@ from modules.approved_input.types import (
 )
 
 from .errors import ModelCandidateReferenceError
+from .project_authority_handoff import (
+    phase_h_subject_key,
+    phase_h_subject_key_for_source,
+)
 from .projection_resolver import ProfileProjectionResolver
 from .structure_profile import (
     RELATIONSHIP_PRIORITY_CRITERIA,
@@ -65,7 +70,7 @@ class ProfileDrivenModelCandidateDeriver:
         self._resolver.require_strict_coverage(coverage)
 
         element_drafts = tuple(
-            self._derive_element(item)
+            self._derive_element(item, request=request)
             for item in request.approved_inputs
             if item.approved_input_kind == "element_statement"
         )
@@ -81,6 +86,7 @@ class ProfileDrivenModelCandidateDeriver:
         relationship_drafts = self._derive_relationships(
             relationships,
             element_drafts,
+            request=request,
         )
 
         # human_clarification remains available in request.approved_inputs as
@@ -139,6 +145,8 @@ class ProfileDrivenModelCandidateDeriver:
     def _derive_element(
         self,
         approved_input: ApprovedInputManifest,
+        *,
+        request: ModelCandidateDerivationRequest | None = None,
     ) -> ModelElementCandidateDraft:
         rule, support_level, findings, missing = (
             self._select_element_rule(approved_input)
@@ -170,12 +178,17 @@ class ProfileDrivenModelCandidateDeriver:
                 "evidence is incomplete."
             )
         )
+        resolved_subject_key = (
+            approved_input.stable_subject_key
+            if request is None
+            else phase_h_subject_key(request, approved_input)
+        )
         return ModelElementCandidateDraft(
             draft_key=f"element:{approved_input.approved_input_id}",
-            candidate_subject_key=approved_input.stable_subject_key,
+            candidate_subject_key=resolved_subject_key,
             comparison_anchor_id=(
                 f"{area.comparison_anchor_prefix}:"
-                f"{approved_input.stable_subject_key}"
+                f"{resolved_subject_key}"
             ),
             proposed_name=approved_input.canonical_content.title,
             description=approved_input.canonical_content.description,
@@ -286,6 +299,8 @@ class ProfileDrivenModelCandidateDeriver:
         self,
         approved_inputs: tuple[ApprovedInputManifest, ...],
         element_drafts: tuple[ModelElementCandidateDraft, ...],
+        *,
+        request: ModelCandidateDerivationRequest | None = None,
     ) -> tuple[ModelRelationshipCandidateDraft, ...]:
         grouped = {}
         for approved_input in approved_inputs:
@@ -294,6 +309,30 @@ class ProfileDrivenModelCandidateDeriver:
                     approved_input
                 )
             )
+            if (
+                request is not None
+                and (
+                    request.project_authority_handoff is not None
+                    or request.project_fit_handoff is not None
+                )
+            ):
+                representation = replace(
+                    representation,
+                    source_subject_key=phase_h_subject_key_for_source(
+                        request,
+                        source_id=approved_input.source_id,
+                        stable_subject_key=(
+                            representation.source_subject_key
+                        ),
+                    ),
+                    target_subject_key=phase_h_subject_key_for_source(
+                        request,
+                        source_id=approved_input.source_id,
+                        stable_subject_key=(
+                            representation.target_subject_key
+                        ),
+                    ),
+                )
             key = self._relationship_group_key(
                 representation
             )

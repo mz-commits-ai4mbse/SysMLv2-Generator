@@ -191,6 +191,24 @@ def _output(output_id):
     )
 
 
+def _workflow_stage(view, stage_id):
+    return next(
+        stage
+        for stage in view.stages
+        if stage.stage_id == stage_id
+    )
+
+
+def _approved_single_source_review_view():
+    return _review_view(
+        _review_item(
+            workflow_status="approved_input_available",
+            outcomes=(("accepted_as_generated", 1),),
+            active=("AIN-000001",),
+        )
+    )
+
+
 def _service(
     *,
     source_view=None,
@@ -312,6 +330,7 @@ def test_candidate_lineage_uses_head_for_display_not_implicit_latest():
     )
 
     service = _service(
+        review_view=_approved_single_source_review_view(),
         candidate_sets=(old, head),
         proposals={
             "MCS-000002": _proposal(
@@ -321,7 +340,7 @@ def test_candidate_lineage_uses_head_for_display_not_implicit_latest():
     )
 
     view = service.load_view("000001")
-    model_stage = view.stages[3]
+    model_stage = _workflow_stage(view, "model_proposal")
 
     assert model_stage.target_entity_id == "MCS-000002"
     assert model_stage.decision_count == 3
@@ -332,6 +351,7 @@ def test_multiple_candidate_heads_do_not_select_write_target_implicitly():
     second = _candidate_set("MCS-000002")
 
     service = _service(
+        review_view=_approved_single_source_review_view(),
         candidate_sets=(first, second),
         proposals={
             "MCS-000001": _proposal(),
@@ -341,7 +361,7 @@ def test_multiple_candidate_heads_do_not_select_write_target_implicitly():
 
     view = service.load_view("000001")
 
-    assert view.stages[3].target_entity_id is None
+    assert _workflow_stage(view, "model_proposal").target_entity_id is None
 
 
 def test_ready_final_release_makes_human_release_next_action():
@@ -367,7 +387,7 @@ def test_ready_final_release_makes_human_release_next_action():
     )
 
     view = service.load_view("000001")
-    final_stage = view.stages[4]
+    final_stage = _workflow_stage(view, "final_model_review")
 
     assert final_stage.presentation_status == "action_required"
     assert final_stage.decision_count == 1
@@ -387,8 +407,14 @@ def test_approved_final_revision_makes_publication_ready():
 
     view = service.load_view("000001")
 
-    assert view.stages[4].presentation_status == "complete"
-    assert view.stages[5].presentation_status == "ready"
+    assert (
+        _workflow_stage(view, "final_model_review").presentation_status
+        == "complete"
+    )
+    assert (
+        _workflow_stage(view, "published_output").presentation_status
+        == "ready"
+    )
 
 
 def test_published_output_is_complete_and_explicitly_addressed():
@@ -397,7 +423,7 @@ def test_published_output_is_complete_and_explicitly_addressed():
     )
 
     view = service.load_view("000001")
-    output_stage = view.stages[5]
+    output_stage = _workflow_stage(view, "published_output")
 
     assert output_stage.presentation_status == "complete"
     assert output_stage.target_entity_id == "OUT-000001"

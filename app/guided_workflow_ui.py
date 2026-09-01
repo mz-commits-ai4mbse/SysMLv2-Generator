@@ -15,6 +15,7 @@ from app.turing_generator_navigation import (
     APP_VIEW_INGESTION,
     APP_VIEW_MODEL_PROPOSAL,
     APP_VIEW_OUTPUT,
+    APP_VIEW_RECONCILIATION,
     APP_VIEW_REVIEW,
     DASHBOARD_VIEW_OVERVIEW,
     DASHBOARD_VIEW_SOURCES,
@@ -49,6 +50,10 @@ _STAGE_ROUTES = {
     ),
     "human_review": (
         APP_VIEW_REVIEW,
+        DASHBOARD_VIEW_OVERVIEW,
+    ),
+    "project_reconciliation": (
+        APP_VIEW_RECONCILIATION,
         DASHBOARD_VIEW_OVERVIEW,
     ),
     "model_proposal": (

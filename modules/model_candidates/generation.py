@@ -18,6 +18,16 @@ from .approved_engineering_deriver import (
     bind_generation_provenance_to_approved_engineering_information,
     validate_approved_engineering_information_binding,
 )
+from .project_authority_handoff import (
+    bind_generation_provenance_to_project_authority_handoff,
+    select_project_authority_active_inputs,
+    validate_project_authority_phase_h_request,
+)
+from .project_fit_handoff import (
+    bind_generation_provenance_to_project_fit_handoff,
+    select_project_fit_active_inputs,
+    validate_project_fit_phase_h_request,
+)
 from .candidate_set_manifest import (
     create_model_candidate_set_manifest,
 )
@@ -111,6 +121,8 @@ class ModelCandidateGenerationService:
         approved_engineering_information: (
             ApprovedEngineeringInformationSet | None
         ) = None,
+        project_authority_handoff=None,
+        project_fit_handoff=None,
         generation_provenance: ModelCandidateGenerationProvenance | None = None,
         predecessor_candidate_set_id: str | None = None,
         regeneration_reason: str | None = None,
@@ -129,6 +141,51 @@ class ModelCandidateGenerationService:
             raise ModelCandidateGenerationBlockedError(
                 "Phase-H Candidate generation requires at least one "
                 "active Approved Input."
+            )
+
+        multi_source = (
+            len({item.source_id for item in active_inputs}) > 1
+        )
+
+        if (
+            project_authority_handoff is not None
+            and project_fit_handoff is not None
+        ):
+            raise ModelCandidateGenerationBlockedError(
+                "Project Authority and Project Fit Phase-H handoffs are "
+                "mutually exclusive."
+            )
+
+        if (
+            multi_source
+            and project_authority_handoff is None
+            and project_fit_handoff is None
+        ):
+            raise ModelCandidateGenerationBlockedError(
+                "Multi-source Phase-H Candidate generation requires explicit "
+                "Project Fit or Project Engineering Authority handoff."
+            )
+
+        if project_authority_handoff is not None:
+            if approved_engineering_information is not None:
+                raise ModelCandidateGenerationBlockedError(
+                    "Project Authority handoff must not be combined with one "
+                    "synthetic ApprovedEngineeringInformationSet."
+                )
+            active_inputs = select_project_authority_active_inputs(
+                active_inputs,
+                project_authority_handoff,
+            )
+
+        if project_fit_handoff is not None:
+            if approved_engineering_information is not None:
+                raise ModelCandidateGenerationBlockedError(
+                    "Project Fit handoff must not be combined with one "
+                    "synthetic ApprovedEngineeringInformationSet."
+                )
+            active_inputs = select_project_fit_active_inputs(
+                active_inputs,
+                project_fit_handoff,
             )
 
         if approved_engineering_information is not None:
@@ -153,7 +210,11 @@ class ModelCandidateGenerationService:
             derivation_rules_reference=derivation_rules_reference,
             predecessor_candidate_set=predecessor,
             approved_engineering_information=approved_engineering_information,
+            project_authority_handoff=project_authority_handoff,
+            project_fit_handoff=project_fit_handoff,
         )
+        validate_project_authority_phase_h_request(request)
+        validate_project_fit_phase_h_request(request)
         plan = self._derive(deriver, request)
         resolved_generation_provenance = self._resolve_generation_provenance(
             deriver,
@@ -163,6 +224,18 @@ class ModelCandidateGenerationService:
             bind_generation_provenance_to_approved_engineering_information(
                 resolved_generation_provenance,
                 approved_engineering_information,
+            )
+        )
+        resolved_generation_provenance = (
+            bind_generation_provenance_to_project_authority_handoff(
+                resolved_generation_provenance,
+                project_authority_handoff,
+            )
+        )
+        resolved_generation_provenance = (
+            bind_generation_provenance_to_project_fit_handoff(
+                resolved_generation_provenance,
+                project_fit_handoff,
             )
         )
         element_drafts = self._validate_element_drafts(

@@ -2517,3 +2517,42 @@ inspect active Approved Input read contract
 
 No Phase-H production implementation begins before explicit acceptance of the
 architecture contract.
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__roadmap.md -->
+## 2026-09-01 — Track A checkpoint: BLK-002 complete, CATIA alignment next
+
+Completed:
+- [x] contextual cross-run Processing Artifact identity;
+- [x] exact Project Fit / source admissibility;
+- [x] source-local Human Authority preserved across multiple Sources;
+- [x] explicit Project-Fit-based Multi-Source Phase-H handoff;
+- [x] multiple source-local AEI sets consumed without synthetic merge;
+- [x] source-scoped Phase-H Subject identity;
+- [x] one Model Candidate Set from the admitted multi-source snapshot;
+- [x] Project `308131` live retest;
+- [x] BLK-002 resolved;
+- [x] WP-12 multi-source acceptance PASS.
+
+Deferred from thesis MVP:
+- automatic cross-source equivalence/conflict adjudication;
+- automatic supersession across source revisions;
+- concern-centric Project Engineering Authority;
+- project-level change-control automation;
+- S3A/S3B/S4/S5 as mandatory active workflow.
+
+Immediate execution order:
+```text
+1. audit exact BLK-002 working-tree staging set
+2. stage ONLY reviewed BLK-002 implementation + tests + ADR/SSOT files
+3. inspect git diff --cached --check / --stat / --name-only
+4. do not stage runtime evidence, caches, patch helpers or unrelated files
+5. update CATIA/SysML v2 model to implemented architecture
+6. derive/add Requirements missing due to the new implementation
+7. complete R/F/L from STK through System and Subsystem
+8. deliberately omit Physical (P)
+9. verify Requirement → Functional → Logical traceability
+10. review CATIA delta before further software work
+```
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__roadmap.md -->

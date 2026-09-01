@@ -19,6 +19,7 @@ from modules.model_placement.errors import ModelPlacementContractError
 
 
 AUTHORITY_BACKED_INTERNAL_MODEL_SCHEMA_VERSION = "2.0.0"
+AUTHORITY_BACKED_PROJECT_AUTHORITY_SCHEMA_VERSION = "2.2.0"
 _IEM = re.compile(r"^IEM-([0-9]{6})$")
 _IME = re.compile(r"^IME-[0-9]{6}$")
 _IMR = re.compile(r"^IMR-[0-9]{6}$")
@@ -80,7 +81,7 @@ class AuthorityBackedInternalModelSnapshot:
     comparison_fingerprint: str
     assembly_draft_fingerprint: str
     approved_placement_set_fingerprint: str
-    approved_engineering_information_fingerprint: str
+    approved_engineering_information_fingerprint: str | None
     final_model_review_decision_id: str
     final_model_review_decision_fingerprint: str
     profile_id: str
@@ -96,6 +97,10 @@ class AuthorityBackedInternalModelSnapshot:
     source_internal_engineering_model_id: str | None = None
     source_internal_engineering_model_fingerprint: str | None = None
     semantic_successor_authority_fingerprint: str | None = None
+    project_authority_handoff_fingerprint: str | None = None
+    project_engineering_authority_fingerprint: str | None = None
+    model_impact_reconciliation_fingerprint: str | None = None
+    source_approved_engineering_information_fingerprints: tuple[str, ...] = ()
 
 
 def build_authority_backed_internal_model(
@@ -359,8 +364,17 @@ def build_authority_backed_internal_model(
         )
 
     created = created_at or _timestamp()
+    schema_version = (
+        AUTHORITY_BACKED_PROJECT_AUTHORITY_SCHEMA_VERSION
+        if getattr(
+            draft,
+            "project_authority_handoff_fingerprint",
+            None,
+        ) is not None
+        else AUTHORITY_BACKED_INTERNAL_MODEL_SCHEMA_VERSION
+    )
     body = {
-        "schema_version": AUTHORITY_BACKED_INTERNAL_MODEL_SCHEMA_VERSION,
+        "schema_version": schema_version,
         "project_id": draft.project_id,
         "internal_engineering_model_id": internal_engineering_model_id,
         "comparison_fingerprint": draft.comparison_fingerprint,
@@ -396,8 +410,9 @@ def build_authority_backed_internal_model(
         ],
         "created_at": created,
     }
+    _add_project_authority_binding_to_payload(body, draft)
     return AuthorityBackedInternalModelSnapshot(
-        schema_version=AUTHORITY_BACKED_INTERNAL_MODEL_SCHEMA_VERSION,
+        schema_version=schema_version,
         project_id=draft.project_id,
         internal_engineering_model_id=internal_engineering_model_id,
         comparison_fingerprint=draft.comparison_fingerprint,
@@ -424,6 +439,26 @@ def build_authority_backed_internal_model(
         structure_nodes=tuple(structure_nodes),
         created_at=created,
         content_fingerprint=_fingerprint(body),
+        project_authority_handoff_fingerprint=getattr(
+            draft,
+            "project_authority_handoff_fingerprint",
+            None,
+        ),
+        project_engineering_authority_fingerprint=getattr(
+            draft,
+            "project_engineering_authority_fingerprint",
+            None,
+        ),
+        model_impact_reconciliation_fingerprint=getattr(
+            draft,
+            "model_impact_reconciliation_fingerprint",
+            None,
+        ),
+        source_approved_engineering_information_fingerprints=getattr(
+            draft,
+            "source_approved_engineering_information_fingerprints",
+            (),
+        ),
     )
 
 
@@ -742,6 +777,21 @@ def authority_backed_internal_model_from_json(text: str):
             semantic_successor_authority_fingerprint=raw.get(
                 "semantic_successor_authority_fingerprint"
             ),
+            project_authority_handoff_fingerprint=raw.get(
+                "project_authority_handoff_fingerprint"
+            ),
+            project_engineering_authority_fingerprint=raw.get(
+                "project_engineering_authority_fingerprint"
+            ),
+            model_impact_reconciliation_fingerprint=raw.get(
+                "model_impact_reconciliation_fingerprint"
+            ),
+            source_approved_engineering_information_fingerprints=tuple(
+                raw.get(
+                    "source_approved_engineering_information_fingerprints",
+                    (),
+                )
+            ),
         )
     except Exception as exc:
         raise ModelPlacementContractError(
@@ -770,6 +820,14 @@ def _validate_authority_binding(*, draft, final_decision, profile):
         != draft.approved_placement_set_fingerprint
         or final_decision.approved_engineering_information_fingerprint
         != draft.approved_engineering_information_fingerprint
+        or getattr(final_decision, "project_authority_handoff_fingerprint", None)
+        != getattr(draft, "project_authority_handoff_fingerprint", None)
+        or getattr(final_decision, "project_engineering_authority_fingerprint", None)
+        != getattr(draft, "project_engineering_authority_fingerprint", None)
+        or getattr(final_decision, "model_impact_reconciliation_fingerprint", None)
+        != getattr(draft, "model_impact_reconciliation_fingerprint", None)
+        or getattr(final_decision, "source_approved_engineering_information_fingerprints", ())
+        != getattr(draft, "source_approved_engineering_information_fingerprints", ())
     ):
         raise ModelPlacementContractError(
             "Final Model Review does not authorize the exact Assembly Draft."
@@ -788,6 +846,7 @@ def _validate_snapshot(value):
     if value.schema_version not in {
         AUTHORITY_BACKED_INTERNAL_MODEL_SCHEMA_VERSION,
         "2.1.0",
+        AUTHORITY_BACKED_PROJECT_AUTHORITY_SCHEMA_VERSION,
     }:
         raise ModelPlacementContractError(
             "Authority-backed Internal Model schema version is unsupported."
@@ -803,7 +862,16 @@ def _validate_snapshot(value):
             raise ModelPlacementContractError(
                 "Base Internal Model schema must not contain SEM-015 successor authority."
             )
+        _validate_project_authority_snapshot_binding(value, expected=False)
+    elif value.schema_version == AUTHORITY_BACKED_PROJECT_AUTHORITY_SCHEMA_VERSION:
+        if any(item is not None for item in successor_values):
+            raise ModelPlacementContractError(
+                "Project-authority Internal Model must not also claim SEM-015 "
+                "successor authority."
+            )
+        _validate_project_authority_snapshot_binding(value, expected=True)
     else:
+        _validate_project_authority_snapshot_binding(value, expected=False)
         if any(item is None for item in successor_values):
             raise ModelPlacementContractError(
                 "SEM-015 successor Internal Model requires complete authority binding."
@@ -855,6 +923,72 @@ def _validate_snapshot(value):
             )
 
 
+
+def _add_project_authority_binding_to_payload(payload, value):
+    handoff_fingerprint = getattr(
+        value,
+        "project_authority_handoff_fingerprint",
+        None,
+    )
+    if handoff_fingerprint is None:
+        return
+    payload["project_authority_handoff_fingerprint"] = (
+        handoff_fingerprint
+    )
+    payload["project_engineering_authority_fingerprint"] = (
+        value.project_engineering_authority_fingerprint
+    )
+    payload["model_impact_reconciliation_fingerprint"] = (
+        value.model_impact_reconciliation_fingerprint
+    )
+    payload["source_approved_engineering_information_fingerprints"] = list(
+        value.source_approved_engineering_information_fingerprints
+    )
+
+
+def _validate_project_authority_snapshot_binding(value, *, expected):
+    fields = (
+        value.project_authority_handoff_fingerprint,
+        value.project_engineering_authority_fingerprint,
+        value.model_impact_reconciliation_fingerprint,
+    )
+    sources = value.source_approved_engineering_information_fingerprints
+    if not expected:
+        if any(item is not None for item in fields) or sources:
+            raise ModelPlacementContractError(
+                "This Internal Model schema must not contain Project "
+                "Engineering Authority binding."
+            )
+        if value.approved_engineering_information_fingerprint is None:
+            raise ModelPlacementContractError(
+                "Legacy Internal Model requires one AEI fingerprint."
+            )
+        return
+
+    if value.approved_engineering_information_fingerprint is not None:
+        raise ModelPlacementContractError(
+            "Project-authority Internal Model must not claim one AEI."
+        )
+    if any(
+        not isinstance(item, str) or _SHA256.fullmatch(item) is None
+        for item in fields
+    ):
+        raise ModelPlacementContractError(
+            "Project-authority Internal Model binding is incomplete."
+        )
+    if (
+        not sources
+        or sources != tuple(sorted(sources))
+        or len(sources) != len(set(sources))
+        or any(
+            not isinstance(item, str) or _SHA256.fullmatch(item) is None
+            for item in sources
+        )
+    ):
+        raise ModelPlacementContractError(
+            "Project-authority source AEI fingerprint set is invalid."
+        )
+
 def _snapshot_payload(value, *, include_fingerprint):
     payload = {
         "schema_version": value.schema_version,
@@ -895,6 +1029,7 @@ def _snapshot_payload(value, *, include_fingerprint):
         ],
         "created_at": value.created_at,
     }
+    _add_project_authority_binding_to_payload(payload, value)
     if value.source_internal_engineering_model_id is not None:
         payload["source_internal_engineering_model_id"] = (
             value.source_internal_engineering_model_id

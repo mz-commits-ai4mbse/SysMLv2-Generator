@@ -17,6 +17,7 @@ from modules.project_workspace.identifiers import is_valid_project_id
 
 from .artifact_lifecycle import (
     SourceDispositionImpact,
+    _derive_contextual_artifact_lifecycles,
     derive_effective_source_dispositions,
     derive_processing_artifact_lifecycles,
     derive_source_disposition_impacts,
@@ -299,12 +300,6 @@ def _build_context(
             decisions,
             run_states,
             impacts,
-        )
-    )
-    issues.extend(
-        _artifact_source_issues(
-            validated_project_id,
-            histories,
         )
     )
 
@@ -863,72 +858,44 @@ def _disposition_issues(
     return tuple(issues)
 
 
-def _artifact_source_issues(
-    project_id: str,
-    histories: tuple[ProcessingRunHistory, ...],
-) -> tuple[ProcessingIssue, ...]:
-    source_by_artifact: dict[tuple[str, str], str] = {}
-    issues = []
-    for history in histories:
-        source_id = history.manifest.source_id
-        for event in history.events:
-            for reference in event.artifact_references:
-                key = (
-                    reference.artifact_type,
-                    reference.artifact_id,
-                )
-                existing = source_by_artifact.get(key)
-                if existing is None:
-                    source_by_artifact[key] = source_id
-                elif existing != source_id:
-                    issues.append(
-                        ProcessingIssue(
-                            project_id=project_id,
-                            code="artifact_cross_source_reference",
-                            message=(
-                                "One artifact identity is referenced by "
-                                "Processing Runs for multiple sources."
-                            ),
-                            issue_level="blocking",
-                            source_id=source_id,
-                            processing_run_id=(
-                                history.manifest.processing_run_id
-                            ),
-                            event_id=event.event_id,
-                        )
-                    )
-    return tuple(issues)
 
 
 def _invalidated_artifact_counts(
     histories: tuple[ProcessingRunHistory, ...],
     lifecycles: tuple[ProcessingArtifactLifecycle, ...],
 ) -> dict[str, int]:
-    source_by_artifact: dict[tuple[str, str], str] = {}
-    for history in histories:
-        for event in history.events:
-            for reference in event.artifact_references:
-                key = (
-                    reference.artifact_type,
-                    reference.artifact_id,
-                )
-                source_by_artifact.setdefault(
-                    key,
-                    history.manifest.source_id,
-                )
+    if not lifecycles:
+        return {}
 
+    lifecycle_by_key = _derive_contextual_artifact_lifecycles(
+        histories
+    )
+    if len(lifecycle_by_key) != len(lifecycles):
+        raise ProcessingIntegrityError(
+            "Contextual artifact lifecycle index does not match the "
+            "derived lifecycle projection."
+        )
+
+    source_by_run = {
+        history.manifest.processing_run_id: history.manifest.source_id
+        for history in histories
+    }
     counts: dict[str, int] = {}
-    for lifecycle in lifecycles:
+    for key in sorted(lifecycle_by_key):
+        lifecycle = lifecycle_by_key[key]
         if lifecycle.lifecycle_state != "invalidated":
             continue
-        reference = lifecycle.artifact_reference
-        source_id = source_by_artifact.get(
-            (reference.artifact_type, reference.artifact_id)
-        )
-        if source_id is not None:
-            counts[source_id] = counts.get(source_id, 0) + 1
-    return counts
 
+        processing_run_id = key[0]
+        source_id = source_by_run.get(processing_run_id)
+        if source_id is None:
+            raise ProcessingIntegrityError(
+                "Derived artifact lifecycle references an unavailable "
+                f"Processing Run: {processing_run_id}."
+            )
+        counts[source_id] = counts.get(source_id, 0) + 1
+
+    return counts
 
 def _issues_by_source(
     issues: tuple[ProcessingIssue, ...],

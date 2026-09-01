@@ -6,7 +6,7 @@ from pathlib import Path
 import subprocess
 
 
-TURING_GENERATOR_VERSION = "0.3.0"
+TURING_GENERATOR_VERSION = "0.4.0"
 
 
 def local_build_label(project_root: Path) -> str:

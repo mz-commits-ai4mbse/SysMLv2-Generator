@@ -12,6 +12,7 @@ from modules.approved_input.types import (
 )
 
 from .errors import ModelCandidateDerivationError
+from .project_authority_handoff import phase_h_subject_key
 from .llm_projection_executor import (
     LLMProjectionBatchExecutor,
     LLMProjectionInvocation,
@@ -164,7 +165,10 @@ class HybridModelCandidateDeriver:
                 not in self.review_escalation_approved_input_ids
             ):
                 element_drafts.append(
-                    self._deterministic._derive_element(approved_input)
+                    self._deterministic._derive_element(
+                        approved_input,
+                        request=request,
+                    )
                 )
                 continue
 
@@ -175,6 +179,7 @@ class HybridModelCandidateDeriver:
                     selected_rule_id=proposal.selected_rule_id,
                     rationale=proposal.rationale,
                     deterministic_reason_code=entry.reason_code,
+                    request=request,
                 )
             )
 
@@ -234,6 +239,7 @@ class HybridModelCandidateDeriver:
         relationship_drafts = self._deterministic._derive_relationships(
             tuple(relationship_inputs),
             element_drafts,
+            request=request,
         )
         relationship_drafts = tuple(
             self._mark_llm_relationship_draft(
@@ -368,6 +374,7 @@ class HybridModelCandidateDeriver:
         selected_rule_id: str | None,
         rationale: str,
         deterministic_reason_code: str,
+        request: ModelCandidateDerivationRequest,
     ) -> ModelElementCandidateDraft:
         if selected_rule_id not in self._element_rules:
             raise ModelCandidateDerivationError(
@@ -390,12 +397,16 @@ class HybridModelCandidateDeriver:
             },
         )
 
+        resolved_subject_key = phase_h_subject_key(
+            request,
+            approved_input,
+        )
         return ModelElementCandidateDraft(
             draft_key=f"element:{approved_input.approved_input_id}",
-            candidate_subject_key=approved_input.stable_subject_key,
+            candidate_subject_key=resolved_subject_key,
             comparison_anchor_id=(
                 f"{area.comparison_anchor_prefix}:"
-                f"{approved_input.stable_subject_key}"
+                f"{resolved_subject_key}"
             ),
             proposed_name=approved_input.canonical_content.title,
             description=approved_input.canonical_content.description,

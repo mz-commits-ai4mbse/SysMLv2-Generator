@@ -921,3 +921,45 @@ Only complete if release is granted.
 - [ ] Separate observation/result record prepared
 
 **Stage B authorized:** YES / NO
+
+---
+
+<!-- BEGIN BLK-002-CLOSEOUT-2026-09-01:collaboration__audits__wp12_multi_document_dry_run_test_protocol.md -->
+## Final multi-source acceptance — 2026-09-01
+
+```text
+WP12-E2E-DRY-001
+FINAL STATUS: PASS / COMPLETE
+Single-source Known-Good baseline: PASS
+Multi-source BLK-002 acceptance:   PASS
+Live multi-source retest Project:  308131
+BLK-002:                           RESOLVED
+```
+
+The accepted multi-source path verifies:
+1. every active Engineering Source completed source-local Human Review;
+2. exact Project Fit binds the current Source / Run / Attempt;
+3. every Engineering Source entering Phase-H is admitted;
+4. the explicit Project-Fit handoff binds the complete active snapshot;
+5. source-local AEI remains separate;
+6. no synthetic merged AEI is created;
+7. same-key Subjects from different Sources cannot alias;
+8. one Model Candidate Set is derived from the admitted snapshot;
+9. Human Final Model Review remains final Model Authority.
+
+Concern-centric S3A/S3B/S4/S5 is not part of the required PASS gate; its artifacts remain research evidence.
+
+Acceptance evidence:
+```text
+Project 308131 live multi-source retest       PASS
+MVP-A Project-Fit suite                       8 passed
+Project-Fit handoff suite                     8 passed
+Project-Fit Phase-H combined suite            14 passed
+legacy Project-Authority/generation suite     17 passed
+multi-source AEI suite                        2 passed
+combined Phase-H regression                   31 passed
+git diff --check                              PASS
+```
+
+This closes the formal WP-12 multi-document / multi-source acceptance objective.
+<!-- END BLK-002-CLOSEOUT-2026-09-01:collaboration__audits__wp12_multi_document_dry_run_test_protocol.md -->

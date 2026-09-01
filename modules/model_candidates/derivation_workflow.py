@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import hashlib
 import json
 from pathlib import Path
@@ -9,7 +11,27 @@ import tempfile
 from typing import Callable
 
 from modules.approved_input import ApprovedInputRepository
+from modules.project_reconciliation.repository import (
+    ProjectReconciliationRepository,
+)
 from modules.project_workspace import ProjectWorkspace
+
+if TYPE_CHECKING:
+    from modules.model_impact_reconciliation import (
+        ModelImpactReconciliationArtifact,
+    )
+    from modules.project_engineering_authority import (
+        ProjectEngineeringAuthorityState,
+    )
+
+from .project_authority_handoff import (
+    create_project_authority_phase_h_handoff,
+    select_project_authority_active_inputs,
+)
+from .project_fit_handoff import (
+    create_project_fit_phase_h_handoff,
+    select_project_fit_active_inputs,
+)
 
 from .approved_engineering_deriver import (
     ApprovedEngineeringInformationDeriver,
@@ -63,6 +85,7 @@ class ModelDerivationWorkflowService:
         generation_service=None,
         workspace=None,
         review_workflow_service=None,
+        project_fit_repository=None,
         modeling_executor_factory: Callable[..., object] | None = None,
         semantic_relationship_executor_factory: (
             Callable[..., object] | None
@@ -107,6 +130,13 @@ class ModelDerivationWorkflowService:
             else generation_service
         )
         self._review_workflow_service = review_workflow_service
+        self._project_fit_repository = (
+            ProjectReconciliationRepository(
+                root=self.projects_root,
+            )
+            if project_fit_repository is None
+            else project_fit_repository
+        )
         self._modeling_executor_factory = (
             self._default_modeling_executor
             if modeling_executor_factory is None
@@ -143,12 +173,20 @@ class ModelDerivationWorkflowService:
         project_id: str,
         *,
         predecessor_candidate_set_id: str | None = None,
+        project_engineering_authority: (
+            ProjectEngineeringAuthorityState | None
+        ) = None,
+        model_impact_reconciliation: (
+            ModelImpactReconciliationArtifact | None
+        ) = None,
     ) -> ModelDerivationStrategyAssessment:
         """Assess deterministic coverage and advisory derivation strategy."""
 
         request, strict_deriver, predecessor = self._assessment_request(
             project_id,
             predecessor_candidate_set_id=predecessor_candidate_set_id,
+            project_engineering_authority=project_engineering_authority,
+            model_impact_reconciliation=model_impact_reconciliation,
         )
         coverage = strict_deriver.assess_projection_coverage(request)
         decisions = (
@@ -174,6 +212,12 @@ class ModelDerivationWorkflowService:
         provider: str = DEFAULT_MODELING_PROVIDER,
         model: str = DEFAULT_MODELING_MODEL,
         api_key: str | None = None,
+        project_engineering_authority: (
+            ProjectEngineeringAuthorityState | None
+        ) = None,
+        model_impact_reconciliation: (
+            ModelImpactReconciliationArtifact | None
+        ) = None,
     ):
         """Generate and persist placement proposals before any model assembly."""
 
@@ -186,6 +230,8 @@ class ModelDerivationWorkflowService:
         request, strict_deriver, _predecessor = self._assessment_request(
             project_id,
             predecessor_candidate_set_id=None,
+            project_engineering_authority=project_engineering_authority,
+            model_impact_reconciliation=model_impact_reconciliation,
         )
         coverage = strict_deriver.assess_projection_coverage(request)
         profile = load_model_structure_profile()
@@ -227,6 +273,12 @@ class ModelDerivationWorkflowService:
         provider: str = DEFAULT_MODELING_PROVIDER,
         model: str = DEFAULT_MODELING_MODEL,
         api_key: str | None = None,
+        project_engineering_authority: (
+            ProjectEngineeringAuthorityState | None
+        ) = None,
+        model_impact_reconciliation: (
+            ModelImpactReconciliationArtifact | None
+        ) = None,
     ):
         """Assemble a reviewable draft; Human Final Review resolves non-exact Relationships."""
 
@@ -244,10 +296,16 @@ class ModelDerivationWorkflowService:
         request, _strict_deriver, _predecessor = self._assessment_request(
             project_id,
             predecessor_candidate_set_id=None,
+            project_engineering_authority=project_engineering_authority,
+            model_impact_reconciliation=model_impact_reconciliation,
         )
-        if request.approved_engineering_information is None:
+        if (
+            request.approved_engineering_information is None
+            and request.project_authority_handoff is None
+        ):
             raise ModelCandidateGenerationBlockedError(
-                "Model Assembly requires Approved Engineering Information."
+                "Model Assembly requires Approved Engineering Information "
+                "or Project Engineering Authority handoff."
             )
 
         profile = load_model_structure_profile()
@@ -281,6 +339,12 @@ class ModelDerivationWorkflowService:
         api_key: str | None = None,
         predecessor_candidate_set_id: str | None = None,
         human_regeneration_reason: str | None = None,
+        project_engineering_authority: (
+            ProjectEngineeringAuthorityState | None
+        ) = None,
+        model_impact_reconciliation: (
+            ModelImpactReconciliationArtifact | None
+        ) = None,
     ):
         """Generate one Candidate Set using the explicit Human-selected mode."""
 
@@ -288,6 +352,8 @@ class ModelDerivationWorkflowService:
         assessment = self.assess(
             project_id,
             predecessor_candidate_set_id=predecessor_candidate_set_id,
+            project_engineering_authority=project_engineering_authority,
+            model_impact_reconciliation=model_impact_reconciliation,
         )
 
         total = (
@@ -326,13 +392,28 @@ class ModelDerivationWorkflowService:
         rules = load_model_derivation_rules_reference()
         profile_reference = model_structure_profile_reference(profile)
 
-        active_inputs = tuple(
-            self._approved_inputs.list_active_approved_inputs(project_id)
+        phase_h_request, _strict, _predecessor = (
+            self._assessment_request(
+                project_id,
+                predecessor_candidate_set_id=(
+                    predecessor_candidate_set_id
+                ),
+                project_engineering_authority=(
+                    project_engineering_authority
+                ),
+                model_impact_reconciliation=(
+                    model_impact_reconciliation
+                ),
+            )
         )
         approved_engineering_information = (
-            self._approved_engineering_information_for_inputs(
-                project_id, active_inputs
-            )
+            phase_h_request.approved_engineering_information
+        )
+        project_authority_handoff = (
+            phase_h_request.project_authority_handoff
+        )
+        project_fit_handoff = (
+            phase_h_request.project_fit_handoff
         )
 
         if selected_mode == ECO_DETERMINISTIC_MODE:
@@ -393,6 +474,14 @@ class ModelDerivationWorkflowService:
             generation_kwargs["approved_engineering_information"] = (
                 approved_engineering_information
             )
+        if project_authority_handoff is not None:
+            generation_kwargs["project_authority_handoff"] = (
+                project_authority_handoff
+            )
+        if project_fit_handoff is not None:
+            generation_kwargs["project_fit_handoff"] = (
+                project_fit_handoff
+            )
         return self._generation.generate_candidate_set(
             project_id,
             **generation_kwargs,
@@ -403,6 +492,12 @@ class ModelDerivationWorkflowService:
         project_id: str,
         *,
         predecessor_candidate_set_id: str | None,
+        project_engineering_authority: (
+            ProjectEngineeringAuthorityState | None
+        ) = None,
+        model_impact_reconciliation: (
+            ModelImpactReconciliationArtifact | None
+        ) = None,
     ):
         project = self._workspace.load_project(project_id)
         approved_inputs = tuple(
@@ -423,11 +518,102 @@ class ModelDerivationWorkflowService:
             profile=profile,
             derivation_rules_reference=rules,
         )
-        approved_engineering_information = (
-            self._approved_engineering_information_for_inputs(
-                project_id, approved_inputs
+        source_ids = {
+            item.source_id
+            for item in approved_inputs
+        }
+        project_authority_handoff = None
+        project_fit_handoff = None
+
+        if len(source_ids) > 1:
+            aei_sets = (
+                self._approved_engineering_information_sets_for_inputs(
+                    project_id,
+                    approved_inputs,
+                )
             )
-        )
+
+            legacy_authority_requested = (
+                project_engineering_authority is not None
+                or model_impact_reconciliation is not None
+            )
+
+            if legacy_authority_requested:
+                if (
+                    project_engineering_authority is None
+                    or model_impact_reconciliation is None
+                ):
+                    raise ModelCandidateGenerationBlockedError(
+                        "Legacy multi-source Project Authority Phase-H "
+                        "requires both Project Engineering Authority and "
+                        "Model Impact Reconciliation."
+                    )
+
+                project_authority_handoff = (
+                    create_project_authority_phase_h_handoff(
+                        project_authority=project_engineering_authority,
+                        model_impact=model_impact_reconciliation,
+                        approved_input_manifests=approved_inputs,
+                        approved_engineering_information_sets=aei_sets,
+                    )
+                )
+                approved_inputs = (
+                    select_project_authority_active_inputs(
+                        approved_inputs,
+                        project_authority_handoff,
+                    )
+                )
+            else:
+                try:
+                    project_fit_assessments = tuple(
+                        self._project_fit_repository.list_project_fit(
+                            project_id
+                        )
+                    )
+                except Exception as exc:
+                    raise ModelCandidateGenerationBlockedError(
+                        "Persisted Project Fit evidence cannot be read "
+                        "safely for multi-source Phase-H."
+                    ) from exc
+
+                try:
+                    project_fit_handoff = (
+                        create_project_fit_phase_h_handoff(
+                            project_fit_assessments=(
+                                project_fit_assessments
+                            ),
+                            approved_input_manifests=approved_inputs,
+                            approved_engineering_information_sets=aei_sets,
+                        )
+                    )
+                    approved_inputs = select_project_fit_active_inputs(
+                        approved_inputs,
+                        project_fit_handoff,
+                    )
+                except Exception as exc:
+                    raise ModelCandidateGenerationBlockedError(
+                        "Multi-source Phase-H requires exact admitted "
+                        "Project Fit evidence for every current Engineering "
+                        "Source."
+                    ) from exc
+
+            approved_engineering_information = None
+        else:
+            if (
+                project_engineering_authority is not None
+                or model_impact_reconciliation is not None
+            ):
+                raise ModelCandidateGenerationBlockedError(
+                    "I1A accepts S4/S5 handoff only for a genuine "
+                    "multi-source active snapshot."
+                )
+            approved_engineering_information = (
+                self._approved_engineering_information_for_inputs(
+                    project_id,
+                    approved_inputs,
+                )
+            )
+
         strict_deriver = ApprovedEngineeringInformationDeriver(
             base_deriver=base_strict_deriver,
             profile=profile,
@@ -442,8 +628,71 @@ class ModelDerivationWorkflowService:
             derivation_rules_reference=rules,
             predecessor_candidate_set=predecessor,
             approved_engineering_information=approved_engineering_information,
+            project_authority_handoff=project_authority_handoff,
+            project_fit_handoff=project_fit_handoff,
         )
         return request, strict_deriver, predecessor
+
+    def _approved_engineering_information_sets_for_inputs(
+        self,
+        project_id: str,
+        approved_inputs,
+    ):
+        if not approved_inputs:
+            return ()
+
+        review_refs = tuple(
+            sorted(
+                {
+                    (
+                        item.review_document_id,
+                        item.review_document_version_id,
+                    )
+                    for item in approved_inputs
+                }
+            )
+        )
+        if self._review_workflow_service is None:
+            from modules.review_workspace.workflow_service import (
+                ReviewApprovalWorkflowService,
+            )
+            self._review_workflow_service = ReviewApprovalWorkflowService(
+                root=self.projects_root,
+                repository_root=self.project_root,
+                workspace=self._workspace,
+                approved_input_repository=self._approved_inputs,
+            )
+
+        result = []
+        for (
+            review_document_id,
+            review_document_version_id,
+        ) in review_refs:
+            try:
+                result.append(
+                    self._review_workflow_service
+                    .approved_engineering_information(
+                        project_id,
+                        review_document_id,
+                        review_document_version_id,
+                    )
+                )
+            except Exception as exc:
+                raise ModelCandidateGenerationBlockedError(
+                    "Source-local Approved Engineering Information is "
+                    "unavailable for multi-source Phase-H handoff."
+                ) from exc
+
+        return tuple(
+            sorted(
+                result,
+                key=lambda item: (
+                    item.review_document_id,
+                    item.review_document_version_id,
+                    item.content_fingerprint,
+                ),
+            )
+        )
 
     def _approved_engineering_information_for_inputs(
         self,

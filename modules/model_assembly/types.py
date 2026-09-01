@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 
 MODEL_ASSEMBLY_DRAFT_SCHEMA_VERSION = "1.0.0"
+MODEL_ASSEMBLY_PROJECT_AUTHORITY_SCHEMA_VERSION = "1.1.0"
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,7 +46,7 @@ class ModelAssemblyDraft:
     project_id: str
     comparison_fingerprint: str
     approved_placement_set_fingerprint: str
-    approved_engineering_information_fingerprint: str
+    approved_engineering_information_fingerprint: str | None
     profile_id: str
     profile_version: str
     profile_fingerprint: str
@@ -56,6 +57,10 @@ class ModelAssemblyDraft:
     relationship_projection_model: str | None
     relationship_projection_response_fingerprints: tuple[str, ...]
     content_fingerprint: str
+    project_authority_handoff_fingerprint: str | None = None
+    project_engineering_authority_fingerprint: str | None = None
+    model_impact_reconciliation_fingerprint: str | None = None
+    source_approved_engineering_information_fingerprints: tuple[str, ...] = ()
 
     @property
     def relationship_variance_count(self) -> int:

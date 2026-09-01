@@ -135,11 +135,25 @@ def derive_processing_artifact_lifecycles(
     """Derive current artifact lifecycle from validated project histories."""
 
     validated_histories = _validate_project_histories(histories)
+    lifecycles = _derive_contextual_artifact_lifecycles(
+        validated_histories
+    )
+    return tuple(
+        lifecycles[key]
+        for key in sorted(lifecycles)
+    )
+
+
+def _derive_contextual_artifact_lifecycles(
+    validated_histories: tuple[ProcessingRunHistory, ...],
+) -> dict[tuple[str, str, str], ProcessingArtifactLifecycle]:
+    """Derive lifecycles keyed by run-local artifact identity."""
+
     canonical_references: dict[
-        tuple[str, str], ProcessingArtifactReference
+        tuple[str, str, str], ProcessingArtifactReference
     ] = {}
     lifecycles: dict[
-        tuple[str, str], ProcessingArtifactLifecycle
+        tuple[str, str, str], ProcessingArtifactLifecycle
     ] = {}
 
     ordered_events = sorted(
@@ -157,18 +171,23 @@ def derive_processing_artifact_lifecycles(
 
     for event in ordered_events:
         for reference in event.artifact_references:
-            _register_exact_reference(
+            _register_exact_contextual_reference(
                 canonical_references,
+                event.processing_run_id,
                 reference,
             )
 
         if event.event_type == "artifact_published":
             for reference in event.artifact_references:
-                key = _artifact_key(reference)
+                key = _contextual_artifact_key(
+                    event.processing_run_id,
+                    reference,
+                )
                 if key in lifecycles:
                     raise ProcessingIntegrityError(
                         "An immutable artifact identity cannot be published "
-                        f"more than once: {reference.artifact_id}."
+                        "more than once within one Processing Run: "
+                        f"{reference.artifact_id}."
                     )
                 lifecycles[key] = ProcessingArtifactLifecycle(
                     artifact_reference=reference,
@@ -179,7 +198,10 @@ def derive_processing_artifact_lifecycles(
 
         if event.event_type == "artifact_invalidated":
             for reference in event.artifact_references:
-                key = _artifact_key(reference)
+                key = _contextual_artifact_key(
+                    event.processing_run_id,
+                    reference,
+                )
                 current = lifecycles.get(key)
                 if current is None:
                     raise ProcessingReferenceError(
@@ -204,16 +226,17 @@ def derive_processing_artifact_lifecycles(
                     "artifact_superseded requires exactly two references: "
                     "the replaced artifact followed by its successor."
                 )
-
             replaced, successor = event.artifact_references
-            replaced_key = _artifact_key(replaced)
-            successor_key = _artifact_key(successor)
-
+            replaced_key = _contextual_artifact_key(
+                event.processing_run_id, replaced
+            )
+            successor_key = _contextual_artifact_key(
+                event.processing_run_id, successor
+            )
             if replaced_key == successor_key:
                 raise ProcessingValidationError(
                     "Artifact supersession requires distinct identities."
                 )
-
             current_replaced = lifecycles.get(replaced_key)
             if current_replaced is None:
                 raise ProcessingReferenceError(
@@ -225,24 +248,18 @@ def derive_processing_artifact_lifecycles(
                     "Only an active artifact may be superseded: "
                     f"{replaced.artifact_id}."
                 )
-
             current_successor = lifecycles.get(successor_key)
-            if (
-                current_successor is not None
-                and current_successor.lifecycle_state != "active"
-            ):
+            if current_successor is not None and current_successor.lifecycle_state != "active":
                 raise ProcessingIntegrityError(
                     "A superseding artifact must be active or newly "
                     f"introduced: {successor.artifact_id}."
                 )
-
             lifecycles[replaced_key] = ProcessingArtifactLifecycle(
                 artifact_reference=replaced,
                 lifecycle_state="superseded",
                 caused_by_event_id=event.event_id,
                 superseded_by_artifact_id=successor.artifact_id,
             )
-
             if current_successor is None:
                 lifecycles[successor_key] = ProcessingArtifactLifecycle(
                     artifact_reference=successor,
@@ -250,11 +267,7 @@ def derive_processing_artifact_lifecycles(
                     caused_by_event_id=event.event_id,
                 )
 
-    return tuple(
-        lifecycles[key]
-        for key in sorted(lifecycles)
-    )
-
+    return lifecycles
 
 def derive_effective_source_dispositions(
     decisions: object,
@@ -389,12 +402,9 @@ def derive_source_disposition_impacts(
             "Source-disposition impact analysis must be project-local."
         )
 
-    lifecycle_by_key = {
-        _artifact_key(lifecycle.artifact_reference): lifecycle
-        for lifecycle in derive_processing_artifact_lifecycles(
-            validated_histories
-        )
-    }
+    lifecycle_by_key = _derive_contextual_artifact_lifecycles(
+        validated_histories
+    )
     impacts: list[SourceDispositionImpact] = []
 
     for source_id, decision in effective.items():
@@ -427,9 +437,10 @@ def derive_source_disposition_impacts(
         )
 
         produced_references: dict[
-            tuple[str, str], ProcessingArtifactReference
+            tuple[str, str, str], ProcessingArtifactReference
         ] = {}
         for history in engineering_histories:
+            processing_run_id = history.manifest.processing_run_id
             for event in history.events:
                 if event.event_type == "artifact_published":
                     candidates = event.artifact_references
@@ -439,8 +450,9 @@ def derive_source_disposition_impacts(
                     candidates = ()
 
                 for reference in candidates:
-                    _register_exact_reference(
+                    _register_exact_contextual_reference(
                         produced_references,
+                        processing_run_id,
                         reference,
                     )
 
@@ -471,7 +483,6 @@ def derive_source_disposition_impacts(
 
     impacts.sort(key=lambda impact: impact.source_id)
     return tuple(impacts)
-
 
 def _validate_project_histories(
     histories: object,
@@ -523,19 +534,36 @@ def _validate_reference_tuple(
     return references
 
 
-def _register_exact_reference(
-    references: dict[tuple[str, str], ProcessingArtifactReference],
+def _register_exact_contextual_reference(
+    references: dict[
+        tuple[str, str, str],
+        ProcessingArtifactReference,
+    ],
+    processing_run_id: str,
     reference: ProcessingArtifactReference,
 ) -> None:
-    key = _artifact_key(reference)
+    key = _contextual_artifact_key(
+        processing_run_id,
+        reference,
+    )
     current = references.get(key)
     if current is not None and current != reference:
         raise ProcessingReferenceError(
-            "One artifact identity is referenced with conflicting content "
-            f"or paths: {reference.artifact_id}."
+            "One run-local artifact identity is referenced with conflicting "
+            f"content or paths: {processing_run_id}/{reference.artifact_id}."
         )
     references[key] = reference
 
+
+def _contextual_artifact_key(
+    processing_run_id: str,
+    reference: ProcessingArtifactReference,
+) -> tuple[str, str, str]:
+    return (
+        processing_run_id,
+        reference.artifact_type,
+        reference.artifact_id,
+    )
 
 def _artifact_key(
     reference: ProcessingArtifactReference,
