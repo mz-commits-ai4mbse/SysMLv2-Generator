@@ -1,5 +1,57 @@
 # Current Project State
 
+<!-- BEGIN SSOT UPDATE 2026-09-02 CATIA MODELING COMPLETE -->
+## 2026-09-02 — CATIA modeling complete / thesis-writing transition
+
+This block supersedes older CATIA-next-step and Subsystem-modeling-next-step
+wording where it conflicts.
+
+Accepted final state:
+
+```text
+BLK-002 / WP-12 Multi-Source:         COMPLETE / ACCEPTED
+STK R/F/L:                            COMPLETE
+SYS R/F/L:                            COMPLETE
+SBS R/F/L:                            COMPLETE
+Cross-SBS architecture:               COMPLETE
+CATIA modeling:                       CLOSED / FROZEN FOR THESIS
+Physical / deployment:                OUT OF THESIS SCOPE
+
+Primary next work:                    MASTER THESIS WRITING
+Thesis repository:                    mz-commits-ai4mbse/Masterarbeit
+Internal submission target:           ~2026-09-28
+Formal deadline:                      2026-10-15
+```
+
+Final accepted Subsystem population:
+
+```text
+9 Subsystems
+153 Subsystem Requirements
+44 Subsystem Functions
+31 Subsystem Logical Components
+35 Cross-SBS Logical interfaces
+56 typed Cross-SBS item flows
+```
+
+The model is accepted as sufficiently complete for the thesis. A separate
+exhaustive reference-context audit, reverse enumeration of every repository
+package and final presentation-view visual cleanup are explicitly non-blocking
+residuals and do not reopen architecture scope.
+
+The user will refresh
+`collaboration/CATIAMSOSA_TextualNotation.txt`
+from the accepted live CATIA model before the closeout commit.
+
+Canonical checkpoint:
+
+`collaboration/checkpoints/2026-09-02_catia_modeling_complete_thesis_writing_transition_ssot.md`
+
+Next-chat authority moves to the written-thesis repository and the accepted
+30-day completion plan. Further implementation or CATIA architecture work
+requires a demonstrated thesis-critical reason.
+<!-- END SSOT UPDATE 2026-09-02 CATIA MODELING COMPLETE -->
+
 <!-- BEGIN SSOT UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
 ## 2026-09-02 — CATIA System R/F/L complete / Subsystem transition
 

@@ -1,5 +1,71 @@
 # Current Chat Handover
 
+<!-- BEGIN HANDOVER UPDATE 2026-09-02 THESIS WRITING TRANSITION -->
+## 2026-09-02 — START HERE: CATIA closed / move to Masterarbeit
+
+IMPORTANT FOR ALL NEW CHATS:
+
+Do not restart CATIA modeling.
+
+The bounded thesis engineering model is accepted and frozen.
+
+```text
+BLK-002 / WP-12                  COMPLETE
+STK R/F/L                        COMPLETE
+SYS R/F/L                        COMPLETE
+SBS R/F/L                        COMPLETE
+Cross-SBS architecture           COMPLETE
+CATIA modeling                   CLOSED
+```
+
+Canonical closeout checkpoint:
+
+`collaboration/checkpoints/2026-09-02_catia_modeling_complete_thesis_writing_transition_ssot.md`
+
+Final CATIA textual snapshot:
+
+`collaboration/CATIAMSOSA_TextualNotation.txt`
+
+Primary next repository:
+
+`mz-commits-ai4mbse/Masterarbeit`
+
+Observed thesis baseline at transition:
+
+`4f4876ec7af63a11544c27beae8587a9cbea4d89`
+`Initial Overleaf Import`
+
+Read the CATIA closeout checkpoint and the 2026-08-29 30-day thesis-completion
+checkpoint, then inspect the `Masterarbeit` repository read-only.
+
+First thesis task:
+
+```text
+Research Question
+→ thesis claim
+→ literature support
+→ CATIA evidence
+→ repository / WP-12 evidence
+→ figure / table
+→ remaining writing
+```
+
+Use that Thesis Architecture / Evidence Matrix to control restructuring and
+writing.
+
+Do not organize the thesis around Python packages. Preserve the accepted red
+thread from heterogeneous Legacy Sources through governed processing, Human
+authority, architecture derivation, deterministic SysML v2, validation and
+Human release.
+
+Physical / deployment architecture remains outside the bounded thesis model.
+Any old thesis placeholder implying a completed Physical layer must be removed
+or reframed as a scope boundary.
+
+Further software implementation or CATIA architecture changes require a
+demonstrated thesis-critical reason.
+<!-- END HANDOVER UPDATE 2026-09-02 THESIS WRITING TRANSITION -->
+
 <!-- BEGIN HANDOVER UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
 ## 2026-09-02 — Immediate starting instruction: Subsystem R/F/L
 

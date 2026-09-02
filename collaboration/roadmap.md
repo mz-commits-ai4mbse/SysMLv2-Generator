@@ -1,5 +1,48 @@
 # Roadmap
 
+<!-- BEGIN ROADMAP UPDATE 2026-09-02 CATIA MODELING COMPLETE -->
+## 2026-09-02 — Track B complete / Track C becomes primary
+
+This block supersedes older Track-B Subsystem-modeling ordering where it
+conflicts.
+
+```text
+Track A  BLK-002 / genuine Multi-Source        COMPLETE / ACCEPTED
+Track B  CATIA STK + SYS + SBS R/F/L           COMPLETE / FROZEN
+Track C  thesis writing / evidence / QA        PRIMARY NEXT WORK
+```
+
+CATIA modeling is closed. Do not continue package-level reverse mapping,
+reference expansion, Physical modeling or architecture polishing merely to
+increase model volume.
+
+The only remaining CATIA activity is optional visual cleanup for thesis figures
+or presentation readability, without responsibility changes.
+
+Immediate thesis execution order:
+
+```text
+C1  inspect mz-commits-ai4mbse/Masterarbeit
+C2  align final chapter architecture
+C3  create Research Question → Claim → Evidence matrix
+C4  freeze chapter / evidence outline
+C5  write Methodology + Architecture + Prototype chapters
+C6  consolidate WP-12 / Gate-3 / Multi-Source Evaluation
+C7  write Discussion / Limitations / LLM-assisted development reflection
+C8  integrate / refresh literature and LSP / LSR
+C9  finalize Introduction / Conclusion / Abstract
+C10 final claim / citation / figure / terminology / LaTeX QA
+C11 internal submission target ~2026-09-28
+```
+
+Formal deadline remains `2026-10-15`. The reserve is not feature-development
+capacity.
+
+Canonical checkpoint:
+
+`collaboration/checkpoints/2026-09-02_catia_modeling_complete_thesis_writing_transition_ssot.md`
+<!-- END ROADMAP UPDATE 2026-09-02 CATIA MODELING COMPLETE -->
+
 <!-- BEGIN ROADMAP UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
 ## 2026-09-02 — System R/F/L complete / narrow Subsystem roadmap
 
