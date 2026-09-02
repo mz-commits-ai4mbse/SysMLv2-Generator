@@ -1,5 +1,53 @@
 # Roadmap
 
+<!-- BEGIN ROADMAP UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+## 2026-09-02 — System R/F/L complete / narrow Subsystem roadmap
+
+This block supersedes older Track-B and CATIA-next-step ordering where it
+conflicts.
+
+Current tracks:
+
+```text
+Track A  BLK-002 / WP-12 Multi-Source         COMPLETE / ACCEPTED
+Track B  STK + SYS R/F/L                      COMPLETE
+         → minimal Subsystem R/F/L            NEXT
+         → allocation / consistency audit
+         → presentation-view polish
+         → CATIA freeze
+Track C  thesis writing / evidence / QA       CONTINUES IN PARALLEL
+```
+
+Immediate Track-B execution order:
+
+```text
+B1  commit refreshed CATIA model + SSOT transition
+B2  identify approximately 8–9 thesis-relevant Subsystems
+B3  define minimal Subsystem Requirements
+B4  define central Subsystem Functions
+B5  define minimal Logical responsibilities
+B6  add principal interfaces / information flows
+B7  complete System ↔ Subsystem and R → F → L traceability
+B8  full model consistency audit
+B9  presentation-view cleanup during presentation preparation
+B10 CATIA thesis-model freeze
+```
+
+Scope guard:
+
+- do not model every implementation module as an architectural element;
+- do not create one-to-one package / module / class decompositions;
+- implementation modules may be listed as mappings inside Logical Components;
+- Physical / deployment modeling remains out of scope;
+- no new System-level expansion unless a material Subsystem contradiction is
+  found;
+- no new software feature work without a thesis-critical reason.
+
+Canonical checkpoint:
+
+`collaboration/checkpoints/2026-09-02_catia_system_rfl_complete_subsystem_transition_ssot.md`
+<!-- END ROADMAP UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
 ## 2026-08-29 — 30-day submission roadmap
 

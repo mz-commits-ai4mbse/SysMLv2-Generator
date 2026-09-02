@@ -1,5 +1,64 @@
 # Current Project State
 
+<!-- BEGIN SSOT UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+## 2026-09-02 — CATIA System R/F/L complete / Subsystem transition
+
+This block supersedes older CATIA-next-step and BLK-002 status wording where it
+conflicts.
+
+Current accepted state:
+
+```text
+Implementation baseline:             e7d3b5fff0f8a8d8e57bab20a29e896a0d264fdb
+BLK-002 / WP-12 Multi-Source:         COMPLETE / ACCEPTED
+
+STK R/F/L:                            COMPLETE
+SYS R/F/L:                            COMPLETE
+Physical / deployment:                OUT OF THESIS SCOPE
+
+Next CATIA scope:                     MINIMAL SUBSYSTEM R/F/L
+Presentation-view visual polishing:   DEFERRED UNTIL PRESENTATION PREP
+```
+
+The CATIA System model is now aligned to the accepted Multi-Source implementation
+and authority chain through Requirements, Functional and Logical levels.
+
+The remaining architecture task is intentionally narrow:
+
+```text
+approximately 8–9 thesis-relevant Subsystems
+→ minimal Requirements
+→ central Functions
+→ Logical responsibilities
+→ principal interfaces / flows
+→ R → F → L allocation / traceability
+→ final consistency audit
+→ CATIA freeze
+```
+
+Subsystems shall not reproduce Python modules, packages, classes or functions
+one-to-one. Implementation modules may be listed within the corresponding
+Logical Components where useful as implementation mappings, but they do not
+create an additional architecture level.
+
+The current CATIA presentation views remain part of the model. Their underlying
+model content is sufficiently updated; final visual layout and simplification
+are deliberately deferred until presentation preparation.
+
+The user refreshed the CATIA model snapshot in the established repository path.
+`collaboration/CATIAMSOSA_TextualNotation.txt` shall be staged in the same commit
+as this SSOT transition. This SSOT patch does not modify the model snapshot.
+
+Canonical checkpoint:
+
+`collaboration/checkpoints/2026-09-02_catia_system_rfl_complete_subsystem_transition_ssot.md`
+
+No further System-level expansion is planned unless Subsystem decomposition
+reveals a material contradiction.
+
+Further software implementation requires a demonstrated thesis-critical reason.
+<!-- END SSOT UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
 ## 2026-08-29 — 30-day thesis completion strategy
 

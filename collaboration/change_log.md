@@ -1,5 +1,51 @@
 # Change Log
 
+<!-- BEGIN CHANGE LOG UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+## 2026-09-02 — CATIA Stakeholder/System R/F/L synchronization completed
+
+Completed the CATIA alignment that followed BLK-002 / WP-12 Multi-Source
+acceptance.
+
+Accepted model state:
+
+- Stakeholder Requirements, Functional behavior and Logical / context modeling
+  are complete for the bounded thesis scope;
+- System Requirements, Functional behavior and Logical architecture are complete
+  for the bounded thesis scope;
+- the System model now reflects the accepted source-local authority, Project Fit,
+  Multi-Source handoff, one-Model-Candidate-Set, Human Model Placement,
+  deterministic model assembly, SysML v2 generation, separate generated-artifact
+  validation, Final Human Model Review and publication-authority chain;
+- SysML v2 generation and generated-artifact validation are represented as
+  separate Functional and Logical responsibilities;
+- Human, LLM and controlled reference-knowledge boundaries are retained;
+- Physical / deployment modeling remains intentionally omitted.
+
+Presentation artifacts remain in the CATIA model. Their model content is
+sufficiently updated; final visual layout and simplification are postponed until
+presentation preparation.
+
+Subsystem decision:
+
+- approximately 8–9 thesis-relevant Subsystems will be modeled;
+- Subsystem R/F/L will be deliberately minimal;
+- only principal interfaces / flows and meaningful allocations will be added;
+- Python packages / modules / classes will not be modeled one-to-one;
+- implementation modules may be listed inside Logical Components as
+  implementation mappings for traceability.
+
+The user refreshed the CATIA model snapshot at its established repository path.
+The refreshed model snapshot is to be committed with this SSOT update.
+
+Implementation baseline remains:
+
+`e7d3b5fff0f8a8d8e57bab20a29e896a0d264fdb`
+
+Canonical checkpoint:
+
+`collaboration/checkpoints/2026-09-02_catia_system_rfl_complete_subsystem_transition_ssot.md`
+<!-- END CHANGE LOG UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
 ## 2026-08-29 — 30-day thesis completion plan accepted
 

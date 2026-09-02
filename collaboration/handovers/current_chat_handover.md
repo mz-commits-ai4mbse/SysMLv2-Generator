@@ -1,5 +1,118 @@
 # Current Chat Handover
 
+<!-- BEGIN HANDOVER UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+## 2026-09-02 — Immediate starting instruction: Subsystem R/F/L
+
+IMPORTANT FOR ALL NEW CHATS:
+
+BLK-002 is resolved and WP-12 Multi-Source acceptance is complete.
+
+Implementation baseline:
+
+`e7d3b5fff0f8a8d8e57bab20a29e896a0d264fdb`
+
+The CATIA model has now been updated through the complete Stakeholder and System
+R/F/L levels for the bounded thesis scope.
+
+```text
+STK-R  COMPLETE
+STK-F  COMPLETE
+STK-L  COMPLETE
+
+SYS-R  COMPLETE
+SYS-F  COMPLETE
+SYS-L  COMPLETE
+
+Physical / deployment  OUT OF SCOPE
+```
+
+Do not restart broad System-level modeling.
+
+Read first:
+
+1. `collaboration/checkpoints/2026-09-02_catia_system_rfl_complete_subsystem_transition_ssot.md`
+2. `collaboration/current_state.md`
+3. `collaboration/roadmap.md`
+4. `collaboration/change_log.md`
+5. `collaboration/checkpoints/2026-09-01_blk002_completion_and_catia_model_next_step_ssot.md`
+6. accepted ADRs
+
+Current CATIA presentation artifacts remain relevant:
+
+```text
+SFB_004 Engineering Data Transformation Flow
+SFB_005 Engineering Information Processing Flow
+TuringGeneratorLogicalArchitecture_Presentation
+GV_ThreeLayerArchitectureMapping
+```
+
+Their final visual cleanup is deliberately postponed until presentation
+preparation. Do not spend current modeling time on layout polishing.
+
+### First modeling task
+
+Derive approximately 8–9 thesis-relevant Subsystems from the accepted System
+R/F/L architecture.
+
+The Subsystem model must be as narrow as possible while preserving the thesis
+argument and traceability.
+
+For each selected Subsystem, model only:
+
+- necessary Subsystem Requirements;
+- central Subsystem Functions;
+- Logical responsibilities;
+- principal interfaces / information flows;
+- meaningful R → F → L allocations;
+- necessary System ↔ Subsystem traceability.
+
+Do NOT:
+
+- reproduce all repository modules as Subsystems;
+- model packages / modules / classes one-to-one;
+- reopen Physical / deployment modeling;
+- expand System-level content without a material contradiction.
+
+Repository modules may be listed inside Logical Components as implementation
+mappings / references where useful. This provides code traceability without
+turning the implementation structure into the architecture decomposition.
+
+### Remaining CATIA sequence
+
+```text
+Subsystem identification
+→ minimal Subsystem Requirements
+→ minimal Subsystem Functions
+→ minimal Subsystem Logical responsibilities
+→ principal interfaces / flows
+→ allocations / traceability
+→ full R → F → L audit
+→ presentation-view cleanup
+→ CATIA freeze
+```
+
+### CATIA snapshot
+
+The user refreshed the CATIA model snapshot in the established repository path
+before this handover.
+
+Normal textual snapshot:
+
+`collaboration/CATIAMSOSA_TextualNotation.txt`
+
+The snapshot and this SSOT update belong in the same commit.
+
+### Authority
+
+```text
+CATIA model       = engineering-model authority
+repository code   = implementation-reality authority
+SSOT / ADRs       = coordination and decision authority
+```
+
+Further software implementation requires a demonstrated thesis-critical reason.
+<!-- END HANDOVER UPDATE 2026-09-02 CATIA SYSTEM RFL COMPLETE -->
+
 <!-- BEGIN SSOT UPDATE 2026-08-29 THESIS 30 DAY COMPLETION -->
 ## 2026-08-29 — Thesis 30-day coordination delta
 
